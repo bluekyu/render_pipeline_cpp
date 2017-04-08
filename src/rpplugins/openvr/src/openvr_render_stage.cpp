@@ -18,13 +18,13 @@ void OpenvrRenderStage::create(void)
 	target_left_->add_color_attachment(8, true);
 	target_left_->set_size(render_target_size_);
 	target_left_->prepare_buffer();
-	target_left_->set_shader_input(new ShaderInput("vr_eye", LVecBase4i(0, 0, 0, 0)));
+	target_left_->set_shader_input(ShaderInput("vr_eye", LVecBase4i(0, 0, 0, 0)));
 
 	target_right_ = create_target("right_distortion");
 	target_right_->add_color_attachment(8, true);
 	target_right_->set_size(render_target_size_);
 	target_right_->prepare_buffer();
-	target_right_->set_shader_input(new ShaderInput("vr_eye", LVecBase4i(1, 0, 0, 0)));
+	target_right_->set_shader_input(ShaderInput("vr_eye", LVecBase4i(1, 0, 0, 0)));
 }
 
 void OpenvrRenderStage::reload_shaders(void)

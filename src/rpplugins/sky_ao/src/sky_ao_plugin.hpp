@@ -11,8 +11,8 @@ public:
 
     RequrieType& get_required_plugins(void) const;
 
-    void on_stage_setup(void) override;
-    void on_post_stage_setup(void) override;
+    void on_stage_setup(void) final;
+    void on_post_stage_setup(void) final;
 
 private:
     struct Impl;

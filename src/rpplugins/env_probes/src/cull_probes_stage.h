@@ -14,20 +14,20 @@ class CullProbesStage: public rpcore::RenderStage
 public:
 	CullProbesStage(rpcore::RenderPipeline& pipeline);
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
 
-	virtual ProduceType get_produced_pipes(void) const override;
+	ProduceType get_produced_pipes(void) const final;
 
-	virtual DefinesType get_produced_defines(void) const override;
+	DefinesType get_produced_defines(void) const final;
 
-	virtual void create(void) override;
-	virtual void set_dimensions(void) override;
+	void create(void) final;
+	void set_dimensions(void) final;
 
-	virtual void reload_shaders(void) override;
+	void reload_shaders(void) final;
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

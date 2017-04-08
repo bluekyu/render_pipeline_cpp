@@ -15,15 +15,15 @@ class EnvironmentCaptureStage: public rpcore::RenderStage
 public:
 	EnvironmentCaptureStage(rpcore::RenderPipeline& pipeline);
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void reload_shaders(void) final;
 
-	virtual void update(void) override;
+	void update(void) final;
 
-	virtual void set_shader_input(const ShaderInput& inp) override;
+	void set_shader_input(const ShaderInput& inp) final;
 
 	void set_probe(const std::shared_ptr<EnvironmentProbe>& probe);
 
@@ -34,7 +34,7 @@ public:
 	void set_storage_tex_diffuse(Texture* storage_tex_diffuse);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	/** Setups the cameras to render a cubemap. */
 	void setup_camera_rig(void);

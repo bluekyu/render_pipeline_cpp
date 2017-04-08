@@ -10,18 +10,18 @@ class MotionBlurStage: public rpcore::RenderStage
 public:
 	MotionBlurStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "MotionBlurStage") {}
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void reload_shaders(void) final;
 
     void set_per_object_blur(bool per_object_blur);
 	void set_tile_size(int tile_size);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

@@ -18,17 +18,17 @@ public:
 	static RequireType& get_global_required_inputs(void) { return required_inputs; }
 	static RequireType& get_global_required_pipes(void) { return required_pipes; }
 
-	virtual RequireType& get_required_inputs(void) const override { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const override { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const override;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_pipes(void) const final;
 
 	std::shared_ptr<SimpleInputBlock> make_gbuffer_ubo(void) const;
-	virtual void create(void) override;
+	void create(void) final;
 
-	virtual void set_shader_input(const ShaderInput& inp) override;
+	void set_shader_input(const ShaderInput& inp) final;
 
 private:
-	virtual std::string get_plugin_id(void) const override;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

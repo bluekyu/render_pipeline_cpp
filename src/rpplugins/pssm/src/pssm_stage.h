@@ -13,18 +13,18 @@ public:
 	static RequireType& get_global_required_inputs(void) { return required_inputs; }
 	static RequireType& get_global_required_pipes(void) { return required_pipes; }
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void reload_shaders(void) final;
 
     /** Toggle whether to render shadows or whether to just pass through the scene color. */
 	void set_render_shadows(bool enabled);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

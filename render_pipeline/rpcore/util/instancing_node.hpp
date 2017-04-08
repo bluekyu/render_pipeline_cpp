@@ -28,30 +28,38 @@ public:
 
     ~InstancingNode(void);
 
+    NodePath get_instanced_node(void) const;
+
     /** Get the count of instances. */
     int get_instance_count(void) const;
 
     /** Set the count of instances. */
     void set_instance_count(int instance_count);
 
-    void add_instance(const LMatrix4f& transform, bool upload=true);
+    void add_instance(const LMatrix4f& transform, bool upload=false);
 
-    void remove_instance(int instance_index, bool upload=true);
+    void remove_instance(int instance_index, bool upload=false);
 
-    /** Get tranform matrix. */
+    /** Get local instancing tranform matrix. */
     const LMatrix4f& get_transform(int instance_index) const;
 
-    /** Get tranforms. */
+    /** Get local instancing tranforms. */
     const std::vector<LMatrix4f>& get_transforms(void) const;
 
-    /** Set local transform. */
+    /** Set local instancing transform. */
     void set_transform(const LMatrix4f& transform, int instance_index);
 
-    /** Set local transforms and change instance count to the size of @p transforms. */
+    /** Set local instancing transforms and change instance count to the size of @p transforms. */
     void set_transforms(const std::vector<LMatrix4f>& transforms);
 
     /** Upload transform buffer texture to GPU. */
     void upload_transforms(void);
+
+    /**
+     * Get child matrix relative to other with instancing transform.
+     * child.get_mat(instanced_node) * get_transform(instance_index) * instanced_node.get_mat(other)
+     */
+    LMatrix4f get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const;
 
 private:
     struct Impl;

@@ -19,6 +19,7 @@
 
 #include "../../scattering/include/scattering_plugin.hpp"
 #include "../../volumetrics/include/volumetrics_plugin.hpp"
+#include "../../volumetrics/include/volumetrics_stage.hpp"
 
 extern "C" {
 

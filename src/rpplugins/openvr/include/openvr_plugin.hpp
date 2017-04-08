@@ -10,13 +10,13 @@ class OpenVRPlugin: public rpcore::BasePlugin
 {
 public:
     OpenVRPlugin(rpcore::RenderPipeline& pipeline);
-    ~OpenVRPlugin(void);
+    ~OpenVRPlugin(void) final;
 
-    RequrieType& get_required_plugins(void) const override;
+    RequrieType& get_required_plugins(void) const final;
 
-    void on_load(void) override;
-    void on_stage_setup(void) override;
-    void on_post_render_update(void) override;
+    void on_load(void) final;
+    void on_stage_setup(void) final;
+    void on_post_render_update(void) final;
 
     virtual vr::IVRSystem* hmd_instance(void) const;
 

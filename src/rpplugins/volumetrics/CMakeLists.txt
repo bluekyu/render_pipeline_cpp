@@ -48,8 +48,8 @@ include_directories("${RP_PUBLIC_HEADER_DIR}/..")      # /render_pipeline/..
 # set input files
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/include/volumetrics_plugin.hpp"
+    "${PROJECT_SOURCE_DIR}/include/volumetrics_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/volumetrics_plugin.cpp"
-    "${PROJECT_SOURCE_DIR}/src/volumetrics_stage.h"
     "${PROJECT_SOURCE_DIR}/src/volumetrics_stage.cpp")
 # ==================================================================================================
 

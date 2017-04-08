@@ -54,8 +54,8 @@ class TemplatedType: public BaseType
 public:
 	TemplatedType(YAML::Node& data);
 
-	virtual std::string get_value_as_string(void) const override;
-	virtual void set_value(const YAML::Node& value) override;
+	std::string get_value_as_string(void) const override;
+	void set_value(const YAML::Node& value) override;
 	virtual void set_value(T value);
 
 protected:
@@ -113,7 +113,7 @@ class PowerOfTwoType: public IntType
 public:
     PowerOfTwoType(YAML::Node& data);
 
-    virtual void set_value(int value) override;
+    void set_value(int value) final;
 };
 
 inline PowerOfTwoType::PowerOfTwoType(YAML::Node& data): IntType(data)
@@ -143,8 +143,8 @@ class BoolType: public BaseType
 public:
 	BoolType(YAML::Node& data);
 
-	virtual std::string get_value_as_string(void) const;
-	virtual void set_value(const YAML::Node& value);
+	std::string get_value_as_string(void) const final;
+	void set_value(const YAML::Node& value) final;
 	void set_value(bool value) { _value = value; }
 
 private:
@@ -158,11 +158,11 @@ class EnumType: public BaseType
 public:
 	EnumType(YAML::Node& data);
 
-	virtual std::string get_value_as_string(void) const;
-	virtual void set_value(const YAML::Node& value);
+	std::string get_value_as_string(void) const final;
+	void set_value(const YAML::Node& value) final;
 	void set_value(const std::string& value);
-	virtual void add_defines(const std::string& plugin_id,
-		const std::string& setting_id, StageManager::DefinesType& defines) const;
+	void add_defines(const std::string& plugin_id,
+		const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
 private:
 	std::vector<std::string> _values;
@@ -180,8 +180,8 @@ public:
 
     SampleSequenceType(YAML::Node& data);
 
-    virtual std::string get_value_as_string(void) const override;
-    virtual void set_value(const YAML::Node& value) override;
+    std::string get_value_as_string(void) const final;
+    void set_value(const YAML::Node& value) final;
     void set_value(const std::string& value);
 
     std::vector<std::string> get_sequences(void) const;
@@ -214,11 +214,11 @@ class PathType: public BaseType
 public:
 	PathType(YAML::Node& data);
 
-	virtual std::string get_value_as_string(void) const;
-	virtual void set_value(const YAML::Node& value);
+	std::string get_value_as_string(void) const final;
+	void set_value(const YAML::Node& value) final;
 	void set_value(const std::string& value);
-	virtual void add_defines(const std::string& plugin_id,
-		const std::string& setting_id, StageManager::DefinesType& defines) const;
+	void add_defines(const std::string& plugin_id,
+		const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
 private:
 	std::string _default;

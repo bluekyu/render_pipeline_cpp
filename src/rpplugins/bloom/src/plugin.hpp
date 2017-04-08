@@ -11,10 +11,10 @@ class Plugin: public rpcore::BasePlugin
 public:
     Plugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const override { return require_plugins; }
+    RequrieType& get_required_plugins(void) const final { return require_plugins; }
 
-    void on_stage_setup(void) override;
-    void on_pipeline_created(void) override;
+    void on_stage_setup(void) final;
+    void on_pipeline_created(void) final;
 
 private:
     static RequrieType require_plugins;

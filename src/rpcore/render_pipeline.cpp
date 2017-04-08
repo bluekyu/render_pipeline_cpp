@@ -26,6 +26,7 @@
 #include "render_pipeline/rpcore/pluginbase/day_manager.h"
 #include "render_pipeline/rpcore/pluginbase/manager.h"
 #include "render_pipeline/rpcore/image.h"
+#include "render_pipeline/rpcore/logger.hpp"
 
 #include "render_pipeline/rpcore/stages/ambient_stage.h"
 #include "render_pipeline/rpcore/stages/combine_velocity_stage.h"
@@ -43,7 +44,6 @@
 #include "rpcore/gui/error_message_display.h"
 #include "rpcore/gui/loading_screen.h"
 #include "rpcore/util/ies_profile_loader.h"
-#include "rpcore/logger.hpp"
 #include "rplibs/yaml.hpp"
 
 namespace rpcore {
@@ -232,7 +232,7 @@ RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 
 RenderPipeline::Impl::~Impl(void)
 {
-    RPLOG_PIMPL(debug, "Destructing RenderPipeline.");
+    self_.debug("Destructing RenderPipeline.");
 
     delete first_frame_;
 
@@ -260,7 +260,7 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
     const auto& effect = Effect::load(effect_src, options);
     if (!effect)
     {
-        RPLOG_PIMPL(err, "Could not apply effect");
+        self_.error("Could not apply effect");
         return;
     }
 
@@ -289,7 +289,7 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
 
     if (effect->get_option("render_gbuffer") && effect->get_option("render_forward"))
     {
-        RPLOG_PIMPL(err, "You cannot render an object forward and deferred at the "
+        self_.error("You cannot render an object forward and deferred at the "
             "same time! Either use render_gbuffer or use render_forward, "
             "but not both.");
     }
@@ -388,7 +388,7 @@ void RenderPipeline::Impl::reload_shaders(void)
 {
     if (debugger)
     {
-        RPLOG_PIMPL(debug, "Reloading shaders ..");
+        self_.debug("Reloading shaders ..");
         debugger->get_error_msg_handler()->clear_messages();
         debugger->set_reload_hint_visible(true);
 
@@ -449,12 +449,12 @@ void RenderPipeline::Impl::create(PandaFramework* framework, WindowFramework* wi
     // first frame (where the shaders are actually compiled)
     const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
     first_frame_ = new auto(std::chrono::system_clock::now());
-    RPLOG_PIMPL(debug, "Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count());
+    self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
 }
 
 void RenderPipeline::Impl::apply_custom_shaders(void)
 {
-    RPLOG_PIMPL(debug, "Re-applying {} custom shaders", applied_effects.size());
+    self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects.size()));
     for (auto& args: applied_effects)
         internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
 }
@@ -463,6 +463,7 @@ void RenderPipeline::Impl::create_managers(void)
 {
     task_scheduler_ = new TaskScheduler(&self_);
     tag_mgr_ = new TagStateManager(Globals::base->get_cam());
+    plugin_mgr_ = new PluginManager(self_);
     stage_mgr_ = new StageManager(self_);
     light_mgr_ = new LightManager(&self_);
     daytime_mgr_ = new DayTimeManager(self_);
@@ -473,12 +474,12 @@ void RenderPipeline::Impl::create_managers(void)
 
 void RenderPipeline::Impl::analyze_system(void)
 {
-    RPLOG_PIMPL(debug, "Using C++ with architecture {}", PandaSystem::get_platform());
-    RPLOG_PIMPL(debug, "Using Panda3D {} built on {}", PandaSystem::get_version_string(), PandaSystem::get_build_date());
+    self_.debug(fmt::format("Using C++ with architecture {}", PandaSystem::get_platform()));
+    self_.debug(fmt::format("Using Panda3D {} built on {}", PandaSystem::get_version_string(), PandaSystem::get_build_date()));
     if (!PandaSystem::get_git_commit().empty())
-        RPLOG_PIMPL(debug, "Using git commit {}", PandaSystem::get_git_commit());
+        self_.debug(fmt::format("Using git commit {}", PandaSystem::get_git_commit()));
     else
-        RPLOG_PIMPL(debug, "Using custom Panda3D build");
+        self_.debug("Using custom Panda3D build");
 
     // C++ does not require checking version.
     //if (check_version())
@@ -512,7 +513,7 @@ void RenderPipeline::Impl::init_debugger(void)
 
 void RenderPipeline::Impl::init_globals(void)
 {
-    RPLOG_PIMPL(trace, "Initailizing global parameters.");
+    self_.trace("Initailizing global parameters.");
 
     Globals::load(showbase_);
     Globals::native_resolution = showbase_->get_win()->get_size();
@@ -558,7 +559,7 @@ void RenderPipeline::Impl::compute_render_resolution(void)
     // Make sure the resolution is a multiple of 4
     w = w - (w & 0x3);
     h = h - (h & 0x3);
-    RPLOG_PIMPL(debug, "Render resolution is {} x {}", w, h);
+    self_.debug(fmt::format("Render resolution is {} x {}", w, h));
     Globals::resolution = LVecBase2i(w, h);
 }
 
@@ -584,9 +585,9 @@ void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramew
 
     // Now that we have a showbase and a window, we can print out driver info
     auto gsg = showbase_->get_win()->get_gsg();
-    RPLOG_PIMPL(debug, "Driver Version = {}", gsg->get_driver_version());
-    RPLOG_PIMPL(debug, "Driver Vendor = {}", gsg->get_driver_vendor());
-    RPLOG_PIMPL(debug, "Driver Renderer = {}", gsg->get_driver_renderer());
+    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
+    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
+    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
 }
 
 void RenderPipeline::Impl::init_bindings(void)
@@ -678,24 +679,16 @@ RenderPipeline::RenderPipeline(void): RPObject("RenderPipeline"), impl_(std::mak
 {
     global_ptr_ = this;
 
-    std::vector<spdlog::sink_ptr> sinks;
-#ifdef _WIN32
-    sinks.push_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
-#else
-    sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_sink>(spdlog::sinks::stdout_sink_mt::instance()));
-#endif
-    sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>("render_pipeline.log", true));
-    logger_ = std::make_shared<spdlog::logger>("rpcpp_logger", std::begin(sinks), std::end(sinks));
-    logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
+    if (!RPLogger::get_instance().is_created())
+        RPLogger::get_instance().create("render_pipeline.log");
+
+    debug("Constructing render pipeline ...");
 
     impl_->analyze_system();
 
     impl_->mount_mgr_ = new MountManager(*this);
     impl_->pre_showbase_initialized = false;
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
-
-    // pre-creation for importing static plugin.
-    impl_->plugin_mgr_ = new PluginManager(*this);
 }
 
 RenderPipeline::~RenderPipeline(void) = default;
@@ -708,27 +701,27 @@ void RenderPipeline::load_settings(const std::string& path)
     const auto& level = get_setting<std::string>("pipeline.logging_level", "debug");
     if (level == "trace")
     {
-        logger_->set_level(spdlog::level::trace);
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::trace);
     }
     else if (level == "debug")
     {
-        logger_->set_level(spdlog::level::debug);
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::debug);
     }
     else if (level == "info")
     {
-        logger_->set_level(spdlog::level::info);
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::info);
     }
     else if (level == "warn")
     {
-        logger_->set_level(spdlog::level::warn);
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::warn);
     }
     else if (level == "error")
     {
-        logger_->set_level(spdlog::level::err);
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::err);
     }
     else
     {
-        RPLOG(err, "Invalid logging level: {}", level);
+        error(fmt::format("Invalid logging level: {}", level));
     }
 }
 
@@ -741,13 +734,13 @@ void RenderPipeline::pre_showbase_init(void)
 {
     if (!impl_->mount_mgr_->is_mounted())
     {
-        RPLOG(debug, "Mount manager was not mounted, mounting now ...");
+        debug("Mount manager was not mounted, mounting now ...");
         impl_->mount_mgr_->mount();
     }
 
     if (impl_->settings.size() == 0)
     {
-        RPLOG(debug, "No settings loaded, loading from default location");
+        debug("No settings loaded, loading from default location");
         load_settings("/$$rpconfig/pipeline.yaml");
     }
 
@@ -865,9 +858,9 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                     needs_conversion = true;
                     if (!tristrips_warning_emitted)
                     {
-                        RPLOG(warn, "At least one GeomNode ({} and possible more..) contains tristrips.", geom_node->get_name());
-                        RPLOG(warn, "Due to a NVIDIA Driver bug, we have to convert them to triangles now.");
-                        RPLOG(warn, "Consider exporting your models with the Bam Exporter to avoid this.");
+                        warn(fmt::format("At least one GeomNode ({} and possible more..) contains tristrips.", geom_node->get_name()));
+                        warn("Due to a NVIDIA Driver bug, we have to convert them to triangles now.");
+                        warn("Consider exporting your models with the Bam Exporter to avoid this.");
                         tristrips_warning_emitted = true;
                         break;
                     }
@@ -879,7 +872,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
 
             if (!state->has_attrib(MaterialAttrib::get_class_type()))
             {
-                RPLOG(warn, "Geom {} has no material! Please fix this.", geom_node->get_name());
+                warn(fmt::format("Geom {} has no material! Please fix this.", geom_node->get_name()));
                 continue;
             }
 
@@ -891,10 +884,10 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
             {
                 if (geom_count > 1)
                 {
-                    RPLOG(err, "Transparent materials must be on their own geom!\n"
+                    error(fmt::format("Transparent materials must be on their own geom!\n"
                         "If you are exporting from blender, split them into\n"
                         "seperate meshes, then re-export your scene. The\n"
-                        "problematic mesh is: {}", geom_np.get_name());
+                        "problematic mesh is: {}", geom_np.get_name()));
                     continue;
                 }
                 set_effect(geom_np, "effects/default.yaml",

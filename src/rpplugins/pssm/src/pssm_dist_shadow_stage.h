@@ -13,16 +13,16 @@ class PSSMDistShadowStage: public rpcore::RenderStage
 public:
     PSSMDistShadowStage(rpcore::RenderPipeline& pipeline);
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
-	virtual ProduceType get_produced_inputs(void) const;
-	virtual ProduceType get_produced_pipes(void) const;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_inputs(void) const final;
+	ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void update(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void update(void) final;
+	void reload_shaders(void) final;
 
-	virtual void set_shader_input(const ShaderInput& inp) override;
+	void set_shader_input(const ShaderInput& inp) final;
 
 	LMatrix4f get_mvp(void) const;
 
@@ -32,7 +32,7 @@ public:
 	void set_sun_vector(const LVecBase3f& sun_vector);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

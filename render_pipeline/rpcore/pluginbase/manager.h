@@ -106,6 +106,7 @@ public:
     void on_post_render_update(void);
     void on_shader_reload(void);
     void on_window_resized(void);
+    void on_unload(void);
     ///@}
 
 private:

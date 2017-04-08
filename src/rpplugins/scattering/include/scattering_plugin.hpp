@@ -14,12 +14,12 @@ class ScatteringPlugin: public rpcore::BasePlugin
 public:
     ScatteringPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const override;
+    RequrieType& get_required_plugins(void) const final;
 
-	void on_pipeline_created(void) override;
-	void on_stage_setup(void) override;
-	void on_pre_render_update(void) override;
-	void on_shader_reload(void) override;
+	void on_pipeline_created(void) final;
+	void on_stage_setup(void) final;
+	void on_pre_render_update(void) final;
+	void on_shader_reload(void) final;
 
 	virtual LVecBase3f get_sun_vector(void);
 

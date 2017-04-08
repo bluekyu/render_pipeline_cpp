@@ -9,11 +9,11 @@ class EnvProbesPlugin: public rpcore::BasePlugin
 public:
     EnvProbesPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const override;
+    RequrieType& get_required_plugins(void) const final;
 
-    void on_stage_setup(void) override;
-    void on_prepare_scene(NodePath scene) override;
-    void on_pre_render_update(void) override;
+    void on_stage_setup(void) final;
+    void on_prepare_scene(NodePath scene) final;
+    void on_pre_render_update(void) final;
 
     virtual std::shared_ptr<rpcore::RenderStage> get_capture_stage(void);
 

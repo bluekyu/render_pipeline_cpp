@@ -9,13 +9,14 @@
 #include <boost/detail/winapi/dll.hpp>
 #include <boost/dll/import.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/stage_manager.h"
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.h"
 #include "render_pipeline/rppanda/stdpy/file.h"
 
 #include "rplibs/yaml.hpp"
-#include "rpcore/logger.hpp"
 
 #include "setting_types.h"
 
@@ -58,12 +59,14 @@ PluginManager::Impl::Impl(PluginManager& self, RenderPipeline& pipeline): self_(
 
 void PluginManager::Impl::unload(void)
 {
-    RPLOG_PIMPL(debug, "Unloading all plugins");
+    self_.debug("Unloading all plugins");
+
+    self_.on_unload();
 
     for (auto& id_handle: instances_)
     {
         if (id_handle.second.use_count() != 1)
-            RPLOG_PIMPL(warn, "Plugin ({}) is used on somewhere before unloading.", id_handle.first);
+            self_.warn(fmt::format("Plugin ({}) is used on somewhere before unloading.", id_handle.first));
 
         // delete plugin instance.
         id_handle.second.reset();
@@ -84,7 +87,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 
     plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / "plugin");
 
-    RPLOG_PIMPL(trace, "Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string());
+    self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
 
     try
     {
@@ -97,7 +100,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     }
     catch (const std::exception& err)
     {
-        RPLOG_PIMPL(err, "Failed to import plugin or to create plugin: {}", err.what());
+        self_.error(fmt::format("Failed to import plugin or to create plugin: {}", err.what()));
         return std::shared_ptr<BasePlugin>();
     }
 
@@ -124,7 +127,7 @@ std::string PluginManager::Impl::convert_to_physical_path(const std::string& pat
         }
     }
 
-    RPLOG_PIMPL(err, "Cannot convert to physical path from Panda Path ({}).", path);
+    self_.error(fmt::format("Cannot convert to physical path from Panda Path ({}).", path));
 
     return "";
 }
@@ -142,14 +145,14 @@ PluginManager::~PluginManager(void)
 
 void PluginManager::load(void)
 {
-    RPLOG(debug, "Loading plugin settings");
+    debug("Loading plugin settings");
     load_base_settings("/$$rp/rpplugins");
     load_setting_overrides("/$$rpconfig/plugins.yaml");
 
     if (impl_->requires_daytime_settings_)
         load_daytime_overrides("/$$rpconfig/daytime.yaml");
 
-    RPLOG(debug, "Creating plugin instances ..");
+    debug("Creating plugin instances ..");
     for (const auto& key_val: impl_->settings_)
     {
         const std::string plugin_id(key_val.first);
@@ -164,7 +167,7 @@ void PluginManager::load(void)
 
 void PluginManager::disable_plugin(const std::string& plugin_id)
 {
-    RPLOG(warn, "Disabling plugin ({}).", plugin_id);
+    warn(fmt::format("Disabling plugin ({}).", plugin_id));
     if (impl_->enabled_plugins_.find(plugin_id) != impl_->enabled_plugins_.end())
         impl_->enabled_plugins_.erase(plugin_id);
 
@@ -186,7 +189,7 @@ void PluginManager::load_base_settings(const std::string& plugin_dir)
     impl_->plugin_dir_ = impl_->convert_to_physical_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
-        RPLOG(err, "Cannot find plugin directory.");
+        error("Cannot find plugin directory.");
         return;
     }
 
@@ -212,7 +215,7 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
     // returning an empty dictionary, pyyaml returns None
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
-        RPLOG(critical, "Invalid plugin configuration, did you miss '!!omap'?");
+        fatal("Invalid plugin configuration, did you miss '!!omap'?");
 
     SettingsDataType& settings = impl_->settings_[plugin_id];
     for (auto& settings_node: config["settings"])
@@ -243,7 +246,7 @@ void PluginManager::load_setting_overrides(const std::string& override_path)
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {
-        RPLOG(warn, "Failed to load overrides");
+        warn("Failed to load overrides");
         return;
     }
 
@@ -257,7 +260,7 @@ void PluginManager::load_setting_overrides(const std::string& override_path)
         const std::string plugin_id(id_settings.first.as<std::string>());
         if (impl_->settings_.find(plugin_id) == impl_->settings_.end())
         {
-            RPLOG(warn, "Unkown plugin in plugin ({}) config.", plugin_id);
+            warn(fmt::format("Unknown plugin in plugin ({}) config.", plugin_id));
             continue;
         }
 
@@ -267,7 +270,7 @@ void PluginManager::load_setting_overrides(const std::string& override_path)
             const auto& plugin_setting = impl_->settings_.at(plugin_id);
             if (plugin_setting.find(setting_id) == plugin_setting.end())
             {
-                RPLOG(warn, "Unknown override: {}:{}", plugin_id, setting_id);
+                warn(fmt::format("Unknown override: {}:{}", plugin_id, setting_id));
                 continue;
             }
             plugin_setting.at(setting_id)->set_value(id_val.second);
@@ -280,7 +283,7 @@ void PluginManager::load_daytime_overrides(const std::string& override_path)
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {
-        RPLOG(warn, "Failed to load daytime overrides");
+        warn("Failed to load daytime overrides");
         return;
     }
 
@@ -297,7 +300,7 @@ void PluginManager::load_daytime_overrides(const std::string& override_path)
             const auto& plugin_day_setting = impl_->day_settings_.at(plugin_id);
             if (plugin_day_setting.find(setting_id) == plugin_day_setting.end())
             {
-                RPLOG(warn, "Unknown daytime override: {}:{}", plugin_id, setting_id);
+                warn(fmt::format("Unknown daytime override: {}:{}", plugin_id, setting_id));
                 continue;
             }
 
@@ -364,31 +367,46 @@ const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& Plugi
 void PluginManager::on_load(void)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_load() in plugin ({}).", plugin_id));
         impl_->instances_.at(plugin_id)->on_load();
+    }
 }
 
 void PluginManager::on_stage_setup(void)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_stage_setup() in plugin ({}).", plugin_id));
         impl_->instances_.at(plugin_id)->on_stage_setup();
+    }
 }
 
 void PluginManager::on_post_stage_setup(void)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_post_stage_setup() in plugin ({}).", plugin_id));
         impl_->instances_.at(plugin_id)->on_post_stage_setup();
+    }
 }
 
 void PluginManager::on_pipeline_created(void)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_pipeline_created() in plugin ({}).", plugin_id));
         impl_->instances_.at(plugin_id)->on_pipeline_created();
+    }
 }
 
 void PluginManager::on_prepare_scene(NodePath scene)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_prepare_scene() in plugin ({}).", plugin_id));
         impl_->instances_.at(plugin_id)->on_prepare_scene(scene);
+    }
 }
 
 void PluginManager::on_pre_render_update(void)
@@ -413,6 +431,15 @@ void PluginManager::on_window_resized(void)
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
         impl_->instances_.at(plugin_id)->on_window_resized();
+}
+
+void PluginManager::on_unload(void)
+{
+    for (const auto& plugin_id: impl_->enabled_plugins_)
+    {
+        trace(fmt::format("Call on_unload() in plugin ({}).", plugin_id));
+        impl_->instances_.at(plugin_id)->on_unload();
+    }
 }
 
 }

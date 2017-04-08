@@ -9,18 +9,18 @@ class SharpenStage: public rpcore::RenderStage
 public:
 	SharpenStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SharpenStage") {}
 
-	virtual RequireType& get_required_inputs(void) const override { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const override { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const override;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void reload_shaders(void) final;
 
 	bool get_sharpen_twice(void) const { return _sharpen_twice; }
 	void set_sharpen_twice(bool sharpen_twice) { _sharpen_twice = sharpen_twice; }
 
 private:
-	virtual std::string get_plugin_id(void) const override;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;

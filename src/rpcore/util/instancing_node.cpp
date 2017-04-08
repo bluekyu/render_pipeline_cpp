@@ -100,6 +100,11 @@ InstancingNode::InstancingNode(NodePath np, const std::vector<LMatrix4f>& transf
 
 InstancingNode::~InstancingNode(void) = default;
 
+NodePath InstancingNode::get_instanced_node(void) const
+{
+    return impl_->instanced_np_;
+}
+
 int InstancingNode::get_instance_count(void) const
 {
     return static_cast<int>(impl_->transforms_.size());
@@ -163,6 +168,11 @@ void InstancingNode::set_transforms(const std::vector<LMatrix4f>& transforms)
 void InstancingNode::upload_transforms(void)
 {
     impl_->upload_transforms();
+}
+
+LMatrix4f InstancingNode::get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const
+{
+    return child.get_mat(impl_->instanced_np_) * get_transform(instance_index) * impl_->instanced_np_.get_mat(other);
 }
 
 }

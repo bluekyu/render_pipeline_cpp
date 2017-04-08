@@ -1,4 +1,4 @@
-#include "setting_types.h"
+#include "rpcore/pluginbase/setting_types.h"
 
 #include <typeindex>
 #include <sstream>

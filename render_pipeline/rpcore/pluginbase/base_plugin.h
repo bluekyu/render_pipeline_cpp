@@ -78,6 +78,7 @@ public:
     virtual void on_post_render_update(void) {}
     virtual void on_shader_reload(void) {}
     virtual void on_window_resized(void) {}
+    virtual void on_unload(void) {}
     ///@}
 
 protected:

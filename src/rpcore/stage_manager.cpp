@@ -8,14 +8,14 @@
 #include <shaderInput.h>
 #include <texture.h>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include "rplibs/yaml.hpp"
 #include "render_pipeline/rpcore/image.h"
 #include "render_pipeline/rpcore/stages/update_previous_pipes_stage.h"
 #include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/render_stage.h"
 #include "render_pipeline/rpcore/util/shader_input_blocks.h"
-
-#include "rpcore/logger.hpp"
 
 namespace rpcore {
 
@@ -89,7 +89,7 @@ void StageManager::Impl::load_stage_order(void)
 
     if (!orders["global_stage_order"].IsDefined())
     {
-        RPLOG_PIMPL(err, "Could not load stage order, root key does not exist!");
+        self_.error("Could not load stage order, root key does not exist!");
         return;
     }
 
@@ -102,7 +102,7 @@ void StageManager::Impl::load_stage_order(void)
 
 void StageManager::Impl::prepare_stages(void)
 {
-    RPLOG_PIMPL(debug, "Preparing stages ..");
+    self_.debug("Preparing stages ..");
 
     // Remove all disabled stages
     std::vector<std::shared_ptr<RenderStage>> enabled_stages;
@@ -132,7 +132,7 @@ bool StageManager::Impl::bind_pipes_to_stage(const std::shared_ptr<RenderStage>&
             else if (input_blocks_.at(pipe).is_type(StageData::Type::GROUP_INPUT_BLOCK))
                 input_blocks_.at(pipe).get_group_input_block()->bind_to(stage);
             else
-                RPLOG_PIMPL(err, "Invalid type cast: {}", input_blocks_.at(pipe).get_name());
+                self_.error(fmt::format("Invalid type cast: {}", input_blocks_.at(pipe).get_name()));
             continue;
         }
 
@@ -168,7 +168,7 @@ bool StageManager::Impl::bind_pipes_to_stage(const std::shared_ptr<RenderStage>&
             const std::regex double_colon_re("::");
             std::vector<std::string> result(std::sregex_token_iterator(pipe.begin(), pipe.end(), double_colon_re, -1), std::sregex_token_iterator());
             std::string pipe_name = result.back();
-            RPLOG_PIMPL(debug, "Awaiting future pipe {}", pipe_name);
+            self_.debug(fmt::format("Awaiting future pipe {}", pipe_name));
             future_bindings_.push_back({pipe_name, stage});
             continue;
         }
@@ -202,7 +202,7 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
     {
         if (inputs_.find(input_binding) == inputs_.end() && input_blocks_.find(input_binding) == input_blocks_.end())
         {
-            RPLOG_PIMPL(err, "Input {} is missing for {}", input_binding, stage->get_debug_name());
+            self_.error(fmt::format("Input {} is missing for {}", input_binding, stage->get_debug_name()));
             continue;
         }
 
@@ -217,7 +217,7 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
             else if (input_blocks_.at(input_binding).is_type(StageData::Type::GROUP_INPUT_BLOCK))
                 input_blocks_.at(input_binding).get_group_input_block()->bind_to(stage);
             else
-                RPLOG_PIMPL(err, "Invalid type cast: {}", input_blocks_.at(input_binding).get_name());
+                self_.error(fmt::format("Invalid type cast: {}", input_blocks_.at(input_binding).get_name()));
         }
         else
         {
@@ -244,9 +244,9 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
         }
 
 #if _MSC_VER >= 1900
-        pipes_.insert_or_assign(pipe_data.get_name(), std::move(pipe_data.get_shader_input()));
+        pipes_.insert_or_assign(pipe_data.get_name(), pipe_data.get_shader_input());
 #else
-        pipes_[pipe_data.get_name()] = std::move(pipe_data.get_shader_input());
+        pipes_[pipe_data.get_name()] = pipe_data.get_shader_input();
 #endif
     }
 
@@ -254,7 +254,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
     for (const auto& define: produced_defines)
     {
         if (defines_.find(define.first) != defines_.end())
-            RPLOG_PIMPL(warn, "Stage {} overrides define {}", stage->get_debug_name(), define.first);
+            self_.warn(fmt::format("Stage {} overrides define {}", stage->get_debug_name(), define.first));
         defines_[define.first] = define.second;
     }
 
@@ -264,7 +264,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
         const auto& input_name = input_data.get_name();
 
         if (inputs_.find(input_name) != inputs_.end())
-            RPLOG_PIMPL(warn, "Stage {} overrides input {}", stage->get_debug_name(), input_name);
+            self_.warn(fmt::format("Stage {} overrides input {}", stage->get_debug_name(), input_name));
 
         if (input_data.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || input_data.is_type(StageData::Type::GROUP_INPUT_BLOCK))
         {
@@ -277,9 +277,9 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
         }
 
 #if _MSC_VER >= 1900
-        inputs_.insert_or_assign(input_name, std::move(input_data.get_shader_input()));
+        inputs_.insert_or_assign(input_name, input_data.get_shader_input());
 #else
-        inputs_[input_name] = std::move(input_data.get_shader_input());
+        inputs_[input_name] = input_data.get_shader_input();
 #endif
     }
 }
@@ -293,7 +293,7 @@ bool StageManager::Impl::create_previous_pipes(void)
         {
             if (pipes_.find(prev_pipe_tex.first) == pipes_.end())
             {
-                RPLOG_PIMPL(err, "Attempted to use previous frame data from pipe {} - however, that pipe was never created!", prev_pipe_tex.first);
+                self_.error(fmt::format("Attempted to use previous frame data from pipe {} - however, that pipe was never created!", prev_pipe_tex.first));
                 return false;
             }
 
@@ -327,7 +327,7 @@ void StageManager::Impl::apply_future_bindings(void)
     {
         if (pipes_.find(pipe_stage.first) == pipes_.end())
         {
-            RPLOG_PIMPL(err, "Could not bind future pipe: {} not present!", pipe_stage.first);
+            self_.error(fmt::format("Could not bind future pipe: {} not present!", pipe_stage.first));
             continue;
         }
         pipe_stage.second->set_shader_input(pipes_.at(pipe_stage.first));
@@ -358,7 +358,7 @@ void StageManager::add_input(const ShaderInput& inp)
 #if _MSC_VER >= 1900
     impl_->inputs_.insert_or_assign(inp.get_name()->get_name(), inp);
 #else
-    impl_->inputs_[inp->get_name()->get_name()] = inp;
+    impl_->inputs_[inp.get_name()->get_name()] = inp;
 #endif
 }
 
@@ -390,13 +390,13 @@ void StageManager::add_stage(const std::shared_ptr<RenderStage>& stage)
     bool found = false;
     if (std::find(impl_->stage_order_.begin(), impl_->stage_order_.end(), stage->get_stage_id()) == std::end(impl_->stage_order_))
     {
-        RPLOG(err, "The stage type {} is not registered yet! Please add it to the StageManager!", stage->get_debug_name());
+        error(fmt::format("The stage type {} is not registered yet! Please add it to the StageManager!", stage->get_debug_name()));
         return;
     }
 
     if (impl_->created_)
     {
-        RPLOG(err, "Cannot attach stage, stages are already created!");
+        error("Cannot attach stage, stages are already created!");
         return;
     }
 
@@ -413,7 +413,7 @@ std::shared_ptr<RenderStage> StageManager::get_stage(const std::string& stage_id
 
 void StageManager::setup(void)
 {
-    RPLOG(debug, "Setup Stages ..");
+    debug("Setup Stages ..");
     impl_->created_ = true;
 
     // Convert input blocks so we can access them in a better way
@@ -430,7 +430,7 @@ void StageManager::setup(void)
         }
         else
         {
-            RPLOG(err, "Invalid type cast: {}", block.get_name());
+            error(fmt::format("Invalid type cast: {}", block.get_name()));
         }
     }
     impl_->input_block_list_.clear();
@@ -479,7 +479,7 @@ void StageManager::handle_window_resize(void)
 
 void StageManager::write_autoconfig(void)
 {
-    RPLOG(debug, "Writing shader config");
+    debug("Writing shader config");
 
     // Generate autoconfig as string
     std::string output = "#pragma once\n\n";
@@ -498,7 +498,7 @@ void StageManager::write_autoconfig(void)
     }
     catch (const std::exception& err)
     {
-        RPLOG(err, "Error writing shader autoconfig: {}", err.what());
+        error(fmt::format("Error writing shader autoconfig: {}", err.what()));
     }
 }
 

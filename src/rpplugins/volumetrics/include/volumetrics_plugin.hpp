@@ -4,16 +4,18 @@
 
 namespace rpplugins {
 
+class VolumetricsStage;
+
 class VolumentricsPlugin: public rpcore::BasePlugin
 {
 public:
     VolumentricsPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const override;
+    RequrieType& get_required_plugins(void) const final;
 
-    void on_stage_setup(void) override;
+    void on_stage_setup(void) final;
 
-    virtual const std::shared_ptr<rpcore::RenderStage>& get_stage(void) const;
+    virtual const std::shared_ptr<VolumetricsStage>& get_stage(void) const;
 
 private:
     struct Impl;

@@ -9,6 +9,7 @@ namespace rpcore {
 class RPCPP_DECL RPObject
 {
 public:
+    static void global_trace(const std::string& context, const std::string& message);
     static void global_debug(const std::string& context, const std::string& message);
     static void global_info(const std::string& context, const std::string& message);
     static void global_warn(const std::string& context, const std::string& message);
@@ -19,6 +20,7 @@ public:
     const std::string& get_debug_name(void) const;
     void set_debug_name(const std::string& name);
 
+    void trace(const std::string& message) const;
     void debug(const std::string& message) const;
     void info(const std::string& message) const;
     void warn(const std::string& message) const;
@@ -39,6 +41,11 @@ inline const std::string& RPObject::get_debug_name(void) const
 inline void RPObject::set_debug_name(const std::string& name)
 {
     debug_name_ = name;
+}
+
+inline void RPObject::trace(const std::string& message) const
+{
+    global_trace(debug_name_, message);
 }
 
 inline void RPObject::debug(const std::string& message) const

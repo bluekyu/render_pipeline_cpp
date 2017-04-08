@@ -3,7 +3,7 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
-#include "volumetrics_stage.h"
+#include "../include/volumetrics_stage.hpp"
 
 extern "C" {
 
@@ -61,7 +61,7 @@ void VolumentricsPlugin::on_stage_setup(void)
         impl_->stage_->get_required_pipes().push_back("PSSMShadowAtlas");
 }
 
-const std::shared_ptr<rpcore::RenderStage>& VolumentricsPlugin::get_stage(void) const
+const std::shared_ptr<VolumetricsStage>& VolumentricsPlugin::get_stage(void) const
 {
     return impl_->stage_;
 }

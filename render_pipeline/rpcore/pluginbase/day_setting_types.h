@@ -65,7 +65,7 @@ public:
 	virtual const std::string& get_glsl_type(void) const { return glsl_type; }
 
 	/** Scales a linear value. */
-	virtual ValueType get_scaled_value(const ValueType& values) const override;
+	ValueType get_scaled_value(const ValueType& values) const final;
 
 	/** Linearizes a scaled value. */
 	float get_linear_value(float scaled_value);
@@ -88,7 +88,7 @@ public:
 
 	virtual const std::string& get_glsl_type(void) const { return glsl_type; }
 
-	virtual ValueType get_scaled_value(const ValueType& values) const override;
+	ValueType get_scaled_value(const ValueType& values) const final;
 
 	std::vector<float> get_linear_value(const std::vector<float>& scaled_value);
 

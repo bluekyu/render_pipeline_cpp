@@ -8,7 +8,7 @@
 #include <nodePathCollection.h>
 #include <computeNode.h>
 
-#include <boost/format.hpp>
+#include <spdlog/fmt/bundled/format.h>
 
 #include <render_pipeline/rpcore/globals.h>
 #include <render_pipeline/rpcore/light_manager.h>
@@ -264,163 +264,143 @@ void Debugger::toggle_keybindings_visible(void)
 
 AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_data)
 {
-	Debugger* debugger = reinterpret_cast<Debugger*>(user_data);
-	RenderPipeline* pipeline = debugger->pipeline;
+    Debugger* debugger = reinterpret_cast<Debugger*>(user_data);
+    const RenderPipeline* pipeline = debugger->pipeline;
 
-	static boost::format debug_lines_0("%3.0f fps  |  %3.1f ms  |  %3.1f ms max");
-
-	auto& clock = Globals::clock;
-	debugger->debug_lines[0]->set_text((debug_lines_0 %
-			clock->get_average_frame_rate() %
-			(1000.0 / (std::max)(0.001, clock->get_average_frame_rate())) %
-			(clock->get_max_frame_duration() * 1000.0)).str());
+    const auto& clock = Globals::clock;
+    debugger->debug_lines[0]->set_text(fmt::format("{:3.0f} fps  |  {:3.1f} ms  |  {:3.1f} ms max",
+        clock->get_average_frame_rate(),
+        (1000.0 / (std::max)(0.001, clock->get_average_frame_rate())),
+        (clock->get_max_frame_duration() * 1000.0)));
 
     if (!debugger->use_advanced_info())
         return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 
-	static boost::format debug_lines_1(
-		"%4d states |  %4d transforms"
-		"|  %4d cmds  |  %4d lights  |  %4d shadow "
-		"|  %5.1f%% atlas usage"
-		);
-	const auto& light_mgr = pipeline->get_light_mgr();
+    const auto& light_mgr = pipeline->get_light_mgr();
 
-	debugger->debug_lines[1]->set_text((debug_lines_1 %
-		RenderState::get_num_states() %
-		TransformState::get_num_states() %
-		light_mgr->get_cmd_queue()->get_num_processed_commands() %
-		light_mgr->get_num_lights() %
-		light_mgr->get_num_shadow_sources() %
-		light_mgr->get_shadow_atlas_coverage()).str());
+    debugger->debug_lines[1]->set_text(fmt::format(
+        "{:4d} states |  {:4d} transforms |  {:4d} cmds |  {:4d} lights |  {:4d} shadow |  {:5.1f}% atlas usage",
 
-	static boost::format debug_lines_2(
-		"Internal:  %3.0f MB VRAM  |  %5d img |  %5d tex |  "
-		"%5d fbos |  %3d plugins |  %2d  views  (%2d active)"
-		);
+        RenderState::get_num_states(),
+        TransformState::get_num_states(),
+        light_mgr->get_cmd_queue()->get_num_processed_commands(),
+        light_mgr->get_num_lights(),
+        light_mgr->get_num_shadow_sources(),
+        light_mgr->get_shadow_atlas_coverage()));
 
-	const auto& tex_memory_count = debugger->_buffer_viewer->get_stage_information();
+    const auto& tex_memory_count = debugger->_buffer_viewer->get_stage_information();
 
-	int views = 0;
-	int active_views = 0;
-	for (const auto& target: RenderTarget::REGISTERED_TARGETS)
-	{
+    int views = 0;
+    int active_views = 0;
+    for (const auto& target: RenderTarget::REGISTERED_TARGETS)
+    {
         if (!target->get_create_default_region())
-		{
-			int num_regions = target->get_internal_buffer()->get_num_display_regions();
-			for (int i = 0; i < num_regions; ++i)
-			{
-				// Skip overlay display region
-				if (i == 0 && num_regions > 1)
-					continue;
-				++views;
+        {
+            int num_regions = target->get_internal_buffer()->get_num_display_regions();
+            for (int i = 0; i < num_regions; ++i)
+            {
+                // Skip overlay display region
+                if (i == 0 && num_regions > 1)
+                    continue;
+                ++views;
 
-				if (target->get_active() && target->get_internal_buffer()->get_display_region(i)->is_active())
-					++active_views;
-			}
-		}
-	}
+                if (target->get_active() && target->get_internal_buffer()->get_display_region(i)->is_active())
+                    ++active_views;
+            }
+        }
+    }
 
-	debugger->debug_lines[2]->set_text((debug_lines_2 %
-		(tex_memory_count.first / (1024.0f*1024.0f)) %
-		Image::REGISTERED_IMAGES.size() %
-		tex_memory_count.second %
-		RenderTarget::REGISTERED_TARGETS.size() %
-		pipeline->get_plugin_mgr()->get_enabled_plugins_count() %
-		views %
-		active_views
-		).str());
+    debugger->debug_lines[2]->set_text(fmt::format(
+        "Internal:  {:3.0f} MB VRAM  |  {:5d} img |  {:5d} tex |  "
+        "{:5d} fbos |  {:3d} plugins |  {:2d}  views  ({:2d} active)",
 
-	static boost::format debug_lines_3(
-		"Scene:   %4.0f MB VRAM  |  %3d tex |  %4d geoms  "
-		"|  %4d nodes  |  %7.0f vertices"
-		);
+        (tex_memory_count.first / (1024.0f*1024.0f)),
+        Image::REGISTERED_IMAGES.size(),
+        tex_memory_count.second,
+        RenderTarget::REGISTERED_TARGETS.size(),
+        pipeline->get_plugin_mgr()->get_enabled_plugins_count(),
+        views,
+        active_views
+    ));
 
-	size_t scene_tex_size = 0;
-	const auto& texture_collection = TexturePool::find_all_textures();
-	const int tex_count = texture_collection.get_num_textures();
-	for (int k = 0; k < tex_count; ++k)
-		scene_tex_size += texture_collection.get_texture(k)->estimate_texture_memory();
+    size_t scene_tex_size = 0;
+    const auto& texture_collection = TexturePool::find_all_textures();
+    const int tex_count = texture_collection.get_num_textures();
+    for (int k = 0; k < tex_count; ++k)
+        scene_tex_size += texture_collection.get_texture(k)->estimate_texture_memory();
 
-    debugger->debug_lines[3]->set_text((debug_lines_3 %
-        (scene_tex_size / (1024.0*1024.0)) %
-        tex_count %
-        debugger->_analyzer->get_num_geoms() %
-        debugger->_analyzer->get_num_nodes() %
+    debugger->debug_lines[3]->set_text(fmt::format(
+        "Scene:   {:4.0f} MB VRAM |  {:3d} tex |  {:4d} geoms |  {:4d} nodes |  {:7d} vertices",
+
+        (scene_tex_size / (1024.0*1024.0)),
+        tex_count,
+        debugger->_analyzer->get_num_geoms(),
+        debugger->_analyzer->get_num_nodes(),
         debugger->_analyzer->get_num_vertices()
-        ).str());
+        ));
 
-    static boost::format debug_lines_4(
-        "Time: %s (%1.3f) |  Sun  %0.2f %0.2f %0.2f"
-        " |  X %3.1f  Y %3.1f  Z %3.1f"
-        " |  %2d tasks |  scheduled: %2d"
-        );
+    LVecBase3f sun_vector(0);
+    if (pipeline->get_plugin_mgr()->is_plugin_enabled("scattering"))
+    {
+        sun_vector = dynamic_pointer_cast<rpplugins::ScatteringPlugin>(pipeline->get_plugin_mgr()->get_instance("scattering"))->get_sun_vector();
+    }
 
-	LVecBase3f sun_vector(0);
-	if (pipeline->get_plugin_mgr()->is_plugin_enabled("scattering"))
-	{
-		sun_vector = dynamic_pointer_cast<rpplugins::ScatteringPlugin>(pipeline->get_plugin_mgr()->get_instance("scattering"))->get_sun_vector();
-	}
+    const NodePath& camera = Globals::base->get_cam();
+    const NodePath& render = Globals::base->get_render();
+    const LPoint3& camera_global_pos = camera.get_pos(render);
 
-	const NodePath& camera = Globals::base->get_cam();
-	const NodePath& render = Globals::base->get_render();
-	const LPoint3& camera_global_pos = camera.get_pos(render);
+    debugger->debug_lines[4]->set_text(fmt::format(
+        "Time: {} ({:1.3f}) |  Sun  {:0.2f} {:0.2f} {:0.2f} |  X {:3.1f}  Y {:3.1f}  Z {:3.1f} |  {:2d} tasks |  scheduled: {:2d}",
 
-	debugger->debug_lines[4]->set_text((debug_lines_4 %
-		pipeline->get_daytime_mgr()->get_formatted_time() %
-		pipeline->get_daytime_mgr()->get_time() %
-		sun_vector[0] % sun_vector[1] % sun_vector[2] %
-		camera_global_pos[0] %
-		camera_global_pos[1] %
-		camera_global_pos[2] %
-		pipeline->get_task_scheduler()->get_num_tasks() %
-		pipeline->get_task_scheduler()->get_num_scheduled_tasks()
-		).str());
+        pipeline->get_daytime_mgr()->get_formatted_time(),
+        pipeline->get_daytime_mgr()->get_time(),
+        sun_vector[0], sun_vector[1], sun_vector[2],
+        camera_global_pos[0],
+        camera_global_pos[1],
+        camera_global_pos[2],
+        pipeline->get_task_scheduler()->get_num_tasks(),
+        pipeline->get_task_scheduler()->get_num_scheduled_tasks()
+    ));
 
     static std::string debug_lines_5_text;
     debug_lines_5_text = "Scene shadows:  ";
     if (pipeline->get_plugin_mgr()->is_plugin_enabled("pssm"))
     {
-		const std::shared_ptr<BasePlugin>& pssm_plugin = pipeline->get_plugin_mgr()->get_instance("pssm");
+        const std::shared_ptr<BasePlugin>& pssm_plugin = pipeline->get_plugin_mgr()->get_instance("pssm");
 
-		LVecBase3f focus_point;
-		float focus_size;
-		bool exist = std::dynamic_pointer_cast<rpplugins::PSSMPlugin>(pssm_plugin)->get_last_focus(focus_point, focus_size);
-		
+        LVecBase3f focus_point;
+        float focus_size;
+        bool exist = std::dynamic_pointer_cast<rpplugins::PSSMPlugin>(pssm_plugin)->get_last_focus(focus_point, focus_size);
+
         if (exist)
-		{
-			static boost::format focus_string("%3.1f %3.1f %3.1f r %3.1f");
-			debug_lines_5_text += (focus_string %
-				focus_point[0] % focus_point[1] % focus_point[2] % focus_size).str();
-		}
+        {
+            debug_lines_5_text += fmt::format("{:3.1f} {:3.1f} {:3.1f} r {:3.1f}",
+                focus_point[0], focus_point[1], focus_point[2], focus_size);
+        }
         else
-		{
-			debug_lines_5_text += "none";
-		}
+        {
+            debug_lines_5_text += "none";
+        }
     }
     else
     {
         debug_lines_5_text += "inactive";
     }
 
-    static boost::format debug_lines_5(
-        "   |  HPR  (%3.1f %3.1f %3.1f)  |   %4d x %4d pixels @ %3.1f %%"
-        "   |  %3d x %3d tiles"
-        );
-
     const LPoint3& camera_global_hpr = camera.get_hpr(render);
 
-    debug_lines_5_text += (debug_lines_5 %
-        camera_global_hpr[0] %
-        camera_global_hpr[1] %
-        camera_global_hpr[2] %
-        Globals::native_resolution.get_x() %
-        Globals::native_resolution.get_y() %
-        (pipeline->get_setting<float>("pipeline.resolution_scale") * 100.0f) %
-        light_mgr->get_num_tiles().get_x() %
-        light_mgr->get_num_tiles().get_y()).str();
+    debug_lines_5_text += fmt::format("   |  HPR  ({:3.1f} {:3.1f} {:3.1f})  |   {:4d} x {:4d} pixels @ {:3.1f} %   |  {:3d} x {:3d} tiles",
+        camera_global_hpr[0],
+        camera_global_hpr[1],
+        camera_global_hpr[2],
+        Globals::native_resolution.get_x(),
+        Globals::native_resolution.get_y(),
+        (pipeline->get_setting<float>("pipeline.resolution_scale") * 100.0f),
+        light_mgr->get_num_tiles().get_x(),
+        light_mgr->get_num_tiles().get_y());
     debugger->debug_lines[5]->set_text(debug_lines_5_text);
 
     return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 }
 
-}   // namespace rpcore
+}
