@@ -1,0 +1,69 @@
+#include <render_pipeline/rppanda/gui/direct_check_box.h>
+
+#include <pgButton.h>
+
+#include <render_pipeline/rppanda/util/image_input.h>
+
+namespace rppanda {
+
+const std::type_info& DirectCheckBox::_type_handle(typeid(DirectCheckBox));
+
+DirectCheckBox::Options::Options(void)
+{
+	num_states = 4;
+	state = NORMAL;
+	relief = RAISED;
+	inverted_frames = { 1 };
+
+	press_effect = true;
+
+	command_func = DirectCheckBox::command_func;
+}
+
+DirectCheckBox::DirectCheckBox(NodePath parent, const std::shared_ptr<Options>& options): DirectCheckBox(new PGButton(""), parent, options, get_class_type())
+{
+}
+
+DirectCheckBox::DirectCheckBox(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+	DirectButton(gui_item, parent, define_options(options), type_handle)
+{
+	// Call option initialization functions
+	if (get_class_type() == type_handle)
+	{
+		initialise_options(options);
+		frame_initialise_func();
+	}
+}
+
+void DirectCheckBox::command_func(const Event* ev, void* user_data)
+{
+	const auto& options = std::dynamic_pointer_cast<Options>(reinterpret_cast<DirectCheckBox*>(user_data)->_options);
+
+	options->is_checked = !options->is_checked;
+
+	if (options->is_checked)
+		reinterpret_cast<DirectCheckBox*>(user_data)->set_image(options->checked_image);
+	else
+		reinterpret_cast<DirectCheckBox*>(user_data)->set_image(options->unchecked_image);
+
+	if (options->command)
+	{
+		// Pass any extra args to command
+		options->command(user_data);
+	}
+}
+
+const std::shared_ptr<DirectCheckBox::Options>& DirectCheckBox::define_options(const std::shared_ptr<Options>& options)
+{
+	return options;
+}
+
+void DirectCheckBox::initialise_options(const std::shared_ptr<Options>& options)
+{
+	DirectButton::initialise_options(options);
+
+	_f_init = true;
+	_f_init = false;
+}
+
+}	// namespace rppanda
