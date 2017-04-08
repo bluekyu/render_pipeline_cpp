@@ -16,13 +16,24 @@ include(FindPackages)
 # subdirectory
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
 
-# === configure packages =======================================================
+# === project specific packages ===
+# find spdlog
+find_package(spdlog REQUIRED)
+
+# find yaml-cpp
+find_package(yaml-cpp REQUIRED)
+
+# find freetype
+find_package(FreeType REQUIRED)
+if(FREETYPE_FOUND)
+    message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
+endif()
+
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${Panda3d_INCLUDE_DIRS})
-include_directories(${YamlCpp_INCLUDE_DIRS})
 include_directories(${FREETYPE_INCLUDE_DIRS})
-include_directories(${Spdlog_INCLUDE_DIRS})
-# ==============================================================================
+include_directories(${YAML_CPP_INCLUDE_DIR})
+# ================================
 
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -60,8 +71,7 @@ include("${PROJECT_SOURCE_DIR}/files.cmake")
 # create library
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE ${Boost_LIBRARIES} ${FREETYPE_LIBRARIES}
-            ${YamlCpp_LIBRARIES} ${Panda3d_LIBRARIES})
+    PRIVATE ${Boost_LIBRARIES} ${FREETYPE_LIBRARIES} ${Panda3d_LIBRARIES} yaml-cpp spdlog::spdlog)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL "RPCPP_BUILD")
 

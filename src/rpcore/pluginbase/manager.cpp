@@ -9,7 +9,7 @@
 #include <boost/detail/winapi/dll.hpp>
 #include <boost/dll/import.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/stage_manager.h"

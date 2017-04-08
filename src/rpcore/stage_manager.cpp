@@ -8,7 +8,7 @@
 #include <shaderInput.h>
 #include <texture.h>
 
-#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "rplibs/yaml.hpp"
 #include "render_pipeline/rpcore/image.h"

@@ -8,7 +8,7 @@
 #include <nodePathCollection.h>
 #include <computeNode.h>
 
-#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <render_pipeline/rpcore/globals.h>
 #include <render_pipeline/rpcore/light_manager.h>

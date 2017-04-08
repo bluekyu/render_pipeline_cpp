@@ -26,33 +26,6 @@ if(Panda3d_FOUND)
     message(STATUS "Panda3D include path: ${Panda3d_INCLUDE_DIRS}")
 endif()
 
-# find yaml-cpp
-set(YAMLCPP_ROOT "" CACHE PATH "Hint for finding yaml-cpp root directory")
-set(YAMLCPP_INCLUDEDIR "" CACHE PATH "Hint for finding yaml-cpp include directory")
-set(YAMLCPP_LIBRARYDIR "" CACHE PATH "Hint for finding yaml-cpp library directory")
-option(YAMLCPP_USE_STATIC_LIBS "Yaml-cpp uses static libraries" OFF)
-option(YAMLCPP_USE_MULTITHREADED "Yaml-cpp uses non-multithreaded libraries ('mt' tag)" ON)
-
-find_package(YamlCpp REQUIRED)
-if(YamlCpp_FOUND)
-    message(STATUS "yaml-cpp include path: ${YamlCpp_INCLUDE_DIRS}")
-endif()
-
-# find freetype
-find_package(FreeType REQUIRED)
-if(FREETYPE_FOUND)
-    message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
-endif()
-
-# find spdlog
-set(SPDLOG_ROOT "" CACHE PATH "Hint for finding spdlog root directory")
-set(SPDLOG_INCLUDEDIR "" CACHE PATH "Hint for finding spdlog include directory")
-
-find_package(Spdlog REQUIRED)
-if(Spdlog_FOUND)
-    message(STATUS "spdlog include path: ${Spdlog_INCLUDE_DIRS}")
-endif()
-
 # find doxygen
 option(RPCPP_BUILD_DOCUMENTS "Build doxygen documents" OFF)
 option(RPCPP_DOXYGEN_SKIP_DOT "Skip to find Dot for Doxygen" ON)
