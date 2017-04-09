@@ -149,6 +149,12 @@ const std::vector<LMatrix4f>& InstancingNode::get_transforms(void) const
     return impl_->transforms_;
 }
 
+std::vector<LMatrix4f>& InstancingNode::modify_transforms(void)
+{
+    impl_->dirty_ = true;
+    return impl_->transforms_;
+}
+
 void InstancingNode::set_transform(const LMatrix4f& transform, int instance_index)
 {
     if (instance_index >= static_cast<int>(impl_->transforms_.size()))

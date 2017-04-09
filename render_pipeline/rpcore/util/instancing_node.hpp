@@ -46,6 +46,9 @@ public:
     /** Get local instancing tranforms. */
     const std::vector<LMatrix4f>& get_transforms(void) const;
 
+    /** Modify local instancing tranforms. */
+    std::vector<LMatrix4f>& modify_transforms(void);
+
     /** Set local instancing transform. */
     void set_transform(const LMatrix4f& transform, int instance_index);
 
