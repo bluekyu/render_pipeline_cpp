@@ -1,10 +1,12 @@
-
-name: Color Correction
-author: tobspr <tobias.springer1@gmail.com>
-version: 1.0
-description: >
-    This plugin adds support for color correction, vignetting and chromatic
-    abberation.
+information:
+    category: rendering
+    name: Color Correction
+    author: tobspr <tobias.springer1@gmail.com>
+    version: 1.4
+    description: >
+        This plugin adds support for color correction, vignetting,
+        chromatic abberation and tonemapping. It also controls the
+        camera parameters.
 
 settings: !!omap
 

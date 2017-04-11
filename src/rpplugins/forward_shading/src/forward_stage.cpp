@@ -58,7 +58,7 @@ void ForwardStage::set_shader_input(const ShaderInput& inp)
 
 std::string ForwardStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+	return RPCPP_PLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

@@ -51,7 +51,7 @@ void ScatteringEnvmapStage::reload_shaders(void)
 
 std::string ScatteringEnvmapStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+	return RPCPP_PLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

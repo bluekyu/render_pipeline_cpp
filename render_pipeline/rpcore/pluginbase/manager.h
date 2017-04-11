@@ -89,6 +89,7 @@ public:
 
     size_t get_enabled_plugins_count(void) const;
 
+    const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const;
     const SettingsDataType& get_setting(const std::string& setting_id) const;
     const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings(void) const;
 

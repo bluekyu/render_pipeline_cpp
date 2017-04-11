@@ -1,3 +1,10 @@
+information:
+    category: rendering
+    name: Volumetric Lighting
+    author: tobspr <tobias.springer1@gmail.com>
+    version: 0.1 alpha (!)
+    description: >
+        This plugins adds support for volumetric lighting.
 
 settings: !!omap
 
@@ -27,7 +34,7 @@ settings: !!omap
         label: Brightness
         description: >
             Controls the brightness of the volumetric shadows.
-    
+
     - volumetric_shadow_pow:
         display_if: { enable_volumetric_shadows: true }
         type: float

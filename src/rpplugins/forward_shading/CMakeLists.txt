@@ -15,7 +15,7 @@ include_directories(${Panda3d_INCLUDE_DIRS})
 # configure plugin
 set(LIB_NAME "plugin")
 set(LIB_TYPE MODULE)
-add_definitions(-DPLUGIN_ID_STRING="${PROJECT_NAME}")
+add_definitions(-DRPCPP_PLUGIN_ID_STRING="${PROJECT_NAME}")
 
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

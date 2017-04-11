@@ -15,28 +15,7 @@
 #include "godray_stage.h"
 #include "scattering_methods.h"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Atmospheric Scattering",
-    "tobspr <tobias.springer1@gmail.com>",
-    "1.2",
-
-    "This plugin adds support for Atmospheric Scattering, and a "
-    "single sun, based on the work from Eric Bruneton. It also "
-    "adds support for atmospheric fog."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::ScatteringPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
+RPCPP_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 
 namespace rpplugins {
 
@@ -54,7 +33,7 @@ ScatteringPlugin::RequrieType ScatteringPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
+ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

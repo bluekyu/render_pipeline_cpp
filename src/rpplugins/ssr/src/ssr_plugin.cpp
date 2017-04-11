@@ -6,29 +6,7 @@
 
 #include "ssr_stage.h"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Screen Space Reflections",
-    "tobspr <tobias.springer1@gmail.com>",
-    "beta (!)",
-
-    "This plugin adds support for stochastik screen space reflections "
-    "and is still very experimental!"
-};
-
-}
-
-// ************************************************************************************************
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::SSRPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
+RPCPP_PLUGIN_CREATOR(rpplugins::SSRPlugin)
 
 namespace rpplugins {
 
@@ -43,7 +21,7 @@ SSRPlugin::RequrieType SSRPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
+SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

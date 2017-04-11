@@ -46,7 +46,7 @@ unsigned int OpenvrRenderStage::get_eye_texture(vr::EVREye vr_eye)
 
 std::string OpenvrRenderStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+	return RPCPP_PLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

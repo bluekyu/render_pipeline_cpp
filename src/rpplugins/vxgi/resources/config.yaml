@@ -1,3 +1,11 @@
+information:
+    category: rendering
+    name: Voxel Global Illumination
+    author: tobspr <tobias.springer1@gmail.com>
+    version: alpha (!)
+    description: >
+        Provides Global Illumination using Voxel Cone Tracing. This
+        technique is still very unoptimized and experimental!
 
 settings: !!omap
 

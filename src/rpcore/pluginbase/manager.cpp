@@ -44,6 +44,8 @@ struct PluginManager::Impl
     std::unordered_set<std::string> enabled_plugins_;
     std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
 
+    std::unordered_map<std::string, BasePlugin::PluginInfo> plugin_info_map_;
+
     ///< { plugin-id, SettingsType }
     std::unordered_map<std::string, SettingsDataType> settings_;
 
@@ -100,7 +102,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     }
     catch (const std::exception& err)
     {
-        self_.error(fmt::format("Failed to import plugin or to create plugin: {}", err.what()));
+        self_.error(fmt::format("Failed to import plugin or to create plugin ({}): {}", plugin_id, err.what()));
         return std::shared_ptr<BasePlugin>();
     }
 
@@ -189,7 +191,7 @@ void PluginManager::load_base_settings(const std::string& plugin_dir)
     impl_->plugin_dir_ = impl_->convert_to_physical_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
-        error("Cannot find plugin directory.");
+        error(fmt::format("Cannot find plugin directory ({}).", plugin_dir));
         return;
     }
 
@@ -213,6 +215,22 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
 
     // When you don't specify anything in the settings, instead of
     // returning an empty dictionary, pyyaml returns None
+
+    if (!config["information"])
+    {
+        error(fmt::format("Plugin ({}) configuration does NOT have information.", plugin_id));
+    }
+    else
+    {
+        auto& info_node = config["information"];
+        impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo {
+            info_node["category"].as<std::string>(),
+            info_node["name"].as<std::string>(),
+            info_node["author"].as<std::string>(),
+            info_node["version"].as<std::string>(),
+            info_node["description"].as<std::string>(),
+        };
+    }
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         fatal("Invalid plugin configuration, did you miss '!!omap'?");
@@ -357,6 +375,11 @@ size_t PluginManager::get_enabled_plugins_count(void) const
 const PluginManager::SettingsDataType& PluginManager::get_setting(const std::string& setting_id) const
 {
     return impl_->settings_.at(setting_id);
+}
+
+const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const
+{
+    return impl_->plugin_info_map_.at(plugin_id);
 }
 
 const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& PluginManager::get_day_settings(void) const

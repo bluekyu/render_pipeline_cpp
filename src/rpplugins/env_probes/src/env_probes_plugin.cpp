@@ -19,30 +19,7 @@
 #include "environment_probe.h"
 #include "../../pssm/include/pssm_plugin.hpp"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Environment Probes",
-    "tobspr <tobias.springer1@gmail.com>",
-    "beta (!)",
-
-    "This plugin adds support for environment probes, containing "
-    "diffuse and specular information. This enables accurate "
-    "reflections, and can also be used to simulate GI."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::EnvProbesPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
 namespace rpplugins {
 
@@ -83,7 +60,7 @@ EnvProbesPlugin::Impl::~Impl(void)
     delete probe_mgr_;
 }
 
-EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>(*this))
+EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

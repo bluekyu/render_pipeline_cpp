@@ -5,28 +5,7 @@
 
 #include "../include/volumetrics_stage.hpp"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Volumetric Lighting",
-    "tobspr <tobias.springer1@gmail.com>",
-    "0.1 alpha (!)",
-
-    "This plugins adds support for volumetric lighting"
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::VolumentricsPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::VolumentricsPlugin)
 
 namespace rpplugins {
 
@@ -39,7 +18,7 @@ struct VolumentricsPlugin::Impl
 
 VolumentricsPlugin::RequrieType VolumentricsPlugin::Impl::require_plugins_ = { "pssm" };
 
-VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
+VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

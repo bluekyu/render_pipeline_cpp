@@ -32,7 +32,7 @@ void GodrayStage::reload_shaders(void)
 
 std::string GodrayStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+	return RPCPP_PLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

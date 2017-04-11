@@ -55,7 +55,7 @@ void SharpenStage::reload_shaders(void)
 
 std::string SharpenStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+	return RPCPP_PLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

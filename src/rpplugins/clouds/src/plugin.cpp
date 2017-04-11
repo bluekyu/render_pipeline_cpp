@@ -4,36 +4,13 @@
 
 #include <render_pipeline/rpcore/loader.h>
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Volumetric Clouds",
-    "tobspr <tobias.springer1@gmail.com>",
-    "alpha (!)",
-
-    "This Plugin adds support or volumetric, raytraced clouds. "
-    "Right now this is pretty unoptimized and may consum a lot "
-    "of performance."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::Plugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
 
-Plugin::RequrieType Plugin::require_plugins ={"scattering"};
+Plugin::RequrieType Plugin::require_plugins = { "scattering" };
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING)
 {
 }
 

@@ -12,29 +12,7 @@
 #include "vxgi_stage.h"
 #include "voxelization_stage.h"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Voxel Global Illumination",
-    "tobspr <tobias.springer1@gmail.com>",
-    "alpha (!)",
-
-    "Provides Global Illumination using Voxel Cone Tracing. This "
-    "technique is still very unoptimized and experimental!"
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::VXGIPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
 
 namespace rpplugins {
 
@@ -124,7 +102,7 @@ void VXGIPlugin::Impl::generate_mipmaps(void)
 
 // ************************************************************************************************
 
-VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>(*this))
+VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

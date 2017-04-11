@@ -1,3 +1,11 @@
+information:
+    category: rendering
+    name: Forward Rendering
+    author: tobspr <tobias.springer1@gmail.com>
+    version: 0.1 alpha (!)
+    description: >
+        This plugin adds support for an additional forward rendering
+        pass. This is mainly useful for transparency.
 
 settings:
 daytime_settings:

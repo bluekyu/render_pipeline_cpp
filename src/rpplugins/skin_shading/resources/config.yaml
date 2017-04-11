@@ -1,3 +1,11 @@
+information:
+    category: rendering
+    name: Skin Shading
+    author: tobspr <tobias.springer1@gmail.com>
+    version: 1.0
+    description: >
+        This plugin adds support for Seperable Screen Space Subsurface
+        Scattering (SSSSS). This improves skin rendering.
 
 settings: !!omap
 

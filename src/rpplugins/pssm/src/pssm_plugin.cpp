@@ -21,29 +21,7 @@
 #include "../../volumetrics/include/volumetrics_plugin.hpp"
 #include "../../volumetrics/include/volumetrics_stage.hpp"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Sun Shadows",
-    "tobspr <tobias.springer1@gmail.com>",
-    "1.2",
-
-    "This plugin adds support for Parallel Split Shadow Maps "
-    "(PSSM), and also sun lighting."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::PSSMPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
 
 namespace rpplugins {
 
@@ -133,7 +111,7 @@ void PSSMPlugin::Impl::on_pre_render_update(void)
 
 // ************************************************************************************************
 
-PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>(*this))
+PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

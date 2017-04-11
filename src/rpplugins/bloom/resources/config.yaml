@@ -1,3 +1,11 @@
+information:
+    category: rendering
+    name: Bloom
+    author: tobspr <tobias.springer1@gmail.com>
+    version: 1.2
+    description: >
+        This plugin adds support for a technique called Bloom, which
+        makes very bright objects like the sun have a halo.
 
 settings: !!omap
 

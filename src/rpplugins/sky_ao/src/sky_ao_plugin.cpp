@@ -9,29 +9,7 @@
 #include "capture_stage.h"
 #include "../../env_probes/include/env_probes_plugin.hpp"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Sky Occlusion",
-    "tobspr <tobias.springer1@gmail.com>",
-    "0.2 beta",
-
-    "This plugin adds support for sky occlusion, computing "
-    "occlusion based on the sky visibility."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::SkyAOPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 
 namespace rpplugins {
 
@@ -47,7 +25,7 @@ SkyAOPlugin::RequrieType SkyAOPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
+SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

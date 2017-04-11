@@ -14,7 +14,7 @@
 
 namespace rpcore {
 
-BasePlugin::BasePlugin(RenderPipeline& pipeline, const PluginInfo& plugin_info): RPObject(std::string("plugin:") + plugin_info.id), pipeline_(pipeline), plugin_info_(plugin_info)
+BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id): RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id)
 {
     // TODO: implement
     //self._set_debug_color("magenta", "bright")
@@ -22,7 +22,7 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const PluginInfo& plugin_info):
 
 std::string BasePlugin::get_base_path(void) const
 {
-    return Filename("/$$rp/rpplugins") / plugin_info_.id;
+    return Filename("/$$rp/rpplugins") / plugin_id_;
 }
 
 std::string BasePlugin::get_resource(const std::string& pth) const
@@ -43,12 +43,12 @@ void BasePlugin::add_stage(const std::shared_ptr<RenderStage>& stage)
 
 const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    return pipeline_.get_plugin_mgr()->get_setting(plugin_id.empty() ? get_plugin_id() : plugin_id).at(setting_id)->get_value();
+    return pipeline_.get_plugin_mgr()->get_setting(plugin_id.empty() ? plugin_id_ : plugin_id).at(setting_id)->get_value();
 }
 
 DayBaseType::ValueType BasePlugin::get_daytime_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    const auto& handle = pipeline_.get_plugin_mgr()->get_day_settings().at(plugin_id.empty() ? get_plugin_id() : plugin_id).at(setting_id);
+    const auto& handle = pipeline_.get_plugin_mgr()->get_day_settings().at(plugin_id.empty() ? plugin_id_ : plugin_id).at(setting_id);
     return handle->get_scaled_value_at(pipeline_.get_daytime_mgr()->get_time());
 }
 
@@ -66,6 +66,11 @@ void BasePlugin::reload_shaders(void)
 {
     for (const auto& stage: assigned_stages_)
         stage->reload_shaders();
+}
+
+const BasePlugin::PluginInfo& BasePlugin::get_plugin_info(void) const
+{
+    return pipeline_.get_plugin_mgr()->get_plugin_info(plugin_id_);
 }
 
 }

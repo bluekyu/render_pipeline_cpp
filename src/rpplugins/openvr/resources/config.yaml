@@ -1,3 +1,10 @@
+information:
+    category: rendering
+    name: OpenVR
+    author: Younguk Kim <yukim@chic.re.kr>
+    version: 0.1
+    description: >
+        A plugin to support OpenVR.
 
 settings: !!omap
 

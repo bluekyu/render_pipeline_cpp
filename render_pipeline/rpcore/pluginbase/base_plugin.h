@@ -7,6 +7,15 @@
 #include <render_pipeline/rpcore/rpobject.h>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
 
+#define RPCPP_PLUGIN_CREATOR(PLUGIN_TYPE) \
+    static std::shared_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \
+    { \
+        return std::make_shared<PLUGIN_TYPE>(pipeline); \
+    } \
+    BOOST_DLL_ALIAS(::rpcpp_plugin_creator__, create_plugin)
+
+// ************************************************************************************************
+
 namespace boost {
 class any;
 }
@@ -23,16 +32,15 @@ public:
 
     struct PluginInfo
     {
-        const char* category;
-        const char* id;
-        const char* name;
-        const char* author;
-        const char* version;
-        const char* description;
+        std::string category;
+        std::string name;
+        std::string author;
+        std::string version;
+        std::string description;
     };
 
 public:
-    BasePlugin(RenderPipeline& pipeline, const PluginInfo& plugin_info);
+    BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id);
     virtual ~BasePlugin(void) {}
 
     /** Returns the path to the root directory of the plugin. */
@@ -58,12 +66,8 @@ public:
     /** Reloads all shaders of the plugin. */
     void reload_shaders(void);
 
-    const char* get_plugin_category(void) const;
-    const char* get_plugin_id(void) const;
-    const char* get_name(void) const;
-    const char* get_author(void) const;
-    const char* get_description(void) const;
-    const char* get_version(void) const;
+    const std::string& get_plugin_id(void) const;
+    const PluginInfo& get_plugin_info(void) const;
 
     virtual RequrieType& get_required_plugins(void) const = 0;
 
@@ -83,41 +87,17 @@ public:
 
 protected:
     RenderPipeline& pipeline_;
-    const PluginInfo& plugin_info_;
+    const std::string plugin_id_;
 
 private:
     std::vector<std::shared_ptr<RenderStage>> assigned_stages_;
 };
 
 // ************************************************************************************************
-inline const char* BasePlugin::get_plugin_category(void) const
-{
-    return plugin_info_.category;
-}
 
-inline const char* BasePlugin::get_plugin_id(void) const
+inline const std::string& BasePlugin::get_plugin_id(void) const
 {
-    return plugin_info_.id;
-}
-
-inline const char* BasePlugin::get_name(void) const
-{
-    return plugin_info_.name;
-}
-
-inline const char* BasePlugin::get_author(void) const
-{
-    return plugin_info_.author;
-}
-
-inline const char* BasePlugin::get_description(void) const
-{
-    return plugin_info_.description;
-}
-
-inline const char* BasePlugin::get_version(void) const
-{
-    return plugin_info_.version;
+	return plugin_id_;
 }
 
 }

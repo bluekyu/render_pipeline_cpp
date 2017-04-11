@@ -5,34 +5,13 @@
 
 #include <render_pipeline/rpcore/loader.h>
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "Depth of Field",
-    "tobspr <tobias.springer1@gmail.com>",
-    "alpha (!)",
-
-    "Adds support for depth of field"
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::Plugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
 
 Plugin::RequrieType Plugin::require_plugins;
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING)
 {
 }
 

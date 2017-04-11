@@ -22,28 +22,7 @@
 
 #include "openvr_render_stage.h"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "rendering",
-    PLUGIN_ID_STRING,
-    "OpenVR",
-    "Younguk Kim <yukim@chic.re.kr>",
-    "0.1",
-
-    "A plugin to support OpenVR."
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<rpplugins::OpenVRPlugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(rpplugins::OpenVRPlugin)
 
 namespace rpplugins {
 
@@ -410,7 +389,7 @@ void OpenVRPlugin::Impl::convert_matrix_to_lmatrix(const vr::HmdMatrix44_t& from
 
 // ************************************************************************************************
 
-OpenVRPlugin::OpenVRPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>(*this))
+OpenVRPlugin::OpenVRPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 
