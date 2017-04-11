@@ -102,7 +102,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     }
     catch (const std::exception& err)
     {
-        self_.error(fmt::format("Failed to import plugin or to create plugin ({}): {}", plugin_id, err.what()));
+        self_.error(fmt::format("Failed to import plugin or to create plugin ({}). Error message: {}", plugin_id, err.what()));
         return std::shared_ptr<BasePlugin>();
     }
 
@@ -155,9 +155,14 @@ void PluginManager::load(void)
         load_daytime_overrides("/$$rpconfig/daytime.yaml");
 
     debug("Creating plugin instances ..");
-    for (const auto& key_val: impl_->settings_)
+    for (const auto& plugin_id: impl_->enabled_plugins_)
     {
-        const std::string plugin_id(key_val.first);
+        if (impl_->settings_.find(plugin_id) == impl_->settings_.end())
+        {
+            error(fmt::format("Cannot find plugin ({}) in plugin directory.", plugin_id));
+            continue;
+        }
+
         const std::shared_ptr<BasePlugin>& handle = impl_->load_plugin(plugin_id);
 
         if (handle)
@@ -219,18 +224,25 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
     if (!config["information"])
     {
         error(fmt::format("Plugin ({}) configuration does NOT have information.", plugin_id));
+        return;
     }
-    else
-    {
-        auto& info_node = config["information"];
-        impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo {
-            info_node["category"].as<std::string>(),
-            info_node["name"].as<std::string>(),
-            info_node["author"].as<std::string>(),
-            info_node["version"].as<std::string>(),
-            info_node["description"].as<std::string>(),
-        };
-    }
+
+    const auto& info_node = config["information"];
+#if _MSC_VER >= 1900
+    impl_->plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo {
+        info_node["category"].as<std::string>(),
+        info_node["name"].as<std::string>(),
+        info_node["author"].as<std::string>(),
+        info_node["version"].as<std::string>(),
+        info_node["description"].as<std::string>() });
+#else
+    impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo {
+        info_node["category"].as<std::string>(),
+        info_node["name"].as<std::string>(),
+        info_node["author"].as<std::string>(),
+        info_node["version"].as<std::string>(),
+        info_node["description"].as<std::string>() };
+#endif
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         fatal("Invalid plugin configuration, did you miss '!!omap'?");
