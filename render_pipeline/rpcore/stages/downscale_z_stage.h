@@ -10,23 +10,23 @@ class RenderTarget;
 class DownscaleZStage: public RenderStage
 {
 public:
-	DownscaleZStage(RenderPipeline& pipeline): RenderStage(pipeline, "DownscaleZStage") {}
+    DownscaleZStage(RenderPipeline& pipeline): RenderStage(pipeline, "DownscaleZStage") {}
 
-	virtual RequireType& get_required_inputs(void) const override { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const override { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const override;
+    RequireType& get_required_inputs(void) const final { return required_inputs; }
+    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+    void create(void) final;
+    void reload_shaders(void) final;
 
 private:
-	virtual std::string get_plugin_id(void) const override;
+    std::string get_plugin_id(void) const final;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 
-	bool stereo_mode_ = false;
-	std::shared_ptr<RenderTarget> target = nullptr;
+    bool stereo_mode_ = false;
+    std::shared_ptr<RenderTarget> target = nullptr;
 };
 
-}	// namespace rpcore
+}

@@ -34,7 +34,7 @@ public:
 	ScatteringMethodEricBruneton(ScatteringPlugin& plugin): ScatteringMethod(plugin, "ScatteringMethodEricBruneton") {}
 
 	/** Inits parameters, those should match with the ones specified in common.glsl. */
-	virtual void load(void) override;
+	void load(void) final;
 
 	/**
 	 * Executes a compute shader. The shader object should be a shader
@@ -47,7 +47,7 @@ public:
 		const LVecBase3i& exec_size, const LVecBase3i& workgroup_size=LVecBase3i(16, 16, 1));
 
 	/** Precomputes the scattering. */
-	virtual void compute(void) override;
+	void compute(void) final;
 
 	/** Creates all textures required for the scattering. */
 	void create_textures(void);

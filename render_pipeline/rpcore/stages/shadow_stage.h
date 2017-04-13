@@ -14,21 +14,21 @@ class ShadowStage: public RenderStage
 public:
 	ShadowStage(RenderPipeline& pipeline): RenderStage(pipeline, "ShadowStage") {}
 
-	virtual RequireType& get_required_inputs(void) const override { return required_inputs_; }
-	virtual RequireType& get_required_pipes(void) const override { return required_pipes_; }
-	virtual ProduceType get_produced_pipes(void) const override;
+	RequireType& get_required_inputs(void) const final { return required_inputs_; }
+	RequireType& get_required_pipes(void) const final { return required_pipes_; }
+	ProduceType get_produced_pipes(void) const final;
 
 	SamplerState make_pcf_state(void) const;
 	GraphicsOutput* get_atlas_buffer(void) const;
 
-	void create(void) override;
-	void set_shader_input(const ShaderInput& inp) override;
+	void create(void) final;
+	void set_shader_input(const ShaderInput& inp) final;
 
 	size_t get_size(void) const;
 	void set_size(size_t size);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs_;
 	static RequireType required_pipes_;

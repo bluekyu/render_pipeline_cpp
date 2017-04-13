@@ -10,12 +10,12 @@ class SMAAStage: public rpcore::RenderStage
 public:
     SMAAStage(rpcore::RenderPipeline& pipeline, bool use_reprojection);
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const;
+    RequireType& get_required_inputs(void) const final { return required_inputs; }
+    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+    void create(void) final;
+    void reload_shaders(void) final;
 
     /** Sets the current jitter index. */
     void set_jitter_index(int idx);
@@ -26,18 +26,18 @@ public:
     void set_search_tex(Texture* search_tex);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+    std::string get_plugin_id(void) const final;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 
     bool stereo_mode_ = false;
 
     bool use_reprojection_ = true;
     PTA_int jitter_index_;
 
-	std::shared_ptr<rpcore::RenderTarget> edge_target_ = nullptr;
-	std::shared_ptr<rpcore::RenderTarget> blend_target_ = nullptr;
+    std::shared_ptr<rpcore::RenderTarget> edge_target_ = nullptr;
+    std::shared_ptr<rpcore::RenderTarget> blend_target_ = nullptr;
     std::shared_ptr<rpcore::RenderTarget> neighbor_target_ = nullptr;
     std::shared_ptr<rpcore::RenderTarget> resolve_target_ = nullptr;
 
@@ -60,4 +60,4 @@ inline void SMAAStage::set_search_tex(Texture* search_tex)
     search_tex_ = search_tex;
 }
 
-}	// namespace rpplugins
+}

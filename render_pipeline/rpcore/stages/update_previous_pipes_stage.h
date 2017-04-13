@@ -18,8 +18,8 @@ class UpdatePreviousPipesStage: public RenderStage
 public:
 	UpdatePreviousPipesStage(RenderPipeline& pipeline): RenderStage(pipeline, "UpdatePreviousPipesStage") {}
 
-	virtual RequireType& get_required_inputs(void) const;
-	virtual RequireType& get_required_pipes(void) const;
+	RequireType& get_required_inputs(void) const final;
+	RequireType& get_required_pipes(void) const final;
 
 	/**
 	 * Adds a new texture which should be copied from "from_tex" to
@@ -29,12 +29,12 @@ public:
 	 */
 	void add_transfer(Texture* from_tex, Texture* to_tex);
 
-	virtual void create(void);
+	void create(void) final;
 
 	/** Sets the dimensions on all targets. See RenderTarget::set_dimensions. */
-	virtual void set_dimensions(void) override;
+	void set_dimensions(void) final;
 
-	virtual void reload_shaders(void) override;
+	void reload_shaders(void) final;
 
 	std::string get_sampler_type(Texture* tex, bool can_write=false);
 
@@ -50,7 +50,7 @@ public:
 		const std::string& coord_var, const std::string& data_var);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	std::shared_ptr<RenderTarget> _target = nullptr;
 	std::vector<std::pair<Texture*, Texture*>> _transfers;

@@ -24,16 +24,16 @@ public:
 
     VoxelizationStage(rpcore::RenderPipeline& pipeline);
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
-    virtual ProduceType get_produced_inputs(void) const;
-	virtual ProduceType get_produced_pipes(void) const;
+    RequireType& get_required_inputs(void) const final { return required_inputs; }
+    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    ProduceType get_produced_inputs(void) const final;
+    ProduceType get_produced_pipes(void) const final;
 
-	virtual void create(void) override;
-    virtual void update(void) override;
-	virtual void reload_shaders(void) override;
+    void create(void) final;
+    void update(void) final;
+    void reload_shaders(void) final;
 
-    virtual void set_shader_input(const ShaderInput& inp) override;
+    void set_shader_input(const ShaderInput& inp) final;
 
     void create_ptas(void);
 
@@ -45,10 +45,10 @@ public:
     void set_state(StateType state);
 
 private:
-	virtual std::string get_plugin_id(void) const;
+    std::string get_plugin_id(void) const final;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 
     int _voxel_resolution = 256;
     float _voxel_world_size = -1;
@@ -65,8 +65,8 @@ private:
     PT(OrthographicLens) _voxel_cam_lens;
     NodePath _voxel_cam_np;
 
-	std::shared_ptr<rpcore::RenderTarget> _voxel_target = nullptr;
-	std::shared_ptr<rpcore::RenderTarget> _copy_target = nullptr;
+    std::shared_ptr<rpcore::RenderTarget> _voxel_target = nullptr;
+    std::shared_ptr<rpcore::RenderTarget> _copy_target = nullptr;
     std::vector<std::shared_ptr<rpcore::RenderTarget>> _mip_targets;
 };
 
@@ -95,4 +95,4 @@ inline void VoxelizationStage::set_state(StateType state)
     _state = state;
 }
 
-}	// namespace rpplugins
+}

@@ -16,19 +16,19 @@ public:
 	static RequireType& get_global_required_inputs(void) { return required_inputs; }
 	static RequireType& get_global_required_pipes(void) { return required_pipes; }
 
-	virtual RequireType& get_required_inputs(void) const override { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const override { return required_pipes; }
-	virtual ProduceType get_produced_pipes(void) const override;
-	virtual DefinesType get_produced_defines(void) const;
+	RequireType& get_required_inputs(void) const final { return required_inputs; }
+	RequireType& get_required_pipes(void) const final { return required_pipes; }
+	ProduceType get_produced_pipes(void) const final;
+	DefinesType get_produced_defines(void) const final;
 
-	virtual void create(void) override;
-	virtual void reload_shaders(void) override;
+	void create(void) final;
+	void reload_shaders(void) final;
 
-	virtual void update(void) override;
-	virtual void set_dimensions(void) override;
+	void update(void) final;
+	void set_dimensions(void) final;
 
 private:
-	virtual std::string get_plugin_id(void) const;
+	std::string get_plugin_id(void) const final;
 
 	static RequireType required_inputs;
 	static RequireType required_pipes;
