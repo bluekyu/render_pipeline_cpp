@@ -25,9 +25,8 @@ pipeline:
     use_r11_g11_b10: false
 
     # Enables to render at a higher or lower resolution than the window size.
-    # A value of 2.0 for example renders at twice the resolution (supoersampling)
-    # whereas a value of 0.5 would render at half resolution.
-    resolution_scale: 1.0
+    resolution_width: 1920
+    resolution_height: 1080
 
     # Whether to render in a special reference mode, which displays the
     # environment map as a background, and disable special effects like color

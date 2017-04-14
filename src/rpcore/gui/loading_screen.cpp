@@ -30,7 +30,7 @@ void LoadingScreen::create(void)
 	// FIXME: hard corded value
 	const float image_w = 1920.0f;
 	const float image_h = 1080.0f;
-	const float scale = (std::max)(screen_w / image_w, screen_h / image_h);
+	const float scale = (std::min)(screen_w / image_w, screen_h / image_h);
 
 	fullscreen_bg = new Sprite(image_source, int(image_w * scale), int(image_h * scale), fullscreen_node,
 		int(screen_w - image_w * scale) / 2, int(screen_h - image_h * scale) / 2, true, false);

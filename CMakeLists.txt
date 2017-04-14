@@ -35,6 +35,9 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${YAML_CPP_INCLUDE_DIR})
 # ================================
 
+set(CMAKE_DEBUG_POSTFIX "-debug")
+set(CMAKE_RELWITHDEBINFO_POSTFIX "-reldeb")
+
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
@@ -81,6 +84,9 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib")
+install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
+    DESTINATION "bin"
+    CONFIGURATIONS Debug RelWithDebInfo)
 
 install(DIRECTORY ${RP_PUBLIC_HEADER_DIR} DESTINATION "include/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "etc/${PROJECT_NAME}/")

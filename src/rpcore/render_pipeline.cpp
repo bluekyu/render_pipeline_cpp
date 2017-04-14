@@ -345,7 +345,7 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(GenericAsy
     if (rp->impl_->first_frame_)
     {
         const std::chrono::duration<float>& duration = std::chrono::system_clock::now() - *rp->impl_->first_frame_;
-        rp->debug(std::string("Took ") + std::to_string(duration.count()) + " s until first frame");
+        rp->debug(fmt::format("Took {} s until first frame", duration.count()));
         delete rp->impl_->first_frame_;
         rp->impl_->first_frame_ = nullptr;
     }
@@ -364,16 +364,14 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
         // Ensure the dimensions are a multiple of 4, and if not, correct it
         if ((window_dims.get_x() & 0x3) != 0 || (window_dims.get_y() & 0x3) != 0)
         {
-            rp->debug(std::string("Correcting non-multiple of 4 window size: (") +
-                std::to_string(window_dims.get_x()) + ", " +
-                std::to_string(window_dims.get_y()) + ")");
+            rp->debug(fmt::format("Correcting non-multiple of 4 window size: ({}, {})", window_dims.get_x(), window_dims.get_y()));
             window_dims.set_x(window_dims.get_x() - (window_dims.get_x() & 0x3));
             window_dims.set_y(window_dims.get_y() - (window_dims.get_y() & 0x3));
             WindowProperties props = WindowProperties::size(window_dims.get_x(), window_dims.get_y());
             rp->impl_->showbase_->get_win()->request_properties(props);
         }
 
-        rp->debug(std::string("Resizing to ") + std::to_string(window_dims.get_x()) + " x " + std::to_string(window_dims.get_y()));
+        rp->debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
         Globals::native_resolution = window_dims;
         rp->impl_->compute_render_resolution();
         rp->impl_->light_mgr_->compute_tile_size();
@@ -553,14 +551,14 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
 
 void RenderPipeline::Impl::compute_render_resolution(void)
 {
-    const float scale_factor = self_.get_setting("pipeline.resolution_scale").as<float>();
-    int w = int(float(Globals::native_resolution.get_x()) * scale_factor);
-    int h = int(float(Globals::native_resolution.get_y()) * scale_factor);
+    int resolution_width = self_.get_setting("pipeline.resolution_width").as<int>(1920);
+    int resolution_height = self_.get_setting("pipeline.resolution_height").as<int>(1080);
+
     // Make sure the resolution is a multiple of 4
-    w = w - (w & 0x3);
-    h = h - (h & 0x3);
-    self_.debug(fmt::format("Render resolution is {} x {}", w, h));
-    Globals::resolution = LVecBase2i(w, h);
+    resolution_width = resolution_width - (resolution_width & 0x3);
+    resolution_height = resolution_height - (resolution_height & 0x3);
+    self_.debug(fmt::format("Render resolution is {} x {}", resolution_width, resolution_height));
+    Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
 void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramework* window_framework)
@@ -645,7 +643,7 @@ void RenderPipeline::Impl::init_common_stages(void)
     stage_mgr_->add_stage(std::make_shared<CombineVelocityStage>(self_));
 
     // Add an upscale/downscale stage in case we render at a different resolution
-    if (std::abs(1 - self_.get_setting("pipeline.resolution_scale").as<float>()) > 0.005f)
+    if (Globals::resolution != Globals::native_resolution)
         stage_mgr_->add_stage(std::make_shared<UpscaleStage>(self_));
 }
 

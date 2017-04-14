@@ -389,13 +389,14 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
 
     const LPoint3& camera_global_hpr = camera.get_hpr(render);
 
-    debug_lines_5_text += fmt::format("   |  HPR  ({:3.1f} {:3.1f} {:3.1f})  |   {:4d} x {:4d} pixels @ {:3.1f} %   |  {:3d} x {:3d} tiles",
+    debug_lines_5_text += fmt::format("   |  HPR  ({:3.1f} {:3.1f} {:3.1f})  | {:4d} x {:4d} pixels @ {:4d} x {:4d} | {:3d} x {:3d} tiles",
         camera_global_hpr[0],
         camera_global_hpr[1],
         camera_global_hpr[2],
         Globals::native_resolution.get_x(),
         Globals::native_resolution.get_y(),
-        (pipeline->get_setting<float>("pipeline.resolution_scale") * 100.0f),
+        Globals::resolution.get_x(),
+        Globals::resolution.get_y(),
         light_mgr->get_num_tiles().get_x(),
         light_mgr->get_num_tiles().get_y());
     debugger->debug_lines[5]->set_text(debug_lines_5_text);
