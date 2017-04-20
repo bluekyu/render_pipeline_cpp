@@ -5,15 +5,15 @@
 
 # --------------  Development options  --------------
 
-pstats-gpu-timing #t
-gl-debug #t
-gl-debug-object-labels #t
-
+# pstats-gpu-timing #t
+# gl-debug #t
+# gl-debug-object-labels #t
 # -------------- Production options ---------------
 
-# pstats-gpu-timing #f
-# gl-debug #f
-# gl-debug-object-labels #f
+
+pstats-gpu-timing #f
+gl-debug #f
+gl-debug-object-labels #f
 
 # ----------------- Misc Settings -----------------
 
@@ -44,7 +44,7 @@ show-frame-rate-meter #f
 text-minfilter linear
 text-magfilter linear
 text-page-size 512 512
-text-rwap-mode WM_border_clor
+#text-wrap-mode WM_border_color
 
 # Better text performance since rdb's patch
 text-flatten 0
@@ -135,7 +135,7 @@ gl-force-no-scissor #t
 gl-enable-memory-barriers #f
 
 # Disable threading
-lock-to-one-cpu #t
+#lock-to-one-cpu #t
 support-threads #f
 
 # Let the driver generate the mipmaps
@@ -160,7 +160,7 @@ gl-skip-shader-recompilation-warnings #t
 
 alpha-scale-via-texture #f
 pstats-name Render Pipeline Stats
-rescale-normals #f
+rescale-normals none
 screenshot-extension png
 
 # Required for correct velocity
