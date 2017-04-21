@@ -12,6 +12,7 @@ class PandaFramework;
 class WindowFramework;
 class MouseWatcher;
 class AsyncTaskManager;
+class AudioManager;
 
 namespace rppanda {
 
@@ -28,6 +29,8 @@ public:
 
     GraphicsEngine* get_graphics_engine(void) const;
     GraphicsWindow* get_win(void) const;
+
+    AudioManager* get_music_manager(void) const;
 
     NodePath get_render(void) const;
     NodePath get_render_2d(void) const;

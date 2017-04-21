@@ -169,6 +169,11 @@ WindowFramework* ShowBase::get_window_framework(void) const
     return impl_->window_framework_;
 }
 
+AudioManager* ShowBase::get_music_manager(void) const
+{
+    return impl_->music_manager_;
+}
+
 NodePath ShowBase::get_render(void) const
 {
     return impl_->window_framework_->get_render();
