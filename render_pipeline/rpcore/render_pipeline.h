@@ -120,6 +120,9 @@ public:
 	 */
 	void export_materials(const std::string& pth);
 
+    void compute_render_resolution(float resolution_scale);
+    void compute_render_resolution(int width, int height);
+
     /** Get setting value iun pipeline setting. */
     ///@{
     /** Get YAML node from given flatten path in pipeline setting. */

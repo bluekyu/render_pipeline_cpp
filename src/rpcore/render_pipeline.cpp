@@ -156,7 +156,7 @@ struct RenderPipeline::Impl
     void adjust_camera_settings(void);
 
     /**
-     * Computes the internally used render resolution. This might differ
+     * Initialize the internally used render resolution. This might differ
      * from the window dimensions in case a resolution scale is set.
      */
     void compute_render_resolution(void);
@@ -203,6 +203,15 @@ struct RenderPipeline::Impl
     void internal_set_effect(NodePath nodepath, const std::string& effect_src,
         const Effect::OptionType& options=Effect::OptionType(), int sort=30);
 
+    void handle_window_resize(void);
+
+    template <class T>
+    T get_setting(const std::string& setting_path) const;
+
+    template <class T>
+    T get_setting(const std::string& setting_path, const T& fallback) const;
+
+public:
     RenderPipeline& self_;
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
@@ -355,11 +364,12 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(GenericAsy
 void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
 {
     RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
+    const auto& rp_impl = rp->impl_;
 
-    LVecBase2i window_dims(rp->impl_->showbase_->get_win()->get_size());
-    if (window_dims != rp->impl_->last_window_dims && window_dims != Globals::native_resolution)
+    LVecBase2i window_dims(rp_impl->showbase_->get_win()->get_size());
+    if (window_dims != rp_impl->last_window_dims && window_dims != Globals::native_resolution)
     {
-        rp->impl_->last_window_dims = window_dims;
+        rp_impl->last_window_dims = window_dims;
 
         // Ensure the dimensions are a multiple of 4, and if not, correct it
         if ((window_dims.get_x() & 0x3) != 0 || (window_dims.get_y() & 0x3) != 0)
@@ -368,17 +378,13 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
             window_dims.set_x(window_dims.get_x() - (window_dims.get_x() & 0x3));
             window_dims.set_y(window_dims.get_y() - (window_dims.get_y() & 0x3));
             WindowProperties props = WindowProperties::size(window_dims.get_x(), window_dims.get_y());
-            rp->impl_->showbase_->get_win()->request_properties(props);
+            rp_impl->showbase_->get_win()->request_properties(props);
         }
 
         rp->debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
         Globals::native_resolution = window_dims;
-        rp->impl_->compute_render_resolution();
-        rp->impl_->light_mgr_->compute_tile_size();
-        rp->impl_->stage_mgr_->handle_window_resize();
-        if (rp->impl_->debugger)
-            rp->impl_->debugger->handle_window_resize();
-        rp->impl_->plugin_mgr_->on_window_resized();
+        rp_impl->compute_render_resolution();
+        rp_impl->handle_window_resize();
     }
 }
 
@@ -523,7 +529,13 @@ void RenderPipeline::Impl::init_globals(void)
     //RenderTarget.RT_OUTPUT_FUNC = lambda *args: RPObject.global_warn("RenderTarget", *args[1:])
 
     // TODO: implement
-    RenderTarget::USE_R11G11B10 = self_.get_setting("pipeline.use_r11_g11_b10").as<bool>();
+    RenderTarget::USE_R11G11B10 = self_.get_setting<bool>("pipeline.use_r11_g11_b10", false);
+
+    if (settings.find("pipeline.stereo_mode") == settings.end())
+    {
+        self_.warn("Cannot find 'pipeline.stereo_mode' setting, so set to default (false).");
+        settings.insert({"pipeline.stereo_mode", YAML::Node(false)});
+    }
 }
 
 void RenderPipeline::Impl::set_default_effect(void)
@@ -537,7 +549,7 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
     lens->set_near_far(0.1f, 70000.0f);
     lens->set_fov(40.0f);
 
-    if (self_.get_setting("pipeline.stereo_mode").as<bool>())
+    if (self_.get_setting<bool>("pipeline.stereo_mode"))
     {
         NodePath cam = showbase_->get_cam();
 
@@ -551,8 +563,20 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
 
 void RenderPipeline::Impl::compute_render_resolution(void)
 {
-    int resolution_width = self_.get_setting("pipeline.resolution_width").as<int>(1920);
-    int resolution_height = self_.get_setting("pipeline.resolution_height").as<int>(1080);
+    const float scale_factor = self_.get_setting<float>("pipeline.resolution_scale", 1.0f);
+    int resolution_width;
+    int resolution_height;
+
+    if (scale_factor == 0)
+    {
+        resolution_width = self_.get_setting<int>("pipeline.resolution_width", Globals::native_resolution.get_x());
+        resolution_height = self_.get_setting<int>("pipeline.resolution_height", Globals::native_resolution.get_y());
+    }
+    else
+    {
+        resolution_width = int(float(Globals::native_resolution.get_x()) * scale_factor);
+        resolution_height = int(float(Globals::native_resolution.get_y()) * scale_factor);
+    }
 
     // Make sure the resolution is a multiple of 4
     resolution_width = resolution_width - (resolution_width & 0x3);
@@ -621,11 +645,11 @@ void RenderPipeline::Impl::create_common_defines(void)
     defines["IS_AMD"] = std::string(vendor.find("amd") != std::string::npos ? "1" : "0");
     defines["IS_INTEL"] = std::string(vendor.find("intel") != std::string::npos ? "1" : "0");
 
-    defines["REFERENCE_MODE"] = std::string(self_.get_setting("pipeline.reference_mode").as<bool>() ? "1" : "0");
+    defines["REFERENCE_MODE"] = std::string(self_.get_setting<bool>("pipeline.reference_mode", false) ? "1" : "0");
 
-    bool stereo_mode = self_.get_setting("pipeline.stereo_mode").as<bool>();
+    bool stereo_mode = self_.get_setting<bool>("pipeline.stereo_mode");
     bool has_nv_stereo_view = rpcore::Globals::base->get_win()->get_gsg()->has_extension("GL_NV_stereo_view_rendering") &&
-        self_.get_setting("pipeline.nvidia_stereo_view").as<bool>();
+        self_.get_setting<bool>("pipeline.nvidia_stereo_view", false);
 
     defines["STEREO_MODE"] = std::string(stereo_mode ? "1" : "0");
     defines["NVIDIA_STEREO_VIEW"] = std::string(has_nv_stereo_view ? "1" : "0");
@@ -664,6 +688,30 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
     }, 1000);
 
     return skybox;
+}
+
+void RenderPipeline::Impl::handle_window_resize(void)
+{
+    light_mgr_->compute_tile_size();
+    stage_mgr_->handle_window_resize();
+    if (debugger)
+        debugger->handle_window_resize();
+    plugin_mgr_->on_window_resized();
+}
+
+template <class T>
+T RenderPipeline::Impl::get_setting(const std::string& setting_path) const
+{
+    return settings.at(setting_path).as<T>();
+}
+
+template <class T>
+T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fallback) const
+{
+    if (settings.find(setting_path) == settings.end())
+        return fallback;
+    else
+        return settings.at(setting_path).as<T>(fallback);
 }
 
 // ************************************************************************************************
@@ -902,6 +950,27 @@ void RenderPipeline::export_materials(const std::string& pth)
     // TODO: implement
 }
 
+void RenderPipeline::compute_render_resolution(float resolution_scale)
+{
+    impl_->settings["pipeline.resolution_scale"].reset(YAML::Node(resolution_scale));
+
+    auto last_resolution = Globals::resolution;
+    impl_->compute_render_resolution();
+    if (Globals::resolution != last_resolution)
+        impl_->handle_window_resize();
+}
+
+void RenderPipeline::compute_render_resolution(int width, int height)
+{
+    impl_->settings["pipeline.resolution_width"].reset(YAML::Node(width));
+    impl_->settings["pipeline.resolution_height"].reset(YAML::Node(height));
+
+    auto last_resolution = Globals::resolution;
+    impl_->compute_render_resolution();
+    if (Globals::resolution != last_resolution)
+        impl_->handle_window_resize();
+}
+
 const YAML::Node& RenderPipeline::get_setting(const std::string& setting_path) const
 {
     return impl_->settings.at(setting_path);
@@ -910,85 +979,85 @@ const YAML::Node& RenderPipeline::get_setting(const std::string& setting_path) c
 template <>
 bool RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<bool>();
+    return impl_->get_setting<bool>(setting_path);
 }
 
 template <>
 bool RenderPipeline::get_setting(const std::string& setting_path, const bool& fallback) const
 {
-    return impl_->settings.at(setting_path).as<bool>(fallback);
+    return impl_->get_setting<bool>(setting_path, fallback);
 }
 
 template <>
 int RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<int>();
+    return impl_->get_setting<int>(setting_path);
 }
 
 template <>
 int RenderPipeline::get_setting(const std::string& setting_path, const int& fallback) const
 {
-    return impl_->settings.at(setting_path).as<int>(fallback);
+    return impl_->get_setting<int>(setting_path, fallback);
 }
 
 template <>
 unsigned int RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<unsigned int>();
+    return impl_->get_setting<unsigned int>(setting_path);
 }
 
 template <>
 unsigned int RenderPipeline::get_setting(const std::string& setting_path, const unsigned int& fallback) const
 {
-    return impl_->settings.at(setting_path).as<unsigned int>(fallback);
+    return impl_->get_setting<unsigned int>(setting_path, fallback);
 }
 
 template <>
 size_t RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<size_t>();
+    return impl_->get_setting<size_t>(setting_path);
 }
 
 template <>
 size_t RenderPipeline::get_setting(const std::string& setting_path, const size_t& fallback) const
 {
-    return impl_->settings.at(setting_path).as<size_t>(fallback);
+    return impl_->get_setting<size_t>(setting_path, fallback);
 }
 
 template <>
 float RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<float>();
+    return impl_->get_setting<float>(setting_path);
 }
 
 template <>
 float RenderPipeline::get_setting(const std::string& setting_path, const float& fallback) const
 {
-    return impl_->settings.at(setting_path).as<float>(fallback);
+    return impl_->get_setting<float>(setting_path, fallback);
 }
 
 template <>
 double RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<double>();
+    return impl_->get_setting<double>(setting_path);
 }
 
 template <>
 double RenderPipeline::get_setting(const std::string& setting_path, const double& fallback) const
 {
-    return impl_->settings.at(setting_path).as<double>(fallback);
+    return impl_->get_setting<double>(setting_path, fallback);
 }
 
 template <>
 std::string RenderPipeline::get_setting(const std::string& setting_path) const
 {
-    return impl_->settings.at(setting_path).as<std::string>();
+    return impl_->get_setting<std::string>(setting_path);
 }
 
 template <>
 std::string RenderPipeline::get_setting(const std::string& setting_path, const std::string& fallback) const
 {
-    return impl_->settings.at(setting_path).as<std::string>(fallback);
+    return impl_->get_setting<std::string>(setting_path, fallback);
 }
 
 rppanda::ShowBase* RenderPipeline::get_showbase(void) const

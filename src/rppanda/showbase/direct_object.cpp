@@ -6,52 +6,67 @@
 
 namespace rppanda {
 
+bool DirectObject::accept(const std::string& ev_name, EventHandler::EventFunction* func)
+{
+    return EventHandler::get_global_event_handler()->add_hook(ev_name, func);
+}
+
 bool DirectObject::accept(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
 {
-	return EventHandler::get_global_event_handler()->add_hook(ev_name, func, user_data);
+    return EventHandler::get_global_event_handler()->add_hook(ev_name, func, user_data);
 }
 
 bool DirectObject::ignore(const std::string& ev_name)
 {
-	return EventHandler::get_global_event_handler()->remove_hooks(ev_name);
+    return EventHandler::get_global_event_handler()->remove_hooks(ev_name);
+}
+
+bool DirectObject::ignore(const std::string& ev_name, EventHandler::EventFunction* func)
+{
+    return EventHandler::get_global_event_handler()->remove_hook(ev_name, func);
+}
+
+bool DirectObject::ignore(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
+{
+    return EventHandler::get_global_event_handler()->remove_hook(ev_name, func, user_data);
 }
 
 GenericAsyncTask* DirectObject::add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name)
 {
-	PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
+    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
 
-	assert(task->has_name());
+    assert(task->has_name());
 
-	AsyncTaskManager::get_global_ptr()->add(task);
+    AsyncTaskManager::get_global_ptr()->add(task);
 
-	return task;
+    return task;
 }
 
 GenericAsyncTask* DirectObject::add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name, int sort)
 {
-	PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
+    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
 
-	assert(task->has_name());
+    assert(task->has_name());
 
-	task->set_sort(sort);
+    task->set_sort(sort);
 
-	AsyncTaskManager::get_global_ptr()->add(task);
+    AsyncTaskManager::get_global_ptr()->add(task);
 
-	return task;
+    return task;
 }
 
 int DirectObject::remove_task(const std::string& task_name)
 {
-	return AsyncTaskManager::get_global_ptr()->remove(AsyncTaskManager::get_global_ptr()->find_tasks(task_name));
+    return AsyncTaskManager::get_global_ptr()->remove(AsyncTaskManager::get_global_ptr()->find_tasks(task_name));
 }
 
 GenericAsyncTask* DirectObject::do_method_later(float delay, GenericAsyncTask::TaskFunc* func, const std::string& name, void* user_data)
 {
-	PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
-	task->set_delay(delay);
-	AsyncTaskManager::get_global_ptr()->add(task);
+    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
+    task->set_delay(delay);
+    AsyncTaskManager::get_global_ptr()->add(task);
 
-	return task;
+    return task;
 }
 
-}	// namespace rppanda
+}
