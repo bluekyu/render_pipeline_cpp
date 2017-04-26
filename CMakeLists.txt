@@ -1,14 +1,18 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-01-25
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.6)
 project(render_pipeline)
 
 # === configure ====================================================================================
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
-set(RP_PUBLIC_HEADER_DIR "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}")
+# version
+set(PROJECT_VERSION_MAJOR "1")
+set(PROJECT_VERSION_MINOR "0")
+set(PROJECT_VERSION_PATCH "0")
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 # configure project package
 include(FindPackages)
@@ -28,11 +32,6 @@ find_package(FreeType REQUIRED)
 if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
-
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${Panda3d_INCLUDE_DIRS})
-include_directories(${FREETYPE_INCLUDE_DIRS})
-include_directories(${YAML_CPP_INCLUDE_DIR})
 # ================================
 
 set(CMAKE_DEBUG_POSTFIX "-debug")
@@ -61,11 +60,6 @@ else()
     message(WARNING "Unsupported system: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-# include header directories
-include_directories("${RP_PUBLIC_HEADER_DIR}/..")      # /
-include_directories("${PROJECT_BINARY_DIR}")            # /build
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")        # /src
-
 # set input files
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 # ==================================================================================================
@@ -73,14 +67,44 @@ include("${PROJECT_SOURCE_DIR}/files.cmake")
 # === build & install===============================================================================
 # create library
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE ${Boost_LIBRARIES} ${FREETYPE_LIBRARIES} ${Panda3d_LIBRARIES} yaml-cpp spdlog::spdlog)
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL "RPCPP_BUILD")
 
-# library
+target_include_directories(${PROJECT_NAME}
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include>
+
+    PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    ${Panda3d_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE $<$<NOT:$<BOOL:Boost_USE_STATIC_LIBS>>:Boost::dynamic_linking>
+    Boost::filesystem Boost::system
+    ${FREETYPE_LIBRARIES} ${Panda3d_LIBRARIES} yaml-cpp spdlog::spdlog
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL "RPCPP_BUILD")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+
+set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
+set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
+set(TARGET_EXPORT_NAME "${PROJECT_NAME}-targets")
+set(PACKAGE_CMAKE_INSTALL_DIR "lib/${PROJECT_NAME}/cmake")
+
+# configure package
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion)
+configure_package_config_file("${PROJECT_SOURCE_DIR}/CMake/${PROJECT_NAME}-config.cmake.in"
+    ${PACKAGE_CONFIG_FILE}
+    INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
+export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
+
+# install
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PROJECT_NAME})
+
 install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Config
+    EXPORT ${TARGET_EXPORT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib")
@@ -94,8 +118,8 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "share/${PR
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "share/${PROJECT_NAME}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "share/${PROJECT_NAME}/")
 
-install(EXPORT ${PROJECT_NAME}Config DESTINATION "lib/${PROJECT_NAME}/cmake")
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindRenderPipeline.cmake" DESTINATION "lib/${PROJECT_NAME}/cmake")
+install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
+install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION "lib/${PROJECT_NAME}/cmake")
 
 # documents
 if(RPCPP_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
