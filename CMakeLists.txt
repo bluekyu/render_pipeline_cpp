@@ -71,6 +71,7 @@ add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:share>
 
     PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src"
     ${Panda3d_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
