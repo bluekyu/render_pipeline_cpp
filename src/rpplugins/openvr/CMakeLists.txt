@@ -54,14 +54,11 @@ target_compile_definitions(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    ${Panda3d_INCLUDE_DIRS}
     ${OpenVR_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE $<$<NOT:$<BOOL:Boost_USE_STATIC_LIBS>>:Boost::dynamic_linking>
-    Boost::boost
-    ${Panda3d_LIBRARIES} render_pipeline ${OpenVR_LIBRARIES}
+    PRIVATE render_pipeline ${OpenVR_LIBRARIES}
 )
 
 include(plugin_install)

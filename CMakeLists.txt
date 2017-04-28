@@ -74,24 +74,26 @@ target_include_directories(${PROJECT_NAME}
     $<INSTALL_INTERFACE:share>
 
     PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    ${Panda3d_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
+    ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
+    PUBLIC Boost::boost panda3d::panda3d
+
     PRIVATE $<$<NOT:$<BOOL:Boost_USE_STATIC_LIBS>>:Boost::dynamic_linking>
     Boost::filesystem Boost::system
-    ${FREETYPE_LIBRARIES} ${Panda3d_LIBRARIES} yaml-cpp spdlog::spdlog
+    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL "RPCPP_BUILD")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
+# configure package
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PROJECT_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "lib/${PROJECT_NAME}/cmake")
 
-# configure package
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PROJECT_VERSION}
@@ -108,10 +110,13 @@ install(TARGETS ${PROJECT_NAME}
     EXPORT ${TARGET_EXPORT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
-    ARCHIVE DESTINATION "lib")
+    ARCHIVE DESTINATION "lib"
+)
+
 install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
     DESTINATION "bin"
-    CONFIGURATIONS Debug RelWithDebInfo)
+    CONFIGURATIONS Debug RelWithDebInfo
+)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "etc/${PROJECT_NAME}/")
