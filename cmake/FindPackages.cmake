@@ -13,7 +13,6 @@ find_package(Boost 1.62.0 REQUIRED COMPONENTS filesystem system)
 
 # find panda3d
 set(PANDA3D_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
-#find_package(panda3d REQUIRED COMPONENTS libp3framework libpanda libpandaexpress libp3dtool libp3dtoolconfig libp3direct libp3interrogatedb)
 find_package(panda3d REQUIRED)
 
 # find doxygen

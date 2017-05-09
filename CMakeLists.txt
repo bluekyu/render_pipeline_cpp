@@ -80,7 +80,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost panda3d::panda3d
 
-    PRIVATE $<$<NOT:$<BOOL:Boost_USE_STATIC_LIBS>>:Boost::dynamic_linking>
+    PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem Boost::system
     ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
 )

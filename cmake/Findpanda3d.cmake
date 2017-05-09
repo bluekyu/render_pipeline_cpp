@@ -61,7 +61,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(panda3d
 )
 
 if(panda3d_FOUND)
-    message(STATUS "Found the following panda3d libraries:")
+    message(STATUS "Found the following Panda3D libraries:")
     foreach(COMPONENT ${panda3d_FIND_COMPONENTS})
         message (STATUS "  ${COMPONENT}")
     endforeach()
