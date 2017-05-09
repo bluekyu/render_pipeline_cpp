@@ -38,13 +38,8 @@ if(FREETYPE_FOUND)
 endif()
 # ================================
 
-set(CMAKE_DEBUG_POSTFIX "-debug")
-set(CMAKE_RELWITHDEBINFO_POSTFIX "-reldeb")
-
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-
     # build type
     if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -52,21 +47,21 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
             FORCE)
     endif()
     message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /wd\"4251\"")
-    endif()
-else()
-    message(WARNING "Unsupported system: ${CMAKE_SYSTEM_NAME}")
 endif()
 
 # set input files
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 # ==================================================================================================
 
-# === build & install===============================================================================
-# create library
+# === target =======================================================================================
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_final PRIVATE cxx_auto_type)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+endif()
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
@@ -85,8 +80,12 @@ target_link_libraries(${PROJECT_NAME}
     ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL "RPCPP_BUILD")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    DEFINE_SYMBOL "RPCPP_BUILD"
+    DEBUG_POSTFIX "-debug"
+    RELWITHDEBINFO_POSTFIX "-reldeb"
+    VERSION ${PROJECT_VERSION}
+)
 
 # configure package
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
@@ -102,8 +101,9 @@ configure_package_config_file("${PROJECT_SOURCE_DIR}/CMake/${PROJECT_NAME}-confi
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
+# ==================================================================================================
 
-# install
+# === install ======================================================================================
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
