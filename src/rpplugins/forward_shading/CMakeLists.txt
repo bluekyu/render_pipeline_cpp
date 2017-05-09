@@ -23,7 +23,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message("${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /wd\"4251\"")
     endif()
 endif()
 

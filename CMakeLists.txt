@@ -8,6 +8,10 @@ project(render_pipeline)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
+if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+    message(STATUS "Windows 10 Target Platform: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
+endif()
+
 # version
 set(PROJECT_VERSION_MAJOR "1")
 set(PROJECT_VERSION_MINOR "0")
@@ -51,10 +55,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /wd\"4251\"")
-    endif()
-
-    if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
-        message(STATUS "Windows 10 Target Platform: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
     endif()
 else()
     message(WARNING "Unsupported system: ${CMAKE_SYSTEM_NAME}")
