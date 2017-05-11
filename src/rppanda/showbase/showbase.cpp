@@ -72,11 +72,11 @@ void ShowBase::Impl::enable_music(bool enable)
         // This is useful when we want to play different music
         // from what the manager has queued
         throw_event_directly(*EventHandler::get_global_event_handler(), "MusicEnabled");
-        rppanda_cat.debug() << "Enabling music\n";
+        rppanda_cat.debug() << "Enabling music" << std::endl;
     }
     else
     {
-        rppanda_cat.debug() << "Disabling music\n";
+        rppanda_cat.debug() << "Disabling music" << std::endl;
     }
 }
 
@@ -86,7 +86,7 @@ ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework)
 {
     if (global_showbase)
     {
-        rppanda_cat.error() << "ShowBase was already created!\n";
+        rppanda_cat.error() << "ShowBase was already created!" << std::endl;
         return;
     }
 
@@ -519,7 +519,7 @@ void ShowBase::disable_all_audio(void)
     // self.SetAllSfxEnables(0)
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(false);
-    rppanda_cat.debug() << "Disabling audio\n";
+    rppanda_cat.debug() << "Disabling audio" << std::endl;
 }
 
 void ShowBase::enable_all_audio(void)
@@ -528,7 +528,7 @@ void ShowBase::enable_all_audio(void)
     // self.SetAllSfxEnables(self.sfxActive)
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(impl_->music_active_);
-    rppanda_cat.debug() << "Enabling audio\n";
+    rppanda_cat.debug() << "Enabling audio" << std::endl;
 }
 
 

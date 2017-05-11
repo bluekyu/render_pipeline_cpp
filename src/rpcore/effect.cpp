@@ -7,9 +7,7 @@
 #include <virtualFileSystem.h>
 #include <graphicsWindow.h>
 
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/functional/hash.hpp>
 
 #include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/globals.h"
@@ -121,7 +119,7 @@ std::string Effect::Impl::generate_hash(const std::string& filename, const Optio
     // will cause a cache miss)
     Filename fname = Filename(filename);
     fname.make_absolute();
-    const std::string& file_hash = std::to_string(boost::filesystem::hash_value(fname.to_os_specific()));
+    const std::string& file_hash = std::to_string(fname.get_hash());
 
     // Hash the options, that is, sort the keys to make sure the values
     // are always in the same order, and then convert the flags to strings using
@@ -164,7 +162,7 @@ void Effect::Impl::parse_content(YAML::Node& parsed_yaml)
 void Effect::Impl::parse_shader_template(const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
 {
     const std::string& pass_id = pass_id_multiview.first;
-    bool stereo_mode = RenderPipeline::get_global_ptr()->get_setting<bool>("pipeline.stereo_mode") && pass_id_multiview.second;
+    bool stereo_mode = RenderPipeline::get_global_ptr()->get_setting<bool>("pipeline.stereo_mode", false) && pass_id_multiview.second;
 
     std::string template_src;
     if (stage == "fragment")

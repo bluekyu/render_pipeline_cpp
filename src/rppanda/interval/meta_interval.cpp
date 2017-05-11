@@ -20,7 +20,7 @@ MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const Parame
 	else if (ivals.size() == 1)
 		add_c_interval(*ivals.begin(), 0.0, CMetaInterval::RS_level_begin);
 	else
-		rppanda_cat.error("Cannot build list from MetaInterval directly.");
+		rppanda_cat.error() << "Cannot build list from MetaInterval directly." << std::endl;
 }
 
 }	// namespace rppanda

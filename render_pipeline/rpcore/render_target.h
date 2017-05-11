@@ -47,19 +47,19 @@ public:
      * You can also pass a string containing a percentage, e.g. '25%', '50%'
      * or '100%' (the default).
      */
-    void set_size(const std::string& width, const std::string& height);
-    void set_size(const std::string& size);
+    void set_size(const std::string& width, const std::string& height) NOEXCEPT;
+    void set_size(const std::string& size) NOEXCEPT;
     
     /**
      * Set size_constraint.
      * If width or height has negative value,
      * it will be re-calculated to be proportional to resolution.
      */
-    void set_size(const LVecBase2i& size);
+    void set_size(const LVecBase2i& size) NOEXCEPT;
     /** @overload set_size(const LVecBase2i&) */
-    void set_size(int size);
+    void set_size(int size) NOEXCEPT;
     /** @overload set_size(const LVecBase2i&) */
-    void set_size(int width, int height);
+    void set_size(int width, int height) NOEXCEPT;
 
     /** Get current active. */
     bool get_active(void) const;
@@ -108,8 +108,8 @@ public:
 
     void consider_resize(void);
 
-    const boost::optional<int>& get_sort(void) const;
-    void set_sort(int sort);
+    const boost::optional<int>& get_sort(void) const NOEXCEPT;
+    void set_sort(int sort) NOEXCEPT;
 
     bool get_support_transparency(void) const;
     bool get_create_default_region(void) const;

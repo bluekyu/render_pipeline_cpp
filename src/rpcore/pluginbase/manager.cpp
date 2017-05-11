@@ -5,7 +5,6 @@
 #include <virtualFileSystem.h>
 #include <virtualFileMountSystem.h>
 
-#include <boost/filesystem.hpp>
 #include <boost/detail/winapi/dll.hpp>
 #include <boost/dll/import.hpp>
 

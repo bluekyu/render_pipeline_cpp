@@ -76,7 +76,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost panda3d::panda3d
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::filesystem Boost::system
+    Boost::filesystem
     ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
 )
 
@@ -97,7 +97,7 @@ include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMajorVersion)
-configure_package_config_file("${PROJECT_SOURCE_DIR}/CMake/${PROJECT_NAME}-config.cmake.in"
+configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake.in"
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)

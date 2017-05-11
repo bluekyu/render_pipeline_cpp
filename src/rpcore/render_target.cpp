@@ -7,6 +7,8 @@
 #include <auxBitplaneAttrib.h>
 #include <transparencyAttrib.h>
 
+#include <spdlog/fmt/fmt.h>
+
 #include "render_pipeline/rpcore/globals.h"
 #include "render_pipeline/rppanda/showbase/showbase.h"
 
@@ -26,7 +28,7 @@ struct RenderTarget::Impl
 {
     Impl(RenderTarget& self);
 
-    int percent_to_number(const std::string& v);
+    int percent_to_number(const std::string& v) const NOEXCEPT;
 
     void create_buffer(void);
     void compute_size_from_constraint(void);
@@ -81,9 +83,17 @@ RenderTarget::Impl::Impl(RenderTarget& self): self(self)
     });
 }
 
-int RenderTarget::Impl::percent_to_number(const std::string& v)
+int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
 {
-    return percent_to_number_map.at(v);
+    try
+    {
+        return percent_to_number_map.at(v);
+    }
+    catch (...)
+    {
+        self.error(fmt::format("Invalid percent: {}", v));
+        return -1;
+    }
 }
 
 void RenderTarget::Impl::create_buffer(void)
@@ -325,17 +335,17 @@ void RenderTarget::set_layers(int layers)
     impl_->layers_ = layers;
 }
 
-void RenderTarget::set_size(int width, int height)
+void RenderTarget::set_size(int width, int height) NOEXCEPT
 {
     impl_->size_constraint_ = LVecBase2i(width, height);
 }
 
-void RenderTarget::set_size(int size)
+void RenderTarget::set_size(int size) NOEXCEPT
 {
     impl_->size_constraint_ = LVecBase2i(size);
 }
 
-void RenderTarget::set_size(const LVecBase2i& size)
+void RenderTarget::set_size(const LVecBase2i& size) NOEXCEPT
 {
     impl_->size_constraint_ = size;
 }
@@ -360,22 +370,22 @@ Texture* RenderTarget::get_aux_tex(size_t index) const
     return impl_->targets_.at(std::string("aux_") + std::to_string(index));
 }
 
-const boost::optional<int>& RenderTarget::get_sort(void) const
+const boost::optional<int>& RenderTarget::get_sort(void) const NOEXCEPT
 {
     return impl_->sort_;
 }
 
-void RenderTarget::set_sort(int sort)
+void RenderTarget::set_sort(int sort) NOEXCEPT
 {
     impl_->sort_ = sort;
 }
 
-void RenderTarget::set_size(const std::string& width, const std::string& height)
+void RenderTarget::set_size(const std::string& width, const std::string& height) NOEXCEPT
 {
     impl_->size_constraint_ = LVecBase2i(impl_->percent_to_number(width), impl_->percent_to_number(height));
 }
 
-void RenderTarget::set_size(const std::string& size)
+void RenderTarget::set_size(const std::string& size) NOEXCEPT
 {
     set_size(size, size);
 }

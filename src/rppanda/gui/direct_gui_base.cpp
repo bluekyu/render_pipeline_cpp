@@ -9,7 +9,11 @@
 #include <nodePathCollection.h>
 #include <throw_event.h>
 
-#include <boost/format.hpp>
+#include <boost/core/typeinfo.hpp>
+
+#include <spdlog/fmt/fmt.h>
+
+#include "rppanda/config_rppanda.h"
 
 namespace rppanda {
 
@@ -17,11 +21,13 @@ const std::type_info& DirectGuiBase::_type_handle(typeid(DirectGuiBase));
 
 boost::any& DirectGuiBase::create_component(const std::string& component_name, boost::any&& component)
 {
-	// Check for invalid component name
-	if (component_name.find("_") != component_name.npos)
-	{
-		throw std::runtime_error(std::string("Component name \"") + component_name + "\" must not contain \"_\"");
-	}
+    // Check for invalid component name
+    if (component_name.find("_") != component_name.npos)
+    {
+        const std::string& msg = fmt::format("Component name \"{}\" must not contain \"_\"", component_name);
+        rppanda_cat.error() << msg << std::endl;
+        throw std::runtime_error(msg);
+    }
 
 	// Get construction keywords
 
@@ -413,7 +419,8 @@ void DirectGuiWidget::set_border_uv_width(const LVecBase2& border_uv_width)
 void DirectGuiWidget::print_config(int indent)
 {
 	std::string space(' ', indent);
-	std::cout << boost::format("%1%%2% - %3%") % space % get_gui_id() % "DirectGuiWidget" << std::endl;
+
+    std::cout << fmt::format("{}{} - DirectGuiWidget", space, get_gui_id()) << std::endl;
 	std::cout << space << "Pos:   " << get_pos() << std::endl;
 	std::cout << space << "Scale: " << get_scale() << std::endl;
 	
