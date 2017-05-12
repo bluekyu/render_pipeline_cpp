@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(${RPPLUGIN_ID})
+project(rpplugin_${RPPLUGIN_ID})
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -55,15 +55,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # create plugin interface target
-set(RPPLUGIN_INTERFACE_TARGET ${RPPLUGIN_ID}_interface)
-add_library(${RPPLUGIN_INTERFACE_TARGET} INTERFACE)
+add_library(${RPPLUGIN_ID} INTERFACE)
 
-target_include_directories(${RPPLUGIN_INTERFACE_TARGET}
+target_include_directories(${RPPLUGIN_ID}
     INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${RPPLUGIN_INSTALL_DIR}/include>
 )
 
-target_link_libraries(${RPPLUGIN_INTERFACE_TARGET}
+target_link_libraries(${RPPLUGIN_ID}
     INTERFACE render_pipeline
 )
 
@@ -85,8 +84,8 @@ configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
 
-add_library(${TARGET_NAMESPACE}${PROJECT_NAME} ALIAS ${RPPLUGIN_INTERFACE_TARGET})
-export(TARGETS ${RPPLUGIN_INTERFACE_TARGET}
+add_library(${TARGET_NAMESPACE}${RPPLUGIN_ID} ALIAS ${RPPLUGIN_ID})
+export(TARGETS ${RPPLUGIN_ID}
     NAMESPACE ${TARGET_NAMESPACE}
     FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
 )
