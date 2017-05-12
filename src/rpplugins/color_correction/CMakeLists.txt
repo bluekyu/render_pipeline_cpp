@@ -1,27 +1,25 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2016-08-02
+# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(color_correction)
+
+get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
+project(${RPPLUGIN_ID})
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
+set(RPPLUGIN_INSTALL_DIR "share/render_pipeline/rpplugins/${RPPLUGIN_ID}")
+
+set(PROJECT_VERSION_MAJOR "0")
+set(PROJECT_VERSION_MINOR "1")
+set(PROJECT_VERSION_PATCH "0")
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+
 # === plugin specific packages ===
-# ================================
+# ==================================================================================================
 
-# platform specific configure
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    # build type
-    if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-            "Choose the type of build, options are: None Debug RelWithDebInfo Release."
-            FORCE)
-    endif()
-    message("${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
-endif()
-
-# set input files
+# === target =======================================================================================
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/plugin.cpp"
@@ -34,10 +32,8 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/sharpen_stage.cpp"
     "${PROJECT_SOURCE_DIR}/src/sharpen_stage.h"
     "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.h")
-# ==================================================================================================
-
-# === target =======================================================================================
+    "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.h"
+)
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type)
@@ -48,17 +44,61 @@ else()
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
-    PRIVATE RPCPP_PLUGIN_ID_STRING="${PROJECT_NAME}"
+    PRIVATE RPCPP_PLUGIN_ID_STRING="${RPPLUGIN_ID}"
 )
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/src"
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    FOLDER "render_pipeline/rpplugins"
+    OUTPUT_NAME "plugin"
+)
+
+# create plugin interface target
+set(RPPLUGIN_INTERFACE_TARGET ${RPPLUGIN_ID}_interface)
+add_library(${RPPLUGIN_INTERFACE_TARGET} INTERFACE)
+
+target_include_directories(${RPPLUGIN_INTERFACE_TARGET}
+    INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${RPPLUGIN_INSTALL_DIR}/include>
+)
+
+target_link_libraries(${RPPLUGIN_INTERFACE_TARGET}
+    INTERFACE render_pipeline
+)
+
+# configure package
+set(PACKAGE_NAME "rpplugin_${RPPLUGIN_ID}")
+set(TARGET_NAMESPACE "rpplugin::")
+set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
+set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
+set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
+set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGIN_INSTALL_DIR}/cmake")
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
+    ${PACKAGE_CONFIG_FILE}
+    INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
+)
+
+add_library(${TARGET_NAMESPACE}${PROJECT_NAME} ALIAS ${RPPLUGIN_INTERFACE_TARGET})
+export(TARGETS ${RPPLUGIN_INTERFACE_TARGET}
+    NAMESPACE ${TARGET_NAMESPACE}
+    FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
+)
+export(PACKAGE ${PACKAGE_NAME})
+# ==================================================================================================
+
+# === install ======================================================================================
 include(plugin_install)
 # ==================================================================================================

@@ -7,7 +7,7 @@
 
 #include "ao_stage.h"
 #include "capture_stage.h"
-#include "../../env_probes/include/env_probes_plugin.hpp"
+#include "env_probes_plugin.hpp"
 
 RPCPP_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 

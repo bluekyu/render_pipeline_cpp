@@ -17,9 +17,9 @@
 #include "pssm_scene_shadow_stage.h"
 #include "pssm_dist_shadow_stage.h"
 
-#include "../../scattering/include/scattering_plugin.hpp"
-#include "../../volumetrics/include/volumetrics_plugin.hpp"
-#include "../../volumetrics/include/volumetrics_stage.hpp"
+#include "scattering_plugin.hpp"
+#include "volumetrics_plugin.hpp"
+#include "volumetrics_stage.hpp"
 
 RPCPP_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
 

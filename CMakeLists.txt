@@ -1,5 +1,5 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-01-25
+# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
 project(render_pipeline)
@@ -26,34 +26,24 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
 
 # === project specific packages ===
 # find spdlog
-find_package(spdlog REQUIRED)
+if(NOT TARGET spdlog::spdlog)
+    find_package(spdlog REQUIRED)
+endif()
 
 # find yaml-cpp
-find_package(yaml-cpp REQUIRED)
+if(NOT TARGET yaml-cpp)
+    find_package(yaml-cpp REQUIRED)
+endif()
 
 # find freetype
 find_package(FreeType REQUIRED)
 if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
-# ================================
-
-# platform specific configure
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    # build type
-    if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-            "Choose the type of build, options are: None Debug Release."
-            FORCE)
-    endif()
-    message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-endif()
-
-# set input files
-include("${PROJECT_SOURCE_DIR}/files.cmake")
 # ==================================================================================================
 
 # === target =======================================================================================
+include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_final PRIVATE cxx_auto_type)
@@ -68,7 +58,7 @@ target_include_directories(${PROJECT_NAME}
     $<INSTALL_INTERFACE:include>
     $<INSTALL_INTERFACE:share>
 
-    PRIVATE "${PROJECT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/src"
     ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
 )
 
@@ -81,6 +71,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    FOLDER "render_pipeline"
     DEFINE_SYMBOL "RPCPP_BUILD"
     DEBUG_POSTFIX "-debug"
     RELWITHDEBINFO_POSTFIX "-reldeb"
@@ -88,6 +79,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # configure package
+set(PACKAGE_NAME "${PROJECT_NAME}")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PROJECT_NAME}-targets")
@@ -96,11 +88,17 @@ set(PACKAGE_CMAKE_INSTALL_DIR "lib/${PROJECT_NAME}/cmake")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion)
+    COMPATIBILITY SameMajorVersion
+)
 configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake.in"
     ${PACKAGE_CONFIG_FILE}
-    INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
-export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
+    INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
+)
+
+export(TARGETS ${PROJECT_NAME}
+    FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake
+)
+export(PACKAGE ${PACKAGE_NAME})
 # ==================================================================================================
 
 # === install ======================================================================================
@@ -125,7 +123,7 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "share/$
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "share/${PROJECT_NAME}/")
 
 install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
-install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION "lib/${PROJECT_NAME}/cmake")
+install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
 # documents
 if(RPCPP_BUILD_DOCUMENTS AND DOXYGEN_FOUND)

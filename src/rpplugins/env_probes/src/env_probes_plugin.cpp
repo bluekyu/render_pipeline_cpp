@@ -17,7 +17,7 @@
 #include "cull_probes_stage.h"
 #include "apply_envprobes_stage.h"
 #include "environment_probe.h"
-#include "../../pssm/include/pssm_plugin.hpp"
+#include "pssm_plugin.hpp"
 
 RPCPP_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
