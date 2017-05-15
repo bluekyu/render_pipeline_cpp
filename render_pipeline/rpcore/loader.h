@@ -12,7 +12,7 @@ namespace rpcore {
  * Generic loader class used by the pipeline. All loading of assets happens
  * here, which enables us to keep track of used resources.
  */
-class RPCPP_DECL RPLoader: public RPObject
+class RENDER_PIPELINE_DECL RPLoader: public RPObject
 {
 public:
 	/** Loads a 2D-texture from disk. */

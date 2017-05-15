@@ -16,7 +16,7 @@ namespace rpcore {
  * This is a wrapper around DirectCheckBox, providing a simpler interface
  * and better visuals.
  */
-class RPCPP_DECL Checkbox: public RPObject
+class RENDER_PIPELINE_DECL Checkbox: public RPObject
 {
 public:
 	struct Parameters

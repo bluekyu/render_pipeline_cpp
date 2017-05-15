@@ -10,7 +10,7 @@ class SimpleInputBlock;
  * This is the main pass stage, rendering the objects and creating the
  * GBuffer which is used in later stages.
  */
-class RPCPP_DECL GBufferStage: public RenderStage
+class RENDER_PIPELINE_DECL GBufferStage: public RenderStage
 {
 public:
 	GBufferStage(RenderPipeline& pipeline): RenderStage(pipeline, "GBufferStage") {}

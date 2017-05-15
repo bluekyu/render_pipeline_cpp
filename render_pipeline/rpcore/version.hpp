@@ -1,0 +1,8 @@
+#pragma once
+
+/**
+ * Patch version: RENDER_PIPELINE_VERSION % 100
+ * Minor version: RENDER_PIPELINE_VERSION / 100 % 100
+ * Major version: RENDER_PIPELINE_VERSION / 10000
+ */
+#define RENDER_PIPELINE_VERSION 000100

@@ -104,7 +104,7 @@ void VolumetricsStage::reload_shaders(void)
 
 std::string VolumetricsStage::get_plugin_id(void) const
 {
-    return RPCPP_PLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
 void VolumetricsStage::set_enable_volumetric_shadows(bool enable_volumetric_shadows)

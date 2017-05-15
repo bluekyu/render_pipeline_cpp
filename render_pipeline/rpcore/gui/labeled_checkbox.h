@@ -12,7 +12,7 @@ class Text;
  * This is a checkbox, combined with a label. The arguments are
  * equal to the Checkbox and OnscreenText arguments.
  */
-class RPCPP_DECL LabeledCheckbox: public RPObject
+class RENDER_PIPELINE_DECL LabeledCheckbox: public RPObject
 {
 public:
 	struct Parameters: public Checkbox::Parameters

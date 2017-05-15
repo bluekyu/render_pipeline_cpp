@@ -21,7 +21,7 @@ class DayBaseType;
  * settings, trigger callbacks on plugins, initialize the plugin instances
  * and much more.
  */
-class RPCPP_DECL PluginManager: public RPObject
+class RENDER_PIPELINE_DECL PluginManager: public RPObject
 {
 public:
     // TODO: FIX map --> OrderedDict (use boost multi-index)

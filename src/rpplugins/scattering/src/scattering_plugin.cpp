@@ -15,7 +15,7 @@
 #include "godray_stage.h"
 #include "scattering_methods.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 
 namespace rpplugins {
 
@@ -33,7 +33,7 @@ ScatteringPlugin::RequrieType ScatteringPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

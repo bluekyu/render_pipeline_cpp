@@ -22,7 +22,7 @@
 
 #include "openvr_render_stage.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::OpenVRPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::OpenVRPlugin)
 
 namespace rpplugins {
 
@@ -389,7 +389,7 @@ void OpenVRPlugin::Impl::convert_matrix_to_lmatrix(const vr::HmdMatrix44_t& from
 
 // ************************************************************************************************
 
-OpenVRPlugin::OpenVRPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+OpenVRPlugin::OpenVRPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

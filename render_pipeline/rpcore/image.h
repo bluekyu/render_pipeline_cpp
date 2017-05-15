@@ -15,7 +15,7 @@ namespace rpcore {
  * the memory used. This is used by all classes instead of pandas builtin
  * Texture class.
  */
-class RPCPP_DECL Image: public RPObject
+class RENDER_PIPELINE_DECL Image: public RPObject
 {
 public:
     using ComponentFormatType = std::pair<Texture::ComponentType, Texture::Format>;

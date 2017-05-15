@@ -6,7 +6,7 @@
 
 namespace rppanda {
 
-class RPCPP_DECL OnscreenImage: public DirectObject, public NodePath
+class RENDER_PIPELINE_DECL OnscreenImage: public DirectObject, public NodePath
 {
 public:
 	OnscreenImage(NodePath parent=NodePath(), int sort=0);

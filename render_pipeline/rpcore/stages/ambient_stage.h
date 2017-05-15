@@ -11,7 +11,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage computes the ambient term. */
-class RPCPP_DECL AmbientStage: public RenderStage
+class RENDER_PIPELINE_DECL AmbientStage: public RenderStage
 {
 public:
 	AmbientStage(RenderPipeline& pipeline): RenderStage(pipeline, "AmbientStage") {}

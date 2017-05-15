@@ -30,7 +30,7 @@ class DayTimeManager;
 class IESProfileLoader;
 class PluginManager;
 
-class RPCPP_DECL RenderPipeline: public RPObject
+class RENDER_PIPELINE_DECL RenderPipeline: public RPObject
 {
 private:
     /** This is not implemented. */

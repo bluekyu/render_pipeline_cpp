@@ -38,7 +38,7 @@ namespace rpcore {
  *   direction and FoV. Checkout the RenderPipeline documentation for more
  *   information about this type of light.
  */
-class RPCPP_DECL RPSpotLight : public RPLight {
+class RENDER_PIPELINE_DECL RPSpotLight : public RPLight {
 
     PUBLISHED:
         RPSpotLight();

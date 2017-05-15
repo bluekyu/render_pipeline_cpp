@@ -60,7 +60,7 @@ namespace rpcore {
  *   To understand the functionality of this class, a detailed knowledge of the
  *   PSSM algorithm is helpful.
  */
-class RPCPP_DECL PSSMCameraRig {
+class RENDER_PIPELINE_DECL PSSMCameraRig {
 
     PUBLISHED:
         PSSMCameraRig(size_t num_splits);

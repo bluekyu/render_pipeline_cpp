@@ -51,7 +51,7 @@ NotifyCategoryDecl(tagstatemgr, EXPORT_CLASS, EXPORT_TEMPL);
  *   The Manager also stores a list of all cameras used in the different stages,
  *   to keep track of the states used and to be able to attach new states.
  */
-class RPCPP_DECL TagStateManager {
+class RENDER_PIPELINE_DECL TagStateManager {
 
     PUBLISHED:
         TagStateManager(NodePath main_cam_node);

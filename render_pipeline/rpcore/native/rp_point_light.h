@@ -38,7 +38,7 @@ namespace rpcore {
  *   radius. Checkout the RenderPipeline documentation for more information
  *   about this type of light.
  */
-class RPCPP_DECL RPPointLight : public RPLight {
+class RENDER_PIPELINE_DECL RPPointLight : public RPLight {
 
     PUBLISHED:
         RPPointLight();

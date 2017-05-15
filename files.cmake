@@ -48,6 +48,7 @@ set(header_rpcore
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_target.h"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/rpobject.h"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stage_manager.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp"
 )
 
 set(header_rpcore_gui

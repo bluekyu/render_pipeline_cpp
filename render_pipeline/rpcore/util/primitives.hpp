@@ -6,7 +6,7 @@
 
 namespace rpcore {
 
-RPCPP_DECL NodePath create_cube(const std::string& name);
-RPCPP_DECL NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned int longitude);
+RENDER_PIPELINE_DECL NodePath create_cube(const std::string& name);
+RENDER_PIPELINE_DECL NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned int longitude);
 
 }

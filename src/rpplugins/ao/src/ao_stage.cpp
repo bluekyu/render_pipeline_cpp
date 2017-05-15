@@ -128,7 +128,7 @@ void AOStage::reload_shaders(void)
 
 std::string AOStage::get_plugin_id(void) const
 {
-	return RPCPP_PLUGIN_ID_STRING;
+	return RPPLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

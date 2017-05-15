@@ -15,6 +15,6 @@ LVecBase3 rgb_from_string(const std::string& text, float min_brightness=0.6f);
  * This works by projecting the Point (0,0,0) to light space, compute the
  * texcoord differences and offset the light world space position by that.
  */
-RPCPP_DECL void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution);
+RENDER_PIPELINE_DECL void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution);
 
 }   // namespace rpcore

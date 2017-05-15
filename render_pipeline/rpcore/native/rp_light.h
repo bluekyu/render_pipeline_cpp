@@ -42,7 +42,7 @@ namespace rpcore {
  *   stores common properties, and provides methods to modify these.
  *   It also defines some interface functions which subclasses have to implement.
  */
-class RPCPP_DECL RPLight : public ReferenceCount {
+class RENDER_PIPELINE_DECL RPLight : public ReferenceCount {
 
     PUBLISHED:
 

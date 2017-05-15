@@ -4,13 +4,13 @@
 
 #include <render_pipeline/rpcore/loader.h>
 
-RPCPP_PLUGIN_CREATOR(rpplugins::Plugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
 
 Plugin::RequrieType Plugin::require_plugins = { "scattering" };
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
 {
 }
 

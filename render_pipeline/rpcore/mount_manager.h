@@ -8,7 +8,7 @@ namespace rpcore {
 
 class RenderPipeline;
 
-class RPCPP_DECL MountManager : public RPObject
+class RENDER_PIPELINE_DECL MountManager : public RPObject
 {
 public:
     MountManager(RenderPipeline& pipeline);

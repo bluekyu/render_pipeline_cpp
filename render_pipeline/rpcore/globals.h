@@ -17,7 +17,7 @@ namespace rpcore {
  * which is bad practice. This class also attempts to help IDEs to figure out
  * where the variables come from and where they are defined.
  */
-class RPCPP_DECL Globals
+class RENDER_PIPELINE_DECL Globals
 {
 public:
 	static void load(rppanda::ShowBase* showbase);

@@ -10,7 +10,7 @@
 namespace rppanda {
 
 /** This is the class that all Direct/SAL classes should inherit from. */
-class RPCPP_DECL DirectObject
+class RENDER_PIPELINE_DECL DirectObject
 {
 public:
     bool accept(const std::string& ev_name, EventHandler::EventFunction* func);

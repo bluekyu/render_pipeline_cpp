@@ -2,8 +2,8 @@
 
 #include <boost/config.hpp>
 
-#if defined(RPCPP_BUILD)
-#   define RPCPP_DECL BOOST_SYMBOL_EXPORT
+#if defined(RENDER_PIPELINE_BUILD)
+#   define RENDER_PIPELINE_DECL BOOST_SYMBOL_EXPORT
 #else
-#   define RPCPP_DECL BOOST_SYMBOL_IMPORT
+#   define RENDER_PIPELINE_DECL BOOST_SYMBOL_IMPORT
 #endif

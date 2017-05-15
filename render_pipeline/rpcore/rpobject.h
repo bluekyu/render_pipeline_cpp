@@ -6,7 +6,7 @@
 
 namespace rpcore {
 
-class RPCPP_DECL RPObject
+class RENDER_PIPELINE_DECL RPObject
 {
 public:
     static void global_trace(const std::string& context, const std::string& message);

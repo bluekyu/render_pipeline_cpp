@@ -7,7 +7,7 @@
 #include <render_pipeline/rpcore/rpobject.h>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
 
-#define RPCPP_PLUGIN_CREATOR(PLUGIN_TYPE) \
+#define RENDER_PIPELINE_PLUGIN_CREATOR(PLUGIN_TYPE) \
     static std::shared_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \
     { \
         return std::make_shared<PLUGIN_TYPE>(pipeline); \
@@ -25,7 +25,7 @@ namespace rpcore {
 class RenderPipeline;
 class RenderStage;
 
-class RPCPP_DECL BasePlugin: public RPObject
+class RENDER_PIPELINE_DECL BasePlugin: public RPObject
 {
 public:
     using RequrieType = std::vector<std::string>;

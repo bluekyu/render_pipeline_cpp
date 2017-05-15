@@ -18,7 +18,7 @@ namespace rpcore {
  * But model matrix of instanced nodes is calculated by
  * "world_matrix_to_instanced_node * local_transform[index] * local_transform_of_child_of_instanced_node * vertex".
  */
-class RPCPP_DECL InstancingNode
+class RENDER_PIPELINE_DECL InstancingNode
 {
 public:
     InstancingNode(NodePath np, const std::string& effect_path="",

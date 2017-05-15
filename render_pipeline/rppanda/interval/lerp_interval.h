@@ -12,7 +12,7 @@ namespace rppanda {
  * This is the base class for all of the lerps, defined below, that
  * affect a property on a NodePath, like pos or hpr.
  */
-class RPCPP_DECL LerpNodePathInterval: public CLerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpNodePathInterval: public CLerpNodePathInterval
 {
 protected:
 	static int lerp_node_path_num;
@@ -67,7 +67,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpPosInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpPosInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters
@@ -108,7 +108,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpHprInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpHprInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters
@@ -152,7 +152,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpQuatInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpQuatInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters
@@ -209,7 +209,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpScaleInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpScaleInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters
@@ -250,7 +250,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpShearInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpShearInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters
@@ -291,7 +291,7 @@ private:
 };
 
 // ************************************************************************************************
-class RPCPP_DECL LerpPosHprInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpPosHprInterval: public LerpNodePathInterval
 {
 public:
 	struct Parameters: public LerpNodePathInterval::Parameters

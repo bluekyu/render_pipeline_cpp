@@ -9,7 +9,7 @@ namespace rpcore {
 /**
  * Interface for the Panda3D TextNode.
  */
-class RPCPP_DECL Text3D
+class RENDER_PIPELINE_DECL Text3D
 {
 public:
     struct Parameters

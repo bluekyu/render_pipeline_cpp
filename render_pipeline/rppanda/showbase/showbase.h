@@ -16,7 +16,7 @@ class AudioManager;
 
 namespace rppanda {
 
-class RPCPP_DECL ShowBase: public DirectObject
+class RENDER_PIPELINE_DECL ShowBase: public DirectObject
 {
 public:
     ShowBase(PandaFramework* framework, WindowFramework* window_framework);

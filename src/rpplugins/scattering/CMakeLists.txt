@@ -42,7 +42,7 @@ else()
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
-    PRIVATE RPCPP_PLUGIN_ID_STRING="${RPPLUGIN_ID}"
+    PRIVATE RPPLUGIN_ID_STRING="${RPPLUGIN_ID}"
 )
 
 target_include_directories(${PROJECT_NAME}

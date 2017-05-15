@@ -6,7 +6,7 @@
 
 namespace rpcore {
 
-class RPCPP_DECL RPLogger
+class RENDER_PIPELINE_DECL RPLogger
 {
 public:
     static RPLogger& get_instance(void);

@@ -21,7 +21,7 @@
 #include "volumetrics_plugin.hpp"
 #include "volumetrics_stage.hpp"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
 
 namespace rpplugins {
 
@@ -111,7 +111,7 @@ void PSSMPlugin::Impl::on_pre_render_update(void)
 
 // ************************************************************************************************
 
-PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

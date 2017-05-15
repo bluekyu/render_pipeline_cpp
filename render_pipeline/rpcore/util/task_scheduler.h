@@ -14,7 +14,7 @@ class RenderPipeline;
  * or queued for later frames. Also performs analysis on the task configuration
  * to figure if tasks are distributed uniformly.
  */
-class RPCPP_DECL TaskScheduler: public RPObject
+class RENDER_PIPELINE_DECL TaskScheduler: public RPObject
 {
 public:
 	TaskScheduler(RenderPipeline* pipeline);

@@ -12,7 +12,7 @@ namespace rppanda {
  * Actor class: Contains methods for creating, manipulating
  * and playing animations on characters.
  */
-class RPCPP_DECL Actor: public DirectObject, public NodePath
+class RENDER_PIPELINE_DECL Actor: public DirectObject, public NodePath
 {
 public:
 	Actor(void);

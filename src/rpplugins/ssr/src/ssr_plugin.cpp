@@ -6,7 +6,7 @@
 
 #include "ssr_stage.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::SSRPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SSRPlugin)
 
 namespace rpplugins {
 
@@ -21,7 +21,7 @@ SSRPlugin::RequrieType SSRPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

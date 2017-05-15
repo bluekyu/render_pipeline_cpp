@@ -19,7 +19,7 @@
 #include "environment_probe.h"
 #include "pssm_plugin.hpp"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
 namespace rpplugins {
 
@@ -60,7 +60,7 @@ EnvProbesPlugin::Impl::~Impl(void)
     delete probe_mgr_;
 }
 
-EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

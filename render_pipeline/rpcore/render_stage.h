@@ -71,7 +71,7 @@ private:
  * Using a pipe system ensures that new techniques can be inserted easily,
  * without the other techniques even being aware of them
  */
-class RPCPP_DECL RenderStage: public RPObject
+class RENDER_PIPELINE_DECL RenderStage: public RPObject
 {
 public:
     using RequireType = std::vector<std::string>;

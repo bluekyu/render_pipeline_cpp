@@ -5,7 +5,7 @@
 
 #include "../include/volumetrics_stage.hpp"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::VolumentricsPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VolumentricsPlugin)
 
 namespace rpplugins {
 
@@ -18,7 +18,7 @@ struct VolumentricsPlugin::Impl
 
 VolumentricsPlugin::RequrieType VolumentricsPlugin::Impl::require_plugins_ = { "pssm" };
 
-VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

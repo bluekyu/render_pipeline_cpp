@@ -8,7 +8,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage takes the list of used cells and creates a list of lights for each cell.*/
-class RPCPP_DECL CullLightsStage: public RenderStage
+class RENDER_PIPELINE_DECL CullLightsStage: public RenderStage
 {
 public:
 	CullLightsStage(RenderPipeline& pipeline);

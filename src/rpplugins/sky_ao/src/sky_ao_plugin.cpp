@@ -9,7 +9,7 @@
 #include "capture_stage.h"
 #include "env_probes_plugin.hpp"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 
 namespace rpplugins {
 
@@ -25,7 +25,7 @@ SkyAOPlugin::RequrieType SkyAOPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

@@ -13,7 +13,7 @@
 #include "smaa_stage.h"
 #include "jitters.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::SMAAPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SMAAPlugin)
 
 namespace rpplugins {
 
@@ -113,7 +113,7 @@ void SMAAPlugin::Impl::update_jitter_pattern(void)
 
 // ************************************************************************************************
 
-SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

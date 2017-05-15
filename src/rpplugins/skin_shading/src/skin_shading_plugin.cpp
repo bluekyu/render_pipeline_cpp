@@ -4,7 +4,7 @@
 
 #include "skin_shading_stage.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
 
 namespace rpplugins {
 
@@ -19,7 +19,7 @@ SkinShadingPlugin::RequrieType SkinShadingPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

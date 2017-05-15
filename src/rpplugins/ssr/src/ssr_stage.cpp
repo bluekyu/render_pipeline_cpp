@@ -63,7 +63,7 @@ void SSRStage::reload_shaders(void)
 
 std::string SSRStage::get_plugin_id(void) const
 {
-	return RPCPP_PLUGIN_ID_STRING;
+	return RPPLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

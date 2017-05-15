@@ -127,7 +127,7 @@ void PSSMDistShadowStage::set_shader_input(const ShaderInput& inp)
 
 std::string PSSMDistShadowStage::get_plugin_id(void) const
 {
-	return RPCPP_PLUGIN_ID_STRING;
+	return RPPLUGIN_ID_STRING;
 }
 
 }	// namespace rpplugins

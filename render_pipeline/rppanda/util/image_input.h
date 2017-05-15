@@ -7,7 +7,7 @@
 
 namespace rppanda {
 
-class RPCPP_DECL ImageInput
+class RENDER_PIPELINE_DECL ImageInput
 {
 public:
 	enum class ImageInputType: int

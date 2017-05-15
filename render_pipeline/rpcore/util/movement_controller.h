@@ -17,7 +17,7 @@ namespace rpcore {
  * debugging features. It is not really part of the pipeline, but included to
  * view the demo scenes.
  */
-class RPCPP_DECL MovementController
+class RENDER_PIPELINE_DECL MovementController
 {
 public:
 	using MotionPathType = std::vector<std::pair<LVecBase3, LVecBase3>>;

@@ -12,7 +12,7 @@
 #include "vxgi_stage.h"
 #include "voxelization_stage.h"
 
-RPCPP_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
 
 namespace rpplugins {
 
@@ -102,7 +102,7 @@ void VXGIPlugin::Impl::generate_mipmaps(void)
 
 // ************************************************************************************************
 
-VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 
