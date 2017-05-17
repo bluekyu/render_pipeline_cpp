@@ -9,7 +9,7 @@ project(rpplugin_${RPPLUGIN_ID})
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
-set(RPPLUGIN_INSTALL_DIR "${RENDER_PIPELINE_PLUGIN_DIR}/${RPPLUGIN_ID}")
+set(RPPLUGIN_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
 
 set(PROJECT_VERSION_MAJOR "0")
 set(PROJECT_VERSION_MINOR "1")
@@ -57,7 +57,6 @@ target_link_libraries(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "render_pipeline/rpplugins"
-    OUTPUT_NAME "plugin"
 )
 
 # create plugin interface target

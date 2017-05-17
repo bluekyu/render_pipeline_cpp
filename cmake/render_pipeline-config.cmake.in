@@ -3,26 +3,10 @@
 set (@PACKAGE_NAME@_VERSION "@PACKAGE_VERSION@")
 
 include(${CMAKE_CURRENT_LIST_DIR}/@TARGET_EXPORT_NAME@.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_NAME@-setting.cmake)
 
 set(@PACKAGE_NAME@_INSTALL_DIR "${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR@")
-set(@PACKAGE_NAME@_CONFIG_DIR "${@PACKAGE_NAME@_INSTALL_DIR}/@RENDER_PIPELINE_CONFIG_DIR@")
-set(@PACKAGE_NAME@_DATA_DIR "${@PACKAGE_NAME@_INSTALL_DIR}/@RENDER_PIPELINE_DATA_DIR@")
-set(@PACKAGE_NAME@_PLUGIN_DIR "${@PACKAGE_NAME@_INSTALL_DIR}/@RENDER_PIPELINE_PLUGIN_DIR@")
 
 message(STATUS "@PACKAGE_NAME@ version: ${@PACKAGE_NAME@_VERSION}")
-
-# help function to find plugin
-function(@PACKAGE_NAME@_FIND_PLUGINS plugin_id_list)
-    foreach(plugin_id ${plugin_id_list})
-        if(NOT TARGET rpplugin::${plugin_id})
-            find_package(rpplugin_${plugin_id} REQUIRED HINTS "${@PACKAGE_NAME@_DATA_DIR}/rpplugins/${plugin_id}")
-        endif()
-    endforeach()
-
-    message(STATUS "Found the following Render Pipeline plugins:")
-    foreach(plugin_id ${plugin_id_list})
-        message(STATUS "  ${plugin_id}")
-    endforeach()
-endfunction()
 
 check_required_components(@PACKAGE_NAME@)

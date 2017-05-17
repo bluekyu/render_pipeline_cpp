@@ -13,29 +13,27 @@ if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
 endif()
 
 # version
-set(RENDER_PIPELINE_VERSION 0)
-file(STRINGS "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp" _RENDER_PIPELINE_VERSION_HPP REGEX "#define RENDER_PIPELINE_VERSION ")
-if("${_RENDER_PIPELINE_VERSION_HPP}" MATCHES "#define RENDER_PIPELINE_VERSION ([0-9]+)")
-    set(RENDER_PIPELINE_VERSION "${CMAKE_MATCH_1}")
+file(STRINGS "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp" _render_pipeline_VERSION_HPP REGEX "#define RENDER_PIPELINE_VERSION ")
+if("${_render_pipeline_VERSION_HPP}" MATCHES "#define RENDER_PIPELINE_VERSION ([0-9]+)")
+    set(render_pipeline_VERSION "${CMAKE_MATCH_1}")
 endif()
-unset(_RENDER_PIPELINE_VERSION_HPP)
+unset(_render_pipeline_VERSION_HPP)
 
-math(EXPR RENDER_PIPELINE_VERSION_MAJOR "${RENDER_PIPELINE_VERSION} / 10000")
-math(EXPR RENDER_PIPELINE_VERSION_MINOR "${RENDER_PIPELINE_VERSION} / 100 % 100")
-math(EXPR RENDER_PIPELINE_VERSION_PATCH "${RENDER_PIPELINE_VERSION} % 100")
-set(RENDER_PIPELINE_VERSION_TAG "")
+math(EXPR render_pipeline_VERSION_MAJOR "${render_pipeline_VERSION} / 10000")
+math(EXPR render_pipeline_VERSION_MINOR "${render_pipeline_VERSION} / 100 % 100")
+math(EXPR render_pipeline_VERSION_PATCH "${render_pipeline_VERSION} % 100")
+set(render_pipeline_VERSION_TAG "")
 
-set(RENDER_PIPELINE_VERSION "${RENDER_PIPELINE_VERSION_MAJOR}.${RENDER_PIPELINE_VERSION_MINOR}.${RENDER_PIPELINE_VERSION_PATCH}${RENDER_PIPELINE_VERSION_TAG}")
-set(PROJECT_VERSION "${RENDER_PIPELINE_VERSION}")
+set(render_pipeline_VERSION "${render_pipeline_VERSION_MAJOR}.${render_pipeline_VERSION_MINOR}.${render_pipeline_VERSION_PATCH}${render_pipeline_VERSION_TAG}")
+set(PROJECT_VERSION "${render_pipeline_VERSION}")
 
-message("Render Pipeline building version: ${RENDER_PIPELINE_VERSION}")
+message("Render Pipeline building version: ${render_pipeline_VERSION}")
 
 # configure project package
 include(FindPackages)
 
-set(RENDER_PIPELINE_CONFIG_DIR "etc/${PROJECT_NAME}")
-set(RENDER_PIPELINE_DATA_DIR "share/${PROJECT_NAME}")
-set(RENDER_PIPELINE_PLUGIN_DIR "${RENDER_PIPELINE_DATA_DIR}/rpplugins")
+set(render_pipeline_SETTING_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-setting.cmake")
+include(${render_pipeline_SETTING_CMAKE_FILE})
 
 # subdirectory
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
@@ -101,20 +99,20 @@ set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "lib/${PROJECT_NAME}/cmake")
 file(RELATIVE_PATH PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR "${CMAKE_INSTALL_PREFIX}/${PACKAGE_CMAKE_INSTALL_DIR}" "${CMAKE_INSTALL_PREFIX}")
+get_filename_component(PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR "${PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR}/." DIRECTORY)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY SameMajorVersion
 )
-configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake.in"
+
+configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-config.cmake.in"
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
 
-export(TARGETS ${PROJECT_NAME}
-    FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake
-)
+export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
 export(PACKAGE ${PACKAGE_NAME})
 # ==================================================================================================
 
@@ -134,12 +132,14 @@ install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "${RENDER_PIPELINE_CONFIG_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${RENDER_PIPELINE_DATA_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${RENDER_PIPELINE_DATA_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${RENDER_PIPELINE_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "${render_pipeline_CONFIG_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render_pipeline_DATA_DIR}/")
 
-install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
+install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_SETTING_CMAKE_FILE}
+    DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
+)
 install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
 # documents

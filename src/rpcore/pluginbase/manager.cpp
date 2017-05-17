@@ -86,7 +86,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 {
     boost::filesystem::path plugin_path(plugin_dir_);
 
-    plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / "plugin");
+    plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id));
 
     self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
 

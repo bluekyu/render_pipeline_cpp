@@ -1,0 +1,30 @@
+set(render_pipeline_CONFIG_DIR "etc/render_pipeline")
+set(render_pipeline_DATA_DIR "share/render_pipeline")
+set(render_pipeline_PLUGIN_DIR "${render_pipeline_DATA_DIR}/rpplugins")
+
+# help function to find plugin
+function(render_pipeline_FIND_PLUGINS plugin_id_list)
+    set(missed_plugin_id_list "")
+    foreach(plugin_id ${plugin_id_list})
+        if(NOT TARGET rpplugin::${plugin_id})
+            list(APPEND missed_plugin_id_list ${plugin_id})
+        endif()
+    endforeach()
+
+    if(missed_plugin_id_list)
+        if(render_pipeline_INSTALL_DIR)
+            set(PLUGIN_DIR_HINT "${render_pipeline_INSTALL_DIR}/${render_pipeline_PLUGIN_DIR}")
+        else()
+            message(WARNING "render_pipeline_INSTALL_DIR is NOT set.")
+        endif()
+
+        foreach(plugin_id ${missed_plugin_id_list})
+            find_package(rpplugin_${plugin_id} REQUIRED HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
+        endforeach()
+    endif()
+
+    message(STATUS "Found the following Render Pipeline plugins:")
+    foreach(plugin_id ${plugin_id_list})
+        message(STATUS "  ${plugin_id}")
+    endforeach()
+endfunction()
