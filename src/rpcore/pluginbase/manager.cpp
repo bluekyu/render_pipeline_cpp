@@ -378,7 +378,7 @@ const std::shared_ptr<BasePlugin>& PluginManager::get_instance(const std::string
     return impl_->instances_.at(plugin_id);
 }
 
-size_t PluginManager::get_enabled_plugins_count(void) const
+size_t PluginManager::get_enabled_plugins_count(void) const NOEXCEPT
 {
     return impl_->enabled_plugins_.size();
 }
@@ -388,9 +388,18 @@ const PluginManager::SettingsDataType& PluginManager::get_setting(const std::str
     return impl_->settings_.at(setting_id);
 }
 
-const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const
+const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const NOEXCEPT
 {
-    return impl_->plugin_info_map_.at(plugin_id);
+    try
+    {
+        return impl_->plugin_info_map_.at(plugin_id);
+    }
+    catch (...)
+    {
+        static const BasePlugin::PluginInfo null;
+        error(fmt::format("Plugin ({}) does NOT exist!", plugin_id));
+        return null;
+    }
 }
 
 const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& PluginManager::get_day_settings(void) const

@@ -87,9 +87,9 @@ public:
     /** Initializes all plugin settings as a define, so they can be queried in a shader. */
     void init_defines(void);
 
-    size_t get_enabled_plugins_count(void) const;
+    size_t get_enabled_plugins_count(void) const NOEXCEPT;
 
-    const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const;
+    const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const NOEXCEPT;
     const SettingsDataType& get_setting(const std::string& setting_id) const;
     const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings(void) const;
 
