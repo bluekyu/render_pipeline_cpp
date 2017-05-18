@@ -229,18 +229,18 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
     const auto& info_node = config["information"];
 #if _MSC_VER >= 1900
     impl_->plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo {
-        info_node["category"].as<std::string>(),
-        info_node["name"].as<std::string>(),
-        info_node["author"].as<std::string>(),
-        info_node["version"].as<std::string>(),
-        info_node["description"].as<std::string>() });
+        info_node["category"].as<std::string>("empty_category"),
+        info_node["name"].as<std::string>("empty_name"),
+        info_node["author"].as<std::string>("empty_author"),
+        info_node["version"].as<std::string>("empty_version"),
+        info_node["description"].as<std::string>("empty_description") });
 #else
     impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo {
-        info_node["category"].as<std::string>(),
-        info_node["name"].as<std::string>(),
-        info_node["author"].as<std::string>(),
-        info_node["version"].as<std::string>(),
-        info_node["description"].as<std::string>() };
+        info_node["category"].as<std::string>("empty_category"),
+        info_node["name"].as<std::string>("empty_name"),
+        info_node["author"].as<std::string>("empty_author"),
+        info_node["version"].as<std::string>("empty_version"),
+        info_node["description"].as<std::string>("empty_description") };
 #endif
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
