@@ -8,8 +8,6 @@ function(_find_boost required_component)
         option(Boost_USE_STATIC_RUNTIME "Boost uses static runtime" OFF)
 
         set(BOOST_ROOT "" CACHE PATH "Hint for finding boost root directory")
-        set(BOOST_INCLUDEDIR "" CACHE PATH "Hint for finding boost include directory")
-        set(BOOST_LIBRARYDIR "" CACHE PATH "Hint for finding boost library directory")
     endif()
 
     set(missed_component "")
