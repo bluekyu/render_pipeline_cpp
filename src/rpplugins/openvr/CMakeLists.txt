@@ -19,12 +19,11 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT
 # === plugin specific packages ===
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
-# find OpenVR
-set(OPENVR_ROOT "" CACHE PATH "Hint for finding OpenVR root directory")
-set(OPENVR_INCLUDEDIR "" CACHE PATH "Hint for finding OpenVR include directory")
-set(OPENVR_LIBRARYDIR "" CACHE PATH "Hint for finding OpenVR library directory")
-
-find_package(OpenVR REQUIRED)
+if(NOT TARGET OpenVR)
+    # find OpenVR
+    set(OpenVR_ROOT "" CACHE PATH "Hint for finding OpenVR root directory")
+    find_package(OpenVR REQUIRED)
+endif()
 # ==================================================================================================
 
 # === target =======================================================================================
@@ -49,12 +48,10 @@ target_compile_definitions(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/src"
-    ${OpenVR_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline
-    PRIVATE ${OpenVR_LIBRARIES}
+    PRIVATE render_pipeline OpenVR
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -70,7 +67,7 @@ target_include_directories(${RPPLUGIN_ID}
 )
 
 target_link_libraries(${RPPLUGIN_ID}
-    INTERFACE render_pipeline
+    INTERFACE render_pipeline OpenVR
 )
 
 # configure package
