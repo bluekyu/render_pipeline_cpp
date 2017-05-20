@@ -31,46 +31,57 @@ NodePath create_cube(const std::string& name)
     GeomVertexWriter normal(vdata, InternalName::get_normal());
     GeomVertexWriter texcoord(vdata, InternalName::get_texcoord());
 
-    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f(0.0f, 0.0f, -1.0f);   texcoord.add_data2f(0.25f, 1/3.0f);     // 0
-    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f(0.0f, -1.0f, 0.0f);   texcoord.add_data2f(0.25f, 1/3.0f);     // 1
-    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f(-1.0f, 0.0f, 0.0f);   texcoord.add_data2f(0.25f, 1/3.0f);     // 2
-    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f(0.0f, 0.0f, -1.0f);   texcoord.add_data2f(0.5f, 1/3.0f);      // 3
-    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f(0.0f, -1.0f, 0.0f);   texcoord.add_data2f(0.5f, 1/3.0f);      // 4
-    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f(1.0f, 0.0f, 0.0f);    texcoord.add_data2f(0.5f, 1/3.0f);      // 5
-    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f(0.0f, 0.0f, -1.0f);   texcoord.add_data2f(0.5f, 0.0f);        // 6
-    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f(0.0f, 1.0f, 0.0f);    texcoord.add_data2f(0.75f, 1/3.0f);     // 7
-    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f(1.0f, 0.0f, 0.0f);    texcoord.add_data2f(0.75f, 1/3.0f);     // 8
-    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f(0.0f, 0.0f, -1.0f);   texcoord.add_data2f(0.25f, 0.0f);       // 9
-    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f(0.0f, 1.0f, 0.0f);    texcoord.add_data2f(1.0f, 1/3.0f);      // 10
-    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f(-1.0f, 0.0f, 0.0f);   texcoord.add_data2f(0.0f, 1/3.0f);      // 11
-    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f(0.0f, 0.0f, 1.0f);    texcoord.add_data2f(0.25f, 2/3.0f);     // 12
-    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f(0.0f, -1.0f, 0.0f);   texcoord.add_data2f(0.25f, 2/3.0f);     // 13
-    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f(-1.0f, 0.0f, 0.0f);   texcoord.add_data2f(0.25f, 2/3.0f);     // 14
-    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f(0.0f, 0.0f, 1.0f);    texcoord.add_data2f(0.5f, 2/3.0f);      // 15
-    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f(0.0f, -1.0f, 0.0f);   texcoord.add_data2f(0.5f, 2/3.0f);      // 16
-    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f(1.0f, 0.0f, 0.0f);    texcoord.add_data2f(0.5f, 2/3.0f);      // 17
-    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f(0.0f, 0.0f, 1.0f);    texcoord.add_data2f(0.5f, 1.0f);        // 18
-    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f(0.0f, 1.0f, 0.0f);    texcoord.add_data2f(0.75f, 2/3.0f);     // 19
-    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f(1.0f, 0.0f, 0.0f);    texcoord.add_data2f(0.75f, 2/3.0f);     // 20
-    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f(0.0f, 0.0f, 1.0f);    texcoord.add_data2f(0.25f, 1.0f);       // 21
-    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f(0.0f, 1.0f, 0.0f);    texcoord.add_data2f(1.0f, 2/3.0f);      // 22
-    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f(-1.0f, 0.0f, 0.0f);   texcoord.add_data2f(0.0f, 2/3.0f);      // 23
+    // top
+    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f( 0.0f,  0.0f,  1.0f);     texcoord.add_data2f(0.5f, 1.0f);        // 0
+    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f( 0.0f,  0.0f,  1.0f);     texcoord.add_data2f(0.25f, 1.0f);       // 1
+    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f( 0.0f,  0.0f,  1.0f);     texcoord.add_data2f(0.5f, 2/3.0f);      // 2
+    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f( 0.0f,  0.0f,  1.0f);     texcoord.add_data2f(0.25f, 2/3.0f);     // 3
+
+    // right
+    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f( 1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.75f, 1/3.0f);     // 4
+    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f( 1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.75f, 2/3.0f);     // 5
+    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f( 1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.5f, 1/3.0f);      // 6
+    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f( 1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.5f, 2/3.0f);      // 7
+
+    // back
+    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f( 0.0f,  1.0f,  0.0f);     texcoord.add_data2f(1.0f, 1/3.0f);      // 8
+    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f( 0.0f,  1.0f,  0.0f);     texcoord.add_data2f(1.0f, 2/3.0f);      // 9
+    vertex.add_data3f(+0.5f, +0.5f, +0.5f);     normal.add_data3f( 0.0f,  1.0f,  0.0f);     texcoord.add_data2f(0.75f, 2/3.0f);     // 10
+    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f( 0.0f,  1.0f,  0.0f);     texcoord.add_data2f(0.75f, 1/3.0f);     // 11
+
+    // bottom
+    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f( 0.0f,  0.0f, -1.0f);     texcoord.add_data2f(0.25f, 1/3.0f);     // 12
+    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f( 0.0f,  0.0f, -1.0f);     texcoord.add_data2f(0.25f, 0.0f);       // 13
+    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f( 0.0f,  0.0f, -1.0f);     texcoord.add_data2f(0.5f, 1/3.0f);      // 14
+    vertex.add_data3f(+0.5f, +0.5f, -0.5f);     normal.add_data3f( 0.0f,  0.0f, -1.0f);     texcoord.add_data2f(0.5f, 0.0f);        // 15
+
+    // front
+    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f( 0.0f, -1.0f,  0.0f);     texcoord.add_data2f(0.25f, 1/3.0f);     // 16
+    vertex.add_data3f(+0.5f, -0.5f, -0.5f);     normal.add_data3f( 0.0f, -1.0f,  0.0f);     texcoord.add_data2f(0.5f, 1/3.0f);      // 17
+    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f( 0.0f, -1.0f,  0.0f);     texcoord.add_data2f(0.25f, 2/3.0f);     // 18
+    vertex.add_data3f(+0.5f, -0.5f, +0.5f);     normal.add_data3f( 0.0f, -1.0f,  0.0f);     texcoord.add_data2f(0.5f, 2/3.0f);      // 19
+
+    // left
+    vertex.add_data3f(-0.5f, -0.5f, -0.5f);     normal.add_data3f(-1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.25f, 1/3.0f);     // 20
+    vertex.add_data3f(-0.5f, -0.5f, +0.5f);     normal.add_data3f(-1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.25f, 2/3.0f);     // 21
+    vertex.add_data3f(-0.5f, +0.5f, -0.5f);     normal.add_data3f(-1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.0f, 1/3.0f);      // 22
+    vertex.add_data3f(-0.5f, +0.5f, +0.5f);     normal.add_data3f(-1.0f,  0.0f,  0.0f);     texcoord.add_data2f(0.0f, 2/3.0f);      // 23
 
     // create indices
     PT(GeomTriangles) prim = new GeomTriangles(Geom::UsageHint::UH_static);
     prim->reserve_num_vertices(36);
-    prim->add_vertices(0, 6, 3);
-    prim->add_vertices(0, 9, 6);
-    prim->add_vertices(12, 15, 18);
-    prim->add_vertices(12, 18, 21);
-    prim->add_vertices(22, 19, 7);
-    prim->add_vertices(22, 7, 10);
-    prim->add_vertices(13, 4, 16);
-    prim->add_vertices(13, 1, 4);
-    prim->add_vertices(14, 23, 11);
-    prim->add_vertices(14, 11, 2);
-    prim->add_vertices(17, 5, 8);
-    prim->add_vertices(17, 8, 20);
+    prim->add_vertices(0, 1, 2);
+    prim->add_vertices(3, 2, 1);
+    prim->add_vertices(4, 5, 7);
+    prim->add_vertices(6, 4, 7);
+    prim->add_vertices(10, 11, 9);
+    prim->add_vertices(8, 9, 11);
+    prim->add_vertices(12, 13, 14);
+    prim->add_vertices(15, 14, 13);
+    prim->add_vertices(16, 17, 18);
+    prim->add_vertices(19, 18, 17);
+    prim->add_vertices(20, 21, 22);
+    prim->add_vertices(23, 22, 21);
     prim->close_primitive();
 
     PT(Geom) geom = new Geom(vdata);
