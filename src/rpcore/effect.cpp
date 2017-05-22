@@ -435,13 +435,15 @@ bool Effect::do_load(const std::string& filename)
         const std::string& fragment_src = impl_->generated_shader_paths_.at("fragment-" + pass_id_multiview.first);
         std::string geometry_src;
 
-        if (impl_->generated_shader_paths_.find("geometry-" + pass_id_multiview.first) != impl_->generated_shader_paths_.end())
-            geometry_src = impl_->generated_shader_paths_.at("geometry-" + pass_id_multiview.first);
+        auto geometry_src_iter = impl_->generated_shader_paths_.find("geometry-" + pass_id_multiview.first);
+        if (geometry_src_iter != impl_->generated_shader_paths_.end())
+            geometry_src = geometry_src_iter->second;
 
-        if (geometry_src.empty())
-            impl_->shader_objs_[pass_id_multiview.first] = RPLoader::load_shader({vertex_src, fragment_src});
-        else
-            impl_->shader_objs_[pass_id_multiview.first] = RPLoader::load_shader({vertex_src, fragment_src, geometry_src});
+#if _MSC_VER >= 1900
+        impl_->shader_objs_.insert_or_assign(pass_id_multiview.first, RPLoader::load_shader({vertex_src, fragment_src, geometry_src}));
+#else
+        impl_->shader_objs_.insert({pass_id_multiview.first, RPLoader::load_shader({vertex_src, fragment_src, geometry_src})});
+#endif
     }
 
     return true;
