@@ -2,6 +2,7 @@
 
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
+#include <geomPoints.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
 
@@ -19,6 +20,30 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
     geom_node->add_geom(geom, state);
 
     return NodePath(geom_node);
+}
+
+NodePath create_points(const std::string& name, int count)
+{
+        // create vertices
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), Geom::UsageHint::UH_static);
+    vdata->unclean_set_num_rows(count);
+
+    GeomVertexWriter vertex(vdata, InternalName::get_vertex());
+
+    for (int k = 0; k < count; ++k)
+        vertex.add_data3f(0.0f);
+
+    // create indices
+    PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
+    prim->reserve_num_vertices(count);
+    for (int k = 0; k < count; ++k)
+        prim->add_vertex(k);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    return create_geom_node(name, geom);
 }
 
 NodePath create_cube(const std::string& name)
