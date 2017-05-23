@@ -38,17 +38,17 @@ private:
     template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
 
 public:
-	static RenderPipeline* get_global_ptr(void);
+    static RenderPipeline* get_global_ptr(void);
 
-	RenderPipeline(void);
-	~RenderPipeline(void);
+    RenderPipeline(void);
+    ~RenderPipeline(void);
 
-	/**
-	 * Loads the pipeline configuration from a given filename. Usually
-	 * this is the 'config/pipeline.ini' file. If you call this more than once,
-	 * only the settings of the last file will be used.
-	 */
-	void load_settings(const std::string& path);
+    /**
+     * Loads the pipeline configuration from a given filename. Usually
+     * this is the 'config/pipeline.ini' file. If you call this more than once,
+     * only the settings of the last file will be used.
+     */
+    void load_settings(const std::string& path);
 
 	/** 
 	 * Reloads all shaders. This will reload the shaders of all plugins,
@@ -95,7 +95,7 @@ public:
 
 	/** See internal_set_effect. */
 	void set_effect(NodePath& nodepath, const std::string& effect_src,
-		const Effect::OptionType& options=Effect::OptionType(), int sort=30);
+		const Effect::OptionType& options={}, int sort=30);
 
 	/**
 	 * Prepares a given scene, by converting panda lights to render pipeline

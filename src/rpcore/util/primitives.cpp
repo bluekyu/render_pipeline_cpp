@@ -12,14 +12,14 @@ namespace rpcore {
 
 static NodePath create_geom_node(const std::string& name, Geom* geom)
 {
-    // default material
-    CPT(RenderState) state = RenderState::make_empty();
-    state = state->add_attrib(MaterialAttrib::make(RPMaterial().get_material()));
-
     PT(GeomNode) geom_node = new GeomNode(name);
-    geom_node->add_geom(geom, state);
+    geom_node->add_geom(geom);
 
-    return NodePath(geom_node);
+    // default material
+    NodePath np(geom_node);
+    np.set_material(RPMaterial().get_material());
+
+    return np;
 }
 
 NodePath create_points(const std::string& name, int count)

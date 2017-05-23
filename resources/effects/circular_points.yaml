@@ -1,0 +1,12 @@
+# Circular Point Effect
+
+vertex:
+    inout: |
+        uniform mat4 p3d_ModelViewMatrix;
+        uniform float point_radius;
+
+    post_transform: |
+        gl_PointSize = point_radius / -(p3d_ModelViewMatrix * p3d_Vertex).z;
+
+
+fragment:
