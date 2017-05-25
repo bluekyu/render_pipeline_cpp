@@ -5,7 +5,6 @@
 #include <geomPoints.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
-#include <shaderAttrib.h>
 
 #include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
@@ -24,16 +23,18 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
     return np;
 }
 
-NodePath create_points(const std::string& name, int count)
+NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, float radius, GeomEnums::UsageHint buffer_hint)
 {
+    const size_t count = positions.size();
+
     // create vertices
-    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), Geom::UsageHint::UH_static);
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
     vdata->unclean_set_num_rows(count);
 
     GeomVertexWriter vertex(vdata, InternalName::get_vertex());
 
     for (int k = 0; k < count; ++k)
-        vertex.add_data3f(0.0f);
+        vertex.add_data3f(positions[k]);
 
     // create indices
     PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
@@ -45,18 +46,8 @@ NodePath create_points(const std::string& name, int count)
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
-    return create_geom_node(name, geom);
-}
-
-NodePath create_circular_points(const std::string& name, int count, float radius)
-{
-    NodePath np = create_points(name, count);
-
-    np.set_shader_input("point_radius", radius);
-
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "effects/circular_points.yaml");
-    np.set_attrib(DCAST(ShaderAttrib, np.get_attrib(ShaderAttrib::get_class_type()))->set_flag(ShaderAttrib::F_shader_point_size, true));
-
+    NodePath np = create_geom_node(name, geom);
+    np.set_render_mode_thickness(radius);
     return np;
 }
 

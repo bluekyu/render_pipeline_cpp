@@ -128,7 +128,7 @@ void InstancingNode::remove_instance(int instance_index, bool upload)
 {
     if (instance_index >= static_cast<int>(impl_->transforms_.size()))
     {
-        std::cout << "Out of range in transform of InstancingNode.";
+        RPObject::global_error("InstancingNode", "Out of range in transform of InstancingNode.");
         return;
     }
 
@@ -159,7 +159,7 @@ void InstancingNode::set_transform(const LMatrix4f& transform, int instance_inde
 {
     if (instance_index >= static_cast<int>(impl_->transforms_.size()))
     {
-        std::cout << "Out of range in transform of InstancingNode.";
+        RPObject::global_error("InstancingNode", "Out of range in transform of InstancingNode.");
         return;
     }
 
