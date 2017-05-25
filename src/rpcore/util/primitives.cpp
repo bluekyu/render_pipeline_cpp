@@ -5,7 +5,9 @@
 #include <geomPoints.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
+#include <shaderAttrib.h>
 
+#include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 namespace rpcore {
@@ -24,7 +26,7 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
 
 NodePath create_points(const std::string& name, int count)
 {
-        // create vertices
+    // create vertices
     PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), Geom::UsageHint::UH_static);
     vdata->unclean_set_num_rows(count);
 
@@ -44,6 +46,18 @@ NodePath create_points(const std::string& name, int count)
     geom->add_primitive(prim);
 
     return create_geom_node(name, geom);
+}
+
+NodePath create_circular_points(const std::string& name, int count, float radius)
+{
+    NodePath np = create_points(name, count);
+
+    np.set_shader_input("point_radius", radius);
+
+    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "effects/circular_points.yaml");
+    np.set_attrib(DCAST(ShaderAttrib, np.get_attrib(ShaderAttrib::get_class_type()))->set_flag(ShaderAttrib::F_shader_point_size, true));
+
+    return np;
 }
 
 NodePath create_cube(const std::string& name)

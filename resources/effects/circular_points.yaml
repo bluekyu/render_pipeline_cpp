@@ -3,10 +3,14 @@
 vertex:
     inout: |
         uniform mat4 p3d_ModelViewMatrix;
+        uniform mat4 p3d_ProjectionMatrix;
         uniform float point_radius;
 
     post_transform: |
-        gl_PointSize = point_radius / -(p3d_ModelViewMatrix * p3d_Vertex).z;
+        gl_PointSize = point_radius * WINDOW_WIDTH * p3d_ProjectionMatrix[0][0] / -(p3d_ModelViewMatrix * p3d_Vertex).z;
+
+        // override normal
+        vOutput.normal = normalize((p3d_ModelMatrix * vec4(0, -1, 0, 0)).xyz);
 
 
 fragment:
