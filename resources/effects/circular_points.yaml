@@ -22,5 +22,5 @@ fragment:
         if (sphere_radius_square > 1.0f) discard;
 
     material: |
-        m.normal.xy = circular_points_unit_coord;
-        m.normal.z = sqrt(1.0f - dot(circular_points_unit_coord, circular_points_unit_coord));
+        m.normal.xz = circular_points_unit_coord;
+        m.normal.y = -sqrt(1.0f - dot(circular_points_unit_coord, circular_points_unit_coord));

@@ -350,7 +350,7 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
     const LPoint3& camera_global_pos = camera.get_pos(render);
 
     debugger->debug_lines[4]->set_text(fmt::format(
-        "Time: {} ({:1.3f}) |  Sun  {:0.2f} {:0.2f} {:0.2f} |  X {:3.1f}  Y {:3.1f}  Z {:3.1f} |  {:2d} tasks |  scheduled: {:2d}",
+        "Time: {} ({:1.3f}) |  Sun  {:0.2f} {:0.2f} {:0.2f} |  X {:4.2f}  Y {:4.2f}  Z {:4.2f} |  {:2d} tasks |  scheduled: {:2d}",
 
         pipeline->get_daytime_mgr()->get_formatted_time(),
         pipeline->get_daytime_mgr()->get_time(),
