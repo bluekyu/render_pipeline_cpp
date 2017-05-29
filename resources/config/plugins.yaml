@@ -23,6 +23,17 @@ enabled:
     # - volumetrics
     # - vxgi
 
+# stereo plugins
+#enabled:
+#    - bloom
+#    - color_correction
+#    - forward_shading
+#    - pssm
+#    - scattering
+#    - sky_ao
+#    - openvr
+#    - env_probes
+
 
 overrides:
     ao:
