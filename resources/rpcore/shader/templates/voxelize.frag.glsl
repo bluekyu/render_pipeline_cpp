@@ -43,6 +43,9 @@ uniform writeonly image3D RESTRICT VoxelGridDest;
 #pragma include "includes/nonviewspace_shading_pipeline.inc.glsl"
 
 void main() {
+
+    %pretest%
+
     vec2 texcoord = vOutput.texcoord;
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
 

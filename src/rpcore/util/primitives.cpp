@@ -23,7 +23,7 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
     return np;
 }
 
-NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, float radius, GeomEnums::UsageHint buffer_hint)
+NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, GeomEnums::UsageHint buffer_hint)
 {
     const size_t count = positions.size();
 
@@ -46,9 +46,7 @@ NodePath create_points(const std::string& name, const std::vector<LPoint3f>& pos
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
-    NodePath np = create_geom_node(name, geom);
-    np.set_render_mode_thickness(radius);
-    return np;
+    return create_geom_node(name, geom);
 }
 
 NodePath create_cube(const std::string& name)

@@ -33,7 +33,7 @@ struct CircularPointsNode::Impl
 CircularPointsNode::Impl::Impl(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     const std::string& effect_path, GeomEnums::UsageHint buffer_hint)
 {
-    points_np_ = create_points(name, positions, radius);
+    points_np_ = create_points(name, positions);
     positions_ = positions;
 
     // Load the effect

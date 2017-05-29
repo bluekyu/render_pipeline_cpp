@@ -76,6 +76,8 @@ layout(location = 0) out vec4 color_result;
 
 void main() {
 
+    %pretest%
+
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
 
     vec2 texcoord = vOutput.texcoord;

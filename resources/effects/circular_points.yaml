@@ -8,9 +8,19 @@ vertex:
 
     post_transform: |
         gl_PointSize = point_radius * WINDOW_WIDTH * p3d_ProjectionMatrix[0][0] / -(p3d_ModelViewMatrix * p3d_Vertex).z;
-
-        // override normal
-        vOutput.normal = normalize((p3d_ModelMatrix * vec4(0, -1, 0, 0)).xyz);
+        vOutput.normal = vec3((gl_Position.xy / gl_Position.w + vec2(1.0f)) / 2.0f * SCREEN_SIZE,
+            gl_PointSize / 2.0f);
 
 
 fragment:
+    inout: |
+        vec2 circular_points_unit_coord;
+
+    pretest: |
+        circular_points_unit_coord = (gl_FragCoord.xy - vOutput.normal.xy) / vOutput.normal.z;
+        const float sphere_radius_square = dot(circular_points_unit_coord, circular_points_unit_coord);
+        if (sphere_radius_square > 1.0f) discard;
+
+    material: |
+        m.normal.xy = circular_points_unit_coord;
+        m.normal.z = sqrt(1.0f - dot(circular_points_unit_coord, circular_points_unit_coord));

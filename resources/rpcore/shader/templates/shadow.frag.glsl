@@ -41,6 +41,9 @@ uniform sampler2D p3d_Texture0;
 #endif
 
 void main() {
+
+    %pretest%
+
     #if OPT_ALPHA_TESTING
 
         // Alpha tested shadows. This seems to be quite expensive, so we are
