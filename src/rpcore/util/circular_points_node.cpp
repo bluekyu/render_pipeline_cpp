@@ -25,6 +25,8 @@ struct CircularPointsNode::Impl
 
     void upload_positions(void);
 
+    void set_active_point_count(int count);
+
     bool dirty_ = true;
     NodePath points_np_;
     std::vector<LPoint3f> positions_;
@@ -86,6 +88,18 @@ void CircularPointsNode::Impl::upload_positions(void)
     dirty_ = false;
 }
 
+void CircularPointsNode::Impl::set_active_point_count(int count)
+{
+    if (count > positions_.size())
+    {
+        RPObject::global_warn("CircularPointsNode",
+            fmt::format("Given count ({}) is bigger than the count of stored points ({}).", count, positions_.size()));
+        return;
+    }
+
+    DCAST(GeomNode, points_np_.node())->modify_geom(0)->modify_primitive(0)->modify_vertices(count);
+}
+
 // ************************************************************************************************
 CircularPointsNode::CircularPointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     const std::string& effect_path, GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>(name, positions,
@@ -145,6 +159,11 @@ void CircularPointsNode::upload_positions(void)
 void CircularPointsNode::set_radius(float radius)
 {
     impl_->set_radius(radius);
+}
+
+void CircularPointsNode::set_active_point_count(int count)
+{
+    impl_->set_active_point_count(count);
 }
 
 }

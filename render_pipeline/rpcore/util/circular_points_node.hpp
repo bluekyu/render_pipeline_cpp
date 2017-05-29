@@ -38,6 +38,14 @@ public:
 
     void set_radius(float radius);
 
+    /**
+     * Set a count of active points.
+     *
+     * Panda3D will draw points as given counts.
+     * If @a count is -1, all points will be used.
+     */
+    void set_active_point_count(int count);
+
 private:
     struct Impl;
     std::shared_ptr<Impl> impl_;
