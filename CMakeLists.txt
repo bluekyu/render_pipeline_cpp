@@ -154,8 +154,6 @@ endif()
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md"
     DESTINATION "share/${PROJECT_NAME}/")
-
-export(PACKAGE ${PACKAGE_NAME})
 # ==================================================================================================
 
 # === subdirectory =================================================================================
