@@ -1,6 +1,10 @@
-# render pipeline setting
-set(render_pipeline_DATA_DIR "share/render_pipeline")
-set(render_pipeline_PLUGIN_DIR "${render_pipeline_DATA_DIR}/rpplugins")
+# render pipeline variable
+set(render_pipeline_DATA_DIR "share/render_pipeline" CACHE INTERNAL
+    "Relative path of data directory in Render Pipeline"
+)
+set(render_pipeline_PLUGIN_DIR "${render_pipeline_DATA_DIR}/rpplugins" CACHE INTERNAL
+    "Relative path of plugin directory in Render Pipeline"
+)
 
 # help function to find rpplugin
 function(render_pipeline_FIND_PLUGINS plugin_id_list)

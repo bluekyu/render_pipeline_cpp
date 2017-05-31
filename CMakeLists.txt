@@ -32,8 +32,8 @@ message("Render Pipeline building version: ${render_pipeline_VERSION}")
 # configure project package
 include(FindPackages)
 
-set(render_pipeline_SETTING_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-setting.cmake")
-include(${render_pipeline_SETTING_CMAKE_FILE})
+set(render_pipeline_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
+include(${render_pipeline_MACRO_CMAKE_FILE})
 
 # === project specific packages ===
 # find spdlog
@@ -130,7 +130,7 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_p
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render_pipeline_DATA_DIR}/")
 
-install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_SETTING_CMAKE_FILE}
+install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_MACRO_CMAKE_FILE}
     DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
 install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
