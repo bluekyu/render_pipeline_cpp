@@ -17,6 +17,7 @@ set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 # === plugin specific packages ===
+render_pipeline_FIND_PLUGINS("pssm")
 # ==================================================================================================
 
 # === target =======================================================================================
@@ -59,7 +60,9 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "render_pipeline/rpplugins"
 )
+# ==================================================================================================
 
+# === target =======================================================================================
 # create plugin interface target
 add_library(${RPPLUGIN_ID} INTERFACE)
 
@@ -91,11 +94,6 @@ configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
 )
 
 add_library(${TARGET_NAMESPACE}${RPPLUGIN_ID} ALIAS ${RPPLUGIN_ID})
-export(TARGETS ${RPPLUGIN_ID}
-    NAMESPACE ${TARGET_NAMESPACE}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
-)
-export(PACKAGE ${PACKAGE_NAME})
 # ==================================================================================================
 
 # === install ======================================================================================

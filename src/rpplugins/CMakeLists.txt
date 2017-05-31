@@ -7,8 +7,9 @@ cmake_minimum_required(VERSION 3.6)
 # common variable
 set(RPPLUGIN_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugin-config.cmake.in")
 
-set(RENDER_PIPELINE_PLUGINS "ao" "bloom" "clouds" "color_correction" "dof" "env_probes" "forward_shading"
-    "motion_blur" "pssm" "scattering" "skin_shading" "sky_ao" "smaa" "ssr" "volumetrics" "vxgi"
+set(RENDER_PIPELINE_PLUGINS "ao" "bloom" "clouds" "color_correction" "dof" "forward_shading"
+    "motion_blur" "volumetrics" "scattering" "pssm" "env_probes" "skin_shading" "sky_ao" "smaa"
+    "ssr" "vxgi"
 )
 
 # optional plugin
