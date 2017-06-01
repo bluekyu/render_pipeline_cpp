@@ -14,28 +14,28 @@ class RenderTarget;
 class CollectUsedCellsStage: public RenderStage
 {
 public:
-	CollectUsedCellsStage(RenderPipeline& pipeline): RenderStage(pipeline, "CollectUsedCellsStage") {}
+    CollectUsedCellsStage(RenderPipeline& pipeline): RenderStage(pipeline, "CollectUsedCellsStage") {}
 
-	RequireType& get_required_inputs(void) const final { return required_inputs; }
-	RequireType& get_required_pipes(void) const final { return required_pipes; }
-	ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs(void) const final { return required_inputs; }
+    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    ProduceType get_produced_pipes(void) const final;
 
-	void create(void) final;
-	void reload_shaders(void) final;
+    void create(void) final;
+    void reload_shaders(void) final;
 
-	void update(void) final;
-	void set_dimensions(void) final;
+    void update(void) final;
+    void set_dimensions(void) final;
 
 private:
-	std::string get_plugin_id(void) const final;
+    std::string get_plugin_id(void) const final;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 
-	std::shared_ptr<Image> _cell_list_buffer;
-	std::shared_ptr<Image> _cell_index_buffer;
+    std::shared_ptr<Image> _cell_list_buffer;
+    std::shared_ptr<Image> _cell_index_buffer;
 
-	std::shared_ptr<RenderTarget> _target = nullptr;
+    std::shared_ptr<RenderTarget> _target = nullptr;
 };
 
-}	// namespace rpcore
+}
