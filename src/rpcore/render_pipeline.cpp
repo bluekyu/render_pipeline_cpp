@@ -88,8 +88,6 @@ struct RenderPipeline::Impl
      */
     static AsyncTask::DoneStatus plugin_post_render_update(GenericAsyncTask* task, void* user_data);
 
-    static AsyncTask::DoneStatus handle_window_resize(GenericAsyncTask* task, void* user_data);
-
     /**
      * Checks for window events. This mainly handles incoming resizes,
      * and calls the required handlers.
@@ -156,6 +154,8 @@ struct RenderPipeline::Impl
      * default field of view is very small, and thus we increase it.
      */
     void adjust_camera_settings(void);
+
+    void adjust_lens_setting(void);
 
     /**
      * Initialize the internally used render resolution. This might differ
@@ -363,25 +363,12 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(GenericAsy
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::handle_window_resize(GenericAsyncTask* task, void* user_data)
-{
-    RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
-
-    rp_impl->showbase_->get_cam_lens()->set_film_size(Globals::resolution.get_x(), Globals::resolution.get_y());
-
-    rp_impl->light_mgr_->compute_tile_size();
-    rp_impl->stage_mgr_->handle_window_resize();
-    if (rp_impl->debugger)
-        rp_impl->debugger->handle_window_resize();
-    rp_impl->plugin_mgr_->on_window_resized();
-
-    return AsyncTask::DS_done;
-}
-
 void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
 {
     RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
     const auto& rp_impl = rp->impl_;
+
+    auto last_resolution = Globals::resolution;
 
     LVecBase2i window_dims(rp_impl->showbase_->get_win()->get_size());
     if (window_dims != rp_impl->last_window_dims && window_dims != Globals::native_resolution)
@@ -401,9 +388,16 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
         rp->debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
         Globals::native_resolution = window_dims;
         rp_impl->compute_render_resolution();
+        rp_impl->handle_window_resize();
     }
 
-    rp_impl->handle_window_resize();
+    // set lens parameter after window event.
+    rp_impl->showbase_->add_task([](GenericAsyncTask* task, void* user_data) -> AsyncTask::DoneStatus
+    {
+        RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
+        rp_impl->adjust_lens_setting();
+        return AsyncTask::DS_done;
+    }, rp_impl.get(), "RP_HandleWindowResize");
 }
 
 void RenderPipeline::Impl::reload_shaders(void)
@@ -563,9 +557,7 @@ void RenderPipeline::Impl::set_default_effect(void)
 
 void RenderPipeline::Impl::adjust_camera_settings(void)
 {
-    Lens* lens = showbase_->get_cam_lens();
-    lens->set_near_far(0.1f, 70000.0f);
-    lens->set_fov(40.0f);
+    adjust_lens_setting();
 
     if (self_.get_setting<bool>("pipeline.stereo_mode"))
     {
@@ -577,6 +569,14 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
         if (cam.find("right_eye").is_empty())
             cam.attach_new_node("right_eye");
     }
+}
+
+void RenderPipeline::Impl::adjust_lens_setting(void)
+{
+    Lens* lens = showbase_->get_cam_lens();
+    lens->set_near_far(0.1f, 70000.0f);
+    lens->set_fov(40.0f);
+    lens->set_film_size(Globals::resolution.get_x(), Globals::resolution.get_y());
 }
 
 void RenderPipeline::Impl::compute_render_resolution(void)
@@ -710,8 +710,13 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
 
 void RenderPipeline::Impl::handle_window_resize(void)
 {
-    // set lens parameter after window event.
-    showbase_->add_task(&Impl::handle_window_resize, this, "RP_HandleWindowResize", -1000);
+    adjust_lens_setting();
+
+    light_mgr_->compute_tile_size();
+    stage_mgr_->handle_window_resize();
+    if (debugger)
+        debugger->handle_window_resize();
+    plugin_mgr_->on_window_resized();
 }
 
 template <class T>
