@@ -28,6 +28,11 @@ void UpscaleStage::create(void)
 	target_->prepare_buffer();
 }
 
+void UpscaleStage::set_dimensions(void)
+{
+    target_->set_size(Globals::native_resolution);
+}
+
 void UpscaleStage::reload_shaders(void)
 {
 	target_->set_shader(load_shader({"upscale_stage.frag.glsl"}, stereo_mode_));

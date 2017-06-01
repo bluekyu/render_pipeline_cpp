@@ -19,6 +19,8 @@ public:
 	void create(void) final;
 	void reload_shaders(void) final;
 
+    void set_dimensions(void) final;
+
 private:
 	std::string get_plugin_id(void) const final;
 
