@@ -20,7 +20,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL MovementController
 {
 public:
-	using MotionPathType = std::vector<std::pair<LVecBase3, LVecBase3>>;
+    using MotionPathType = std::vector<std::pair<LVecBase3, LVecBase3>>;
 
 public:
     MovementController(rppanda::ShowBase* showbase);
