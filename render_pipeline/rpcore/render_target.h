@@ -1,15 +1,9 @@
-/**
- * @file render_target.h
- *
- * Ported from RenderPipeline/rpcore/render_target.py.
- */
-
 #pragma once
+
+#include <texture.h>
 
 #include <unordered_map>
 #include <vector>
-
-#include <texture.h>
 
 #include <boost/optional.hpp>
 
@@ -49,7 +43,7 @@ public:
      */
     void set_size(const std::string& width, const std::string& height) NOEXCEPT;
     void set_size(const std::string& size) NOEXCEPT;
-    
+
     /**
      * Set size_constraint.
      * If width or height has negative value,
@@ -130,4 +124,4 @@ inline void RenderTarget::add_color_attachment(int bits, bool alpha)
     add_color_attachment(LVecBase4i(bits, bits, bits, alpha ? bits : 0));
 }
 
-}   // namespace rpcore
+}

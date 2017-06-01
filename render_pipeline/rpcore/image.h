@@ -1,9 +1,9 @@
 #pragma once
 
+#include <texture.h>
+
 #include <unordered_map>
 #include <utility>
-
-#include <texture.h>
 
 #include <render_pipeline/rpcore/rpobject.h>
 

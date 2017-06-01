@@ -1,11 +1,11 @@
 #pragma once
 
-#include <unordered_map>
-#include <vector>
-
 #include <texture.h>
 #include <shader.h>
 #include <shaderInput.h>
+
+#include <unordered_map>
+#include <vector>
 
 #include <render_pipeline/rpcore/rpobject.h>
 #include <render_pipeline/rpcore/util/shader_input_blocks.h>
@@ -15,8 +15,6 @@ namespace rpcore {
 
 class RenderPipeline;
 class RenderTarget;
-class SimpleInputBlock;
-class GroupedInputBlock;
 
 class StageData
 {

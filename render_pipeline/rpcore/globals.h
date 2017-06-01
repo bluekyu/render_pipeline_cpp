@@ -20,14 +20,14 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Globals
 {
 public:
-	static void load(rppanda::ShowBase* showbase);
+    static void load(rppanda::ShowBase* showbase);
 
-	static rppanda::ShowBase* base;
-	static NodePath render;
-	static ClockObject* clock;
-	static PT(TextFont) font;
-	static LVecBase2i resolution;
-	static LVecBase2i native_resolution;
+    static rppanda::ShowBase* base;
+    static NodePath render;
+    static ClockObject* clock;
+    static PT(TextFont) font;
+    static LVecBase2i resolution;
+    static LVecBase2i native_resolution;
 };
 
-}	// namespace rpcore
+}

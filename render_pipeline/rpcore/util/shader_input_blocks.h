@@ -1,10 +1,9 @@
 #pragma once
 
+#include <shaderInput.h>
+
 #include <unordered_map>
 #include <typeindex>
-
-#include <luse.h>
-#include <shaderInput.h>
 
 #include <boost/variant.hpp>
 
