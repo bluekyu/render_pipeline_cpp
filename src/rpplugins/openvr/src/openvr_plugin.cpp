@@ -17,7 +17,7 @@
 #include <geomVertexWriter.h>
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
 #include "openvr_render_stage.h"

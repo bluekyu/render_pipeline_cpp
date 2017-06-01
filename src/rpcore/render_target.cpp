@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/render_target.h"
+#include "render_pipeline/rpcore/render_target.hpp"
 
 #include <graphicsWindow.h>
 #include <graphicsEngine.h>
@@ -9,7 +9,7 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
 
 #include "rpcore/util/post_process_region.h"

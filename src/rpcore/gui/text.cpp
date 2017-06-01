@@ -1,5 +1,5 @@
 #include "render_pipeline/rpcore/gui/text.h"
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 
 #include <map>
 

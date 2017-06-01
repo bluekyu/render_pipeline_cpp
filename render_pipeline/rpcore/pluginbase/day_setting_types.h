@@ -7,7 +7,7 @@
 #include <string>
 #include <memory>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace YAML {
 class Node;

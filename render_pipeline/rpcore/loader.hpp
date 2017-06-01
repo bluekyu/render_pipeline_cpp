@@ -4,7 +4,7 @@
 #include <nodePath.h>
 #include <textFont.h>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 
@@ -48,7 +48,7 @@ public:
 };
 
 // ************************************************************************************************
-RPLoader::RPLoader(void): RPObject("RPLoader")
+inline RPLoader::RPLoader(void): RPObject("RPLoader")
 {
 }
 

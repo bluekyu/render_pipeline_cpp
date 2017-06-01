@@ -2,7 +2,7 @@
 
 #include <graphicsEngine.h>
 
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/gui/sprite.h>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 

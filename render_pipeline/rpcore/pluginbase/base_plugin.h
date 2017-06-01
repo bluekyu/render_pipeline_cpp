@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
 
 #define RENDER_PIPELINE_PLUGIN_CREATOR(PLUGIN_TYPE) \

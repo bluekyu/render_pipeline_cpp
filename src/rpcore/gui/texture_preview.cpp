@@ -6,7 +6,7 @@
 #include <render_pipeline/rpcore/gui/sprite.h>
 #include <render_pipeline/rpcore/gui/labeled_checkbox.h>
 #include <render_pipeline/rpcore/gui/slider.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/image.hpp>
 
 #include "rpcore/util/display_shader_builder.h"
 

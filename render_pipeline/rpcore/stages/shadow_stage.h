@@ -2,7 +2,7 @@
 
 #include <samplerState.h>
 
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/render_stage.hpp>
 
 class GraphicsOutput;
 

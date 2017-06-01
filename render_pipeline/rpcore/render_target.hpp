@@ -7,7 +7,7 @@
 
 #include <boost/optional.hpp>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class ShaderInput;
 class GraphicsBuffer;

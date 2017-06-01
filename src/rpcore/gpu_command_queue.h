@@ -2,8 +2,8 @@
 
 #include <pta_int.h>
 
-#include "render_pipeline/rpcore/rpobject.h"
-#include "render_pipeline/rpcore/image.h"
+#include "render_pipeline/rpcore/rpobject.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 
 namespace rpcore {
 

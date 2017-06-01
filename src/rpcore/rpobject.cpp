@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/rpobject.h"
+#include "render_pipeline/rpcore/rpobject.hpp"
 
 #include <spdlog/logger.h>
 

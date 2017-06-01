@@ -2,7 +2,7 @@
 
 #include <camera.h>
 
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/render_stage.hpp>
 
 namespace rpplugins {
 

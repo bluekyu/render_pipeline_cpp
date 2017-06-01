@@ -5,7 +5,7 @@
 #include <nodePath.h>
 #include <genericAsyncTask.h>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class SceneGraphAnalyzer;
 

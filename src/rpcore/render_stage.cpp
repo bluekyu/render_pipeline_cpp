@@ -1,14 +1,14 @@
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/render_stage.hpp>
 
 #include <graphicsWindow.h>
 
-#include "render_pipeline/rpcore/loader.h"
-#include "render_pipeline/rpcore/render_target.h"
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.h"
 #include "render_pipeline/rpcore/pluginbase/base_plugin.h"
-#include "render_pipeline/rpcore/globals.h"
-#include "render_pipeline/rpcore/stage_manager.h"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
 
 namespace rpcore {

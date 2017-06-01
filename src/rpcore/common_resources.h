@@ -2,7 +2,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/util/shader_input_blocks.h>
 
 namespace rppanda {

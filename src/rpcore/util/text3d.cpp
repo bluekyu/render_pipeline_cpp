@@ -6,9 +6,9 @@
 #include <textNode.h>
 #include <dynamicTextFont.h>
 
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
-#include "render_pipeline/rpcore/loader.h"
+#include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 namespace rpcore {

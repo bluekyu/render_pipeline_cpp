@@ -6,7 +6,7 @@
 #include <geomNode.h>
 #include <materialAttrib.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 namespace rpcore {

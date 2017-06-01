@@ -1,10 +1,10 @@
 #include "gpu_command_queue.h"
 
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 #include <render_pipeline/rpcore/native/gpu_command.h>
 #include <render_pipeline/rpcore/native/gpu_command_list.h>
 

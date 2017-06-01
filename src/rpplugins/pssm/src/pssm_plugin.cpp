@@ -5,10 +5,10 @@
 
 #include <displayRegion.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 #include <render_pipeline/rpcore/native/pssm_camera_rig.h>
 

@@ -7,12 +7,12 @@
 #include <clockObject.h>
 #include <dynamicTextFont.h>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/light_manager.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/light_manager.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
 

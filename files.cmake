@@ -35,19 +35,19 @@ set(header_rppanda_showbase
 )
 
 set(header_rpcore
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/config.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/effect.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/globals.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/image.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/light_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/loader.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/config.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/effect.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/globals.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/image.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/light_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/loader.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/logger.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/mount_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_pipeline.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_target.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/rpobject.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stage_manager.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/mount_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_pipeline.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_target.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/rpobject.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stage_manager.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp"
 )
 

@@ -5,8 +5,8 @@
 #include <regex>
 #include <virtualFileSystem.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
-#include "render_pipeline/rpcore/stage_manager.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.h"
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.h"
 #include "render_pipeline/rpcore/util/shader_input_blocks.h"

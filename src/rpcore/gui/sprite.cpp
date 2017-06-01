@@ -1,6 +1,6 @@
 #include <render_pipeline/rpcore/gui/sprite.h>
 
-#include <render_pipeline/rpcore/loader.h>
+#include <render_pipeline/rpcore/loader.hpp>
 
 namespace rpcore {
 

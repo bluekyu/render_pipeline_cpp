@@ -5,7 +5,7 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/primitives.hpp"
 
 namespace rpcore {

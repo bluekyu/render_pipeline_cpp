@@ -2,8 +2,8 @@
 
 #include <graphicsBuffer.h>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/render_target.h>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/render_target.hpp>
 
 namespace rpcore {
 

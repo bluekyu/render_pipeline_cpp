@@ -3,7 +3,7 @@
 #include <nodePath.h>
 #include <asyncTask.h>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class GenericAsyncTask;
 

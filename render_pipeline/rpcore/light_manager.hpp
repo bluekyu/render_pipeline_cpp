@@ -3,7 +3,7 @@
 #include <LVecBase2.h>
 #include <pta_int.h>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 

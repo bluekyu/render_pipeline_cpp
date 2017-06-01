@@ -5,10 +5,10 @@
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/loader.h>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
 
 namespace rpcore {
 

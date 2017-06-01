@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 

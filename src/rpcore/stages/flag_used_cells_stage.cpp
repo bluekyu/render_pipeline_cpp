@@ -1,7 +1,7 @@
 #include <render_pipeline/rpcore/stages/flag_used_cells_stage.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/light_manager.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/light_manager.hpp>
 
 namespace rpcore {
 

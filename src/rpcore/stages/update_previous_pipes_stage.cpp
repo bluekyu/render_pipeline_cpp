@@ -2,8 +2,8 @@
 
 #include <virtualFileSystem.h>
 
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 
 namespace rpcore {
 

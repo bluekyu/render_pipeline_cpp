@@ -2,8 +2,8 @@
 
 #include <shaderInput.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
 
 namespace rpcore {
 

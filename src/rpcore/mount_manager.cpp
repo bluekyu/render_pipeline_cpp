@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/mount_manager.h"
+#include "render_pipeline/rpcore/mount_manager.hpp"
 
 #include <filename.h>
 #include <virtualFileSystem.h>

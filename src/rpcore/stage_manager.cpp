@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/stage_manager.h"
+#include "render_pipeline/rpcore/stage_manager.hpp"
 
 #include <regex>
 
@@ -11,10 +11,10 @@
 #include <spdlog/fmt/fmt.h>
 
 #include "rplibs/yaml.hpp"
-#include "render_pipeline/rpcore/image.h"
+#include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/stages/update_previous_pipes_stage.h"
-#include "render_pipeline/rpcore/render_pipeline.h"
-#include "render_pipeline/rpcore/render_stage.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/util/shader_input_blocks.h"
 
 namespace rpcore {

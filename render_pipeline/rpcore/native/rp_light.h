@@ -32,7 +32,7 @@
 #include "gpu_command.h"
 #include "shadow_source.h"
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 

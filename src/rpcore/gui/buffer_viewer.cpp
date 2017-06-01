@@ -1,6 +1,6 @@
 #include "buffer_viewer.h"
 
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
 #include <regex>
@@ -9,8 +9,8 @@
 #include <render_pipeline/rpcore/gui/text.h>
 #include <render_pipeline/rpcore/gui/sprite.h>
 #include <render_pipeline/rpcore/gui/labeled_checkbox.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 #include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
 #include <render_pipeline/rppanda/gui/direct_scroll_bar.h>

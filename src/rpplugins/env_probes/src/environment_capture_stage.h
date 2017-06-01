@@ -2,8 +2,8 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/render_stage.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/render_stage.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpplugins {
 

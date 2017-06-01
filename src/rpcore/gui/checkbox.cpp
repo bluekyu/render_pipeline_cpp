@@ -1,6 +1,6 @@
 #include <render_pipeline/rpcore/gui/checkbox.h>
 
-#include <render_pipeline/rpcore/loader.h>
+#include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rppanda/gui/direct_check_box.h>
 
 namespace rpcore {

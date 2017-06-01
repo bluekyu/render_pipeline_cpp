@@ -1,13 +1,13 @@
 #include "rpcore/gui/pipe_viewer.h"
 
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
 #include <boost/algorithm/string.hpp>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/render_stage.hpp>
 #include <render_pipeline/rpcore/gui/sprite.h>
 #include <render_pipeline/rpcore/util/generic.h>
 

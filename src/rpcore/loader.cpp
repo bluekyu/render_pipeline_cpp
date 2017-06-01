@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/loader.h"
+#include "render_pipeline/rpcore/loader.hpp"
 
 #include <chrono>
 
@@ -10,7 +10,7 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
 
 namespace rpcore {

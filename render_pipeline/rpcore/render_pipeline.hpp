@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <render_pipeline/rpcore/effect.h>
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/effect.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class PandaFramework;
 class WindowFramework;

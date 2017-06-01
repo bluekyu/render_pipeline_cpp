@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class Texture;
 class Shader;

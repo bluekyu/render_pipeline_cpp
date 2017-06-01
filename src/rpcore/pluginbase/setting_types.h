@@ -2,8 +2,8 @@
 
 #include <boost/any.hpp>
 
-#include <render_pipeline/rpcore/rpobject.h>
-#include <render_pipeline/rpcore/stage_manager.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
 
 namespace YAML {
 class Node;

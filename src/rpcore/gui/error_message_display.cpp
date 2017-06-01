@@ -1,7 +1,7 @@
 #include "rpcore/gui/error_message_display.h"
 
 #include <render_pipeline/rpcore/gui/text.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
 #include <lineStream.h>

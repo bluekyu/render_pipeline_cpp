@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render_pipeline/rpcore/rpobject.h>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 #include <transformState.h>
 #include <boundingSphere.h>

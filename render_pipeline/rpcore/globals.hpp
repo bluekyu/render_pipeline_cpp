@@ -3,7 +3,7 @@
 #include <nodePath.h>
 #include <textFont.h>
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rppanda {
 class ShowBase;

@@ -3,7 +3,7 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
-#include <render_pipeline/rpcore/loader.h>
+#include <render_pipeline/rpcore/loader.hpp>
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 

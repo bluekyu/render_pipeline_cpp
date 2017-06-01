@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 
 #include <cctype>
 #include <chrono>
@@ -16,16 +16,16 @@
 #include <genericAsyncTask.h>
 #include <geomTristrips.h>
 
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
-#include "render_pipeline/rpcore/render_target.h"
-#include "render_pipeline/rpcore/stage_manager.h"
-#include "render_pipeline/rpcore/mount_manager.h"
-#include "render_pipeline/rpcore/light_manager.h"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/mount_manager.hpp"
+#include "render_pipeline/rpcore/light_manager.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.h"
 #include "render_pipeline/rpcore/pluginbase/day_manager.h"
 #include "render_pipeline/rpcore/pluginbase/manager.h"
-#include "render_pipeline/rpcore/image.h"
+#include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/logger.hpp"
 
 #include "render_pipeline/rpcore/stages/ambient_stage.h"

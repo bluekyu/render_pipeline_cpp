@@ -2,10 +2,10 @@
 
 #include <filename.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/render_stage.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>
 
 #include "rplibs/yaml.hpp"

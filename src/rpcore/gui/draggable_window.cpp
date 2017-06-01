@@ -3,7 +3,7 @@
 #include <genericAsyncTask.h>
 #include <graphicsWindow.h>
 
-#include "render_pipeline/rpcore/globals.h"
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.h"
 #include "render_pipeline/rppanda/gui/direct_frame.h"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.h"

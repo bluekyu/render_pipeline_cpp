@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 
 #include <clockObject.h>
 

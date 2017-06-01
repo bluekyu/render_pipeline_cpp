@@ -16,7 +16,7 @@
 
 #include <boost/optional.hpp>
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 class TextFont;
 
