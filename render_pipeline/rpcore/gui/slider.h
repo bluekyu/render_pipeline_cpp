@@ -52,4 +52,4 @@ inline rppanda::DirectSlider* Slider::get_node(void) const
 	return node_;
 }
 
-}	// namespace rpcore
+}

@@ -52,4 +52,4 @@ std::string FinalStage::get_plugin_id(void) const
 	return std::string("render_pipeline_internal");
 }
 
-}	// namespace rpcore
+}

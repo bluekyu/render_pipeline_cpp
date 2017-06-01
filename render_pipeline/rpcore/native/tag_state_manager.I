@@ -89,4 +89,4 @@ inline BitMask32 TagStateManager::get_mask(const string &container_name) {
     return entry->second.mask;
 }
 
-}	// namespace rpcore
+}

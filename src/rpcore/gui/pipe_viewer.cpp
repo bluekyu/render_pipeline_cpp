@@ -260,4 +260,4 @@ void PipeViewer::populate_content(void)
 	}
 }
 
-}	// namespace rpcore
+}

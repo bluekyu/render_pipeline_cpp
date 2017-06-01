@@ -89,4 +89,4 @@ void ErrorMessageDisplay::init_notify(void)
 	Notify::ptr()->set_ostream_ptr(_notify_stream, false);
 }
 
-}	// namespace rpcore
+}

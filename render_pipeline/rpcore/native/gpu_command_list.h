@@ -54,6 +54,6 @@ class GPUCommandList {
         queue<GPUCommand> _commands;
 };
 
-}	// namespace rpcore
+}
 
 #endif // RP_GPU_COMMAND_LIST_H

@@ -68,4 +68,4 @@ inline int GPUCommandQueue::get_num_processed_commands(void) const
 	return _pta_num_commands[0];
 }
 
-}	// namespace rpcore
+}

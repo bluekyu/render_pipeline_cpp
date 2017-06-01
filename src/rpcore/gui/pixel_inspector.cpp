@@ -71,4 +71,4 @@ AsyncTask::DoneStatus PixelInspector::late_init(GenericAsyncTask* task, void* us
 	return AsyncTask::DS_done;
 }
 
-}	// namespace rpcore
+}

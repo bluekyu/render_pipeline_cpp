@@ -52,4 +52,4 @@ init_librsnative() {
   // RPPointLight::init_type();
 }
 
-}	// namespace rpcore
+}

@@ -38,4 +38,4 @@ Text::Text(const Parameters& params): RPObject("Text")
 	_node = rppanda::OnscreenText(node_params);
 }
 
-}	// namespace rpcore
+}

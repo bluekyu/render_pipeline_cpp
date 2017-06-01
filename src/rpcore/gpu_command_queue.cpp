@@ -78,4 +78,4 @@ void GPUCommandQueue::create_command_target(void)
 	_command_target->set_shader_input(ShaderInput("commandCount", _pta_num_commands));
 }
 
-}	// namespace rpcore
+}

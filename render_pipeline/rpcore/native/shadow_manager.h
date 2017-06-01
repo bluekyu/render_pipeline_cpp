@@ -89,7 +89,7 @@ class ShadowManager : public ReferenceCount {
         UpdateQueue _queued_updates;
 };
 
-}	// namespace rpcore
+}
 
 #include "shadow_manager.I"
 

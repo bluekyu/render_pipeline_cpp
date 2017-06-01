@@ -63,4 +63,4 @@ inline const LVecBase2f& Text::get_initial_pos(void) const
 	return _initial_pos;
 }
 
-}	// namespace rpcore
+}

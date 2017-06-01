@@ -53,4 +53,4 @@ inline void ErrorMessageDisplay::hide(void)
 	_error_node.hide();
 }
 
-}	// namespace rpcore
+}

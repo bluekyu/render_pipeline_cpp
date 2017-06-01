@@ -82,4 +82,4 @@ inline float RPPointLight::get_inner_radius() const {
     return _inner_radius;
 }
 
-}	// namespace rpcore
+}

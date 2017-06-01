@@ -176,4 +176,4 @@ Texture* RPLoader::load_sliced_3d_texture(const std::string& filename, int tile_
 	return texture_handle;
 }
 
-}	// namespace rpcore
+}

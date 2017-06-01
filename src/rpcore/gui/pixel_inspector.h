@@ -47,4 +47,4 @@ inline void PixelInspector::hide(void)
 	_node.hide();
 }
 
-}	// namespace rpcore
+}

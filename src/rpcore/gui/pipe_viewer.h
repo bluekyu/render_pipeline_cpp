@@ -49,4 +49,4 @@ private:
 	NodePath _pipe_descriptions;
 };
 
-}	// namespace rpcore
+}

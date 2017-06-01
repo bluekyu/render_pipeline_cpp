@@ -140,4 +140,4 @@ inline ShadowManager* InternalLightManager::get_shadow_manager() const {
   return _shadow_manager;
 }
 
-}	// namespace rpcore
+}

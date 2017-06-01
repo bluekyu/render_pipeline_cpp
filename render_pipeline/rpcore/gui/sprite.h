@@ -132,4 +132,4 @@ inline rppanda::OnscreenImage Sprite::get_node(void) const
 	return node;
 }
 
-}	// namespace rpcore
+}

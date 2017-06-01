@@ -49,4 +49,4 @@ private:
 	PT(Shader) _cshader;
 };
 
-}	// namespace rpcore
+}

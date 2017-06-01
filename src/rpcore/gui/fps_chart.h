@@ -58,4 +58,4 @@ private:
 	PT(Shader) _ushader;
 };
 
-}	// namespace rpcore
+}

@@ -21,4 +21,4 @@ void Globals::load(rppanda::ShowBase* showbase)
 	Globals::resolution = LVecBase2i(0, 0);
 }
 
-}	// namespace rpcore
+}

@@ -44,4 +44,4 @@ private:
 	std::shared_ptr<Slider> _bright_slider;
 };
 
-}	// namespace rpcore
+}

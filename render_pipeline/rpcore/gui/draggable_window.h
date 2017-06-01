@@ -120,4 +120,4 @@ inline void DraggableWindow::set_pos(const LVecBase2f& pos)
 	_node.set_pos(_pos.get_x(), 1, -_pos.get_y());
 }
 
-}	// namespace rpcore
+}

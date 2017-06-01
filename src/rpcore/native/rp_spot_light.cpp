@@ -79,5 +79,5 @@ void RPSpotLight::update_shadow_sources() {
     _shadow_sources[0]->set_perspective_lens(_fov, _near_plane, _radius, _position, _direction);
 }
 
-}	// namespace rpcore
+}
 

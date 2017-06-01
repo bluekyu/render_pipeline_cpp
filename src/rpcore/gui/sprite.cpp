@@ -56,4 +56,4 @@ void Sprite::init(Texture* image, int w, int h, NodePath parent, float x, float 
 	}
 }
 
-}	// namespace rpcore
+}

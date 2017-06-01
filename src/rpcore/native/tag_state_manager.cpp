@@ -195,4 +195,4 @@ void TagStateManager::unregister_camera(StateContainer& container, Camera* sourc
     source->set_initial_state(RenderState::make_empty());
 }
 
-}	// namespace rpcore
+}

@@ -128,7 +128,7 @@ class RENDER_PIPELINE_DECL PSSMCameraRig {
 
 };
 
-}	// namespace rpcore
+}
 
 #include "pssm_camera_rig.I"
 

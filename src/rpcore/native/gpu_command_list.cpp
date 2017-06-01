@@ -82,4 +82,4 @@ size_t GPUCommandList::write_commands_to(const PTA_uchar &dest, size_t limit) {
     return num_commands_written;
 }
 
-}	// namespace rpcore
+}

@@ -270,4 +270,4 @@ void PathType::add_defines(const std::string& plugin_id,
 	// Paths are not available in shaders
 }
 
-}	// namespace rpcore
+}

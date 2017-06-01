@@ -101,7 +101,7 @@ class InternalLightManager {
 
 };
 
-}	// namespace rpcore
+}
 
 #include "internal_light_manager.I"
 

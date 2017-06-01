@@ -90,4 +90,4 @@ void Checkbox::set_checked(bool val, bool do_callback)
 		_callback(val, _extra_args);
 }
 
-}	// namespace rpcore
+}

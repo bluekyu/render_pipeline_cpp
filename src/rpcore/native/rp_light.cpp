@@ -137,4 +137,4 @@ void RPLight::set_color_from_temperature(float temperature) {
     set_color(xyz_to_rgb.xform(xyz));
 }
 
-}	// namespace rpcore
+}

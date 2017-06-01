@@ -40,4 +40,4 @@ void Slider::set_value(float value)
 	node_->set_value(value);
 }
 
-}	// namespace rpcore
+}

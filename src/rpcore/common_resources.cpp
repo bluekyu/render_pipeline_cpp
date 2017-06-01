@@ -385,4 +385,4 @@ void CommonResources::setup_inputs(void)
 	Globals::clock->set_average_frame_rate_interval(3.0f);
 }
 
-}	// namespace rpcore
+}

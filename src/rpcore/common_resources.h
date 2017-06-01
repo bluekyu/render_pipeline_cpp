@@ -55,4 +55,4 @@ private:
 	std::shared_ptr<GroupedInputBlock> _input_ubo;
 };
 
-}	// namespace rpcore
+}

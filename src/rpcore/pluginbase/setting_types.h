@@ -244,4 +244,4 @@ inline void PathType::set_value(const std::string& value)
  */
 std::shared_ptr<BaseType> make_setting_from_data(YAML::Node& data);
 
-}	// namespace rpcore
+}

@@ -27,4 +27,4 @@ private:
 	static std::pair<std::string, std::string> generate_sampling_code(Texture* texture, int view_width, int view_height);
 };
 
-}	// namespace rpcore
+}

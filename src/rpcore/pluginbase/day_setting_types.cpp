@@ -213,4 +213,4 @@ std::vector<float> ColorType::get_linear_value(const std::vector<float>& scaled_
 	return v;
 }
 
-}	// namespace rpcore
+}

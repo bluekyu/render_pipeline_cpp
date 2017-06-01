@@ -192,4 +192,4 @@ inline size_t ShadowManager::get_num_update_slots_left() const {
     return _max_updates - _queued_updates.size();
 }
 
-}	// namespace rpcore
+}

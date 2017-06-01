@@ -33,4 +33,4 @@ private:
 	Sprite* fullscreen_bg = nullptr;
 };
 
-}	// namespace rpcore
+}

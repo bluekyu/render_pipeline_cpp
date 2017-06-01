@@ -51,4 +51,4 @@ void LabeledCheckbox::on_node_leave(const Event* ev, void* user_data)
 	lc->_text->get_node().set_fg(LColorf(lc->_text_color[0], lc->_text_color[1], lc->_text_color[2], 1.0f));
 }
 
-}	// namespace rpcore
+}

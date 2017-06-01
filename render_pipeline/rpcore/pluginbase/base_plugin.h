@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-
 #include <nodePath.h>
+
+#include <vector>
 
 #include <render_pipeline/rpcore/rpobject.h>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
@@ -94,10 +94,9 @@ private:
 };
 
 // ************************************************************************************************
-
 inline const std::string& BasePlugin::get_plugin_id(void) const
 {
-	return plugin_id_;
+    return plugin_id_;
 }
 
 }

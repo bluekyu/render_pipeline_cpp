@@ -42,4 +42,4 @@ inline IESProfileLoader::IESProfileLoader(RenderPipeline* pipeline): RPObject("I
 	create_storage();
 }
 
-}	// namespace rpcore
+}

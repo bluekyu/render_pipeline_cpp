@@ -1,11 +1,11 @@
 #pragma once
 
+#include <nodePath.h>
+
 #include <memory>
 #include <map>
 #include <unordered_map>
 #include <functional>
-
-#include <nodePath.h>
 
 #include <render_pipeline/rpcore/rpobject.h>
 #include <render_pipeline/rpcore/pluginbase/base_plugin.h>

@@ -78,4 +78,4 @@ std::string SmoothConnectedCurve::serialize(void) const
 	return result;
 }
 
-}	// namespace rpcore
+}

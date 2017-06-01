@@ -227,7 +227,7 @@ private:
     InternalContainer _data;
 };
 
-}	// namespace rpcore
+}
 
 #endif // CPPPARSER
 

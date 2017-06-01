@@ -93,7 +93,7 @@ class RENDER_PIPELINE_DECL TagStateManager {
         NodePath _main_cam_node;
 };
 
-}	// namespace rpcore
+}
 
 #include "tag_state_manager.I"
 

@@ -66,4 +66,4 @@ inline void PostProcessRegion::set_shader_input(const ShaderInput& inp, bool ove
 		tri.set_shader_input(inp);
 }
 
-}	// namespace rpcore
+}

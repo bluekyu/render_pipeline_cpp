@@ -170,4 +170,4 @@ std::pair<std::string, std::string> DisplayShaderBuilder::generate_sampling_code
 	return result;
 }
 
-}	// namespace rpcore
+}

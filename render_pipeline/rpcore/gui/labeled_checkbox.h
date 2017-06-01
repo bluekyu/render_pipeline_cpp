@@ -54,4 +54,4 @@ inline Text* LabeledCheckbox::get_label(void) const
 	return _text;
 }
 
-}	// namespace rpcore
+}

@@ -232,4 +232,4 @@ void TexturePreview::create_components(void)
 	_content_node = _node.attach_new_node("content");
 }
 
-}	// namespace rpcore
+}

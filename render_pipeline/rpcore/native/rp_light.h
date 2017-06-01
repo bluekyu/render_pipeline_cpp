@@ -135,7 +135,7 @@ class RENDER_PIPELINE_DECL RPLight : public ReferenceCount {
         vector<ShadowSource*> _shadow_sources;
 };
 
-}	// namespace rpcore
+}
 
 #include "rp_light.I"
 

@@ -48,4 +48,4 @@ void LoadingScreen::remove(void)
 	fullscreen_bg = nullptr;
 }
 
-}	// namespace rpcore
+}

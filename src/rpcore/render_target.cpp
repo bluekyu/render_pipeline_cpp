@@ -553,4 +553,4 @@ bool RenderTarget::get_create_default_region(void) const
     return impl_->create_default_region_;
 }
 
-}	// namespace rpcore
+}

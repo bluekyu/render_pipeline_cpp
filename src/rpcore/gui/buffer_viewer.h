@@ -83,4 +83,4 @@ private:
 	std::vector<std::shared_ptr<FrameClickDataType>> frame_click_data;
 };
 
-}	// namespace rpcore
+}

@@ -95,4 +95,4 @@ inline ErrorMessageDisplay* Debugger::get_error_msg_handler(void) const
 	return _error_msg_handler;
 }
 
-}	// namespace rpcore
+}

@@ -158,4 +158,4 @@ void ShadowManager::update() {
     _queued_updates.reserve(_max_updates);
 }
 
-}	// namespace rpcore
+}

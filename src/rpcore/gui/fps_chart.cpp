@@ -133,4 +133,4 @@ AsyncTask::DoneStatus FPSChart::update(GenericAsyncTask* task, void* user_data)
 	return AsyncTask::DS_cont;
 }
 
-}	// namespace rpcore
+}

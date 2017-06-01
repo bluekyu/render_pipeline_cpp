@@ -315,4 +315,4 @@ std::string GroupedInputBlock::generate_shader_code(void) const
 	return content;
 }
 
-}	// namespace rpcore
+}

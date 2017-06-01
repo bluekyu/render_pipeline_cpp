@@ -143,4 +143,4 @@ AsyncTask::DoneStatus DraggableWindow::on_tick(GenericAsyncTask* task, void* use
     return AsyncTask::DS_cont;
 }
 
-}	// namespace rpcore
+}

@@ -122,4 +122,4 @@ inline float SmoothConnectedCurve::get_value(float offset) const
 	return max(0.0f, min(1.0f, y));
 }
 
-}	// namespace rpcore
+}

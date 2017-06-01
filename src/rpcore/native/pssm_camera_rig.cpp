@@ -397,4 +397,4 @@ void PSSMCameraRig::update(NodePath cam_node, const LVecBase3f &light_vector) {
     _update_collector.stop();
 }
 
-}	// namespace rpcore
+}

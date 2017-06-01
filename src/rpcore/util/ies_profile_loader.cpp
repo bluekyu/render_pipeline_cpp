@@ -36,4 +36,4 @@ void IESProfileLoader::create_storage(void)
     _pipeline->get_stage_mgr()->get_defines()["MAX_IES_PROFILES"] = std::to_string(_max_entries);
 }
 
-}	// namespace rpcore
+}

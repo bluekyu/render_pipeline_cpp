@@ -100,4 +100,4 @@ void PostProcessRegion::make_fullscreen_cam(void)
 	region->set_camera(camera);
 }
 
-}	// namespace rpcore
+}

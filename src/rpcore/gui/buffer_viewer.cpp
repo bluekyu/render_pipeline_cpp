@@ -316,4 +316,4 @@ void BufferViewer::render_stages(void)
 	set_scroll_height(50 + (entry_height - 14 + 10) * num_rows);
 }
 
-}	// namespace rpcore
+}

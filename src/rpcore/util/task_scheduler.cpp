@@ -70,4 +70,4 @@ void TaskScheduler::check_missing_schedule(const std::string& task_name) const
 		error(std::string("Task '") + task_name + "' is never scheduled and thus will never run!");
 }
 
-}	// namespace rpcore
+}

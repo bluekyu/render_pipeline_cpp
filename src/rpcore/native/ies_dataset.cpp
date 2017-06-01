@@ -234,4 +234,4 @@ void IESDataset::generate_dataset_texture_into(Texture* dest_tex, size_t z) cons
     dest_tex->load(dest, z, 0);
 }
 
-}	// namespace rpcore
+}

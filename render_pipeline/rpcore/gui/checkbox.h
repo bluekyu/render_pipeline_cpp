@@ -60,4 +60,4 @@ inline rppanda::DirectCheckBox* Checkbox::get_node(void) const
 	return _node;
 }
 
-}	// namespace rpcore
+}
