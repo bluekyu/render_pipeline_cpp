@@ -15,10 +15,10 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL Actor: public DirectObject, public NodePath
 {
 public:
-	Actor(void);
+    Actor(void);
 
 private:
-	Loader* loader_;
+    Loader* loader_;
 };
 
-}	// namespace rppanda
+}
