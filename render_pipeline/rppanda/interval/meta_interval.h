@@ -203,4 +203,4 @@ inline Track::Track(std::initializer_list<TrackType> track_list, const Parameter
 	pop_level(params.duration);
 }
 
-}	// namespace rppanda
+}

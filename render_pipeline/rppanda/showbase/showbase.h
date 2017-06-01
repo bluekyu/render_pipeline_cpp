@@ -95,7 +95,7 @@ public:
      * this method is called a second time, it will close the
      * previous main window and open a new one, preserving the lens
      * properties in base.camLens.
-     * 
+     *
      * The return value is true on success, or false on failure (in
      * which case base.win may be either None, or the previous,
      * closed window).

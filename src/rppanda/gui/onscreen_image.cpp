@@ -82,4 +82,4 @@ void OnscreenImage::set_image(const std::shared_ptr<ImageInput>& image, NodePath
 		set_transform(transform);
 }
 
-}	// namespace rppanda
+}

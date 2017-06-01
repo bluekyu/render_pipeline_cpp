@@ -238,4 +238,4 @@ inline PGItem* DirectGuiWidget::get_gui_item(void) const
 	return _gui_item;
 }
 
-}	// namespace rppanda
+}

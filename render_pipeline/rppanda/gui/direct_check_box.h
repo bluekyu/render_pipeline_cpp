@@ -68,4 +68,4 @@ inline std::shared_ptr<ImageInput> DirectCheckBox::get_unchecked_image(void) con
 	return std::dynamic_pointer_cast<Options>(_options)->unchecked_image;
 }
 
-}	// namespace rppanda
+}

@@ -37,4 +37,4 @@ inline void OnscreenImage::destroy(void)
 	remove_node();
 }
 
-}	// namespace rppanda
+}

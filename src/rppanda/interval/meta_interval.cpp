@@ -23,4 +23,4 @@ MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const Parame
 		rppanda_cat.error() << "Cannot build list from MetaInterval directly." << std::endl;
 }
 
-}	// namespace rppanda
+}

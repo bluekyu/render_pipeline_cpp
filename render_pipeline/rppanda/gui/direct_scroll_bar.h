@@ -71,4 +71,4 @@ inline float DirectScrollBar::get_value(void) const
 	return std::dynamic_pointer_cast<Options>(_options)->value;
 }
 
-}	// namespace rppanda
+}

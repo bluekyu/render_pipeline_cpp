@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-
 #include <genericAsyncTask.h>
 #include <eventHandler.h>
+
+#include <string>
 
 #include <render_pipeline/rpcore/config.h>
 

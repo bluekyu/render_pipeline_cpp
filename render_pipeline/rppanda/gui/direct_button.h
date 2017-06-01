@@ -68,4 +68,4 @@ private:
 	static const std::type_info& _type_handle;
 };
 
-}	// namespace rppanda
+}

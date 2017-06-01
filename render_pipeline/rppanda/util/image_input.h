@@ -57,4 +57,4 @@ private:
 	std::pair<std::string, std::string> _file_node;
 };
 
-}	// namespace rppanda
+}

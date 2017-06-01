@@ -9,4 +9,4 @@ Actor::Actor(void)
 	loader_ = Loader::get_global_ptr();
 }
 
-}	// namespace rppanda
+}

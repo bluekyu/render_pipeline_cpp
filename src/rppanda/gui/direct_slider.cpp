@@ -148,4 +148,4 @@ void DirectSlider::initialise_options(const std::shared_ptr<Options>& options)
 	_f_init = false;
 }
 
-}	// namespace rppanda
+}

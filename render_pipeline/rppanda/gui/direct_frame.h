@@ -50,4 +50,4 @@ inline void DirectFrame::set_image(const std::shared_ptr<ImageInput>& image)
 	set_image(std::vector<std::shared_ptr<ImageInput>>({image}));
 }
 
-}	// namespace rppanda
+}

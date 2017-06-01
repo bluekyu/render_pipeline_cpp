@@ -329,4 +329,4 @@ void OnscreenText::set_align(TextNode::Alignment align)
 	return DCAST(TextNode, _text_node)->set_align(align);
 }
 
-}	// namespace rppanda
+}

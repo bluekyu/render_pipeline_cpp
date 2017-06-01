@@ -38,4 +38,4 @@ TextFont* get_default_font(void)
 	return TextNode::get_default_font();
 }
 
-}	// namespace rppanda
+}

@@ -60,4 +60,4 @@ static const int TEXT_SORT_INDEX = 30;
 
 extern TextFont* get_default_font(void);
 
-}	// namespace rppanda
+}

@@ -461,4 +461,4 @@ void DirectGuiWidget::frame_initialise_func(void)
 		reset_frame_size();
 }
 
-}	// namespace rppanda
+}

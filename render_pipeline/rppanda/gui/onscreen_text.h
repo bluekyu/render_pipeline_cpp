@@ -190,4 +190,4 @@ inline void OnscreenText::update_transform_mat(void)
 	DCAST(TextNode, _text_node)->set_transform(mat);
 }
 
-}	// namespace rppanda
+}

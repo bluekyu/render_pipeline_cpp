@@ -86,4 +86,4 @@ void DirectScrolledFrame::initialise_options(const std::shared_ptr<Options>& opt
 	_f_init = false;
 }
 
-}	// namespace rppanda
+}

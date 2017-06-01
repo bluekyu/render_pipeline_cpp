@@ -93,4 +93,4 @@ inline bool DirectScrolledFrame::get_auto_hide_scroll_bars(void) const
 	return std::dynamic_pointer_cast<Options>(_options)->auto_hide_scroll_bars;
 }
 
-}	// namespace rppanda
+}

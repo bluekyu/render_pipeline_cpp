@@ -31,4 +31,4 @@ inline bool isdir(const std::string& path)
 	return VirtualFileSystem::get_global_ptr()->is_directory(Filename::from_os_specific(path));
 }
 
-}	// namespace rppanda
+}

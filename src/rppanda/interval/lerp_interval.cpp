@@ -12,4 +12,4 @@ TypeHandle LerpScaleInterval::_type_handle;
 TypeHandle LerpShearInterval::_type_handle;
 TypeHandle LerpPosHprInterval::_type_handle;
 
-}	// namespace rppanda
+}
