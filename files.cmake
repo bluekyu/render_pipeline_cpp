@@ -114,6 +114,7 @@ set(header_rpcore_stages
 )
 
 set(header_rpcore_util
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/circular_points_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.h"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.h"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/instancing_node.hpp"
@@ -288,6 +289,7 @@ set(source_rpcore_stages
 )
 
 set(source_rpcore_util
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/circular_points_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/cubemap_filter.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.h"

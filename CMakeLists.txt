@@ -32,11 +32,8 @@ message("Render Pipeline building version: ${render_pipeline_VERSION}")
 # configure project package
 include(FindPackages)
 
-set(render_pipeline_SETTING_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-setting.cmake")
-include(${render_pipeline_SETTING_CMAKE_FILE})
-
-# subdirectory
-add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
+set(render_pipeline_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
+include(${render_pipeline_MACRO_CMAKE_FILE})
 
 # === project specific packages ===
 # find spdlog
@@ -97,9 +94,7 @@ set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
-set(PACKAGE_CMAKE_INSTALL_DIR "lib/${PROJECT_NAME}/cmake")
-file(RELATIVE_PATH PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR "${CMAKE_INSTALL_PREFIX}/${PACKAGE_CMAKE_INSTALL_DIR}" "${CMAKE_INSTALL_PREFIX}")
-get_filename_component(PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR "${PACKAGE_CMAKE_INSTALL_DIR2ROOT_DIR}/." DIRECTORY)
+set(PACKAGE_CMAKE_INSTALL_DIR "lib/cmake/${PACKAGE_NAME}")
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
@@ -111,13 +106,10 @@ configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-confi
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
-
-export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
-export(PACKAGE ${PACKAGE_NAME})
 # ==================================================================================================
 
 # === install ======================================================================================
-set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PROJECT_NAME})
+set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT ${TARGET_EXPORT_NAME}
@@ -125,6 +117,7 @@ install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib"
 )
+export(EXPORT ${TARGET_EXPORT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
 
 install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
     DESTINATION "bin"
@@ -132,12 +125,12 @@ install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "${render_pipeline_CONFIG_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render_pipeline_DATA_DIR}/")
 
-install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_SETTING_CMAKE_FILE}
+install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_MACRO_CMAKE_FILE}
     DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
 install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
@@ -161,4 +154,8 @@ endif()
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md"
     DESTINATION "share/${PROJECT_NAME}/")
+# ==================================================================================================
+
+# === subdirectory =================================================================================
+add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
 # ==================================================================================================

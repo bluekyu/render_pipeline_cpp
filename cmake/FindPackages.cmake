@@ -30,7 +30,7 @@ _find_boost("filesystem")
 
 if(NOT TARGET panda3d::panda3d)
     # find panda3d
-    set(PANDA3D_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
+    set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
     find_package(panda3d REQUIRED)
 endif()
 

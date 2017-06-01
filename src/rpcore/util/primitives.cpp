@@ -2,23 +2,51 @@
 
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
+#include <geomPoints.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
 
+#include "render_pipeline/rpcore/render_pipeline.h"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 namespace rpcore {
 
 static NodePath create_geom_node(const std::string& name, Geom* geom)
 {
-    // default material
-    CPT(RenderState) state = RenderState::make_empty();
-    state = state->add_attrib(MaterialAttrib::make(RPMaterial().get_material()));
-
     PT(GeomNode) geom_node = new GeomNode(name);
-    geom_node->add_geom(geom, state);
+    geom_node->add_geom(geom);
 
-    return NodePath(geom_node);
+    // default material
+    NodePath np(geom_node);
+    np.set_material(RPMaterial().get_material());
+
+    return np;
+}
+
+NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, GeomEnums::UsageHint buffer_hint)
+{
+    const size_t count = positions.size();
+
+    // create vertices
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
+    vdata->unclean_set_num_rows(count);
+
+    GeomVertexWriter vertex(vdata, InternalName::get_vertex());
+
+    for (int k = 0; k < count; ++k)
+        vertex.add_data3f(positions[k]);
+
+    // create indices
+    PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
+    prim->reserve_num_vertices(count);
+    for (int k = 0; k < count; ++k)
+        prim->add_vertex(k);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    return create_geom_node(name, geom);
 }
 
 NodePath create_cube(const std::string& name)
