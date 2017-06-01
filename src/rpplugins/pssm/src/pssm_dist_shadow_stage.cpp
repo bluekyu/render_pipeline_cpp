@@ -2,8 +2,8 @@
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
-#include <render_pipeline/rpcore/util/task_scheduler.h>
-#include <render_pipeline/rpcore/util/generic.h>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>
+#include <render_pipeline/rpcore/util/generic.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>

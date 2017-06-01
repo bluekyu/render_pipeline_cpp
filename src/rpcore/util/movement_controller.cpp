@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/util/movement_controller.h"
+#include "render_pipeline/rpcore/util/movement_controller.hpp"
 
 #include <parametricCurveCollection.h>
 #include <genericAsyncTask.h>

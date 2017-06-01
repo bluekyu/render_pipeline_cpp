@@ -9,7 +9,7 @@
 #include <render_pipeline/rpcore/stage_manager.hpp>
 #include <render_pipeline/rpcore/render_stage.hpp>
 #include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/util/generic.h>
+#include <render_pipeline/rpcore/util/generic.hpp>
 
 #include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
 

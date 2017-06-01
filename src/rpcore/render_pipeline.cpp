@@ -22,7 +22,7 @@
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/mount_manager.hpp"
 #include "render_pipeline/rpcore/light_manager.hpp"
-#include "render_pipeline/rpcore/util/task_scheduler.h"
+#include "render_pipeline/rpcore/util/task_scheduler.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_manager.h"
 #include "render_pipeline/rpcore/pluginbase/manager.h"
 #include "render_pipeline/rpcore/image.hpp"

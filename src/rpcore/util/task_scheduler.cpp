@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/util/task_scheduler.h>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>
 
 // XXX: fix compile error for std::vector<std::string>
 #include <vector_string.h>

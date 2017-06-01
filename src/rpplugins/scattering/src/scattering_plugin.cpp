@@ -5,8 +5,8 @@
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/util/task_scheduler.h>	
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>	
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/stages/cull_lights_stage.h>
 

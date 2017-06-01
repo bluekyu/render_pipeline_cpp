@@ -113,14 +113,14 @@ set(header_rpcore_stages
 
 set(header_rpcore_util
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/circular_points_node.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/instancing_node.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/primitives.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpmaterial.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/shader_input_blocks.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/task_scheduler.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/shader_input_blocks.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/task_scheduler.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/text3d.hpp"
 )
 

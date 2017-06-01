@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 #include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {

@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 
 #include <regex>
 

@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/util/cubemap_filter.h"
+#include "render_pipeline/rpcore/util/cubemap_filter.hpp"
 
 #include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"

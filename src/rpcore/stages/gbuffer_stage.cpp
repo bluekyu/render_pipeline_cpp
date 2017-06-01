@@ -3,7 +3,7 @@
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
 namespace rpcore {

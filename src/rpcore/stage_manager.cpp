@@ -15,7 +15,7 @@
 #include "render_pipeline/rpcore/stages/update_previous_pipes_stage.h"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/render_stage.hpp"
-#include "render_pipeline/rpcore/util/shader_input_blocks.h"
+#include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 
 namespace rpcore {
 
