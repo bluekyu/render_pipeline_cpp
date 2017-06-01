@@ -35,12 +35,13 @@ if(NOT TARGET panda3d::panda3d)
 endif()
 
 # find doxygen
-option(RENDER_PIPELINE_BUILD_DOCUMENTS "Build doxygen documents" OFF)
-option(RENDER_PIPELINE_DOXYGEN_SKIP_DOT "Skip to find Dot for Doxygen" ON)
-if(RENDER_PIPELINE_BUILD_DOCUMENTS)
+option(render_pipeline_BUILD_DOCUMENTS "Build doxygen documents" OFF)
+if(render_pipeline_BUILD_DOCUMENTS)
+    option(render_pipeline_DOXYGEN_SKIP_DOT "Skip to find Dot for Doxygen" ON)
+
     find_package(doxygen REQUIRED)
     set(DOXYGEN_HAVE_DOT "NO")
-    if(NOT RENDER_PIPELINE_DOXYGEN_SKIP_DOT)
+    if(NOT render_pipeline_DOXYGEN_SKIP_DOT)
         set(DOXYGEN_HAVE_DOT "YES")
     endif()
 endif()

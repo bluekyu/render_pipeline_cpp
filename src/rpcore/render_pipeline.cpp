@@ -88,6 +88,8 @@ struct RenderPipeline::Impl
      */
     static AsyncTask::DoneStatus plugin_post_render_update(GenericAsyncTask* task, void* user_data);
 
+    static AsyncTask::DoneStatus handle_window_resize(GenericAsyncTask* task, void* user_data);
+
     /**
      * Checks for window events. This mainly handles incoming resizes,
      * and calls the required handlers.
@@ -361,6 +363,21 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(GenericAsy
     return AsyncTask::DS_cont;
 }
 
+AsyncTask::DoneStatus RenderPipeline::Impl::handle_window_resize(GenericAsyncTask* task, void* user_data)
+{
+    RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
+
+    rp_impl->showbase_->get_cam_lens()->set_film_size(Globals::resolution.get_x(), Globals::resolution.get_y());
+
+    rp_impl->light_mgr_->compute_tile_size();
+    rp_impl->stage_mgr_->handle_window_resize();
+    if (rp_impl->debugger)
+        rp_impl->debugger->handle_window_resize();
+    rp_impl->plugin_mgr_->on_window_resized();
+
+    return AsyncTask::DS_done;
+}
+
 void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
 {
     RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
@@ -384,8 +401,9 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
         rp->debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
         Globals::native_resolution = window_dims;
         rp_impl->compute_render_resolution();
-        rp_impl->handle_window_resize();
     }
+
+    rp_impl->handle_window_resize();
 }
 
 void RenderPipeline::Impl::reload_shaders(void)
@@ -692,11 +710,8 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
 
 void RenderPipeline::Impl::handle_window_resize(void)
 {
-    light_mgr_->compute_tile_size();
-    stage_mgr_->handle_window_resize();
-    if (debugger)
-        debugger->handle_window_resize();
-    plugin_mgr_->on_window_resized();
+    // set lens parameter after window event.
+    showbase_->add_task(&Impl::handle_window_resize, this, "RP_HandleWindowResize", -1000);
 }
 
 template <class T>
