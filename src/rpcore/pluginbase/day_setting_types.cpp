@@ -4,7 +4,7 @@
 
 #include "rplibs/yaml.hpp"
 
-#include "rpcore/util/smooth_connected_curve.h"
+#include "rpcore/util/smooth_connected_curve.hpp"
 
 namespace rpcore {
 

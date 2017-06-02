@@ -1,4 +1,4 @@
-#include "gpu_command_queue.h"
+#include "rpcore/gpu_command_queue.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/loader.hpp>

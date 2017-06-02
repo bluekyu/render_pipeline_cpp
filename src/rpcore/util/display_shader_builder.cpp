@@ -1,4 +1,4 @@
-#include "display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 #include <texture.h>
 #include <virtualFileSystem.h>

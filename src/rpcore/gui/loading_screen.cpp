@@ -1,4 +1,4 @@
-#include "rpcore/gui/loading_screen.h"
+#include "rpcore/gui/loading_screen.hpp"
 
 #include <graphicsEngine.h>
 

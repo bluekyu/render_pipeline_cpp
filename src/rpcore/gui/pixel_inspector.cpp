@@ -1,4 +1,4 @@
-#include "rpcore/gui/pixel_inspector.h"
+#include "rpcore/gui/pixel_inspector.hpp"
 
 #include <cardMaker.h>
 #include <graphicsWindow.h>

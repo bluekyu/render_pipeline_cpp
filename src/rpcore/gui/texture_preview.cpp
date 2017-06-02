@@ -1,4 +1,4 @@
-#include "texture_preview.h"
+#include "rpcore/gui/texture_preview.hpp"
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
@@ -8,7 +8,7 @@
 #include "render_pipeline/rpcore/gui/slider.hpp"
 #include "render_pipeline/rpcore/image.hpp"
 
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 

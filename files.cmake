@@ -164,7 +164,7 @@ source_group("render_pipeline\\rplibs" FILES ${header_rplibs})
 # list src/
 set(source_rppanda
     "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.h"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.hpp"
 )
 
 set(source_rppanda_actor
@@ -196,11 +196,11 @@ set(source_rppanda_showbase
 
 set(source_rpcore
     "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/effect.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/globals.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/image.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/light_manager.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/loader.cpp"
@@ -214,30 +214,30 @@ set(source_rpcore
 )
 
 set(source_rpcore_gui
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/checkbox.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/draggable_window.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/exposure_widget.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/labeled_checkbox.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/slider.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/sprite.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text_node.hpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.cpp"
 )
 
@@ -264,7 +264,7 @@ set(source_rpcore_pluginbase
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/day_setting_types.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/manager.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.hpp"
 )
 
 set(source_rpcore_stages
@@ -286,17 +286,17 @@ set(source_rpcore_util
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/circular_points_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/cubemap_filter.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/generic.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/instancing_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/movement_controller.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/primitives.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/shader_input_blocks.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/task_scheduler.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/text3d.cpp"

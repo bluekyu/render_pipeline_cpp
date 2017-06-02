@@ -13,7 +13,7 @@
 #include <audioManager.h>
 #include <throw_event.h>
 
-#include "rppanda/config_rppanda.h"
+#include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {
 

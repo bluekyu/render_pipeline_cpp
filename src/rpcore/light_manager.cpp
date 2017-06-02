@@ -15,7 +15,7 @@
 #include <render_pipeline/rpcore/native/shadow_manager.h>
 #include <render_pipeline/rpcore/native/rp_point_light.h>
 
-#include "rpcore/gpu_command_queue.h"
+#include "rpcore/gpu_command_queue.hpp"
 
 namespace rpcore {
 

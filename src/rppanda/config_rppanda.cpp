@@ -1,4 +1,4 @@
-#include "config_rppanda.h"
+#include "rppanda/config_rppanda.hpp"
 
 #include <render_pipeline/rppanda/interval/meta_interval.hpp>
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>

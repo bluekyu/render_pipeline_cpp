@@ -17,7 +17,7 @@
 
 #include "rplibs/yaml.hpp"
 
-#include "setting_types.h"
+#include "rpcore/pluginbase/setting_types.hpp"
 
 namespace rpcore {
 

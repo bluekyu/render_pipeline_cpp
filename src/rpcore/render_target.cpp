@@ -12,7 +12,7 @@
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 
-#include "rpcore/util/post_process_region.h"
+#include "rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 

@@ -1,4 +1,4 @@
-#include "rpcore/gui/pipe_viewer.h"
+#include "rpcore/gui/pipe_viewer.hpp"
 
 #include <boost/algorithm/string.hpp>
 
@@ -11,7 +11,7 @@
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/util/generic.hpp"
 
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 

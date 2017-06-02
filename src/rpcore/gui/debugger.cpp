@@ -1,4 +1,4 @@
-#include "rpcore/gui/debugger.h"
+#include "rpcore/gui/debugger.hpp"
 
 #include <graphicsBuffer.h>
 #include <textNode.h>
@@ -25,13 +25,13 @@
 #include <rpplugins/scattering/include/scattering_plugin.hpp>
 #include <rpplugins/pssm/include/pssm_plugin.hpp>
 
+#include "rpcore/gpu_command_queue.hpp"
 #include "rpcore/gui/text_node.hpp"
-#include "rpcore/gpu_command_queue.h"
-#include "rpcore/gui/buffer_viewer.h"
-#include "rpcore/gui/error_message_display.h"
-#include "rpcore/gui/fps_chart.h"
-#include "rpcore/gui/pipe_viewer.h"
-#include "rpcore/gui/pixel_inspector.h"
+#include "rpcore/gui/buffer_viewer.hpp"
+#include "rpcore/gui/error_message_display.hpp"
+#include "rpcore/gui/fps_chart.hpp"
+#include "rpcore/gui/pipe_viewer.hpp"
+#include "rpcore/gui/pixel_inspector.hpp"
 
 namespace rpcore {
 

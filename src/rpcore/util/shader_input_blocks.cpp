@@ -6,7 +6,7 @@
 
 #include <render_pipeline/rpcore/render_stage.hpp>
 
-#include "rpcore/util/post_process_region.h"
+#include "rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 

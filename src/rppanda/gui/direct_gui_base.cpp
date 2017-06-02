@@ -13,7 +13,7 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include "rppanda/config_rppanda.h"
+#include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {
 

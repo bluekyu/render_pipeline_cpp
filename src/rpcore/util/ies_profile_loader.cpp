@@ -1,4 +1,4 @@
-#include "rpcore/util/ies_profile_loader.h"
+#include "rpcore/util/ies_profile_loader.hpp"
 
 #include <shaderInput.h>
 

@@ -1,6 +1,6 @@
 #include "render_pipeline/rppanda/interval/meta_interval.hpp"
 
-#include "rppanda/config_rppanda.h"
+#include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {
 

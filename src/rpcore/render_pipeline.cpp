@@ -39,11 +39,11 @@
 #include "render_pipeline/rpcore/native/rp_point_light.h"
 #include "render_pipeline/rpcore/native/rp_spot_light.h"
 
-#include "rpcore/common_resources.h"
-#include "rpcore/gui/debugger.h"
-#include "rpcore/gui/error_message_display.h"
-#include "rpcore/gui/loading_screen.h"
-#include "rpcore/util/ies_profile_loader.h"
+#include "rpcore/common_resources.hpp"
+#include "rpcore/gui/debugger.hpp"
+#include "rpcore/gui/error_message_display.hpp"
+#include "rpcore/gui/loading_screen.hpp"
+#include "rpcore/util/ies_profile_loader.hpp"
 #include "rplibs/yaml.hpp"
 
 namespace rpcore {

@@ -1,4 +1,4 @@
-#include "rpcore/gui/fps_chart.h"
+#include "rpcore/gui/fps_chart.hpp"
 
 #include <computeNode.h>
 

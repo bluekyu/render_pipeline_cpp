@@ -1,4 +1,4 @@
-#include "common_resources.h"
+#include "rpcore/common_resources.hpp"
 
 #include <unordered_map>
 

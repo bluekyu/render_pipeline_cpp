@@ -1,4 +1,4 @@
-#include "buffer_viewer.h"
+#include "rpcore/gui/buffer_viewer.hpp"
 
 #include <regex>
 #include <unordered_set>
@@ -15,8 +15,8 @@
 #include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
-#include "rpcore/gui/texture_preview.h"
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/gui/texture_preview.hpp"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 

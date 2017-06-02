@@ -1,4 +1,4 @@
-#include "smooth_connected_curve.h"
+#include "rpcore/util/smooth_connected_curve.hpp"
 
 #include <boost/format.hpp>
 

@@ -1,4 +1,4 @@
-#include "rpcore/gui/error_message_display.h"
+#include "rpcore/gui/error_message_display.hpp"
 
 #include <lineStream.h>
 #include <pnotify.h>
