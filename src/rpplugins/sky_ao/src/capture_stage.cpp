@@ -1,4 +1,4 @@
-#include "capture_stage.h"
+#include "capture_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/globals.hpp>

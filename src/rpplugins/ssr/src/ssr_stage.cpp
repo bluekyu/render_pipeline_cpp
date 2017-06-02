@@ -1,4 +1,4 @@
-#include "ssr_stage.h"
+#include "ssr_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/stages/ambient_stage.hpp>

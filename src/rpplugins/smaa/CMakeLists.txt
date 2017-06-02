@@ -23,9 +23,9 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/smaa_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/smaa_plugin.hpp"
-    "${PROJECT_SOURCE_DIR}/src/jitters.h"
+    "${PROJECT_SOURCE_DIR}/src/jitters.hpp"
     "${PROJECT_SOURCE_DIR}/src/jitters.cpp"
-    "${PROJECT_SOURCE_DIR}/src/smaa_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/smaa_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/smaa_stage.cpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})

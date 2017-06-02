@@ -10,8 +10,8 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 
-#include "smaa_stage.h"
-#include "jitters.h"
+#include "smaa_stage.hpp"
+#include "jitters.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SMAAPlugin)
 
@@ -117,7 +117,7 @@ SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, R
 {
 }
 
-SMAAPlugin::RequrieType& SMAAPlugin::get_required_plugins(void) const 
+SMAAPlugin::RequrieType& SMAAPlugin::get_required_plugins(void) const
 {
     return impl_->require_plugins_;
 }

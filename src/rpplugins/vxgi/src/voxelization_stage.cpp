@@ -1,4 +1,4 @@
-#include "voxelization_stage.h"
+#include "voxelization_stage.hpp"
 
 #include <cullFaceAttrib.h>
 #include <depthTestAttrib.h>

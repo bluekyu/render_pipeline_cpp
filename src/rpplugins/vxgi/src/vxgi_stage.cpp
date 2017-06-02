@@ -1,4 +1,4 @@
-#include "vxgi_stage.h"
+#include "vxgi_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/stages/ambient_stage.hpp>

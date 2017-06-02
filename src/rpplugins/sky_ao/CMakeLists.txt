@@ -24,9 +24,9 @@ render_pipeline_FIND_PLUGINS("env_probes")
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/sky_ao_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/sky_ao_plugin.hpp"
-    "${PROJECT_SOURCE_DIR}/src/ao_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/ao_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/ao_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/capture_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/capture_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/capture_stage.cpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
