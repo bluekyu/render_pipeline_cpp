@@ -30,6 +30,8 @@
 #pragma include "includes/noise.inc.glsl"
 #pragma include "includes/upsampling.inc.glsl"
 
+uniform bool use_cropping;
+
 #if STEREO_MODE
 uniform sampler2DArray ShadedScene;
 #else
@@ -42,6 +44,21 @@ void main() {
         vec2 texcoord = (ivec2(gl_FragCoord.xy) + 0.5) / NATIVE_SCREEN_SIZE;
         // vec4 scene_color = bicubic_filter(ShadedScene, texcoord);
         // vec4 scene_color = bilinear_filter(ShadedScene, texcoord);
+
+        vec2 screen_ratio = NATIVE_SCREEN_SIZE / SCREEN_SIZE;
+        if (use_cropping)
+        {
+            screen_ratio /= max(screen_ratio.x, screen_ratio.y);
+            texcoord = texcoord * screen_ratio - (screen_ratio - 1.0f) / 2.0f;
+        }
+        else
+        {
+            screen_ratio /= min(screen_ratio.x, screen_ratio.y);
+            texcoord = texcoord * screen_ratio - (screen_ratio - 1.0f) / 2.0f;
+            if (min(texcoord.x, texcoord.y) < 0.0f || max(texcoord.x, texcoord.y) > 1.0f)
+                return;
+        }
+
         #if STEREO_MODE
             vec4 scene_color = directional_filter(ShadedScene, texcoord, gl_Layer);
         #else

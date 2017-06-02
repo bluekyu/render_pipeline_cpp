@@ -26,6 +26,8 @@ void UpscaleStage::create(void)
     if (stereo_mode_)
         target_->set_layers(2);
     target_->prepare_buffer();
+
+    set_cropping(pipeline_.get_setting<bool>("pipeline.screen_cropping", false));
 }
 
 void UpscaleStage::set_dimensions(void)
@@ -36,6 +38,11 @@ void UpscaleStage::set_dimensions(void)
 void UpscaleStage::reload_shaders(void)
 {
     target_->set_shader(load_shader({"upscale_stage.frag.glsl"}, stereo_mode_));
+}
+
+void UpscaleStage::set_cropping(bool enable)
+{
+    target_->set_shader_input(ShaderInput("use_cropping", LVecBase4i(enable ? 1 : 0)));
 }
 
 std::string UpscaleStage::get_plugin_id(void) const

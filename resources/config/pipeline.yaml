@@ -32,6 +32,10 @@ pipeline:
     resolution_width: 1920
     resolution_height: 1080
 
+    # whether to crop a screen when the screen size is NOT same as the window size.
+    # This is only enabled when upscale stage is enabled.
+    screen_cropping: false
+
     # Whether to render in a special reference mode, which displays the
     # environment map as a background, and disable special effects like color
     # grading and so on. This is used by the pathtracing reference.

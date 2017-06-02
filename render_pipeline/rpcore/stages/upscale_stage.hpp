@@ -7,7 +7,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage upscales the scene to native resolution, using a bicubic filter. */
-class UpscaleStage: public RenderStage
+class RENDER_PIPELINE_DECL UpscaleStage: public RenderStage
 {
 public:
     UpscaleStage(RenderPipeline& pipeline): RenderStage(pipeline, "UpscaleStage") {}
@@ -20,6 +20,9 @@ public:
     void reload_shaders(void) final;
 
     void set_dimensions(void) final;
+
+    /** Set whether to crop a screen when the screen size is NOT same as the window size. */
+    void set_cropping(bool enable);
 
 private:
     std::string get_plugin_id(void) const final;
