@@ -1,4 +1,4 @@
-#include "scattering_methods.h"
+#include "scattering_methods.hpp"
 
 #include <virtualFileSystem.h>
 #include <graphicsEngine.h>
@@ -8,8 +8,8 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/stdpy/file.hpp>
 
-#include "scattering_stage.h"
-#include "scattering_envmap_stage.h"
+#include "scattering_stage.hpp"
+#include "scattering_envmap_stage.hpp"
 
 namespace rpplugins {
 

@@ -10,10 +10,10 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
-#include "scattering_stage.h"
-#include "scattering_envmap_stage.h"
-#include "godray_stage.h"
-#include "scattering_methods.h"
+#include "scattering_stage.hpp"
+#include "scattering_envmap_stage.hpp"
+#include "godray_stage.hpp"
+#include "scattering_methods.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 

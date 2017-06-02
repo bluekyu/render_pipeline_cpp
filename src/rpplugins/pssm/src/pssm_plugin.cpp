@@ -12,10 +12,10 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rpcore/native/pssm_camera_rig.h>
 
-#include "pssm_stage.h"
-#include "pssm_shadow_stage.h"
-#include "pssm_scene_shadow_stage.h"
-#include "pssm_dist_shadow_stage.h"
+#include "pssm_stage.hpp"
+#include "pssm_shadow_stage.hpp"
+#include "pssm_scene_shadow_stage.hpp"
+#include "pssm_dist_shadow_stage.hpp"
 
 #include "scattering_plugin.hpp"
 #include "volumetrics_plugin.hpp"

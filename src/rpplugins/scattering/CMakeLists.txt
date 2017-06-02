@@ -24,13 +24,13 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/include/scattering_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/scattering_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/godray_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/godray_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/godray_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/scattering_envmap_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/scattering_envmap_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/scattering_envmap_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/scattering_methods.cpp"
-    "${PROJECT_SOURCE_DIR}/src/scattering_methods.h"
+    "${PROJECT_SOURCE_DIR}/src/scattering_methods.hpp"
     "${PROJECT_SOURCE_DIR}/src/scattering_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/scattering_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/scattering_stage.hpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 

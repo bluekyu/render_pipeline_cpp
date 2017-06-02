@@ -1,4 +1,4 @@
-#include "godray_stage.h"
+#include "godray_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 

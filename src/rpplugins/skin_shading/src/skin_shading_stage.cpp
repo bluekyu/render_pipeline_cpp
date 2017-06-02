@@ -1,4 +1,4 @@
-#include "skin_shading_stage.h"
+#include "skin_shading_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 
@@ -28,7 +28,7 @@ void SkinShadingStage::create(void)
 		if (current_tex)
 			target_h->set_shader_input(ShaderInput("ShadedScene", current_tex), true);
 		current_tex = target_h->get_color_tex();
-		
+
 		auto target_v = create_target(std::string("BlurV-") + std::to_string(i));
 		target_v->add_color_attachment(16);
 		target_v->prepare_buffer();

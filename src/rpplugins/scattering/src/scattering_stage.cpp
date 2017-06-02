@@ -1,4 +1,4 @@
-#include "scattering_stage.h"
+#include "scattering_stage.hpp"
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>

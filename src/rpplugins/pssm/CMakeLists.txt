@@ -24,13 +24,13 @@ render_pipeline_FIND_PLUGINS("scattering;volumetrics")
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/include/pssm_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_plugin.cpp"
-    "${PROJECT_SOURCE_DIR}/src/pssm_dist_shadow_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/pssm_dist_shadow_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_dist_shadow_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/pssm_scene_shadow_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/pssm_scene_shadow_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_scene_shadow_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/pssm_shadow_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/pssm_shadow_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_shadow_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/pssm_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/pssm_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_stage.cpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})

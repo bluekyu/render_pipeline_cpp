@@ -1,4 +1,4 @@
-#include "pssm_shadow_stage.h"
+#include "pssm_shadow_stage.hpp"
 
 #include <graphicsBuffer.h>
 

@@ -1,4 +1,4 @@
-#include "pssm_scene_shadow_stage.h"
+#include "pssm_scene_shadow_stage.hpp"
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
