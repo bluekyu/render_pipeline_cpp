@@ -1,4 +1,4 @@
-#include "motion_blur_stage.h"
+#include "motion_blur_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 

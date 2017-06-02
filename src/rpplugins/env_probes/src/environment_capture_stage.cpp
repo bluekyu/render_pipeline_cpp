@@ -1,4 +1,4 @@
-#include "environment_capture_stage.h"
+#include "environment_capture_stage.hpp"
 
 #include <graphicsBuffer.h>
 
@@ -8,7 +8,7 @@
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rpcore/util/task_scheduler.hpp>
 
-#include "environment_probe.h"
+#include "environment_probe.hpp"
 
 namespace rpplugins {
 

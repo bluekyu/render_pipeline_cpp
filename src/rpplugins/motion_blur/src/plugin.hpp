@@ -2,7 +2,7 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "motion_blur_stage.h"
+#include "motion_blur_stage.hpp"
 
 namespace rpplugins {
 

@@ -12,11 +12,11 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
-#include "probe_manager.h"
-#include "environment_capture_stage.h"
-#include "cull_probes_stage.h"
-#include "apply_envprobes_stage.h"
-#include "environment_probe.h"
+#include "probe_manager.hpp"
+#include "environment_capture_stage.hpp"
+#include "cull_probes_stage.hpp"
+#include "apply_envprobes_stage.hpp"
+#include "environment_probe.hpp"
 #include "pssm_plugin.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)

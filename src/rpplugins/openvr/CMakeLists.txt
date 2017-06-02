@@ -31,7 +31,7 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/include/openvr_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/openvr_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/openvr_render_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/openvr_render_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/openvr_render_stage.hpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 

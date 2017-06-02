@@ -1,4 +1,4 @@
-#include "forward_stage.h"
+#include "forward_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/globals.hpp>

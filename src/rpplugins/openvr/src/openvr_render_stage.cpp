@@ -1,4 +1,4 @@
-#include "openvr_render_stage.h"
+#include "openvr_render_stage.hpp"
 
 #include <glgsg.h>
 

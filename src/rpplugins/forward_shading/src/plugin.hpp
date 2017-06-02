@@ -2,7 +2,7 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "forward_stage.h"
+#include "forward_stage.hpp"
 
 namespace rpplugins {
 

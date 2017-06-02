@@ -24,16 +24,16 @@ render_pipeline_FIND_PLUGINS("pssm")
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/include/env_probes_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/apply_envprobes_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/apply_envprobes_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/apply_envprobes_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/cull_probes_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/cull_probes_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/cull_probes_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/env_probes_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/environment_capture_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_capture_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/environment_capture_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/environment_probe.cpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_probe.h"
+    "${PROJECT_SOURCE_DIR}/src/environment_probe.hpp"
     "${PROJECT_SOURCE_DIR}/src/probe_manager.cpp"
-    "${PROJECT_SOURCE_DIR}/src/probe_manager.h"
+    "${PROJECT_SOURCE_DIR}/src/probe_manager.hpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 

@@ -1,4 +1,4 @@
-#include "cull_probes_stage.h"
+#include "cull_probes_stage.hpp"
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>
