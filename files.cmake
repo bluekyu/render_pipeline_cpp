@@ -90,10 +90,10 @@ set(header_rpcore_native
 )
 
 set(header_rpcore_pluginbase
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/base_plugin.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_setting_types.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/manager.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/base_plugin.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/manager.hpp"
 )
 
 set(header_rpcore_stages

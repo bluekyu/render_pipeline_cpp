@@ -18,9 +18,9 @@
 #include "render_pipeline/rpcore/gui/exposure_widget.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
-#include "render_pipeline/rpcore/pluginbase/manager.h"
-#include "render_pipeline/rpcore/pluginbase/day_manager.h"
-#include "render_pipeline/rpcore/pluginbase/base_plugin.h"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/base_plugin.hpp"
 
 #include <rpplugins/scattering/include/scattering_plugin.hpp>
 #include <rpplugins/pssm/include/pssm_plugin.hpp>

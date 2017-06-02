@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
+#include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
 #include <boost/algorithm/string.hpp>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
 #include "bloom_stage.hpp"
 

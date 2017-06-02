@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
+#include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
 #define RENDER_PIPELINE_PLUGIN_CREATOR(PLUGIN_TYPE) \
     static std::shared_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \

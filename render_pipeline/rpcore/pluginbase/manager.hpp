@@ -8,7 +8,7 @@
 #include <functional>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
 namespace rpcore {
 
