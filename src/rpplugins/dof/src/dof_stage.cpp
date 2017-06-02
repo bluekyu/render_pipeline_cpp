@@ -1,4 +1,4 @@
-#include "dof_stage.h"
+#include "dof_stage.hpp"
 
 #include <render_pipeline/rpcore/render_target.hpp>
 

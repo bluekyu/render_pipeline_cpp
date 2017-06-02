@@ -1,4 +1,4 @@
-#include "manual_exposure_stage.h"
+#include "manual_exposure_stage.hpp"
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>

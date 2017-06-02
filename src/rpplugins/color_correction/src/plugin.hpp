@@ -2,11 +2,11 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "color_correction_stage.h"
-#include "tonemapping_stage.h"
-#include "sharpen_stage.h"
-#include "auto_exposure_stage.h"
-#include "manual_exposure_stage.h"
+#include "color_correction_stage.hpp"
+#include "tonemapping_stage.hpp"
+#include "sharpen_stage.hpp"
+#include "auto_exposure_stage.hpp"
+#include "manual_exposure_stage.hpp"
 
 namespace rpplugins {
 

@@ -24,15 +24,15 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/auto_exposure_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/auto_exposure_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/auto_exposure_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/color_correction_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/color_correction_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/color_correction_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/manual_exposure_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/manual_exposure_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/manual_exposure_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/sharpen_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/sharpen_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/sharpen_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/tonemapping_stage.hpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 

@@ -23,7 +23,7 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT
 set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/plugin.cpp"
-    "${PROJECT_SOURCE_DIR}/src/dof_stage.h"
+    "${PROJECT_SOURCE_DIR}/src/dof_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/dof_stage.cpp"
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})

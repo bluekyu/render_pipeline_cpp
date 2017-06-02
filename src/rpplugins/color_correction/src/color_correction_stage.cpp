@@ -1,4 +1,4 @@
-#include "color_correction_stage.h"
+#include "color_correction_stage.hpp"
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>
