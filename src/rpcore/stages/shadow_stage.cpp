@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/stages/shadow_stage.h>
+#include <render_pipeline/rpcore/stages/shadow_stage.hpp>
 
 #include <graphicsBuffer.h>
 

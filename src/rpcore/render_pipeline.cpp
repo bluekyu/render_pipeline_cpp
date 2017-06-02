@@ -28,12 +28,12 @@
 #include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/logger.hpp"
 
-#include "render_pipeline/rpcore/stages/ambient_stage.h"
-#include "render_pipeline/rpcore/stages/combine_velocity_stage.h"
-#include "render_pipeline/rpcore/stages/downscale_z_stage.h"
-#include "render_pipeline/rpcore/stages/final_stage.h"
-#include "render_pipeline/rpcore/stages/gbuffer_stage.h"
-#include "render_pipeline/rpcore/stages/upscale_stage.h"
+#include "render_pipeline/rpcore/stages/ambient_stage.hpp"
+#include "render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
+#include "render_pipeline/rpcore/stages/downscale_z_stage.hpp"
+#include "render_pipeline/rpcore/stages/final_stage.hpp"
+#include "render_pipeline/rpcore/stages/gbuffer_stage.hpp"
+#include "render_pipeline/rpcore/stages/upscale_stage.hpp"
 
 #include "render_pipeline/rpcore/native/tag_state_manager.h"
 #include "render_pipeline/rpcore/native/rp_point_light.h"

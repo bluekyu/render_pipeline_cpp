@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/stages/apply_lights_stage.h>
+#include <render_pipeline/rpcore/stages/apply_lights_stage.hpp>
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>

@@ -10,7 +10,7 @@
 #include <render_pipeline/rpcore/util/task_scheduler.hpp>
 #include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/stages/cull_lights_stage.h>
+#include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
 #include "probe_manager.h"
 #include "environment_capture_stage.h"

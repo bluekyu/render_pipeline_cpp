@@ -1,4 +1,4 @@
-#include <render_pipeline/rpcore/stages/update_previous_pipes_stage.h>
+#include <render_pipeline/rpcore/stages/update_previous_pipes_stage.hpp>
 
 #include <virtualFileSystem.h>
 

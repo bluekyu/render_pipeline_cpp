@@ -5,11 +5,11 @@
 #include <render_pipeline/rpcore/image.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.h>
 
-#include <render_pipeline/rpcore/stages/apply_lights_stage.h>
-#include <render_pipeline/rpcore/stages/shadow_stage.h>
-#include <render_pipeline/rpcore/stages/flag_used_cells_stage.h>
-#include <render_pipeline/rpcore/stages/collect_used_cells_stage.h>
-#include <render_pipeline/rpcore/stages/cull_lights_stage.h>
+#include <render_pipeline/rpcore/stages/apply_lights_stage.hpp>
+#include <render_pipeline/rpcore/stages/shadow_stage.hpp>
+#include <render_pipeline/rpcore/stages/flag_used_cells_stage.hpp>
+#include <render_pipeline/rpcore/stages/collect_used_cells_stage.hpp>
+#include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
 #include <render_pipeline/rpcore/native/internal_light_manager.h>
 #include <render_pipeline/rpcore/native/shadow_manager.h>

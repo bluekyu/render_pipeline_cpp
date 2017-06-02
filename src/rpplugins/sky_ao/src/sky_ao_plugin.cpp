@@ -3,7 +3,7 @@
 #include <boost/any.hpp>
 #include <boost/dll/alias.hpp>
 
-#include <render_pipeline/rpcore/stages/ambient_stage.h>
+#include <render_pipeline/rpcore/stages/ambient_stage.hpp>
 
 #include "ao_stage.h"
 #include "capture_stage.h"
