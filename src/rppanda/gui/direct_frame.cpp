@@ -1,9 +1,9 @@
-#include <render_pipeline/rppanda/gui/direct_frame.h>
+#include <render_pipeline/rppanda/gui/direct_frame.hpp>
 
 #include <pgItem.h>
 
-#include <render_pipeline/rppanda/gui/onscreen_text.h>
-#include <render_pipeline/rppanda/gui/onscreen_image.h>
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
+#include <render_pipeline/rppanda/gui/onscreen_image.hpp>
 
 namespace rppanda {
 

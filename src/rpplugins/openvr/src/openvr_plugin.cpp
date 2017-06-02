@@ -18,7 +18,7 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 #include "openvr_render_stage.h"
 

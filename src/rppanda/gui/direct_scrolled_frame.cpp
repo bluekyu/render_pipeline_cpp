@@ -1,4 +1,4 @@
-#include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
+#include <render_pipeline/rppanda/gui/direct_scrolled_frame.hpp>
 
 #include <pgScrollFrame.h>
 

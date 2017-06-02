@@ -14,7 +14,7 @@
 #include <render_pipeline/rpcore/light_manager.hpp>
 #include <render_pipeline/rpcore/image.hpp>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rpcore {
 

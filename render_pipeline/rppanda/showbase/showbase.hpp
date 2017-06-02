@@ -2,7 +2,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rppanda/showbase/direct_object.h>
+#include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class GraphicsOutput;
 class Camera;

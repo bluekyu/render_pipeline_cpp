@@ -2,7 +2,7 @@
 
 #include <clockObject.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rpcore {
 

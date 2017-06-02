@@ -5,8 +5,8 @@
 
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rppanda/stdpy/file.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/stdpy/file.hpp>
 
 #include "scattering_stage.h"
 #include "scattering_envmap_stage.h"

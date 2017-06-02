@@ -1,7 +1,7 @@
 #pragma once
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rppanda/gui/onscreen_image.h>
+#include <render_pipeline/rppanda/gui/onscreen_image.hpp>
 
 namespace rpcore {
 

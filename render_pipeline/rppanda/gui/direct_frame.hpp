@@ -1,7 +1,7 @@
 #pragma once
 
-#include <render_pipeline/rppanda/gui/direct_gui_base.h>
-#include <render_pipeline/rppanda/util/image_input.h>
+#include <render_pipeline/rppanda/gui/direct_gui_base.hpp>
+#include <render_pipeline/rppanda/util/image_input.hpp>
 
 namespace rppanda {
 

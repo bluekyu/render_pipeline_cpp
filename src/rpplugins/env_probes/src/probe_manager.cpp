@@ -3,7 +3,7 @@
 #include <lens.h>
 
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 #include "environment_probe.h"
 

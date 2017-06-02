@@ -1,37 +1,37 @@
 # list render_pipeline/
 set(header_rppanda_actor
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/actor/actor.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/actor/actor.hpp"
 )
 
 set(header_rppanda_stdpy
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/stdpy/file.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/stdpy/file.hpp"
 )
 
 set(header_rppanda_util
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/image_input.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/image_input.hpp"
 )
 
 set(header_rppanda_gui
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_button.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_check_box.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_frame.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_base.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_globals.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scroll_bar.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scrolled_frame.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_slider.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_image.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_text.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_button.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_check_box.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_frame.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_base.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_slider.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_image.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_text.hpp"
 )
 
 set(header_rppanda_interval
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/lerp_interval.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/meta_interval.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/lerp_interval.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/meta_interval.hpp"
 )
 
 set(header_rppanda_showbase
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/direct_object.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/direct_object.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.hpp"
 )
 
 set(header_rpcore

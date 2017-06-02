@@ -1,4 +1,4 @@
-#include "render_pipeline/rppanda/actor/actor.h"
+#include "render_pipeline/rppanda/actor/actor.hpp"
 
 #include <loader.h>
 

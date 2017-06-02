@@ -13,7 +13,7 @@
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
-#include "render_pipeline/rppanda/stdpy/file.h"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 #include "rplibs/yaml.hpp"
 

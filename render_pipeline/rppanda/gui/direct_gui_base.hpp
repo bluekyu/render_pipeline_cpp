@@ -6,8 +6,8 @@
 #include <boost/any.hpp>
 #include <boost/optional.hpp>
 
-#include <render_pipeline/rppanda/showbase/direct_object.h>
-#include <render_pipeline/rppanda/gui/direct_gui_globals.h>
+#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
 
 class PGItem;
 

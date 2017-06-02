@@ -1,4 +1,4 @@
-#include "render_pipeline/rppanda/interval/lerp_interval.h"
+#include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 
 namespace rppanda {
 

@@ -1,10 +1,10 @@
-#include <render_pipeline/rppanda/gui/onscreen_image.h>
+#include <render_pipeline/rppanda/gui/onscreen_image.hpp>
 
 #include <texturePool.h>
 #include <cardMaker.h>
 #include <pandaFramework.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rppanda {
 

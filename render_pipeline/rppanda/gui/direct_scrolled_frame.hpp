@@ -1,7 +1,7 @@
 #pragma once
 
-#include <render_pipeline/rppanda/gui/direct_frame.h>
-#include <render_pipeline/rppanda/gui/direct_scroll_bar.h>
+#include <render_pipeline/rppanda/gui/direct_frame.hpp>
+#include <render_pipeline/rppanda/gui/direct_scroll_bar.hpp>
 
 class PGScrollFrame;
 

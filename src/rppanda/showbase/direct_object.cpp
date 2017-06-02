@@ -1,8 +1,8 @@
-#include <render_pipeline/rppanda/showbase/direct_object.h>
+#include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 #include <asyncTaskManager.h>
 
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 namespace rppanda {
 

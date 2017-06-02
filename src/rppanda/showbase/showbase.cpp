@@ -1,4 +1,4 @@
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include <cIntervalManager.h>
 #include <pandaSystem.h>

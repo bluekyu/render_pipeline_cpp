@@ -1,4 +1,4 @@
-#include <render_pipeline/rppanda/gui/direct_scroll_bar.h>
+#include <render_pipeline/rppanda/gui/direct_scroll_bar.hpp>
 
 #include <pgSliderBar.h>
 

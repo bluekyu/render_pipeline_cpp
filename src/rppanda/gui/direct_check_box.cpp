@@ -1,8 +1,8 @@
-#include <render_pipeline/rppanda/gui/direct_check_box.h>
+#include <render_pipeline/rppanda/gui/direct_check_box.hpp>
 
 #include <pgButton.h>
 
-#include <render_pipeline/rppanda/util/image_input.h>
+#include <render_pipeline/rppanda/util/image_input.hpp>
 
 namespace rppanda {
 

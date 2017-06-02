@@ -5,9 +5,9 @@
  * @Author	dri
  */
 
-#include <render_pipeline/rppanda/gui/onscreen_text.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rppanda/gui/direct_gui_globals.h>
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
 
 namespace rppanda {
 

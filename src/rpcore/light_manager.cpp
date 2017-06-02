@@ -3,7 +3,7 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
 #include <render_pipeline/rpcore/image.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 #include <render_pipeline/rpcore/stages/apply_lights_stage.hpp>
 #include <render_pipeline/rpcore/stages/shadow_stage.hpp>

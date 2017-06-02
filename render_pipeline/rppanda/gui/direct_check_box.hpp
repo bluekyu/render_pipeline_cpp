@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render_pipeline/rppanda/gui/direct_button.h>
+#include <render_pipeline/rppanda/gui/direct_button.hpp>
 
 namespace rppanda {
 

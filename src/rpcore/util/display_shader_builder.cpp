@@ -7,7 +7,7 @@
 
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/image.hpp>
-#include <render_pipeline/rppanda/stdpy/file.h>
+#include <render_pipeline/rppanda/stdpy/file.hpp>
 
 namespace rpcore {
 

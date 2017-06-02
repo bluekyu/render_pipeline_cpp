@@ -2,8 +2,8 @@
 
 #include <computeNode.h>
 
-#include "render_pipeline/rppanda/gui/direct_frame.h"
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rppanda/gui/direct_frame.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"

@@ -1,9 +1,9 @@
-#include <render_pipeline/rppanda/gui/direct_button.h>
+#include <render_pipeline/rppanda/gui/direct_button.hpp>
 
 #include <pgButton.h>
 #include <mouseButton.h>
 
-#include <render_pipeline/rppanda/gui/direct_gui_globals.h>
+#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
 
 namespace rppanda {
 

@@ -1,5 +1,5 @@
-#include <render_pipeline/rppanda/gui/direct_gui_base.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/gui/direct_gui_base.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 #include <regex>
 

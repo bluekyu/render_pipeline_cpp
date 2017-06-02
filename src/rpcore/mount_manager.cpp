@@ -7,7 +7,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "render_pipeline/rppanda/stdpy/file.h"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 namespace rpcore {
 

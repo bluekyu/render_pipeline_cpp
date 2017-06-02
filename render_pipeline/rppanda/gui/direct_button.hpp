@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render_pipeline/rppanda/gui/direct_frame.h>
+#include <render_pipeline/rppanda/gui/direct_frame.hpp>
 
 class PGButton;
 
