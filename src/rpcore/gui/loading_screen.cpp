@@ -2,9 +2,9 @@
 
 #include <graphicsEngine.h>
 
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.h"
 
 namespace rpcore {
 

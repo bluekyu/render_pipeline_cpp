@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render_pipeline/rpcore/gui/draggable_window.h>
+#include <render_pipeline/rpcore/gui/draggable_window.hpp>
 
 namespace rpcore {
 

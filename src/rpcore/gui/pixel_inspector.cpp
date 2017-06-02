@@ -3,12 +3,12 @@
 #include <cardMaker.h>
 #include <graphicsWindow.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rppanda/showbase/showbase.h"
 
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/loader.hpp>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
 
 namespace rpcore {
 

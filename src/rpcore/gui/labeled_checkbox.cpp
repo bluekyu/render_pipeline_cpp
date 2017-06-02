@@ -1,7 +1,7 @@
-#include <render_pipeline/rpcore/gui/labeled_checkbox.h>
+#include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
 
-#include <render_pipeline/rppanda/gui/direct_check_box.h>
-#include <render_pipeline/rpcore/gui/text.h>
+#include "render_pipeline/rppanda/gui/direct_check_box.h"
+#include "render_pipeline/rpcore/gui/text.hpp"
 
 namespace rpcore {
 

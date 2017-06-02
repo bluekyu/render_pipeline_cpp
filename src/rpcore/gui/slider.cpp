@@ -1,6 +1,6 @@
-#include <render_pipeline/rpcore/gui/slider.h>
+#include "render_pipeline/rpcore/gui/slider.hpp"
 
-#include <render_pipeline/rppanda/gui/direct_slider.h>
+#include "render_pipeline/rppanda/gui/direct_slider.h"
 
 namespace rpcore {
 

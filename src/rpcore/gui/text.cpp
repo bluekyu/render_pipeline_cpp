@@ -1,10 +1,11 @@
-#include "render_pipeline/rpcore/gui/text.h"
-#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
 
 #include <map>
 
 #include "textNode.h"
 #include "textFont.h"
+
+#include "render_pipeline/rpcore/globals.hpp"
 
 namespace rpcore {
 

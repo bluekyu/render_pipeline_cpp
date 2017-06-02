@@ -3,10 +3,10 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/gui/labeled_checkbox.h>
-#include <render_pipeline/rpcore/gui/slider.h>
-#include <render_pipeline/rpcore/image.hpp>
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
+#include "render_pipeline/rpcore/gui/slider.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 
 #include "rpcore/util/display_shader_builder.h"
 

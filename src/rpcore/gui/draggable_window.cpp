@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/gui/draggable_window.h"
+#include "render_pipeline/rpcore/gui/draggable_window.hpp"
 
 #include <genericAsyncTask.h>
 #include <graphicsWindow.h>

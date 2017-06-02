@@ -10,17 +10,17 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/light_manager.hpp>
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/gui/exposure_widget.h>
-#include <render_pipeline/rpcore/render_target.hpp>
-#include <render_pipeline/rpcore/util/task_scheduler.hpp>
-#include <render_pipeline/rpcore/pluginbase/manager.h>
-#include <render_pipeline/rpcore/pluginbase/day_manager.h>
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/light_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/util/task_scheduler.hpp"
+#include "render_pipeline/rpcore/pluginbase/manager.h"
+#include "render_pipeline/rpcore/pluginbase/day_manager.h"
+#include "render_pipeline/rpcore/pluginbase/base_plugin.h"
 
 #include <rpplugins/scattering/include/scattering_plugin.hpp>
 #include <rpplugins/pssm/include/pssm_plugin.hpp>

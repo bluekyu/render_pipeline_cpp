@@ -52,13 +52,13 @@ set(header_rpcore
 )
 
 set(header_rpcore_gui
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/exposure_widget.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/sprite.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/text.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/exposure_widget.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/sprite.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/text.hpp"
 )
 
 set(header_rpcore_native
@@ -97,18 +97,18 @@ set(header_rpcore_pluginbase
 )
 
 set(header_rpcore_stages
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/ambient_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/apply_lights_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/collect_used_cells_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/combine_velocity_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/cull_lights_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/downscale_z_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/final_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/flag_used_cells_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/gbuffer_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/shadow_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/update_previous_pipes_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/upscale_stage.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/ambient_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/apply_lights_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/collect_used_cells_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/cull_lights_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/downscale_z_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/final_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/flag_used_cells_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/gbuffer_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/shadow_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/update_previous_pipes_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/upscale_stage.hpp"
 )
 
 set(header_rpcore_util

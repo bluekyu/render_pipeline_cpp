@@ -2,7 +2,7 @@
 
 #include <asyncTask.h>
 
-#include <render_pipeline/rpcore/gui/draggable_window.h>
+#include <render_pipeline/rpcore/gui/draggable_window.hpp>
 
 class GenericAsyncTask;
 

@@ -3,7 +3,7 @@
 #include <asyncTask.h>
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/gui/text.h>
+#include <render_pipeline/rpcore/gui/text.hpp>
 
 class GenericAsyncTask;
 

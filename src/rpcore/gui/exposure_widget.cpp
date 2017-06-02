@@ -1,17 +1,17 @@
-#include <render_pipeline/rpcore/gui/exposure_widget.h>
+#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
 
 #include <computeNode.h>
 
-#include <render_pipeline/rppanda/gui/direct_frame.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rppanda/gui/direct_frame.h"
+#include "render_pipeline/rppanda/showbase/showbase.h"
 
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/image.hpp>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/gui/text.h>
-#include <render_pipeline/rpcore/loader.hpp>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
 
 namespace rpcore {
 

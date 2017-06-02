@@ -2,7 +2,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/gui/checkbox.h>
+#include <render_pipeline/rpcore/gui/checkbox.hpp>
 
 namespace rpcore {
 
