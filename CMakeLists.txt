@@ -32,6 +32,8 @@ message("Render Pipeline building version: ${render_pipeline_VERSION}")
 # configure project package
 include(FindPackages)
 
+set(${PROJECT_NAME}_DEBUG_POSTFIX "-debug")
+set(${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX "-reldeb")
 set(render_pipeline_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
 include(${render_pipeline_MACRO_CMAKE_FILE})
 
@@ -119,9 +121,14 @@ install(TARGETS ${PROJECT_NAME}
 )
 export(EXPORT ${TARGET_EXPORT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
 
-install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
+install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${${PROJECT_NAME}_DEBUG_POSTFIX}.pdb"
     DESTINATION "bin"
-    CONFIGURATIONS Debug RelWithDebInfo
+    CONFIGURATIONS Debug
+)
+
+install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}.pdb"
+    DESTINATION "bin"
+    CONFIGURATIONS RelWithDebInfo
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
