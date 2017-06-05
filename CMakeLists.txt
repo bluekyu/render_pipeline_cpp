@@ -32,8 +32,6 @@ message("Render Pipeline building version: ${render_pipeline_VERSION}")
 # configure project package
 include(FindPackages)
 
-set(${PROJECT_NAME}_DEBUG_POSTFIX "-debug")
-set(${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX "-reldeb")
 set(render_pipeline_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
 include(${render_pipeline_MACRO_CMAKE_FILE})
 
@@ -66,6 +64,14 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+
+    # used for plugin postfix.
+    $<$<CONFIG:Debug>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_DEBUG_POSTFIX}">
+    $<$<CONFIG:RelWithDebInfo>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}">
+)
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:include>
@@ -85,8 +91,8 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "render_pipeline"
     DEFINE_SYMBOL "RENDER_PIPELINE_BUILD"
-    DEBUG_POSTFIX "-debug"
-    RELWITHDEBINFO_POSTFIX "-reldeb"
+    DEBUG_POSTFIX ${${PROJECT_NAME}_DEBUG_POSTFIX}
+    RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
 
