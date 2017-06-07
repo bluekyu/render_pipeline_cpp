@@ -151,7 +151,7 @@ install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 # documents
 if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
     set(DOCUMENTS_TARGET "documents")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in"
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/documents/Doxyfile.in"
         "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
         @ONLY
     )
@@ -162,7 +162,7 @@ if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
     )
     set_target_properties(${DOCUMENTS_TARGET} PROPERTIES FOLDER "render_pipeline")
 
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/doc/")
+    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/documents/")
 endif()
 
 install(FILES
