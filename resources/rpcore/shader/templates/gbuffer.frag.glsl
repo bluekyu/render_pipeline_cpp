@@ -68,7 +68,7 @@ uniform Panda3DMaterial p3d_Material;
 
 void main() {
 
-    %pretest%
+    %main_begin%
 
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
 
@@ -158,4 +158,6 @@ void main() {
     %material%
 
     render_material(m);
+
+    %main_end%
 }

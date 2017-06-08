@@ -1,6 +1,6 @@
 # License
 
-RenderPipeline C++
+Render Pipeline C++
 
 Copyright (c) 2016, center of human-centered interaction for coexistence. All right reserved.
 

@@ -76,7 +76,7 @@ layout(location = 0) out vec4 color_result;
 
 void main() {
 
-    %pretest%
+    %main_begin%
 
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
 
@@ -202,4 +202,6 @@ void main() {
     #else
         color_result = vec4(color, alpha);
     #endif
+
+    %main_end%
 }

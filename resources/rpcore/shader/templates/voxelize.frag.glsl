@@ -44,7 +44,7 @@ uniform writeonly image3D RESTRICT VoxelGridDest;
 
 void main() {
 
-    %pretest%
+    %main_begin%
 
     vec2 texcoord = vOutput.texcoord;
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
@@ -74,4 +74,6 @@ void main() {
 
     // Write voxel
     imageStore(VoxelGridDest, vs_icoord, vec4(combined_lighting, 1.0));
+
+    %main_end%
 }
