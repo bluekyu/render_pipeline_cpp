@@ -100,7 +100,7 @@ const Effect::OptionType Effect::Impl::DEFAULT_OPTIONS =
     {"parallax_mapping", false},
 };
 
-const std::vector<Effect::Impl::PassType> Effect::Impl::PASSES ={{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
+const std::vector<Effect::Impl::PassType> Effect::Impl::PASSES = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
 
 std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::GLOBAL_CACHE;
 int Effect::Impl::EFFECT_ID = 0;
@@ -376,19 +376,19 @@ std::string Effect::Impl::process_shader_template(const std::string& template_sr
 // ************************************************************************************************
 std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionType& options)
 {
-	const std::string& effect_hash = Impl::generate_hash(filename, options);
+    const std::string& effect_hash = Impl::generate_hash(filename, options);
     if (Impl::GLOBAL_CACHE.find(effect_hash) != Impl::GLOBAL_CACHE.end())
         return Impl::GLOBAL_CACHE[effect_hash];
 
-	auto effect = std::make_shared<Effect>();
-	effect->set_options(options);
-	if (!effect->do_load(filename))
-	{
-		RPObject::global_error("Effect", "Could not load effect!");
-		return nullptr;
-	}
+    auto effect = std::make_shared<Effect>();
+    effect->set_options(options);
+    if (!effect->do_load(filename))
+    {
+        RPObject::global_error("Effect", "Could not load effect!");
+        return nullptr;
+    }
 
-	return effect;
+    return effect;
 }
 
 Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>(*this))
@@ -413,15 +413,15 @@ bool Effect::get_option(const std::string& name) const
 
 void Effect::set_options(const OptionType& options)
 {
-	for (const auto& pair: options)
-	{
+    for (const auto& pair: options)
+    {
         if (impl_->options_.find(pair.first) == impl_->options_.end())
-		{
-			error("Unknown option: " + pair.first);
-			continue;
-		}
+        {
+            error("Unknown option: " + pair.first);
+            continue;
+        }
         impl_->options_[pair.first] = pair.second;
-	}
+    }
 }
 
 bool Effect::do_load(const std::string& filename)
@@ -459,15 +459,15 @@ bool Effect::do_load(const std::string& filename)
 
 Shader* Effect::get_shader_obj(const std::string& pass_id) const
 {
-	try
-	{
-		return impl_->shader_objs_.at(pass_id);
-	}
-	catch (const std::out_of_range&)
-	{
-		warn(std::string("Pass '") + pass_id + "' not found!");
-		return nullptr;
-	}
+    try
+    {
+        return impl_->shader_objs_.at(pass_id);
+    }
+    catch (const std::out_of_range&)
+    {
+        warn(std::string("Pass '") + pass_id + "' not found!");
+        return nullptr;
+    }
 }
 
 }
