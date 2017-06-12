@@ -1,3 +1,5 @@
+#include <dtoolbase.h>
+
 #include "render_pipeline/rpcore/effect.hpp"
 
 #include <regex>
@@ -150,11 +152,13 @@ std::string Effect::Impl::convert_filename_to_name(std::string filename)
 void Effect::Impl::parse_content(YAML::Node& parsed_yaml)
 {
     YAML::Node& vtx_data = parsed_yaml["vertex"];
+    YAML::Node& geom_data = parsed_yaml["geometry"];
     YAML::Node& frag_data = parsed_yaml["fragment"];
 
     for (const auto& pass_id_multiview: PASSES)
     {
         parse_shader_template(pass_id_multiview, "vertex", vtx_data);
+        parse_shader_template(pass_id_multiview, "geometry", geom_data);
         parse_shader_template(pass_id_multiview, "fragment", frag_data);
     }
 }
@@ -177,16 +181,20 @@ void Effect::Impl::parse_shader_template(const PassType& pass_id_multiview, cons
         else
             template_src = "/$$rp/shader/templates/vertex.vert.glsl";
     }
+    else if (stage == "geometry")
+    {
+        // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
+        if (stereo_mode && RenderPipeline::get_global_ptr()->get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
+        {
+            template_src = "/$$rp/shader/templates/vertex_stereo.geom.glsl";
+        }
+    }
+
+    if (template_src.empty())
+        return;
 
     const std::string& shader_path = construct_shader_from_data(pass_id, stage, template_src, data);
     generated_shader_paths_[stage + "-" + pass_id] = shader_path;
-
-    // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
-    if (stereo_mode && RenderPipeline::get_global_ptr()->get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
-    {
-        const std::string& shader_path = construct_shader_from_data(pass_id, std::string("geometry"), "/$$rp/shader/templates/vertex_stereo.geom.glsl", YAML::Node());
-        generated_shader_paths_[std::string("geometry-") + pass_id] = shader_path;
-    }
 }
 
 std::string Effect::Impl::construct_shader_from_data(const std::string& pass_id, const std::string& stage,
