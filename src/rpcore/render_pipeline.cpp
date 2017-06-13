@@ -477,6 +477,8 @@ void RenderPipeline::Impl::apply_custom_shaders(void)
 
 void RenderPipeline::Impl::create_managers(void)
 {
+    self_.trace("Creating managers ...");
+
     task_scheduler_ = new TaskScheduler(&self_);
     tag_mgr_ = new TagStateManager(Globals::base->get_cam());
     plugin_mgr_ = new PluginManager(self_);
@@ -508,6 +510,8 @@ void RenderPipeline::Impl::analyze_system(void)
 
 void RenderPipeline::Impl::initialize_managers(void)
 {
+    self_.trace("Initializing managers ...");
+
     stage_mgr_->setup();
     stage_mgr_->reload_shaders();
     light_mgr_->reload_shaders();
@@ -646,6 +650,8 @@ void RenderPipeline::Impl::create_common_defines(void)
 {
     static const double round_ratio = std::pow(10.0, 10.0);
 
+    self_.trace("Creating common defines ...");
+
     auto& defines = stage_mgr_->get_defines();
     defines["CAMERA_NEAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_near()) * round_ratio) / round_ratio);
     defines["CAMERA_FAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_far()) * round_ratio) / round_ratio);
@@ -678,6 +684,8 @@ void RenderPipeline::Impl::create_common_defines(void)
 
 void RenderPipeline::Impl::init_common_stages(void)
 {
+    self_.trace("Initailizing common stages ...");
+
     stage_mgr_->add_stage(std::make_shared<AmbientStage>(self_));
     stage_mgr_->add_stage(std::make_shared<GBufferStage>(self_));
     stage_mgr_->add_stage(std::make_shared<FinalStage>(self_));

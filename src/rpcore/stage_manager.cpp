@@ -230,6 +230,8 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
 
 void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage>& stage)
 {
+    self_.trace(fmt::format("Registring the result of stage ({}).", stage->get_debug_name()));
+
     const auto& produced_pipes = stage->get_produced_pipes();
     for (const auto& pipe_data: produced_pipes)
     {
@@ -387,6 +389,8 @@ const std::vector<std::shared_ptr<RenderStage>>& StageManager::get_stages(void) 
 
 void StageManager::add_stage(const std::shared_ptr<RenderStage>& stage)
 {
+    trace(fmt::format("Adding stage ({}) ...", stage->get_debug_name()));
+
     bool found = false;
     if (std::find(impl_->stage_order_.begin(), impl_->stage_order_.end(), stage->get_stage_id()) == std::end(impl_->stage_order_))
     {
@@ -439,7 +443,10 @@ void StageManager::setup(void)
 
     for (auto& stage: impl_->stages_)
     {
+        debug(fmt::format("Creating stage ({}) ...", stage->get_debug_name()));
         stage->create();
+
+        trace(fmt::format("Stage ({}) handles window re-sizing.", stage->get_debug_name()));
         stage->handle_window_resize();
 
         // Rely on the methods to print an appropriate error message

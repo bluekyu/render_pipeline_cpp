@@ -51,6 +51,8 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
 
 void ShowBase::Impl::create_base_audio_managers(void)
 {
+    rppanda_cat.debug() << "Creating base audio manager ..." << std::endl;
+
     music_manager_ = AudioManager::create_AudioManager();
     music_manager_is_valid_ = music_manager_ && music_manager_->is_valid();
     if (music_manager_is_valid_)
@@ -89,6 +91,8 @@ ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework)
         rppanda_cat.error() << "ShowBase was already created!" << std::endl;
         return;
     }
+
+    rppanda_cat.debug() << "Creating ShowBase ..." << std::endl;
 
     impl_->panda_framework_ = framework;
     impl_->window_framework_ = window_framework;
@@ -219,6 +223,8 @@ void ShowBase::open_main_window(void)
 
 void ShowBase::setup_render_2dp(void)
 {
+    rppanda_cat.debug() << "Setup 2D nodes." << std::endl;
+
     render_2dp = NodePath("render2dp");
 
     // Set up some overrides to turn off certain properties which
@@ -296,6 +302,8 @@ void ShowBase::setup_render_2dp(void)
 NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,
     const LVecBase4f& coords, Lens* lens, const std::string& camera_name)
 {
+    rppanda_cat.debug() << "Making 2D camera ..." << std::endl;
+
     DisplayRegion* dr = win->make_mono_display_region(display_region);
     dr->set_sort(sort);
 
@@ -470,6 +478,8 @@ PandaNode* ShowBase::get_data_root_node(void) const
 
 void ShowBase::restart(void)
 {
+    rppanda_cat.debug() << "Re-staring ShowBase ..." << std::endl;
+
     shutdown();
 
     add_task(ival_loop, nullptr, "ival_loop", 20);
@@ -481,6 +491,8 @@ void ShowBase::restart(void)
 
 void ShowBase::shutdown(void)
 {
+    rppanda_cat.debug() << "Shutdown ShowBase ..." << std::endl;
+
     auto task_mgr = get_task_mgr();
     AsyncTask* task = nullptr;
 

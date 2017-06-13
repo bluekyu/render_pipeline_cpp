@@ -196,6 +196,8 @@ void PluginManager::unload(void)
 
 void PluginManager::load_base_settings(const std::string& plugin_dir)
 {
+    trace(fmt::format("Loading base setting from '{}'", plugin_dir));
+
     impl_->plugin_dir_ = impl_->convert_to_physical_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
@@ -276,6 +278,8 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
 
 void PluginManager::load_setting_overrides(const std::string& override_path)
 {
+    trace(fmt::format("Loading setting overrides from '{}'", override_path));
+
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {
@@ -313,6 +317,8 @@ void PluginManager::load_setting_overrides(const std::string& override_path)
 
 void PluginManager::load_daytime_overrides(const std::string& override_path)
 {
+    trace(fmt::format("Loading daytime overrides from '{}'", override_path));
+
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {
