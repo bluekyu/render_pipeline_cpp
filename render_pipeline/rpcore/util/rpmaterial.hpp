@@ -40,6 +40,9 @@ public:
     /** Used in only TRANSPARENT_MODEL mode. */
     float get_alpha(void) const;
 
+    void set_material(Material* mat);
+
+    void set_default(void);
     void set_base_color(const LColor& color);
     void set_specular_ior(float specular_ior);
     void set_metallic(float metallic);
@@ -58,13 +61,7 @@ private:
 // ************************************************************************************************
 inline RPMaterial::RPMaterial(void): material_(new Material)
 {
-    set_shading_model(ShadingModel::DEFAULT_MODEL);
-    set_base_color(LColor(0.8f, 0.8f, 0.8f, 1.0f));
-    set_normal_factor(0.0f);
-    set_roughness(0.3f);
-    set_specular_ior(1.51f);
-    set_metallic(0.0f);
-    set_arbitrary0(0.0f);
+    set_default();
 }
 
 inline RPMaterial::RPMaterial(Material* material): material_(material)
@@ -116,6 +113,22 @@ inline float RPMaterial::get_alpha(void) const
     if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
         return get_arbitrary0();
     return 1.0f;
+}
+
+inline void RPMaterial::set_material(Material* mat)
+{
+    material_ = mat;
+}
+
+inline void RPMaterial::set_default(void)
+{
+    set_shading_model(ShadingModel::DEFAULT_MODEL);
+    set_base_color(LColor(0.8f, 0.8f, 0.8f, 1.0f));
+    set_normal_factor(0.0f);
+    set_roughness(0.3f);
+    set_specular_ior(1.51f);
+    set_metallic(0.0f);
+    set_arbitrary0(0.0f);
 }
 
 inline void RPMaterial::set_base_color(const LColor& color)
