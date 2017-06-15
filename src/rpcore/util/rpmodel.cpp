@@ -29,6 +29,7 @@ void RPModel::apply_meta_file(const std::string& file_path)
     YAML::Node node_root;
     if (!rplibs::load_yaml_file(_file_path, node_root))
     {
+        warn(fmt::format("Failed to load model meta file: {}", file_path));
         return;
     }
 
