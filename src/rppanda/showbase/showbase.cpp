@@ -13,6 +13,8 @@
 #include <audioManager.h>
 #include <throw_event.h>
 
+#include "render_pipeline/rppanda/showbase/sfx_player.hpp"
+
 #include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {
@@ -23,6 +25,7 @@ struct ShowBase::Impl
 {
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 
+    void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
     void enable_music(bool enable);
 
@@ -30,9 +33,15 @@ public:
     PandaFramework* panda_framework_ = nullptr;
     WindowFramework* window_framework_ = nullptr;
 
+    std::shared_ptr<SfxPlayer> sfx_player_;
+    PT(AudioManager) sfx_manager_;
     PT(AudioManager) music_manager_;
+
+    std::vector<std::pair<PT(AudioManager), bool>> sfx_manager_list_;
+
     bool app_has_audio_focus_ = true;
     bool music_manager_is_valid_ = false;
+    bool sfx_active_ = false;
     bool music_active_ = false;
 };
 
@@ -44,14 +53,30 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
     {
         impl->music_manager_->update();
     }
-    //for x in self.sfxManagerList:
-    //    x.update()
+
+    for (auto& x: impl->sfx_manager_list_)
+        x.first->update();
+
     return AsyncTask::DS_cont;
+}
+
+void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
+{
+    // keep a list of sfx manager objects to apply settings to,
+    // since there may be others in addition to the one we create here
+    bool new_sfx_manager_is_valid = extra_sfx_manager && extra_sfx_manager->is_valid();
+    sfx_manager_list_.push_back({extra_sfx_manager, new_sfx_manager_is_valid});
+    if (new_sfx_manager_is_valid)
+        extra_sfx_manager->set_active(sfx_active_);
 }
 
 void ShowBase::Impl::create_base_audio_managers(void)
 {
     rppanda_cat.debug() << "Creating base audio manager ..." << std::endl;
+
+    sfx_player_ = std::make_shared<SfxPlayer>();
+    sfx_manager_ = AudioManager::create_AudioManager();
+    add_sfx_manager(sfx_manager_);
 
     music_manager_ = AudioManager::create_AudioManager();
     music_manager_is_valid_ = music_manager_ && music_manager_->is_valid();
@@ -103,6 +128,7 @@ ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework)
         throw std::runtime_error("Cannot open Panda3D window!");
     */
 
+    impl_->sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
     impl_->music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
     want_render_2dp = ConfigVariableBool("want-render2dp", true).get_value();
 
@@ -153,7 +179,11 @@ ShowBase::~ShowBase(void)
     {
         impl_->music_manager_->shutdown();
         impl_->music_manager_.clear();
+        for (auto& manager: impl_->sfx_manager_list_)
+            manager.first->shutdown();
+        impl_->sfx_manager_list_.clear();
     }
+
     if (graphics_engine)
         graphics_engine->remove_all_windows();
 }
@@ -515,6 +545,11 @@ void ShowBase::use_trackball(void)
     impl_->window_framework_->setup_trackball();
 }
 
+void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager)
+{
+    impl_->add_sfx_manager(extra_sfx_manager);
+}
+
 void ShowBase::create_base_audio_managers(void)
 {
     impl_->create_base_audio_managers();
@@ -525,10 +560,19 @@ void ShowBase::enable_music(bool enable)
     impl_->enable_music(enable);
 }
 
+void ShowBase::set_all_sfx_enables(bool enable)
+{
+    for (auto& manager_valid: impl_->sfx_manager_list_)
+    {
+        if (manager_valid.second)
+            manager_valid.first->set_active(enable);
+    }
+}
+
 void ShowBase::disable_all_audio(void)
 {
     impl_->app_has_audio_focus_ = false;
-    // self.SetAllSfxEnables(0)
+    set_all_sfx_enables(false);
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(false);
     rppanda_cat.debug() << "Disabling audio" << std::endl;
@@ -537,12 +581,46 @@ void ShowBase::disable_all_audio(void)
 void ShowBase::enable_all_audio(void)
 {
     impl_->app_has_audio_focus_ = true;
-    // self.SetAllSfxEnables(self.sfxActive)
+    set_all_sfx_enables(impl_->sfx_active_);
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(impl_->music_active_);
     rppanda_cat.debug() << "Enabling audio" << std::endl;
 }
 
+void ShowBase::enable_sound_effects(bool enable_sound_effects)
+{
+    // don't setActive(1) if no audiofocus
+    if (impl_->app_has_audio_focus_ || !enable_sound_effects)
+        set_all_sfx_enables(enable_sound_effects);
+    impl_->sfx_active_ = enable_sound_effects;
+    if (enable_sound_effects)
+        rppanda_cat.debug() << "Enabling sound effects" << std::endl;
+    else
+        rppanda_cat.debug() << "Disabling sound effects" << std::endl;
+}
+
+void ShowBase::play_sfx(AudioSound* sfx, bool looping, bool interrupt, boost::optional<float> volume,
+    float time, boost::optional<NodePath> node, boost::optional<NodePath> listener_node,
+    boost::optional<float> cutoff)
+{
+    impl_->sfx_player_->play_sfx(sfx, looping, interrupt, volume, time, node, listener_node, cutoff);
+}
+
+void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float time, boost::optional<float> volume)
+{
+    if (!music)
+        return;
+
+    if (volume)
+        music->set_volume(volume.get());
+
+    if (interrupt || (music->status() != AudioSound::PLAYING))
+    {
+        music->set_time(time);
+        music->set_loop(looping);
+        music->play();
+    }
+}
 
 AsyncTask::DoneStatus ShowBase::ival_loop(GenericAsyncTask *task, void *user_data)
 {

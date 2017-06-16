@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
-
 #include <nodePath.h>
 #include <genericAsyncTask.h>
+
+#include <vector>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 

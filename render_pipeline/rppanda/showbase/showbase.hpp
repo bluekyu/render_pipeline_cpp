@@ -2,6 +2,8 @@
 
 #include <nodePath.h>
 
+#include <boost/optional.hpp>
+
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class GraphicsOutput;
@@ -13,6 +15,7 @@ class WindowFramework;
 class MouseWatcher;
 class AsyncTaskManager;
 class AudioManager;
+class AudioSound;
 
 namespace rppanda {
 
@@ -137,6 +140,8 @@ public:
 
     void use_trackball(void);
 
+    void add_sfx_manager(AudioManager* extra_sfx_manager);
+
     void create_base_audio_managers(void);
 
     /**
@@ -145,6 +150,10 @@ public:
      * *should* be, regardless of App/OS/HW state.
      */
     void enable_music(bool enable);
+
+    void set_all_sfx_enables(bool enable);
+
+    void enable_sound_effects(bool enable_sound_effects);
 
     /**
      * enable_all_audio and disable_all_audio allow a programmable global override-off
@@ -157,6 +166,12 @@ public:
 
     /** @see disable_all_audio(void) */
     void enable_all_audio(void);
+
+    void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume={},
+        float time=0.0, boost::optional<NodePath> node={}, boost::optional<NodePath> listener_node={},
+        boost::optional<float> cutoff={});
+
+    void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
 protected:
     GraphicsEngine* graphics_engine = nullptr;

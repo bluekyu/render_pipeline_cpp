@@ -1,8 +1,8 @@
 #pragma once
 
-#include <render_pipeline/rpcore/rpobject.hpp>
-
 #include <nodePath.h>
+
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 

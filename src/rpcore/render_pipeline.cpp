@@ -1,3 +1,5 @@
+#include <dtoolbase.h>
+
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 
 #include <cctype>
@@ -392,12 +394,13 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
     }
 
     // set lens parameter after window event.
+    // and set highest priority for running first.
     rp_impl->showbase_->add_task([](GenericAsyncTask* task, void* user_data) -> AsyncTask::DoneStatus
     {
         RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
         rp_impl->adjust_lens_setting();
         return AsyncTask::DS_done;
-    }, rp_impl.get(), "RP_HandleWindowResize");
+    }, rp_impl.get(), "RP_HandleWindowResize", -100);
 }
 
 void RenderPipeline::Impl::reload_shaders(void)
