@@ -11,7 +11,7 @@ class Node;
 namespace rpcore {
 
 /**
- * Wrapper class of Panda3D Material for physically based material.
+ * Wrapper class of Panda3D model node.
  */
 class RENDER_PIPELINE_DECL RPModel: public RPObject
 {
@@ -19,11 +19,12 @@ public:
     RPModel(void);
     RPModel(NodePath nodepath);
 
-    void apply_meta_file(const std::string& file_path="");
-    void apply_meta_node(const YAML::Node& yaml_node);
+    void load_meta_file(const std::string& file_path="");
+    void load_meta_data(const YAML::Node& yaml_node);
 
 private:
-    void apply_meta_model_node(NodePath nodepath, const YAML::Node& yaml_node);
+    // function only PImpl
+    struct Impl;
 
     NodePath nodepath_;
 };
