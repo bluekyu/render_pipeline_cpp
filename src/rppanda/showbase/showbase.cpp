@@ -23,6 +23,7 @@ static ShowBase* global_showbase = nullptr;
 
 struct ShowBase::Impl
 {
+    static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
@@ -39,11 +40,25 @@ public:
 
     std::vector<std::pair<PT(AudioManager), bool>> sfx_manager_list_;
 
+    float config_aspect_ratio_;
+    std::string window_type_;
+    bool require_window_;
+
     bool app_has_audio_focus_ = true;
     bool music_manager_is_valid_ = false;
     bool sfx_active_ = false;
     bool music_active_ = false;
+
+    bool backface_culling_enabled_;
+    bool wireframe_enabled_;
 };
+
+AsyncTask::DoneStatus ShowBase::Impl::ival_loop(GenericAsyncTask *task, void *user_data)
+{
+    // Execute all intervals in the global ivalMgr.
+    CIntervalManager::get_global_ptr()->step();
+    return AsyncTask::DS_cont;
+}
 
 AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *user_data)
 {
@@ -135,16 +150,16 @@ ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework)
     // If the aspect ratio is 0 or None, it means to infer the
     // aspect ratio from the window size.
     // If you need to know the actual aspect ratio call base.getAspectRatio()
-    config_aspect_ratio = ConfigVariableDouble("aspect-ratio", 0).get_value();
+    impl_->config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
 
     // This is set to the value of the window-type config variable, but may
     // optionally be overridden in the Showbase constructor.  Should either be
     // 'onscreen' (the default), 'offscreen' or 'none'.
-    this->window_type = ConfigVariableString("window-type", "onscreen").get_value();
-    require_window = ConfigVariableBool("require_window", true).get_value();
+    impl_->window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
+    impl_->require_window_ = ConfigVariableBool("require-window", true).get_value();
 
     // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
-    graphics_engine = GraphicsEngine::get_global_ptr();
+    graphics_engine_ = GraphicsEngine::get_global_ptr();
     setup_render();
     setup_data_graph();
 
@@ -184,8 +199,8 @@ ShowBase::~ShowBase(void)
         impl_->sfx_manager_list_.clear();
     }
 
-    if (graphics_engine)
-        graphics_engine->remove_all_windows();
+    if (graphics_engine_)
+        graphics_engine_->remove_all_windows();
 }
 
 ShowBase* ShowBase::get_global_ptr(void)
@@ -226,6 +241,11 @@ NodePath ShowBase::get_aspect_2d(void) const
 NodePath ShowBase::get_pixel_2d(void) const
 {
     return impl_->window_framework_->get_pixel_2d();
+}
+
+float ShowBase::get_config_aspect_ratio(void) const
+{
+    return impl_->config_aspect_ratio_;
 }
 
 AsyncTaskManager* ShowBase::get_task_mgr(void) const
@@ -329,6 +349,18 @@ void ShowBase::setup_render_2dp(void)
         pixel_2dp.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
 }
 
+void ShowBase::setup_render(void)
+{
+    // C++ sets already render node.
+    //self.render.setAttrib(RescaleNormalAttrib.makeDefault())
+    //self.render.setTwoSided(0)
+
+    NodePath render = get_render();
+    impl_->backface_culling_enabled_ = render.get_two_sided();
+    //textureEnabled = 1;
+    impl_->wireframe_enabled_ = render.get_render_mode() == RenderModeAttrib::M_wireframe;
+}
+
 NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,
     const LVecBase4f& coords, Lens* lens, const std::string& camera_name)
 {
@@ -399,11 +431,57 @@ void ShowBase::setup_mouse_cb(void)
     impl_->window_framework_->enable_keyboard();
 }
 
+void ShowBase::toggle_backface(void)
+{
+    if (impl_->backface_culling_enabled_)
+        backface_culling_off();
+    else
+        backface_culling_on();
+}
+
+void ShowBase::backface_culling_on(void)
+{
+    if (!impl_->backface_culling_enabled_)
+        get_render().set_two_sided(false);
+    impl_->backface_culling_enabled_ = true;
+}
+
+void ShowBase::backface_culling_off(void)
+{
+    if (!impl_->backface_culling_enabled_)
+        get_render().set_two_sided(true);
+    impl_->backface_culling_enabled_ = false;
+}
+
+void ShowBase::toggle_wireframe(void)
+{
+    if (impl_->wireframe_enabled_)
+        wireframe_off();
+    else
+        wireframe_on();
+}
+
+void ShowBase::wireframe_on(void)
+{
+    NodePath render = get_render();
+    render.set_render_mode_wireframe(100);
+    render.set_two_sided(1);
+    impl_->wireframe_enabled_ = true;
+}
+
+void ShowBase::wireframe_off(void)
+{
+    NodePath render = get_render();
+    render.clear_render_mode();
+    render.set_two_sided(!impl_->backface_culling_enabled_);
+    impl_->wireframe_enabled_ = false;
+}
+
 float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 {
     // If the config it set, we return that
-    if (config_aspect_ratio)
-        return config_aspect_ratio;
+    if (impl_->config_aspect_ratio_)
+        return impl_->config_aspect_ratio_;
 
     float aspect_ratio = 1.0f;
 
@@ -512,7 +590,7 @@ void ShowBase::restart(void)
 
     shutdown();
 
-    add_task(ival_loop, nullptr, "ival_loop", 20);
+    add_task(Impl::ival_loop, nullptr, "ival_loop", 20);
 
     // the audioLoop updates the positions of 3D sounds.
     // as such, it needs to run after the cull traversal in the igLoop.
@@ -620,13 +698,6 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
         music->set_loop(looping);
         music->play();
     }
-}
-
-AsyncTask::DoneStatus ShowBase::ival_loop(GenericAsyncTask *task, void *user_data)
-{
-    // Execute all intervals in the global ivalMgr.
-    CIntervalManager::get_global_ptr()->step();
-    return AsyncTask::DS_cont;
 }
 
 }

@@ -174,15 +174,10 @@ public:
     void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
 protected:
-    GraphicsEngine* graphics_engine = nullptr;
+    GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win = nullptr;
 
-    std::string window_type;
-    bool require_window;
-
     bool want_render_2dp;
-
-    float config_aspect_ratio;
 
     NodePath render_2dp;
     NodePath aspect_2dp;
@@ -205,15 +200,10 @@ protected:
     NodePath a2dp_bottom_left;
     NodePath a2dp_bottom_right;
 
-    bool backface_culling_enabled;
-    bool wireframe_enabled;
-
     NodePath mouse_watcher;
     MouseWatcher* mouse_watcher_node;
 
 private:
-    static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
-
     struct Impl;
     std::unique_ptr<Impl> impl_;
 };
@@ -221,7 +211,7 @@ private:
 // ************************************************************************************************
 inline GraphicsEngine* ShowBase::get_graphics_engine(void) const
 {
-    return graphics_engine;
+    return graphics_engine_;
 }
 
 inline GraphicsWindow* ShowBase::get_win(void) const
@@ -239,72 +229,9 @@ inline NodePath ShowBase::get_pixel_2dp(void) const
     return pixel_2dp;
 }
 
-inline float ShowBase::get_config_aspect_ratio(void) const
-{
-    return config_aspect_ratio;
-}
-
 inline MouseWatcher* ShowBase::get_mouse_watcher_node(void) const
 {
     return mouse_watcher_node;
-}
-
-inline void ShowBase::setup_render(void)
-{
-    // C++ sets already render node.
-    //self.render.setAttrib(RescaleNormalAttrib.makeDefault())
-    //self.render.setTwoSided(0)
-
-    NodePath render = get_render();
-    backface_culling_enabled = render.get_two_sided();
-    //textureEnabled = 1;
-    wireframe_enabled = render.get_render_mode() == RenderModeAttrib::M_wireframe;
-}
-
-inline void ShowBase::toggle_backface(void)
-{
-    if (backface_culling_enabled)
-        backface_culling_off();
-    else
-        backface_culling_on();
-}
-
-inline void ShowBase::backface_culling_on(void)
-{
-    if (!backface_culling_enabled)
-        get_render().set_two_sided(false);
-    backface_culling_enabled = true;
-}
-
-inline void ShowBase::backface_culling_off(void)
-{
-    if (!backface_culling_enabled)
-        get_render().set_two_sided(true);
-    backface_culling_enabled = false;
-}
-
-inline void ShowBase::toggle_wireframe(void)
-{
-    if (wireframe_enabled)
-        wireframe_off();
-    else
-        wireframe_on();
-}
-
-inline void ShowBase::wireframe_on(void)
-{
-    NodePath render = get_render();
-    render.set_render_mode_wireframe(100);
-    render.set_two_sided(1);
-    wireframe_enabled = true;
-}
-
-inline void ShowBase::wireframe_off(void)
-{
-    NodePath render = get_render();
-    render.clear_render_mode();
-    render.set_two_sided(!backface_culling_enabled);
-    wireframe_enabled = false;
 }
 
 }
