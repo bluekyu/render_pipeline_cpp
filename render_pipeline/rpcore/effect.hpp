@@ -20,6 +20,7 @@ public:
 
 public:
     static std::shared_ptr<Effect> load(const std::string& filename, const OptionType& options);
+    static const OptionType& get_default_options(void);
 
     Effect(void);
     ~Effect(void);

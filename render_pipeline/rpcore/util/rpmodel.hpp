@@ -2,7 +2,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace YAML {
 class Node;
@@ -13,10 +13,10 @@ namespace rpcore {
 /**
  * Wrapper class of Panda3D model node.
  */
-class RENDER_PIPELINE_DECL RPModel: public RPObject
+class RENDER_PIPELINE_DECL RPModel
 {
 public:
-    RPModel(void);
+    RPModel(void) = default;
     RPModel(NodePath nodepath);
 
     void load_meta_file(const std::string& file_path="");
@@ -30,11 +30,7 @@ private:
 };
 
 // ************************************************************************************************
-inline RPModel::RPModel(void): RPObject("RPModel")
-{
-}
-
-inline RPModel::RPModel(NodePath nodepath): RPObject("RPModel"), nodepath_(nodepath)
+inline RPModel::RPModel(NodePath nodepath): nodepath_(nodepath)
 {
 }
 

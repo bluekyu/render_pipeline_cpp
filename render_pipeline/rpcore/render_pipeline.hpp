@@ -93,9 +93,21 @@ public:
      */
     size_t load_ies_profile(const std::string& filename);
 
-    /** See internal_set_effect. */
+    /**
+     * Sets an effect to the given object, using the specified options.
+     * Check out the effect documentation for more information about possible
+     * options and configurations. The object should be a nodepath, and the
+     * effect will be applied to that nodepath and all nodepaths below whose
+     * current effect sort is less than the new effect sort (passed by the
+     * sort parameter).
+     */
     void set_effect(NodePath& nodepath, const std::string& effect_src,
         const Effect::OptionType& options={}, int sort=30);
+
+    /**
+     * Clear applied effect on the node path.
+     */
+    void clear_effect(NodePath& nodepath);
 
     /**
      * Prepares a given scene, by converting panda lights to render pipeline

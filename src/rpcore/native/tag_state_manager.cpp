@@ -109,6 +109,34 @@ void TagStateManager::apply_state(StateContainer& container, NodePath np, Shader
 }
 
 /**
+ * @brief Cleans up registered state.
+ * @param container The container which is used to store the state
+ * @param np The nodepath to apply the shader to
+ */
+void TagStateManager::cleanup_state(const string& state, NodePath np)
+{
+    ContainerList::iterator entry = _containers.find(state);
+    nassertv(entry != _containers.end());
+    StateContainer& container = entry->second;
+
+    const std::string& name = np.get_tag(container.tag_name);
+
+    if (container.tag_states.count(name) == 0) {
+        tagstatemgr_cat.warning() << "Clear non-existing state " << name << endl;
+        return;
+    }
+
+    container.tag_states.erase(name);
+
+    // clear the state on all cameras which are attached so far
+    for (Camera* cam: container.cameras) {
+        cam->clear_tag_state(name);
+    }
+
+    np.clear_tag(container.tag_name);
+}
+
+/**
  * @brief Cleans up all registered states.
  * @details This cleans up all states which were registered to the TagStateManager.
  *   It also calls Camera::clear_tag_states() on the main_cam_node and all attached

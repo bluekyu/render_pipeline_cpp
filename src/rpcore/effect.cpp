@@ -31,11 +31,11 @@ public:
      * Configuration options which can be set per effect instance.These control
      * which features are available in the effect, and which passes to render.
      */
-    const static OptionType DEFAULT_OPTIONS;
+    static const OptionType DEFAULT_OPTIONS;
 
     /** { Pass ID, Multiview flag } */
     using PassType = std::pair<std::string, bool>;
-    const static std::vector<PassType> PASSES;
+    static const std::vector<PassType> PASSES;
 
     static std::map<std::string, std::shared_ptr<Effect>> GLOBAL_CACHE;
 
@@ -389,6 +389,11 @@ std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionTy
     }
 
     return effect;
+}
+
+const Effect::OptionType& Effect::get_default_options(void)
+{
+    return Impl::DEFAULT_OPTIONS;
 }
 
 Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>(*this))

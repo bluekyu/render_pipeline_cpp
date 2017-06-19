@@ -1,10 +1,10 @@
-#include <nodePath.h>
-#include <modelRoot.h>
-
 #include "render_pipeline/rpcore/util/rpmodel.hpp"
+
+#include <modelRoot.h>
 
 #include <spdlog/fmt/ostr.h>
 
+#include "render_pipeline/rpcore/rpobject.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 #include "rplibs/yaml.hpp"
@@ -15,23 +15,23 @@ struct RPModel::Impl
 {
     struct MetaData
     {
-        static void load_nodepath(RPModel& self, NodePath nodepath, const YAML::Node& yaml_node);
-        static void load_material(RPModel& self, RPMaterial& material, const YAML::Node& yaml_node);
+        static void load_nodepath(NodePath nodepath, const YAML::Node& yaml_node);
+        static void load_material(RPMaterial& material, const YAML::Node& yaml_node);
     };
 };
 
-void RPModel::Impl::MetaData::load_nodepath(RPModel& self, NodePath nodepath, const YAML::Node& yaml_node)
+void RPModel::Impl::MetaData::load_nodepath(NodePath nodepath, const YAML::Node& yaml_node)
 {
     if (nodepath.is_empty())
     {
-        self.error("NodePath is emtpy!");
+        RPObject::global_error("RPModel", "NodePath is emtpy!");
         return;
     }
 
     if (!yaml_node)
         return;
 
-    self.trace(fmt::format("Parsing NodePath ({}) and YAML node ({}) ...", nodepath, YAML::Dump(yaml_node)));
+    RPObject::global_trace("RPModel", fmt::format("Parsing NodePath ({}) and YAML node ({}) ...", nodepath, YAML::Dump(yaml_node)));
 
     if (const auto& name_node = yaml_node["name"])
     {
@@ -41,7 +41,7 @@ void RPModel::Impl::MetaData::load_nodepath(RPModel& self, NodePath nodepath, co
         }
         catch (const YAML::Exception&)
         {
-            self.error("Cannot convert 'name' node to string.");
+            RPObject::global_error("RPModel", "Cannot convert 'name' node to string.");
         }
     }
 
@@ -58,7 +58,7 @@ void RPModel::Impl::MetaData::load_nodepath(RPModel& self, NodePath nodepath, co
             mat.set_default();
         }
 
-        load_material(self, mat, material_node);
+        load_material(mat, material_node);
 
         nodepath.set_material(mat.get_material());
     }
@@ -67,11 +67,11 @@ void RPModel::Impl::MetaData::load_nodepath(RPModel& self, NodePath nodepath, co
     if (children_node)
     {
         for (size_t k=0,k_end=children_node.size(); k < k_end; ++k)
-            load_nodepath(self, nodepath.get_child(k), children_node[k]);
+            load_nodepath(nodepath.get_child(k), children_node[k]);
     }
 }
 
-void RPModel::Impl::MetaData::load_material(RPModel& self, RPMaterial& material, const YAML::Node& yaml_node)
+void RPModel::Impl::MetaData::load_material(RPMaterial& material, const YAML::Node& yaml_node)
 {
     try
     {
@@ -105,7 +105,7 @@ void RPModel::Impl::MetaData::load_material(RPModel& self, RPMaterial& material,
             else if (shading_model_string == "foliage")
                 shading_model = RPMaterial::ShadingModel::FOLIAGE_MODEL;
             else
-                self.error(fmt::format("Invalid shading model: {}", shading_model_string));
+                RPObject::global_error("RPModel", fmt::format("Invalid shading model: {}", shading_model_string));
 
             material.set_shading_model(shading_model);
         }
@@ -118,7 +118,7 @@ void RPModel::Impl::MetaData::load_material(RPModel& self, RPMaterial& material,
     }
     catch (const YAML::Exception&)
     {
-        self.error(fmt::format("Cannot parse YAML node: {}", YAML::Dump(yaml_node)));
+        RPObject::global_error("RPModel", fmt::format("Cannot parse YAML node: {}", YAML::Dump(yaml_node)));
     }
 }
 
@@ -130,7 +130,7 @@ void RPModel::load_meta_file(const std::string& file_path)
     {
         if (!nodepath_.node()->is_of_type(ModelRoot::get_class_type()))
         {
-            error(fmt::format("NodePath ({}) is NOT ModelRoot type.", nodepath_));
+            RPObject::global_error("RPModel", fmt::format("NodePath ({}) is NOT ModelRoot type.", nodepath_));
             return;
         }
 
@@ -141,7 +141,7 @@ void RPModel::load_meta_file(const std::string& file_path)
     YAML::Node node_root;
     if (!rplibs::load_yaml_file(_file_path, node_root))
     {
-        warn(fmt::format("Failed to load model meta file: {}", file_path));
+        RPObject::global_warn("RPModel", fmt::format("Failed to load model meta file: {}", file_path));
         return;
     }
 
@@ -154,7 +154,7 @@ void RPModel::load_meta_data(const YAML::Node& yaml_node)
         return;
 
     if (const auto& model_node = yaml_node["nodepath"])
-        Impl::MetaData::load_nodepath(*this, nodepath_, model_node);
+        Impl::MetaData::load_nodepath(nodepath_, model_node);
 }
 
 }

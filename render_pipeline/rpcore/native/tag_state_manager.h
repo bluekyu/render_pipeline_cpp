@@ -58,6 +58,7 @@ class RENDER_PIPELINE_DECL TagStateManager {
         ~TagStateManager();
 
         inline void apply_state(const string& state, NodePath np, Shader* shader, const string &name, int sort);
+        void cleanup_state(const string& state, NodePath np);
         void cleanup_states();
 
         inline void register_camera(const string& state, Camera* source);

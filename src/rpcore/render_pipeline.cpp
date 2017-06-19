@@ -54,6 +54,8 @@ static RenderPipeline* global_ptr_ = nullptr;
 
 struct RenderPipeline::Impl
 {
+    static const char* stages[];
+
     Impl(RenderPipeline& self);
     ~Impl(void);
 
@@ -196,16 +198,10 @@ struct RenderPipeline::Impl
      */
     NodePath create_default_skybox(float size=40000);
 
-    /**
-     * Sets an effect to the given object, using the specified options.
-     * Check out the effect documentation for more information about possible
-     * options and configurations. The object should be a nodepath, and the
-     * effect will be applied to that nodepath and all nodepaths below whose
-     * current effect sort is less than the new effect sort (passed by the
-     * sort parameter).
-     */
     void internal_set_effect(NodePath nodepath, const std::string& effect_src,
         const Effect::OptionType& options=Effect::OptionType(), int sort=30);
+
+    void clear_effect(NodePath& nodepath);
 
     void handle_window_resize(void);
 
@@ -238,6 +234,8 @@ public:
     DayTimeManager* daytime_mgr_ = nullptr;
     IESProfileLoader* ies_loader_ = nullptr;
 };
+
+const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
 
 RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 {
@@ -277,7 +275,6 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
         return;
     }
 
-    const std::string stages[] ={std::string("gbuffer"), std::string("shadow"), std::string("voxelize"), std::string("envmap"), std::string("forward")};
     for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
     {
         const std::string& stage = stages[i];
@@ -288,7 +285,7 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
         else
         {
             Shader* shader = effect->get_shader_obj(stage);
-            if (stage == std::string("gbuffer"))
+            if (stage == "gbuffer")
             {
                 nodepath.set_shader(shader, 25);
             }
@@ -306,6 +303,41 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
             "same time! Either use render_gbuffer or use render_forward, "
             "but not both.");
     }
+}
+
+void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
+{
+    auto iter = applied_effects.begin();
+    const auto iter_end = applied_effects.end();
+    for (; iter != iter_end; ++iter)
+    {
+        if (std::get<0>(*iter) == nodepath)
+            break;
+    }
+
+    if (iter == iter_end)
+        return;
+
+    auto options = Effect::get_default_options();
+    options.insert(std::get<2>(*iter).begin(), std::get<2>(*iter).end());
+
+    for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
+    {
+        const std::string& stage = stages[i];
+        if (options.at("render_" + stage))
+        {
+            if (stage == "gbuffer")
+            {
+                nodepath.clear_shader();
+            }
+            else
+            {
+                tag_mgr_->cleanup_state(stage, nodepath);
+            }
+        }
+        nodepath.show(tag_mgr_->get_mask(stage));
+    }
+    applied_effects.erase(iter);
 }
 
 AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(GenericAsyncTask* task, void* user_data)
@@ -861,6 +893,11 @@ void RenderPipeline::set_effect(NodePath& nodepath, const std::string& effect_sr
     impl_->internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
 }
 
+void RenderPipeline::clear_effect(NodePath& nodepath)
+{
+    impl_->clear_effect(nodepath);
+}
+
 void RenderPipeline::prepare_scene(const NodePath& scene)
 {
     std::vector<RPLight*> lights;
@@ -920,6 +957,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
         NodePath geom_np = gn_npc.get_path(k);
         GeomNode* geom_node = DCAST(GeomNode, geom_np.node());
         const int geom_count = geom_node->get_num_geoms();
+        bool has_transparency = false;
 
         for (int i = 0; i < geom_count; ++i)
         {
@@ -955,21 +993,23 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
 
             Material* material = DCAST(MaterialAttrib, state->get_attrib(MaterialAttrib::get_class_type()))->get_material();
             float shading_model = material->get_emission().get_x();
+            if (!has_transparency && shading_model == 3)
+                has_transparency = true;
+        }
 
-            // SHADING_MODEL_TRANSPARENT
-            if (shading_model == 3)
+        // SHADING_MODEL_TRANSPARENT
+        if (has_transparency)
+        {
+            if (geom_count > 1)
             {
-                if (geom_count > 1)
-                {
-                    error(fmt::format("Transparent materials must be on their own geom!\n"
-                        "If you are exporting from blender, split them into\n"
-                        "seperate meshes, then re-export your scene. The\n"
-                        "problematic mesh is: {}", geom_np.get_name()));
-                    continue;
-                }
-                set_effect(geom_np, "effects/default.yaml",
-                    {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
+                error(fmt::format("Transparent materials must be on their own geom!\n"
+                    "If you are exporting from blender, split them into\n"
+                    "seperate meshes, then re-export your scene. The\n"
+                    "problematic mesh is: {}", geom_np.get_name()));
+                continue;
             }
+            set_effect(geom_np, "effects/default.yaml",
+                {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
         }
     }
 
