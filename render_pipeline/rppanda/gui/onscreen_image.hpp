@@ -10,10 +10,10 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL OnscreenImage: public DirectObject, public NodePath
 {
 public:
-    OnscreenImage(NodePath parent=NodePath(), int sort=0);
-    OnscreenImage(const std::shared_ptr<ImageInput>& image, NodePath parent=NodePath(), int sort=0);
+    OnscreenImage(NodePath parent={}, int sort=0);
+    OnscreenImage(const std::shared_ptr<ImageInput>& image, NodePath parent={}, int sort=0);
 
-    void set_image(const std::shared_ptr<ImageInput>& image, NodePath parent=NodePath(), const TransformState* transform=nullptr, int sort=0);
+    void set_image(const std::shared_ptr<ImageInput>& image, NodePath parent={}, const TransformState* transform=nullptr, int sort=0);
 
     void destroy(void);
 };

@@ -103,7 +103,7 @@ public:
 	static bool gui_edit;
 	static std::string inactive_init_state;
 
-	DirectGuiWidget(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+	DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
 	void enable_edit(void);
 	void disable_edit(void);

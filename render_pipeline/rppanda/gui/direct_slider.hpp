@@ -34,7 +34,7 @@ public:
 	};
 
 public:
-	DirectSlider(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+	DirectSlider(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
 	PGSliderBar* get_gui_item(void) const;
 

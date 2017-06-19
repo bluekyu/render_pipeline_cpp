@@ -18,7 +18,7 @@ namespace rpcore {
 class DraggableWindow: public RPObject
 {
 public:
-    DraggableWindow(int width=800, int height=500, const std::string& title="Window", NodePath parent=NodePath());
+    DraggableWindow(int width=800, int height=500, const std::string& title="Window", NodePath parent={});
     ~DraggableWindow(void);
 
     /** Centers the window on screen. */

@@ -40,7 +40,7 @@ public:
     };
 
 public:
-    DirectButton(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    DirectButton(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
     PGButton* get_gui_item(void) const;
 

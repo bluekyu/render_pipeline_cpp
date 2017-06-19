@@ -1,7 +1,7 @@
 #pragma once
 
-#include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_image.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 
@@ -19,13 +19,13 @@ public:
      * all.This enables you to display existing textures, otherwise the
      * texture would get a near filter in the 3D View, too.
      */
-    Sprite(Texture* image, int w, int h, NodePath parent=NodePath(), float x=0.0f, float y=0.0f,
+    Sprite(Texture* image, int w, int h, NodePath parent={}, float x=0.0f, float y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(Texture* image, NodePath parent=NodePath(), float x=0.0f, float y=0.0f,
+    Sprite(Texture* image, NodePath parent={}, float x=0.0f, float y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const std::string& image_path, int w, int h, NodePath parent=NodePath(), float x=0.0f,
+    Sprite(const std::string& image_path, int w, int h, NodePath parent={}, float x=0.0f,
         float y=0.0f, bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const std::string& image_path, NodePath parent=NodePath(), float x=0.0f, float y=0.0f,
+    Sprite(const std::string& image_path, NodePath parent={}, float x=0.0f, float y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
 
     /** Returns a pos interval, this is a wrapper around NodePath.posInterval. */

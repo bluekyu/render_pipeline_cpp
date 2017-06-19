@@ -26,7 +26,7 @@ public:
 	};
 
 public:
-	DirectScrolledFrame(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+	DirectScrolledFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
 	PGScrollFrame* get_gui_item(void) const;
 

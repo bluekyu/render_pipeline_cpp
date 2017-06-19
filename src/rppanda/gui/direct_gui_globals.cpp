@@ -1,4 +1,4 @@
-#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 #include <pgButton.h>
 #include <pgSliderBar.h>
@@ -8,12 +8,12 @@
 namespace rppanda {
 
 const std::unordered_map<std::string, PGFrameStyle::Type> FrameStyleDict = {
-	{ "flat", FLAT },
-	{ "raised", RAISED },
-	{ "sunken", SUNKEN },
-	{ "groove", GROOVE },
-	{ "ridge", RIDGE },
-	{ "texture_border", TEXTUREBORDER },
+    { "flat", FLAT },
+    { "raised", RAISED },
+    { "sunken", SUNKEN },
+    { "groove", GROOVE },
+    { "ridge", RIDGE },
+    { "texture_border", TEXTUREBORDER },
 };
 
 const std::string ENTER = PGButton::get_enter_prefix();
@@ -35,7 +35,7 @@ const std::string ADJUST = PGSliderBar::get_adjust_prefix();
 
 TextFont* get_default_font(void)
 {
-	return TextNode::get_default_font();
+    return TextNode::get_default_font();
 }
 
 }

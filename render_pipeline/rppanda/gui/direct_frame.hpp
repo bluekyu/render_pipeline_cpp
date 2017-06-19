@@ -21,7 +21,7 @@ public:
     };
 
 public:
-    DirectFrame(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    DirectFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
     void set_text(const std::string& text);
     void set_text(const std::vector<std::string>& text_list);

@@ -30,7 +30,7 @@ public:
 	};
 
 public:
-	DirectScrollBar(NodePath parent=NodePath(), const std::shared_ptr<Options>& options=std::make_shared<Options>());
+	DirectScrollBar(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
 	PGSliderBar* get_gui_item(void) const;
 

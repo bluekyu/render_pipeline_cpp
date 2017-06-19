@@ -1,8 +1,8 @@
 #pragma once
 
-#include <functional>
-
 #include <nodePath.h>
+
+#include <functional>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
@@ -46,6 +46,8 @@ public:
 private:
     rppanda::DirectSlider* node_;
 };
+
+// ************************************************************************************************
 
 inline rppanda::DirectSlider* Slider::get_node(void) const
 {
