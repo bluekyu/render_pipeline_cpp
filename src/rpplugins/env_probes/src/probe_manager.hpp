@@ -1,5 +1,7 @@
 #pragma once
 
+#include <dtoolbase.h>
+
 #include <memory>
 
 #include <render_pipeline/rpcore/rpobject.hpp>

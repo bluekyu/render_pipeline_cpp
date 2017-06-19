@@ -100,7 +100,9 @@ struct RenderPipeline::Impl
 
     void reload_shaders(void);
 
+    void create(PandaFramework* framework);
     void create(PandaFramework* framework, WindowFramework* window_framework);
+    void post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -174,6 +176,7 @@ struct RenderPipeline::Impl
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
+    void init_showbase(PandaFramework* framework);
     void init_showbase(PandaFramework* framework, WindowFramework* window_framework);
 
     /**
@@ -460,11 +463,22 @@ void RenderPipeline::Impl::reload_shaders(void)
     apply_custom_shaders();
 }
 
+void RenderPipeline::Impl::create(PandaFramework* framework)
+{
+    const auto& start_time = std::chrono::system_clock::now();
+    init_showbase(framework);
+    post_create(start_time);
+}
+
 void RenderPipeline::Impl::create(PandaFramework* framework, WindowFramework* window_framework)
 {
     const auto& start_time = std::chrono::system_clock::now();
     init_showbase(framework, window_framework);
+    post_create(start_time);
+}
 
+void RenderPipeline::Impl::post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time)
+{
     if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
     {
         self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
@@ -642,13 +656,13 @@ void RenderPipeline::Impl::compute_render_resolution(void)
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramework* window_framework)
+void RenderPipeline::Impl::init_showbase(PandaFramework* framework)
 {
     // C++ Panda3D has no ShowBase.
     //if (!base)
     //{
     self_.pre_showbase_init();
-    showbase_ = new rppanda::ShowBase(framework, window_framework);
+    showbase_ = new rppanda::ShowBase(framework);
     //}
     //else
     //{
@@ -661,6 +675,18 @@ void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramew
     //	}
     //	showbase = base;
     //}
+
+    // Now that we have a showbase and a window, we can print out driver info
+    auto gsg = showbase_->get_win()->get_gsg();
+    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
+    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
+    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
+}
+
+void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramework* window_framework)
+{
+    self_.pre_showbase_init();
+    showbase_ = new rppanda::ShowBase(framework, window_framework);
 
     // Now that we have a showbase and a window, we can print out driver info
     auto gsg = showbase_->get_win()->get_gsg();
@@ -802,6 +828,18 @@ RenderPipeline::RenderPipeline(void): RPObject("RenderPipeline"), impl_(std::mak
 
 RenderPipeline::~RenderPipeline(void) = default;
 
+void RenderPipeline::run(void)
+{
+    if (impl_->showbase_)
+    {
+        impl_->showbase_->run();
+    }
+    else
+    {
+        error("ShowBase is not initialized! Call RenderPipeline::create() function, first!");
+    }
+}
+
 void RenderPipeline::load_settings(const std::string& path)
 {
     impl_->settings = rplibs::load_yaml_file_flat(path);
@@ -859,6 +897,11 @@ void RenderPipeline::pre_showbase_init(void)
 
     load_prc_file("/$$rpconfig/panda3d-config.prc");
     impl_->pre_showbase_initialized = true;
+}
+
+void RenderPipeline::create(PandaFramework* framework)
+{
+    impl_->create(framework);
 }
 
 void RenderPipeline::create(PandaFramework* framework, WindowFramework* window_framework)

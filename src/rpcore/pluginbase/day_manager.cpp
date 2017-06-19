@@ -1,3 +1,5 @@
+#include <dtoolbase.h>
+
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 
 #include <boost/format.hpp>

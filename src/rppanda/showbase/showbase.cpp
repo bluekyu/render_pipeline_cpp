@@ -26,11 +26,18 @@ struct ShowBase::Impl
     static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 
+    Impl(ShowBase& self);
+
+    void Init(PandaFramework* framework, WindowFramework* window_framework);
+
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
     void enable_music(bool enable);
 
 public:
+    ShowBase& self_;
+
+    bool panda_framework_created_ = false;
     PandaFramework* panda_framework_ = nullptr;
     WindowFramework* window_framework_ = nullptr;
 
@@ -40,6 +47,7 @@ public:
 
     std::vector<std::pair<PT(AudioManager), bool>> sfx_manager_list_;
 
+    bool want_render_2dp_;
     float config_aspect_ratio_;
     std::string window_type_;
     bool require_window_;
@@ -73,6 +81,72 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
         x.first->update();
 
     return AsyncTask::DS_cont;
+}
+
+ShowBase::Impl::Impl(ShowBase& self): self_(self)
+{
+}
+
+void ShowBase::Impl::Init(PandaFramework* framework, WindowFramework* window_framework)
+{
+    if (global_showbase)
+    {
+        rppanda_cat.error() << "ShowBase was already created!" << std::endl;
+        return;
+    }
+
+    rppanda_cat.debug() << "Creating ShowBase ..." << std::endl;
+
+    panda_framework_ = framework;
+    window_framework_ = window_framework;
+
+    /*
+    window_framework = panda_framework->open_window();
+    if (!window_framework)
+        throw std::runtime_error("Cannot open Panda3D window!");
+    */
+
+    sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
+    music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
+    want_render_2dp_ = ConfigVariableBool("want-render2dp", true).get_value();
+
+    // If the aspect ratio is 0 or None, it means to infer the
+    // aspect ratio from the window size.
+    // If you need to know the actual aspect ratio call base.getAspectRatio()
+    config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
+
+    // This is set to the value of the window-type config variable, but may
+    // optionally be overridden in the Showbase constructor.  Should either be
+    // 'onscreen' (the default), 'offscreen' or 'none'.
+    window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
+    require_window_ = ConfigVariableBool("require-window", true).get_value();
+
+    // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
+    self_.graphics_engine_ = GraphicsEngine::get_global_ptr();
+    self_.setup_render();
+    self_.setup_data_graph();
+
+    if (want_render_2dp_)
+        self_.setup_render_2dp();
+
+    self_.win = window_framework_->get_graphics_window();
+
+    // Open the default rendering window.
+    self_.open_default_window();
+
+    // The default is trackball mode, which is more convenient for
+    // ad-hoc development in Python using ShowBase.Applications
+    // can explicitly call base.useDrive() if they prefer a drive
+    // interface.
+    self_.use_trackball();
+
+    app_has_audio_focus_ = true;
+
+    self_.create_base_audio_managers();
+
+    global_showbase = &self_;
+
+    self_.restart();
 }
 
 void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
@@ -124,66 +198,22 @@ void ShowBase::Impl::enable_music(bool enable)
 
 // ************************************************************************************************
 
-ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework) : impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this))
 {
-    if (global_showbase)
-    {
-        rppanda_cat.error() << "ShowBase was already created!" << std::endl;
-        return;
-    }
+    PandaFramework* framework = new PandaFramework;
+    framework->open_framework(argc, argv);
 
-    rppanda_cat.debug() << "Creating ShowBase ..." << std::endl;
+    impl_->Init(framework, framework->open_window());
+    impl_->panda_framework_created_ = true;
+}
 
-    impl_->panda_framework_ = framework;
-    impl_->window_framework_ = window_framework;
+ShowBase::ShowBase(PandaFramework* framework): ShowBase(framework, framework->open_window())
+{
+}
 
-    /*
-    window_framework = panda_framework->open_window();
-    if (!window_framework)
-        throw std::runtime_error("Cannot open Panda3D window!");
-    */
-
-    impl_->sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
-    impl_->music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
-    want_render_2dp = ConfigVariableBool("want-render2dp", true).get_value();
-
-    // If the aspect ratio is 0 or None, it means to infer the
-    // aspect ratio from the window size.
-    // If you need to know the actual aspect ratio call base.getAspectRatio()
-    impl_->config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
-
-    // This is set to the value of the window-type config variable, but may
-    // optionally be overridden in the Showbase constructor.  Should either be
-    // 'onscreen' (the default), 'offscreen' or 'none'.
-    impl_->window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
-    impl_->require_window_ = ConfigVariableBool("require-window", true).get_value();
-
-    // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
-    graphics_engine_ = GraphicsEngine::get_global_ptr();
-    setup_render();
-    setup_data_graph();
-
-    if (want_render_2dp)
-        setup_render_2dp();
-
-    win = window_framework->get_graphics_window();
-
-    // Open the default rendering window.
-    open_default_window();
-
-    // The default is trackball mode, which is more convenient for
-    // ad-hoc development in Python using ShowBase.Applications
-    // can explicitly call base.useDrive() if they prefer a drive
-    // interface.
-    use_trackball();
-
-    impl_->app_has_audio_focus_ = true;
-
-    create_base_audio_managers();
-
-    global_showbase = this;
-
-    restart();
+ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework): impl_(std::make_unique<Impl>(*this))
+{
+    impl_->Init(framework, window_framework);
 }
 
 ShowBase::~ShowBase(void)
@@ -199,8 +229,11 @@ ShowBase::~ShowBase(void)
         impl_->sfx_manager_list_.clear();
     }
 
-    if (graphics_engine_)
-        graphics_engine_->remove_all_windows();
+    if (impl_->panda_framework_created_)
+    {
+        impl_->panda_framework_->close_framework();
+        delete impl_->panda_framework_;
+    }
 }
 
 ShowBase* ShowBase::get_global_ptr(void)
@@ -262,8 +295,6 @@ bool ShowBase::open_default_window(void)
 
 void ShowBase::open_main_window(void)
 {
-    // framework.open_window()
-
     if (win)
     {
         setup_mouse();
@@ -698,6 +729,11 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
         music->set_loop(looping);
         music->play();
     }
+}
+
+void ShowBase::run(void)
+{
+    impl_->panda_framework_->main_loop();
 }
 
 }

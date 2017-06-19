@@ -43,6 +43,9 @@ public:
     RenderPipeline(void);
     ~RenderPipeline(void);
 
+    /** Call ShowBase::Run() */
+    void run(void);
+
     /**
      * Loads the pipeline configuration from a given filename. Usually
      * this is the 'config/pipeline.ini' file. If you call this more than once,
@@ -70,6 +73,7 @@ public:
      */
     void pre_showbase_init(void);
 
+    void create(PandaFramework* framework);
     void create(PandaFramework* framework, WindowFramework* window_framework);
 
     /**

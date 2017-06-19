@@ -22,6 +22,13 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL ShowBase: public DirectObject
 {
 public:
+    /** Create PandaFramework and open main window, and then initialize ShowBase. */
+    ShowBase(int& argc, char**& argv);
+
+    /** Initialize ShowBase and open main window from given PandaFramework. */
+    ShowBase(PandaFramework* framework);
+
+    /** Initialize ShowBase with given PandaFramework and WindowFramework. */
     ShowBase(PandaFramework* framework, WindowFramework* window_framework);
     ~ShowBase(void);
 
@@ -173,11 +180,11 @@ public:
 
     void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
+    void run(void);
+
 protected:
     GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win = nullptr;
-
-    bool want_render_2dp;
 
     NodePath render_2dp;
     NodePath aspect_2dp;
