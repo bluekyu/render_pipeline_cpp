@@ -28,7 +28,7 @@ struct ShowBase::Impl
 
     Impl(ShowBase& self);
 
-    void Init(PandaFramework* framework, WindowFramework* window_framework);
+    void Init(void);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
@@ -37,8 +37,7 @@ struct ShowBase::Impl
 public:
     ShowBase& self_;
 
-    bool panda_framework_created_ = false;
-    PandaFramework* panda_framework_ = nullptr;
+    std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
     std::shared_ptr<SfxPlayer> sfx_player_;
@@ -87,7 +86,7 @@ ShowBase::Impl::Impl(ShowBase& self): self_(self)
 {
 }
 
-void ShowBase::Impl::Init(PandaFramework* framework, WindowFramework* window_framework)
+void ShowBase::Impl::Init(void)
 {
     if (global_showbase)
     {
@@ -97,14 +96,10 @@ void ShowBase::Impl::Init(PandaFramework* framework, WindowFramework* window_fra
 
     rppanda_cat.debug() << "Creating ShowBase ..." << std::endl;
 
-    panda_framework_ = framework;
-    window_framework_ = window_framework;
-
-    /*
-    window_framework = panda_framework->open_window();
-    if (!window_framework)
-        throw std::runtime_error("Cannot open Panda3D window!");
-    */
+    if (panda_framework_->get_num_windows() == 0)
+        window_framework_ = panda_framework_->open_window();
+    else
+        window_framework_ = panda_framework_->get_window(0);
 
     sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
     music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
@@ -200,20 +195,15 @@ void ShowBase::Impl::enable_music(bool enable)
 
 ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this))
 {
-    PandaFramework* framework = new PandaFramework;
-    framework->open_framework(argc, argv);
-
-    impl_->Init(framework, framework->open_window());
-    impl_->panda_framework_created_ = true;
+    impl_->panda_framework_ = std::make_shared<PandaFramework>();
+    impl_->panda_framework_->open_framework(argc, argv);
+    impl_->Init();
 }
 
-ShowBase::ShowBase(PandaFramework* framework): ShowBase(framework, framework->open_window())
+ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
 {
-}
-
-ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework): impl_(std::make_unique<Impl>(*this))
-{
-    impl_->Init(framework, window_framework);
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+    impl_->Init();
 }
 
 ShowBase::~ShowBase(void)
@@ -228,12 +218,6 @@ ShowBase::~ShowBase(void)
             manager.first->shutdown();
         impl_->sfx_manager_list_.clear();
     }
-
-    if (impl_->panda_framework_created_)
-    {
-        impl_->panda_framework_->close_framework();
-        delete impl_->panda_framework_;
-    }
 }
 
 ShowBase* ShowBase::get_global_ptr(void)
@@ -243,7 +227,7 @@ ShowBase* ShowBase::get_global_ptr(void)
 
 PandaFramework* ShowBase::get_panda_framework(void) const
 {
-    return impl_->panda_framework_;
+    return impl_->panda_framework_.get();
 }
 
 WindowFramework* ShowBase::get_window_framework(void) const

@@ -25,11 +25,9 @@ public:
     /** Create PandaFramework and open main window, and then initialize ShowBase. */
     ShowBase(int& argc, char**& argv);
 
-    /** Initialize ShowBase and open main window from given PandaFramework. */
+    /** Initialize ShowBase with given PandaFramework. */
     ShowBase(PandaFramework* framework);
 
-    /** Initialize ShowBase with given PandaFramework and WindowFramework. */
-    ShowBase(PandaFramework* framework, WindowFramework* window_framework);
     ~ShowBase(void);
 
     static ShowBase* get_global_ptr(void);

@@ -6,7 +6,6 @@
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class PandaFramework;
-class WindowFramework;
 class NodePath;
 
 namespace YAML {
@@ -40,7 +39,12 @@ private:
 public:
     static RenderPipeline* get_global_ptr(void);
 
-    RenderPipeline(void);
+    /** Create PandaFramework and initialize RenderPipeline. */
+    RenderPipeline(int& argc, char**& argv);
+
+    /** Initialize RenderPipeline with given PandaFramework. */
+    RenderPipeline(PandaFramework* framework);
+
     ~RenderPipeline(void);
 
     /** Call ShowBase::Run() */
@@ -73,8 +77,7 @@ public:
      */
     void pre_showbase_init(void);
 
-    void create(PandaFramework* framework);
-    void create(PandaFramework* framework, WindowFramework* window_framework);
+    void create(void);
 
     /**
      * Tells the pipeline to use the default loading screen, which consists
@@ -173,6 +176,7 @@ public:
     template <> std::string get_setting(const std::string& setting_path, const std::string& fallback) const;
     ///@}
 
+    PandaFramework* get_panda_framework(void) const;
     rppanda::ShowBase* get_showbase(void) const;
     MountManager* get_mount_mgr(void) const;
     StageManager* get_stage_mgr(void) const;
