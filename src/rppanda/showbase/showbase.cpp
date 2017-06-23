@@ -218,6 +218,8 @@ ShowBase::~ShowBase(void)
             manager.first->shutdown();
         impl_->sfx_manager_list_.clear();
     }
+
+    global_showbase = nullptr;
 }
 
 ShowBase* ShowBase::get_global_ptr(void)
