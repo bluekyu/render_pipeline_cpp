@@ -237,6 +237,11 @@ WindowFramework* ShowBase::get_window_framework(void) const
     return impl_->window_framework_;
 }
 
+SfxPlayer* ShowBase::get_sfx_player(void) const
+{
+    return impl_->sfx_player_.get();
+}
+
 AudioManager* ShowBase::get_music_manager(void) const
 {
     return impl_->music_manager_;

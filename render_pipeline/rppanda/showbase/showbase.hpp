@@ -19,6 +19,8 @@ class AudioSound;
 
 namespace rppanda {
 
+class SfxPlayer;
+
 class RENDER_PIPELINE_DECL ShowBase: public DirectObject
 {
 public:
@@ -38,6 +40,7 @@ public:
     GraphicsEngine* get_graphics_engine(void) const;
     GraphicsWindow* get_win(void) const;
 
+    SfxPlayer* get_sfx_player(void) const;
     AudioManager* get_music_manager(void) const;
 
     NodePath get_render(void) const;
