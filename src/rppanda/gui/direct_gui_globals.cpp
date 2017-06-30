@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectGuiGlobals.py
+ */
+
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 #include <pgButton.h>

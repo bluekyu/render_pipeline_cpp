@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/interval/SoundInterval.py
+ */
+
 #include "render_pipeline/rppanda/interval/sound_interval.hpp"
 
 #include <audioSound.h>
@@ -36,8 +40,8 @@ struct SoundInterval::Impl
 SoundInterval::Impl::Impl(SoundInterval& self, const Parameters& params): self_(self)
 {
     // Generate unique name
-    id_ = "Sound-" + std::to_string(SoundInterval::sound_num);
-    SoundInterval::sound_num += 1;
+    id_ = "Sound-" + std::to_string(SoundInterval::sound_num_);
+    SoundInterval::sound_num_ += 1;
 
     // Record instance variables
     sound_ = params.sound;
@@ -137,7 +141,7 @@ void SoundInterval::Impl::priv_finalize(void)
 }
 
 // ************************************************************************************************
-size_t SoundInterval::sound_num = 1;
+size_t SoundInterval::sound_num_ = 1;
 
 TypeHandle SoundInterval::_type_handle;
 

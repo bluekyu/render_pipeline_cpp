@@ -1,7 +1,8 @@
 /**
+ * This is C++ porting codes of direct/src/gui/OnscreeText.py
+ *
  * Some codes come from cOnScreenText.h that written by original author 'dri'.
  * (https://github.com/drivird/drunken-octo-robot/blob/master/p3util/cOnscreenText.h)
- *
  */
 
 #pragma once

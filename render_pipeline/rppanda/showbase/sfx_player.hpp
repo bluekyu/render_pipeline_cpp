@@ -1,3 +1,10 @@
+/**
+ * Contains the SfxPlayer class, a thin utility class for playing sounds at
+ * a particular location.
+ *
+ * This is C++ porting codes of direct/src/showbase/SfxPlayer.py
+ */
+
 #pragma once
 
 #include <nodePath.h>

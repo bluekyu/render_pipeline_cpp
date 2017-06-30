@@ -1,8 +1,5 @@
 /**
- * @file	onscreen_text.cpp
- *
- * @Date	2012-05-28
- * @Author	dri
+ * This is C++ porting codes of direct/src/gui/OnscreeText.py
  */
 
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>

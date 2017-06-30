@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectCheckBox.py
+ */
+
 #include <render_pipeline/rppanda/gui/direct_check_box.hpp>
 
 #include <pgButton.h>

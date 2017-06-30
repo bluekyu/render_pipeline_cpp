@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/showbase/ShowBase.py
+ */
+
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include <cIntervalManager.h>

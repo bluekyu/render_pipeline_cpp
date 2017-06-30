@@ -1,3 +1,11 @@
+/**
+ * This module contains ShowBase, an application framework responsible
+ * for opening a graphical display, setting up input devices and creating
+ * the scene graph.
+ *
+ * This is C++ porting codes of direct/src/showbase/ShowBase.py
+ */
+
 #pragma once
 
 #include <nodePath.h>

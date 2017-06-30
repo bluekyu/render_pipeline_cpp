@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectGuiBase.py
+ */
+
 #include <render_pipeline/rppanda/gui/direct_gui_base.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 

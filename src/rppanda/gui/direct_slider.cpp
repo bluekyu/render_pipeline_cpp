@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectSlider.py
+ */
+
 #include <render_pipeline/rppanda/gui/direct_slider.hpp>
 
 #include <pgSliderBar.h>

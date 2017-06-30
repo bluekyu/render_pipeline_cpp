@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/showbase/SfxPlayer.py
+ */
+
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 
 #include <audioSound.h>

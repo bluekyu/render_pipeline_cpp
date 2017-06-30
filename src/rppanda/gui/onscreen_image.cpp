@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/OnscreeImage.py
+ */
+
 #include <render_pipeline/rppanda/gui/onscreen_image.hpp>
 
 #include <texturePool.h>

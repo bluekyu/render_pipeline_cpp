@@ -1,3 +1,10 @@
+/**
+ * This module defines the various "meta intervals", which execute other
+ * intervals either in parallel or in a specified sequential order.
+ *
+ * This is C++ porting codes of direct/src/interval/MetaInterval.py
+ */
+
 #pragma once
 
 #include <cMetaInterval.h>

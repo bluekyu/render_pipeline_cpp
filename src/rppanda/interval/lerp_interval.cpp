@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/interval/LerpInterval.py
+ */
+
 #include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 
 namespace rppanda {

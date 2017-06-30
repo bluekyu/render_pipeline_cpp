@@ -1,3 +1,10 @@
+/**
+ * Defines the DirectObject class, a convenient class to inherit from if the
+ * object needs to be able to respond to events.
+ *
+ * This is C++ porting codes of direct/src/showbase/DirectObject.py
+ */
+
 #pragma once
 
 #include <genericAsyncTask.h>

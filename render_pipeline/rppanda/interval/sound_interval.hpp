@@ -1,3 +1,9 @@
+/**
+ * SoundInterval module: contains the SoundInterval class.
+ *
+ * This is C++ porting codes of direct/src/interval/SoundInterval.py
+ */
+
 #pragma once
 
 #include <nodePath.h>
@@ -12,7 +18,7 @@ namespace rppanda {
 class SoundInterval: public CInterval
 {
 public:
-    static size_t sound_num;    //!< Name counter
+    static size_t sound_num_;   //!< Name counter
 
 public:
     struct Parameters

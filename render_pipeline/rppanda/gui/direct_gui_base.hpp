@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectGuiBase.py
+ */
+
 #pragma once
 
 #include <nodePath.h>

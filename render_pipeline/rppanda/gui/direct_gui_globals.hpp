@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectGuiGlobals.py
+ */
+
 #pragma once
 
 #include <pgFrameStyle.h>

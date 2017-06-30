@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectSlider.py
+ */
+
 #pragma once
 
 #include <render_pipeline/rppanda/gui/direct_frame.hpp>

@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/interval/MetaInterval.py
+ */
+
 #include "render_pipeline/rppanda/interval/meta_interval.hpp"
 
 #include "rppanda/config_rppanda.hpp"

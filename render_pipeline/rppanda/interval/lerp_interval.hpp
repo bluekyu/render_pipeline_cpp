@@ -1,3 +1,9 @@
+/**
+ * LerpInterval module: contains the LerpInterval class
+ *
+ * This is C++ porting codes of direct/src/interval/LerpInterval.py
+ */
+
 #pragma once
 
 #include <cLerpNodePathInterval.h>

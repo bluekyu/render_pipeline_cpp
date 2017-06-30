@@ -1,3 +1,7 @@
+/**
+ * This is C++ porting codes of direct/src/gui/DirectFrame.py
+ */
+
 #include <render_pipeline/rppanda/gui/direct_frame.hpp>
 
 #include <pgItem.h>
