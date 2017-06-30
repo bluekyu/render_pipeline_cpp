@@ -14,6 +14,7 @@
 - Doxygen (to create doxygen documents)
 
 
+
 ## CMake
 Render Pipeline C++ has cmake build system.
 CMake will find required libraries and generate build tools (ex, Unix Makefiles or Visual Studio solutions.)
@@ -30,6 +31,7 @@ In configuration, `BUILD_SHARED_LIBS` option sets buliding shared libraries for 
 Enabling `BUILD_ALL_SAMPLES` option is to build all examples in Render Pipeline C++.
 
 
+
 ## Build Structure
 Render Pipeline C++ will build core library (render_pipeline), native module, internal plugins and samples.
 Native module is the same as original Render Pipeline. This will be linked statically.
@@ -39,6 +41,7 @@ and install this into `etc/render_pipeline/rpplugins`.
 
 If the `BUILD_ALL_SAMPLES` option is enabled, all samples are built and installed in `bin` directory.
 And enabling `BUILD_DOCUMENTS` option will build documents using Doxygen.
+
 
 
 ## Integration with Plugin & Samples

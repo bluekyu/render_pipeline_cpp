@@ -167,6 +167,7 @@ endif()
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md"
+    "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
     DESTINATION "share/${PROJECT_NAME}/")
 # ==================================================================================================
 

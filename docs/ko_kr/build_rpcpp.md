@@ -1,11 +1,17 @@
 # Render Pipeline C++ 빌드
 
 ## 요구사항
-* CMake (build tool)
-* Boost (1.59 이상)
-* FreeType2
-* Yaml-CPP
-* Panda3D
+- Panda3D
+- FreeType2 (Panda3D third-party 포함된 버전)
+- Boost
+- YAML-CPP
+- spdlog
+- CMake (빌드 도구)
+
+### 선택사항
+- OpenVR (OpenVR 플러그인 빌드)
+- Doxygen (Doxygen 문서 생성)
+
 
 
 ## CMake
@@ -25,6 +31,7 @@ Configuration 창에서 `BUILD_SHARED_LIBS` 옵션은 Render Pipeline C++ 을 �
 `BUILD_ALL_SAMPLES` 옵션을 활성화하면 Render Pipeline C++ 의 모든 예제도 빌드한다.
 
 
+
 ## 빌드 구조
 Render Pipeline C++ 는 핵심 라이브러리(render_pipeline), native 모듈, 내부 플러그인, 예제들을 빌드한다.
 Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크된다.
@@ -34,3 +41,22 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 `BUILD_ALL_SAMPLES` 옵션이 활성화 되어 있다면, 모든 예제를 빌드하고 `bin` 폴더에 설치한다.
 그리고 `BUILD_DOCUMENTS` 옵션을 키면 Doxygen을 사용해서 문서를 빌드한다.
+
+
+
+## Integration with Plugin & Samples
+```cmake
+project(render_pipeline_package)
+
+set(BOOST_ROOT "......" CACHE PATH "" FORCE)
+set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
+set(panda3d_ROOT "......" CACHE PATH "" FORCE)
+set(ENV{FREETYPE_DIR} "......")
+set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
+set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
+set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
+
+add_subdirectory("render_pipeline_cpp")
+add_subdirectory("rpcpp_plugins")
+add_subdirectory("rpcpp_samples")
+```
