@@ -14,11 +14,9 @@ namespace rppanda {
 class DirectScrollBar: public DirectFrame
 {
 public:
-	class Options: public DirectFrame::Options
+	struct Options: public DirectFrame::Options
 	{
-	public:
 		Options(void);
-		virtual ~Options(void) = default;
 
 		LVecBase2 range = LVecBase2(0, 1);
 		PN_stdfloat value = 0;

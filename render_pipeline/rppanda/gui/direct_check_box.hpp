@@ -13,11 +13,9 @@ class ImageInput;
 class DirectCheckBox: public DirectButton
 {
 public:
-	class Options: public DirectButton::Options
+	struct Options: public DirectButton::Options
 	{
-	public:
 		Options(void);
-		virtual ~Options(void) = default;
 
 		std::shared_ptr<ImageInput> checked_image;
 		std::shared_ptr<ImageInput> unchecked_image;

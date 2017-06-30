@@ -14,11 +14,9 @@ namespace rppanda {
 class DirectScrolledFrame: public DirectFrame
 {
 public:
-	class Options: public DirectFrame::Options
+	struct Options: public DirectFrame::Options
 	{
-	public:
 		Options(void);
-		virtual ~Options(void) = default;
 
 		LVecBase4f canvas_size = LVecBase4f(-1, 1, -1, 1);
 		bool manage_scroll_bars = true;

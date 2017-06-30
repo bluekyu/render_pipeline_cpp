@@ -18,11 +18,9 @@ class DirectButton: public DirectFrame
 {
 public:
     /** Parameter Container. */
-    class Options: public DirectFrame::Options
+    struct Options: public DirectFrame::Options
     {
-    public:
         Options(void);
-        virtual ~Options(void) = default;
 
         /// Command to be called on button click.
         std::function<void(void*)> command;
@@ -40,7 +38,7 @@ public:
     protected:
         friend class DirectButton;
 
-        void(*command_func)(const Event*, void*) = nullptr;
+        void (*command_func)(const Event*, void*) = nullptr;
     };
 
 public:
@@ -65,11 +63,11 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
+    static const std::type_info& get_class_type(void) { return type_handle_; }
     virtual const std::type_info& get_type(void) const { return get_class_type(); }
 
 private:
-    static const std::type_info& _type_handle;
+    static const std::type_info& type_handle_;
 };
 
 }

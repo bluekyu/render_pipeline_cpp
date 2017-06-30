@@ -10,7 +10,7 @@ namespace rppanda {
 
 Actor::Actor(void)
 {
-	loader_ = Loader::get_global_ptr();
+    loader_ = Loader::get_global_ptr();
 }
 
 }

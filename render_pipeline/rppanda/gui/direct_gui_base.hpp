@@ -24,7 +24,7 @@ namespace rppanda {
 class DirectGuiBase: public DirectObject
 {
 public:
-	DirectGuiBase(void) {}
+	DirectGuiBase(void) = default;
 
 	const std::string& get_gui_id(void) const;
 
@@ -74,9 +74,8 @@ inline const std::string& DirectGuiBase::get_gui_id(void) const
 class DirectGuiWidget: public DirectGuiBase, public NodePath
 {
 public:
-	class Options
+	struct Options
 	{
-	public:
 		Options(void);
 		virtual ~Options(void) = default;
 

@@ -422,16 +422,16 @@ void DirectGuiWidget::set_border_uv_width(const LVecBase2& border_uv_width)
 
 void DirectGuiWidget::print_config(int indent)
 {
-	std::string space(' ', indent);
+    std::string space(' ', indent);
 
     std::cout << fmt::format("{}{} - DirectGuiWidget", space, get_gui_id()) << std::endl;
-	std::cout << space << "Pos:   " << get_pos() << std::endl;
-	std::cout << space << "Scale: " << get_scale() << std::endl;
-	
-	// Print out children info
-	const auto& npc = get_children();
-	for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-		throw_event_directly(*EventHandler::get_global_event_handler(), PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
+    std::cout << space << "Pos:   " << get_pos() << std::endl;
+    std::cout << space << "Scale: " << get_scale() << std::endl;
+
+    // Print out children info
+    const auto& npc = get_children();
+    for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
+        throw_event_directly(*EventHandler::get_global_event_handler(), PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
 }
 
 const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options(const std::shared_ptr<Options>& options)
