@@ -1,15 +1,17 @@
-# Building Render Pipeline C++  {#build_rpcpp}
-**Translation**: @ref ko_kr_build_rpcpp "한국어"
+# Building Render Pipeline C++
+**Translation**: [한국어](ko_kr/build_rpcpp)
 
 ## Requirements
-* CMake (build tool)
-* Boost (above 1.59)
-* FreeType2
-* Yaml-CPP
-* Panda3D
+- Panda3D
+- FreeType2 (included in Panda3D third-party)
+- Boost
+- YAML-CPP
+- spdlog
+- CMake (build tool)
 
 ### Optional
-* OpenVR (to build OpenVR plugin)
+- OpenVR (to build OpenVR plugin)
+- Doxygen (to create doxygen documents)
 
 
 ## CMake
@@ -37,3 +39,21 @@ and install this into `etc/render_pipeline/rpplugins`.
 
 If the `BUILD_ALL_SAMPLES` option is enabled, all samples are built and installed in `bin` directory.
 And enabling `BUILD_DOCUMENTS` option will build documents using Doxygen.
+
+
+## Integration with Plugin & Samples
+```cmake
+project(render_pipeline_package)
+
+set(BOOST_ROOT "......" CACHE PATH "" FORCE)
+set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
+set(panda3d_ROOT "......" CACHE PATH "" FORCE)
+set(ENV{FREETYPE_DIR} "......")
+set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
+set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
+set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
+
+add_subdirectory("render_pipeline_cpp")
+add_subdirectory("rpcpp_plugins")
+add_subdirectory("rpcpp_samples")
+```

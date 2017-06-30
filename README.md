@@ -9,22 +9,11 @@ This project is to implement C++ version of [Render Pipeline](https://github.com
 - @subpage document_translations
 
 
+## Requirements
+- Panda3D
+- Boost
+
+
+
 ## Build
-
-
-### Integration with Plugin & Samples
-```cmake
-project(render_pipeline_package)
-
-set(BOOST_ROOT "......" CACHE PATH "" FORCE)
-set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
-set(panda3d_ROOT "......" CACHE PATH "" FORCE)
-set(ENV{FREETYPE_DIR} "......")
-set(NvFlex_ROOT ""......")" CACHE PATH "" FORCE)
-set(OpenVR_ROOT ""......")" CACHE PATH "" FORCE)
-set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
-
-add_subdirectory("render_pipeline_cpp")
-add_subdirectory("rpcpp_plugins")
-add_subdirectory("rpcpp_samples")
-```
+See `docs/build_rpcpp.md` document.
