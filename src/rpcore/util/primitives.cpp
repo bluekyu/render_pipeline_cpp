@@ -1,5 +1,6 @@
 #include "render_pipeline/rpcore/util/primitives.hpp"
 
+#include <cardMaker.h>
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
 #include <geomPoints.h>
@@ -8,6 +9,7 @@
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
+#include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 
 namespace rpcore {
 
@@ -18,7 +20,8 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
 
     // default material
     NodePath np(geom_node);
-    np.set_material(RPMaterial().get_material());
+    RPGeomNode gn(np);
+    gn.set_material(0, RPMaterial());
 
     return np;
 }
@@ -47,6 +50,23 @@ NodePath create_points(const std::string& name, const std::vector<LPoint3f>& pos
     geom->add_primitive(prim);
 
     return create_geom_node(name, geom);
+}
+
+NodePath create_plane(const std::string& name)
+{
+    CardMaker card(name);
+    card.set_frame(
+        LVertex(-0.5f, 0.0f, -0.5f),
+        LVertex(0.5f, 0.0f, -0.5f),
+        LVertex(0.5f, 0.0f, 0.5f),
+        LVertex(-0.5f, 0.0f, 0.5f));
+
+    // default material
+    NodePath np(card.generate());
+    RPGeomNode gn(np);
+    gn.set_material(0, RPMaterial());
+
+    return np;
 }
 
 NodePath create_cube(const std::string& name)
