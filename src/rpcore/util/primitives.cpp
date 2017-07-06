@@ -60,6 +60,8 @@ NodePath create_plane(const std::string& name)
         LVertex(0.5f, 0.0f, -0.5f),
         LVertex(0.5f, 0.0f, 0.5f),
         LVertex(-0.5f, 0.0f, 0.5f));
+    card.set_has_normals(true);
+    card.set_has_uvs(true);
 
     // default material
     NodePath np(card.generate());

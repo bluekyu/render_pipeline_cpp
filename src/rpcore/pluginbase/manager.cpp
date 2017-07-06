@@ -66,8 +66,9 @@ void PluginManager::Impl::unload(void)
 
     for (auto& id_handle: instances_)
     {
-        if (id_handle.second.use_count() != 1)
-            self_.warn(fmt::format("Plugin ({}) is used on somewhere before unloading.", id_handle.first));
+        auto count = id_handle.second.use_count();
+        if (count != 1)
+            self_.warn(fmt::format("Plugin ({}) is used as {} on somewhere before unloading.", id_handle.first, count));
 
         // delete plugin instance.
         id_handle.second.reset();
