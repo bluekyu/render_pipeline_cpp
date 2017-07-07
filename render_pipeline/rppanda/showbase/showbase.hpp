@@ -228,63 +228,9 @@ public:
 
     void run(void);
 
-protected:
-    GraphicsEngine* graphics_engine_ = nullptr;
-    GraphicsWindow* win = nullptr;
-
-    NodePath render_2dp;
-    NodePath aspect_2dp;
-    NodePath pixel_2dp;
-
-    NodePath camera2dp;
-
-    float a2dp_top;
-    float a2dp_bottom;
-    float a2dp_left;
-    float a2dp_right;
-
-    NodePath a2dp_top_center;
-    NodePath a2dp_bottom_center;
-    NodePath a2dp_left_center;
-    NodePath a2dp_right_center;
-
-    NodePath a2dp_top_left;
-    NodePath a2dp_top_right;
-    NodePath a2dp_bottom_left;
-    NodePath a2dp_bottom_right;
-
-    NodePath mouse_watcher;
-    MouseWatcher* mouse_watcher_node;
-
 private:
     struct Impl;
     std::unique_ptr<Impl> impl_;
 };
-
-// ************************************************************************************************
-inline GraphicsEngine* ShowBase::get_graphics_engine(void) const
-{
-    return graphics_engine_;
-}
-
-inline GraphicsWindow* ShowBase::get_win(void) const
-{
-    return win;
-}
-
-inline NodePath ShowBase::get_render_2dp(void) const
-{
-    return render_2dp;
-}
-
-inline NodePath ShowBase::get_pixel_2dp(void) const
-{
-    return pixel_2dp;
-}
-
-inline MouseWatcher* ShowBase::get_mouse_watcher_node(void) const
-{
-    return mouse_watcher_node;
-}
 
 }

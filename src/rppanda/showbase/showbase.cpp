@@ -34,6 +34,9 @@ struct ShowBase::Impl
 
     void Init(void);
 
+    void setup_mouse(void);
+    void setup_render_2dp(void);
+
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
     void enable_music(bool enable);
@@ -47,6 +50,9 @@ public:
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
+    GraphicsEngine* graphics_engine_ = nullptr;
+    GraphicsWindow* win_ = nullptr;
+
     std::shared_ptr<SfxPlayer> sfx_player_;
     PT(AudioManager) sfx_manager_;
     PT(AudioManager) music_manager_;
@@ -57,6 +63,31 @@ public:
     float config_aspect_ratio_;
     std::string window_type_;
     bool require_window_;
+
+    NodePath render_2dp_;
+    NodePath aspect_2dp_;
+    NodePath pixel_2dp_;
+
+    NodePath camera2dp_;
+    NodePath cam2dp_;
+
+    float a2dp_top_;
+    float a2dp_bottom_;
+    float a2dp_left_;
+    float a2dp_right_;
+
+    NodePath a2dp_top_center_;
+    NodePath a2dp_bottom_center_;
+    NodePath a2dp_left_center_;
+    NodePath a2dp_right_center_;
+
+    NodePath a2dp_top_left_;
+    NodePath a2dp_top_right_;
+    NodePath a2dp_bottom_left_;
+    NodePath a2dp_bottom_right_;
+
+    NodePath mouse_watcher_;
+    MouseWatcher* mouse_watcher_node_;
 
     bool app_has_audio_focus_ = true;
     bool music_manager_is_valid_ = false;
@@ -130,14 +161,14 @@ void ShowBase::Impl::Init(void)
     require_window_ = ConfigVariableBool("require-window", true).get_value();
 
     // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
-    self_.graphics_engine_ = GraphicsEngine::get_global_ptr();
+    graphics_engine_ = GraphicsEngine::get_global_ptr();
     self_.setup_render();
     self_.setup_data_graph();
 
     if (want_render_2dp_)
-        self_.setup_render_2dp();
+        setup_render_2dp();
 
-    self_.win = window_framework_->get_graphics_window();
+    win_ = window_framework_->get_graphics_window();
 
     // Open the default rendering window.
     self_.open_default_window();
@@ -155,6 +186,97 @@ void ShowBase::Impl::Init(void)
     global_showbase = &self_;
 
     self_.restart();
+}
+
+void ShowBase::Impl::setup_mouse(void)
+{
+    self_.setup_mouse_cb();
+
+    mouse_watcher_ = window_framework_->get_mouse();
+    mouse_watcher_node_ = DCAST(MouseWatcher, mouse_watcher_.node());
+
+    // In C++, aspect2d has already mouse watcher.
+    DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+    DCAST(PGTop, self_.get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
+    DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+}
+
+void ShowBase::Impl::setup_render_2dp(void)
+{
+    rppanda_cat.debug() << "Setup 2D nodes." << std::endl;
+
+    render_2dp_ = NodePath("render2dp");
+
+    // Set up some overrides to turn off certain properties which
+    // we probably won't need for 2-d objects.
+
+    // It's probably important to turn off the depth test, since
+    // many 2-d objects will be drawn over each other without
+    // regard to depth position.
+
+    const RenderAttrib* dt = DepthTestAttrib::make(DepthTestAttrib::M_none);
+    const RenderAttrib* dw = DepthWriteAttrib::make(DepthWriteAttrib::M_off);
+    render_2dp_.set_depth_test(0);
+    render_2dp_.set_depth_write(0);
+
+    render_2dp_.set_material_off(1);
+    render_2dp_.set_two_sided(1);
+
+    // The normal 2-d DisplayRegion has an aspect ratio that
+    // matches the window, but its coordinate system is square.
+    // This means anything we parent to render2dp gets stretched.
+    // For things where that makes a difference, we set up
+    // aspect2dp, which scales things back to the right aspect
+    // ratio along the X axis (Z is still from -1 to 1)
+    PT(PGTop) aspect_2dp_pg_top = new PGTop("aspect2dp");
+    aspect_2dp_ = render_2dp_.attach_new_node(aspect_2dp_pg_top);
+    aspect_2dp_pg_top->set_start_sort(16384);
+
+    const float aspect_ratio = self_.get_aspect_ratio();
+    aspect_2dp_.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
+
+    // The Z position of the top border of the aspect2dp screen.
+    a2dp_top_ = 1.0f;
+    // The Z position of the bottom border of the aspect2dp screen.
+    a2dp_bottom_ = -1.0f;
+    // The X position of the left border of the aspect2dp screen.
+    a2dp_left_ = -aspect_ratio;
+    // The X position of the right border of the aspect2dp screen.
+    a2dp_right_ = aspect_ratio;
+
+    a2dp_top_center_ = aspect_2dp_.attach_new_node("a2dpTopCenter");
+    a2dp_bottom_center_ = aspect_2dp_.attach_new_node("a2dpBottomCenter");
+    a2dp_left_center_ = aspect_2dp_.attach_new_node("a2dpLeftCenter");
+    a2dp_right_center_ = aspect_2dp_.attach_new_node("a2dpRightCenter");
+
+    a2dp_top_left_ = aspect_2dp_.attach_new_node("a2dpTopLeft");
+    a2dp_top_right_ = aspect_2dp_.attach_new_node("a2dpTopRight");
+    a2dp_bottom_left_ = aspect_2dp_.attach_new_node("a2dpBottomLeft");
+    a2dp_bottom_right_ = aspect_2dp_.attach_new_node("a2dpBottomRight");
+
+    // Put the nodes in their places
+    a2dp_top_center_.set_pos(0, 0, a2dp_top_);
+    a2dp_bottom_center_.set_pos(0, 0, a2dp_bottom_);
+    a2dp_left_center_.set_pos(a2dp_left_, 0, 0);
+    a2dp_right_center_.set_pos(a2dp_right_, 0, 0);
+
+    a2dp_top_left_.set_pos(a2dp_left_, 0, a2dp_top_);
+    a2dp_top_right_.set_pos(a2dp_right_, 0, a2dp_top_);
+    a2dp_bottom_left_.set_pos(a2dp_left_, 0, a2dp_bottom_);
+    a2dp_bottom_right_.set_pos(a2dp_right_, 0, a2dp_bottom_);
+
+    // This special root, pixel2d, uses units in pixels that are relative
+    // to the window. The upperleft corner of the window is (0, 0),
+    // the lowerleft corner is (xsize, -ysize), in this coordinate system.
+    PT(PGTop) pixel_2dp_pg_top = new PGTop("pixel2dp");
+    pixel_2dp_ = render_2dp_.attach_new_node(pixel_2dp_pg_top);
+    pixel_2dp_pg_top->set_start_sort(16384);
+    pixel_2dp_.set_pos(-1, 0, 1);
+    const LVecBase2i& size = self_.get_size();
+    float xsize = size.get_x();
+    float ysize = size.get_y();
+    if (xsize > 0 && ysize > 0)
+        pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
 }
 
 void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
@@ -264,6 +386,16 @@ WindowFramework* ShowBase::get_window_framework(void) const
     return impl_->window_framework_;
 }
 
+GraphicsEngine* ShowBase::get_graphics_engine(void) const
+{
+    return impl_->graphics_engine_;
+}
+
+GraphicsWindow* ShowBase::get_win(void) const
+{
+    return impl_->win_;
+}
+
 SfxPlayer* ShowBase::get_sfx_player(void) const
 {
     return impl_->sfx_player_.get();
@@ -294,6 +426,16 @@ NodePath ShowBase::get_pixel_2d(void) const
     return impl_->window_framework_->get_pixel_2d();
 }
 
+NodePath ShowBase::get_render_2dp(void) const
+{
+    return impl_->render_2dp_;
+}
+
+NodePath ShowBase::get_pixel_2dp(void) const
+{
+    return impl_->pixel_2dp_;
+}
+
 float ShowBase::get_config_aspect_ratio(void) const
 {
     return impl_->config_aspect_ratio_;
@@ -308,94 +450,21 @@ bool ShowBase::open_default_window(void)
 {
     open_main_window();
 
-    return win != nullptr;
+    return impl_->win_ != nullptr;
 }
 
 void ShowBase::open_main_window(void)
 {
-    if (win)
+    if (impl_->win_)
     {
         setup_mouse();
-        make_camera2dp(win);
+        make_camera2dp(impl_->win_);
     }
 }
 
 void ShowBase::setup_render_2dp(void)
 {
-    rppanda_cat.debug() << "Setup 2D nodes." << std::endl;
-
-    render_2dp = NodePath("render2dp");
-
-    // Set up some overrides to turn off certain properties which
-    // we probably won't need for 2-d objects.
-
-    // It's probably important to turn off the depth test, since
-    // many 2-d objects will be drawn over each other without
-    // regard to depth position.
-
-    const RenderAttrib* dt = DepthTestAttrib::make(DepthTestAttrib::M_none);
-    const RenderAttrib* dw = DepthWriteAttrib::make(DepthWriteAttrib::M_off);
-    render_2dp.set_depth_test(0);
-    render_2dp.set_depth_write(0);
-
-    render_2dp.set_material_off(1);
-    render_2dp.set_two_sided(1);
-
-    // The normal 2-d DisplayRegion has an aspect ratio that
-    // matches the window, but its coordinate system is square.
-    // This means anything we parent to render2dp gets stretched.
-    // For things where that makes a difference, we set up
-    // aspect2dp, which scales things back to the right aspect
-    // ratio along the X axis (Z is still from -1 to 1)
-    PT(PGTop) aspect_2dp_pg_top = new PGTop("aspect2dp");
-    aspect_2dp = render_2dp.attach_new_node(aspect_2dp_pg_top);
-    aspect_2dp_pg_top->set_start_sort(16384);
-
-    const float aspect_ratio = get_aspect_ratio();
-    aspect_2dp.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
-
-    // The Z position of the top border of the aspect2dp screen.
-    a2dp_top = 1.0f;
-    // The Z position of the bottom border of the aspect2dp screen.
-    a2dp_bottom = -1.0f;
-    // The X position of the left border of the aspect2dp screen.
-    a2dp_left = -aspect_ratio;
-    // The X position of the right border of the aspect2dp screen.
-    a2dp_right = aspect_ratio;
-
-    a2dp_top_center = aspect_2dp.attach_new_node("a2dpTopCenter");
-    a2dp_bottom_center = aspect_2dp.attach_new_node("a2dpBottomCenter");
-    a2dp_left_center = aspect_2dp.attach_new_node("a2dpLeftCenter");
-    a2dp_right_center = aspect_2dp.attach_new_node("a2dpRightCenter");
-
-    a2dp_top_left = aspect_2dp.attach_new_node("a2dpTopLeft");
-    a2dp_top_right = aspect_2dp.attach_new_node("a2dpTopRight");
-    a2dp_bottom_left = aspect_2dp.attach_new_node("a2dpBottomLeft");
-    a2dp_bottom_right = aspect_2dp.attach_new_node("a2dpBottomRight");
-
-    // Put the nodes in their places
-    a2dp_top_center.set_pos(0, 0, a2dp_top);
-    a2dp_bottom_center.set_pos(0, 0, a2dp_bottom);
-    a2dp_left_center.set_pos(a2dp_left, 0, 0);
-    a2dp_right_center.set_pos(a2dp_right, 0, 0);
-
-    a2dp_top_left.set_pos(a2dp_left, 0, a2dp_top);
-    a2dp_top_right.set_pos(a2dp_right, 0, a2dp_top);
-    a2dp_bottom_left.set_pos(a2dp_left, 0, a2dp_bottom);
-    a2dp_bottom_right.set_pos(a2dp_right, 0, a2dp_bottom);
-
-    // This special root, pixel2d, uses units in pixels that are relative
-    // to the window. The upperleft corner of the window is (0, 0),
-    // the lowerleft corner is (xsize, -ysize), in this coordinate system.
-    PT(PGTop) pixel_2dp_pg_top = new PGTop("pixel2dp");
-    pixel_2dp = render_2dp.attach_new_node(pixel_2dp_pg_top);
-    pixel_2dp_pg_top->set_start_sort(16384);
-    pixel_2dp.set_pos(-1, 0, 1);
-    const LVecBase2i& size = get_size();
-    float xsize = size.get_x();
-    float ysize = size.get_y();
-    if (xsize > 0 && ysize > 0)
-        pixel_2dp.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
+    impl_->setup_render_2dp();
 }
 
 void ShowBase::setup_render(void)
@@ -446,11 +515,14 @@ NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4
 
     // self.camera2d is the analog of self.camera, although it's
     // not as clear how useful it is.
-    if (camera2dp.is_empty())
-        camera2dp = render_2dp.attach_new_node("camera2dp");
+    if (impl_->camera2dp_.is_empty())
+        impl_->camera2dp_ = impl_->render_2dp_.attach_new_node("camera2dp");
 
-    camera2dp = camera2dp.attach_new_node(cam2d_node);
+    NodePath camera2dp = impl_->camera2dp_.attach_new_node(cam2d_node);
     dr->set_camera(camera2dp);
+
+    if (impl_->cam2dp_.is_empty())
+        impl_->cam2dp_ = camera2dp;
 
     return camera2dp;
 }
@@ -462,15 +534,7 @@ void ShowBase::setup_data_graph(void)
 
 void ShowBase::setup_mouse(void)
 {
-    setup_mouse_cb();
-
-    mouse_watcher = impl_->window_framework_->get_mouse();
-    mouse_watcher_node = DCAST(MouseWatcher, mouse_watcher.node());
-
-    // In C++, aspect2d has already mouse watcher.
-    DCAST(PGTop, aspect_2dp.node())->set_mouse_watcher(mouse_watcher_node);
-    DCAST(PGTop, get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node);
-    DCAST(PGTop, pixel_2dp.node())->set_mouse_watcher(mouse_watcher_node);
+    impl_->setup_mouse();
 }
 
 void ShowBase::setup_mouse_cb(void)
@@ -535,7 +599,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
     float aspect_ratio = 1.0f;
 
     if (!win)
-        win = this->win;
+        win = impl_->win_;
 
     if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
@@ -565,7 +629,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 const LVecBase2i& ShowBase::get_size(GraphicsOutput* win) const
 {
     if (!win)
-        win = this->win;
+        win = impl_->win_;
 
     if (win && win->has_size())
     {
@@ -615,6 +679,11 @@ Camera* ShowBase::get_cam_node(int index) const
 Lens* ShowBase::get_cam_lens(int cam_index, int lens_index) const
 {
     return get_cam_node(cam_index)->get_lens(lens_index);
+}
+
+MouseWatcher* ShowBase::get_mouse_watcher_node(void) const
+{
+    return impl_->mouse_watcher_node_;
 }
 
 NodePath ShowBase::get_button_thrower(void) const
@@ -753,7 +822,7 @@ Filename ShowBase::screenshot(GraphicsOutput* source, const std::string& name_pr
     const std::string& image_comment)
 {
     if (!source)
-        source = win;
+        source = impl_->win_;
 
     Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
 
@@ -772,7 +841,7 @@ Filename ShowBase::screenshot(Texture* source, const std::string& name_prefix, b
 {
     if (!source)
     {
-        rppanda_cat.error() << "Screenshot source is nullptr." << std::endl;
+        rppanda_cat.error() << "ShowBase::screenshot source is nullptr." << std::endl;
         return "";
     }
 
@@ -798,7 +867,7 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
 {
     if (!source)
     {
-        rppanda_cat.error() << "Screenshot source is nullptr." << std::endl;
+        rppanda_cat.error() << "ShowBase::screenshot source is nullptr." << std::endl;
         return "";
     }
 
