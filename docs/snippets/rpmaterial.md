@@ -9,8 +9,7 @@ rpcore::RPMaterial mat;
 mat.set_shading_model(rpcore::RPMaterial::ShadingModel::TRANSPARENT_MODEL);
 mat.set_alpha(0.3f);
 
-// set to 0th geometry
-rpcore::RPGeomNode(nodepath).set_material(0, mat);
+nodepath.set_material(mat.get_material());
 
 // add effect
 render_pipeline->prepare_scene(nodepath);
@@ -20,14 +19,12 @@ To remove:
 ```cpp
 NodePath nodepath = ...;
 
-rpcore::RPGeomNode gn(nodepath);
+rpcore::RPMaterial mat(nodepath.get_material());
 
-// get from 0th geometry
-rpcore::RPMaterial mat(gn.get_material(0));
+// change material
 ...
 
-// set to 0th geometry
-gn.set_material(0, mat);
+nodepath.set_material(mat.get_material());
 
 // remove effect
 rpcore::RenderPipeline::get_global_ptr()->clear_effect(np);
