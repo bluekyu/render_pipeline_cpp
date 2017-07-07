@@ -189,9 +189,41 @@ public:
 
     void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
-    std::string screenshot(const std::string& name_prefix="screenshot", bool default_filename=true, Texture* source=nullptr,
+    /**
+     * Captures a screenshot from the main window or from the
+     * specified window and writes it to a filename in the
+     * current directory (or to a specified directory).
+     *
+     * If @p default_filename is true, the filename is synthesized by
+     * appending @p name_prefix to a default filename suffix (including
+     * the filename extension) specified in the Config variable
+     * screenshot-filename.  Otherwise, if @p default_filename is False,
+     * the entire @p name_prefix is taken to be the filename to write,
+     * and this string should include a suitable filename extension
+     * that will be used to determine the type of image file to
+     * write.
+     *
+     * @return value is the filename if successful, or empty if there is a problem.
+     */
+    Filename screenshot(GraphicsOutput* source=nullptr, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
-    std::string screenshot(const std::string& name_prefix="screenshot", bool default_filename=true, GraphicsWindow* source=nullptr,
+
+    /**
+     * Captures a screenshot from Texture and writes it to a filename in the
+     * current directory (or to a specified directory).
+     *
+     * @override screenshot(GraphicsOutput*, const std::string&, bool, const std::string&)
+     */
+    Filename screenshot(Texture* source, const std::string& name_prefix="screenshot", bool default_filename=true, 
+        const std::string& image_comment="");
+
+    /**
+     * Captures a screenshot from DispayRegion and writes it to a filename in the
+     * current directory (or to a specified directory).
+     *
+     * @override screenshot(GraphicsOutput*, const std::string&, bool, const std::string&)
+     */
+    Filename screenshot(DisplayRegion* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
 
     void run(void);

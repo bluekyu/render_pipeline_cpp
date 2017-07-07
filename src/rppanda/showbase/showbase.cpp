@@ -38,6 +38,9 @@ struct ShowBase::Impl
     void create_base_audio_managers(void);
     void enable_music(bool enable);
 
+    Filename get_screenshot_filename(const std::string& name_prefix, bool default_filename) const;
+    void send_screenshot_event(const Filename& filename) const;
+
 public:
     ShowBase& self_;
 
@@ -199,6 +202,20 @@ void ShowBase::Impl::enable_music(bool enable)
     {
         rppanda_cat.debug() << "Disabling music" << std::endl;
     }
+}
+
+Filename ShowBase::Impl::get_screenshot_filename(const std::string& name_prefix, bool default_filename) const
+{
+    if (default_filename)
+        return GraphicsOutput::make_screenshot_filename(name_prefix);
+    else
+        return Filename(name_prefix);
+}
+
+void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
+{
+    // Announce to anybody that a screenshot has been taken
+    throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
 }
 
 // ************************************************************************************************
@@ -732,7 +749,25 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
     }
 }
 
-std::string ShowBase::screenshot(const std::string& name_prefix, bool default_filename, Texture* source,
+Filename ShowBase::screenshot(GraphicsOutput* source, const std::string& name_prefix, bool default_filename,
+    const std::string& image_comment)
+{
+    if (!source)
+        source = win;
+
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
+
+    bool saved = source->save_screenshot(filename, image_comment);
+    if (saved)
+    {
+        impl_->send_screenshot_event(filename);
+        return filename;
+    }
+
+    return "";
+}
+
+Filename ShowBase::screenshot(Texture* source, const std::string& name_prefix, bool default_filename,
     const std::string& image_comment)
 {
     if (!source)
@@ -741,11 +776,7 @@ std::string ShowBase::screenshot(const std::string& name_prefix, bool default_fi
         return "";
     }
 
-    std::string filename;
-    if (default_filename)
-        filename = GraphicsOutput::make_screenshot_filename(name_prefix);
-    else
-        filename = Filename(name_prefix);
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
 
     bool saved = false;
     if (source->get_z_size() > 1)
@@ -755,32 +786,28 @@ std::string ShowBase::screenshot(const std::string& name_prefix, bool default_fi
 
     if (saved)
     {
-        // Announce to anybody that a screenshot has been taken
-        throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+        impl_->send_screenshot_event(filename);
         return filename;
     }
 
     return "";
 }
 
-std::string ShowBase::screenshot(const std::string& name_prefix, bool default_filename, GraphicsWindow* source,
+Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_prefix, bool default_filename,
     const std::string& image_comment)
 {
     if (!source)
-        source = win;
+    {
+        rppanda_cat.error() << "Screenshot source is nullptr." << std::endl;
+        return "";
+    }
 
-    std::string filename;
-    if (default_filename)
-        filename = GraphicsOutput::make_screenshot_filename(name_prefix);
-    else
-        filename = Filename(name_prefix);
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
 
     bool saved = source->save_screenshot(filename, image_comment);
-
     if (saved)
     {
-        // Announce to anybody that a screenshot has been taken
-        throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+        impl_->send_screenshot_event(filename);
         return filename;
     }
 
