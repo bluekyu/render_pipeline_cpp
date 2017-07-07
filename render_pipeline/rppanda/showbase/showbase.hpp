@@ -189,6 +189,11 @@ public:
 
     void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
+    std::string screenshot(const std::string& name_prefix="screenshot", bool default_filename=true, Texture* source=nullptr,
+        const std::string& image_comment="");
+    std::string screenshot(const std::string& name_prefix="screenshot", bool default_filename=true, GraphicsWindow* source=nullptr,
+        const std::string& image_comment="");
+
     void run(void);
 
 protected:

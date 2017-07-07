@@ -109,14 +109,20 @@ void ShowBase::Impl::Init(void)
     music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
     want_render_2dp_ = ConfigVariableBool("want-render2dp", true).get_value();
 
+    // screenshot_extension in config_display.h
+
     // If the aspect ratio is 0 or None, it means to infer the
     // aspect ratio from the window size.
     // If you need to know the actual aspect ratio call base.getAspectRatio()
+
+    // aspect_ratio in config_framework.h, but NOT exported.
     config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
 
     // This is set to the value of the window-type config variable, but may
     // optionally be overridden in the Showbase constructor.  Should either be
     // 'onscreen' (the default), 'offscreen' or 'none'.
+
+    // window_type in config_framework.h, but NOT exported.
     window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
     require_window_ = ConfigVariableBool("require-window", true).get_value();
 
@@ -724,6 +730,61 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
         music->set_loop(looping);
         music->play();
     }
+}
+
+std::string ShowBase::screenshot(const std::string& name_prefix, bool default_filename, Texture* source,
+    const std::string& image_comment)
+{
+    if (!source)
+    {
+        rppanda_cat.error() << "Screenshot source is nullptr." << std::endl;
+        return "";
+    }
+
+    std::string filename;
+    if (default_filename)
+        filename = GraphicsOutput::make_screenshot_filename(name_prefix);
+    else
+        filename = Filename(name_prefix);
+
+    bool saved = false;
+    if (source->get_z_size() > 1)
+        saved = source->write(filename, 0, 0, true, false);
+    else
+        saved = source->write(filename);
+
+    if (saved)
+    {
+        // Announce to anybody that a screenshot has been taken
+        throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+        return filename;
+    }
+
+    return "";
+}
+
+std::string ShowBase::screenshot(const std::string& name_prefix, bool default_filename, GraphicsWindow* source,
+    const std::string& image_comment)
+{
+    if (!source)
+        source = win;
+
+    std::string filename;
+    if (default_filename)
+        filename = GraphicsOutput::make_screenshot_filename(name_prefix);
+    else
+        filename = Filename(name_prefix);
+
+    bool saved = source->save_screenshot(filename, image_comment);
+
+    if (saved)
+    {
+        // Announce to anybody that a screenshot has been taken
+        throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+        return filename;
+    }
+
+    return "";
 }
 
 void ShowBase::run(void)
