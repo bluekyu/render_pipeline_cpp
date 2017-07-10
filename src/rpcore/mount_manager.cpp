@@ -1,12 +1,16 @@
 #include "render_pipeline/rpcore/mount_manager.hpp"
 
+#include <dcast.h>
 #include <filename.h>
 #include <virtualFileSystem.h>
 #include <virtualFileMountRamdisk.h>
+#include <virtualFileMountSystem.h>
 #include <config_util.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
+
+#include <spdlog/fmt/ostr.h>
 
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 
@@ -295,6 +299,31 @@ void MountManager::mount(void)
 void MountManager::unmount(void)
 {
     throw std::runtime_error("TODO");
+}
+
+std::string MountManager::convert_to_physical_path(const std::string& path)
+{
+    Filename plugin_dir_in_vfs(path);
+    plugin_dir_in_vfs.standardize();
+
+    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+    for (int k=0, k_end=vfs->get_num_mounts(); k < k_end; ++k)
+    {
+        const std::string mount_point = vfs->get_mount(k)->get_mount_point().to_os_specific();
+        const std::string plugin_dir_in_vfs_string = plugin_dir_in_vfs.to_os_specific();
+
+        // /{mount_point}/...
+        if (mount_point.substr(0, 2) == std::string("$$") && plugin_dir_in_vfs_string.find(mount_point) == 1)
+        {
+            boost::filesystem::path physical_plugin_dir = DCAST(VirtualFileMountSystem, vfs->get_mount(k))->get_physical_filename().to_os_specific();
+            physical_plugin_dir /= plugin_dir_in_vfs_string.substr(1+mount_point.length());
+            return physical_plugin_dir.string();
+        }
+    }
+    
+    RPObject::global_error("MountManager", fmt::format("Cannot convert to physical path from Panda Path ({}).", path.c_str()));
+
+    return "";
 }
 
 }

@@ -11,6 +11,14 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL MountManager : public RPObject
 {
 public:
+    /**
+     * Convert virtual path to physical path.
+     *
+     * This function converts the path of Panda3D virutal file system to that of physical filesystem.
+     * If failed, this will return empty string.
+     */
+    static std::string convert_to_physical_path(const std::string& path);
+
     MountManager(RenderPipeline& pipeline);
     ~MountManager(void);
 
