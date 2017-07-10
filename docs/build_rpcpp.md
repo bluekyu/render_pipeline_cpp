@@ -46,9 +46,25 @@ And enabling `BUILD_DOCUMENTS` option will build documents using Doxygen.
 
 
 ## Integration with Plugin & Samples
-```cmake
-project(render_pipeline_package)
+There are a plugin project (https://github.com/bluekyu/rpcpp_plugins) and
+a sample project (https://github.com/bluekyu/rpcpp_samples).
 
+If you want to build with plugins and samples, you can do it using the following ways.
+
+### 1. Directory Structure
+```
+- ROOT_DIR
+  |- build                  # CMake build directory
+  |- render_pipeline_cpp    # Render Pipeline C++ project
+  |- rpcpp_plugins          # Plugin project
+  |- rpcpp_samples          # Sample project
+```
+
+### 2. CMake
+```
+project(render_pipeline_projects)
+
+# write paths on your system
 set(BOOST_ROOT "......" CACHE PATH "" FORCE)
 set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
 set(panda3d_ROOT "......" CACHE PATH "" FORCE)

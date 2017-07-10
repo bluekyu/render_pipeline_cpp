@@ -46,9 +46,25 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 
 ## Integration with Plugin & Samples
-```cmake
-project(render_pipeline_package)
+플러그인 프로젝트(https://github.com/bluekyu/rpcpp_plugins) 와
+샘플 프로젝트(https://github.com/bluekyu/rpcpp_samples)가 있습니다.
 
+플러그인과 샘플들을 함께 빌드하려면, 다음 방법을 사용하면 됩니다.
+
+### 1. Directory Structure
+```
+- ROOT_DIR
+  |- build                  # CMake 빌드 폴더
+  |- render_pipeline_cpp    # Render Pipeline C++ 프로젝트 폴더
+  |- rpcpp_plugins          # 플러그인 프로젝트 폴더
+  |- rpcpp_samples          # 샘플 프로젝트 폴더
+```
+
+### 2. CMake
+```
+project(render_pipeline_projects)
+
+# 개인 시스템에 맞는 경로을 사용
 set(BOOST_ROOT "......" CACHE PATH "" FORCE)
 set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
 set(panda3d_ROOT "......" CACHE PATH "" FORCE)
