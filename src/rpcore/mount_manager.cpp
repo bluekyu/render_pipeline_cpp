@@ -6,6 +6,7 @@
 #include <config_util.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 
@@ -148,20 +149,8 @@ void MountManager::Impl::mount(void)
 
 std::string MountManager::Impl::find_basepath(void) const
 {
-    // TODO: implement linux part.
-    char path[MAX_PATH+1];
-    const DWORD length = ::GetModuleFileNameA(NULL, path, sizeof(path)-1);
-
-    if (length != 0)
-    {
-        path[length] = L'\0';
-    }
-    else
-    {
-        throw std::system_error(std::error_code(GetLastError(), std::system_category()), "Fail to run GetModuleFileNameW.");
-    }
-
-    Filename pth = Filename::from_os_specific(rppanda::join(path, ".."));
+    Filename pth = Filename::from_os_specific(rppanda::join(
+        Filename::from_os_specific(boost::dll::program_location().string()), ".."));
     pth.make_absolute();
 
     return pth.get_fullpath();
