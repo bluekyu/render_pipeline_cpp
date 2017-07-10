@@ -12,12 +12,6 @@ set(render_pipeline_PLUGINS "ao" "bloom" "clouds" "color_correction" "dof" "forw
     "ssr" "vxgi"
 )
 
-# optional plugin
-option(render_pipeline_PLUGIN_BUILD_OPENVR    "Build OpenVR Plugin" OFF)
-if(render_pipeline_PLUGIN_BUILD_OPENVR)
-    list(APPEND render_pipeline_PLUGINS "openvr")
-endif()
-
 # subdirectory
 foreach(plugin_id ${render_pipeline_PLUGINS})
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${plugin_id}")
