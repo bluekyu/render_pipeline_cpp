@@ -1,7 +1,8 @@
-#include <render_pipeline/rpcore/stages/collect_used_cells_stage.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/light_manager.h>
+#include "render_pipeline/rpcore/stages/collect_used_cells_stage.hpp"
+
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/light_manager.hpp"
 
 namespace rpcore {
 
@@ -31,7 +32,7 @@ void CollectUsedCellsStage::create(void)
 
 void CollectUsedCellsStage::reload_shaders(void)
 {
-    _target->set_shader(load_shader({"collect_used_cells.frag.glsl"}));
+    _target->set_shader(load_shader({ "collect_used_cells.frag.glsl" }));
 }
 
 void CollectUsedCellsStage::update(void)

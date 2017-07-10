@@ -5,6 +5,12 @@ set(render_pipeline_DATA_DIR "share/render_pipeline" CACHE INTERNAL
 set(render_pipeline_PLUGIN_DIR "${render_pipeline_DATA_DIR}/rpplugins" CACHE INTERNAL
     "Relative path of plugin directory in Render Pipeline"
 )
+set(render_pipeline_DEBUG_POSTFIX "-debug" CACHE INTERNAL
+    "Postfix string used for the name of plugin of Debug mode in Render Pipeline"
+)
+set(render_pipeline_RELWITHDEBINFO_POSTFIX "-reldeb" CACHE INTERNAL
+    "Postfix string used for the name of plugin of RelWithDebInfo mode in Render Pipeline"
+)
 
 # help function to find rpplugin
 function(render_pipeline_FIND_PLUGINS plugin_id_list)

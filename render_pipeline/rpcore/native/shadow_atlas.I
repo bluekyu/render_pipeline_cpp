@@ -159,4 +159,4 @@ inline float ShadowAtlas::get_coverage() const {
     return float(_num_used_tiles) / float(_num_tiles * _num_tiles);
 }
 
-}	// namespace rpcore
+}

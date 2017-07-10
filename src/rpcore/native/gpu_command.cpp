@@ -87,4 +87,4 @@ void GPUCommand::write_to(const PTA_uchar &dest, size_t command_index) {
     memcpy(dest.p() + offset, &_data, command_size);
 }
 
-}	// namespace rpcore
+}

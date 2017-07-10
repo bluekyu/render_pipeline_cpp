@@ -1,6 +1,6 @@
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/image.hpp>
 
-#include <render_pipeline/rpcore/render_target.h>
+#include <render_pipeline/rpcore/render_target.hpp>
 
 namespace rpcore {
 

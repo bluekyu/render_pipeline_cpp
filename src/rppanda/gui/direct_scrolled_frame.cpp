@@ -1,4 +1,8 @@
-#include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
+/**
+ * This is C++ porting codes of direct/src/gui/DirectScrollFrame.py
+ */
+
+#include <render_pipeline/rppanda/gui/direct_scrolled_frame.hpp>
 
 #include <pgScrollFrame.h>
 
@@ -86,4 +90,4 @@ void DirectScrolledFrame::initialise_options(const std::shared_ptr<Options>& opt
 	_f_init = false;
 }
 
-}	// namespace rppanda
+}

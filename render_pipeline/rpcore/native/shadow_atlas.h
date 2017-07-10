@@ -78,7 +78,7 @@ protected:
     bool* _flags;
 };
 
-}	// namespace rpcore
+}
 
 #include "shadow_atlas.I"
 

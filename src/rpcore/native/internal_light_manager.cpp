@@ -442,4 +442,4 @@ void InternalLightManager::update() {
     update_shadow_sources();
 }
 
-}	// namespace rpcore
+}

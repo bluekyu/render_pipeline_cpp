@@ -1,10 +1,14 @@
-#include <render_pipeline/rppanda/gui/onscreen_image.h>
+/**
+ * This is C++ porting codes of direct/src/gui/OnscreeImage.py
+ */
+
+#include <render_pipeline/rppanda/gui/onscreen_image.hpp>
 
 #include <texturePool.h>
 #include <cardMaker.h>
 #include <pandaFramework.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rppanda {
 
@@ -82,4 +86,4 @@ void OnscreenImage::set_image(const std::shared_ptr<ImageInput>& image, NodePath
 		set_transform(transform);
 }
 
-}	// namespace rppanda
+}

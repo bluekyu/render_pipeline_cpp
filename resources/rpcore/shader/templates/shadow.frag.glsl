@@ -42,13 +42,17 @@ uniform sampler2D p3d_Texture0;
 
 void main() {
 
-    %pretest%
+    %main_begin%
+
+    vec2 texcoord = vOutput.texcoord;
+
+    %texcoord%
 
     #if OPT_ALPHA_TESTING
 
         // Alpha tested shadows. This seems to be quite expensive, so we are
         // only doing this for the objects which really need it (like trees)
-        float sampled_alpha = texture(p3d_Texture0, vOutput.texcoord).w;
+        float sampled_alpha = texture(p3d_Texture0, texcoord).w;
         if (sampled_alpha < 0.1) discard;
     #endif
 
@@ -59,4 +63,6 @@ void main() {
         // a undefined hook.
         %material%
     #endif
+
+    %main_end%
 }

@@ -1,4 +1,4 @@
-#include "post_process_region.h"
+#include "rpcore/util/post_process_region.hpp"
 
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
@@ -100,4 +100,4 @@ void PostProcessRegion::make_fullscreen_cam(void)
 	region->set_camera(camera);
 }
 
-}	// namespace rpcore
+}

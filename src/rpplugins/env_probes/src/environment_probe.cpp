@@ -1,4 +1,4 @@
-#include "environment_probe.h"
+#include "environment_probe.hpp"
 
 namespace rpplugins {
 

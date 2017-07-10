@@ -2,7 +2,7 @@
 
 #include <omniBoundingVolume.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 
 namespace rpcore {
 

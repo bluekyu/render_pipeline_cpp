@@ -1,8 +1,12 @@
-#include <render_pipeline/rppanda/gui/direct_check_box.h>
+/**
+ * This is C++ porting codes of direct/src/gui/DirectCheckBox.py
+ */
+
+#include <render_pipeline/rppanda/gui/direct_check_box.hpp>
 
 #include <pgButton.h>
 
-#include <render_pipeline/rppanda/util/image_input.h>
+#include <render_pipeline/rppanda/util/image_input.hpp>
 
 namespace rppanda {
 
@@ -66,4 +70,4 @@ void DirectCheckBox::initialise_options(const std::shared_ptr<Options>& options)
 	_f_init = false;
 }
 
-}	// namespace rppanda
+}

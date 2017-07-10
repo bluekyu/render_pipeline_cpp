@@ -1,4 +1,8 @@
-#include "render_pipeline/rppanda/showbase/showbase.h"
+/**
+ * This is C++ porting codes of direct/src/showbase/ShowBase.py
+ */
+
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include <cIntervalManager.h>
 #include <pandaSystem.h>
@@ -13,7 +17,9 @@
 #include <audioManager.h>
 #include <throw_event.h>
 
-#include "rppanda/config_rppanda.h"
+#include "render_pipeline/rppanda/showbase/sfx_player.hpp"
+
+#include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {
 
@@ -21,20 +27,83 @@ static ShowBase* global_showbase = nullptr;
 
 struct ShowBase::Impl
 {
+    static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 
+    Impl(ShowBase& self);
+
+    void Init(void);
+
+    void setup_mouse(void);
+    void setup_render_2dp(void);
+
+    void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
     void enable_music(bool enable);
 
+    Filename get_screenshot_filename(const std::string& name_prefix, bool default_filename) const;
+    void send_screenshot_event(const Filename& filename) const;
+
 public:
-    PandaFramework* panda_framework_ = nullptr;
+    ShowBase& self_;
+
+    std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
+    GraphicsEngine* graphics_engine_ = nullptr;
+    GraphicsWindow* win_ = nullptr;
+
+    std::shared_ptr<SfxPlayer> sfx_player_;
+    PT(AudioManager) sfx_manager_;
     PT(AudioManager) music_manager_;
+
+    std::vector<std::pair<PT(AudioManager), bool>> sfx_manager_list_;
+
+    bool want_render_2dp_;
+    float config_aspect_ratio_;
+    std::string window_type_;
+    bool require_window_;
+
+    NodePath render_2dp_;
+    NodePath aspect_2dp_;
+    NodePath pixel_2dp_;
+
+    NodePath camera2dp_;
+    NodePath cam2dp_;
+
+    float a2dp_top_;
+    float a2dp_bottom_;
+    float a2dp_left_;
+    float a2dp_right_;
+
+    NodePath a2dp_top_center_;
+    NodePath a2dp_bottom_center_;
+    NodePath a2dp_left_center_;
+    NodePath a2dp_right_center_;
+
+    NodePath a2dp_top_left_;
+    NodePath a2dp_top_right_;
+    NodePath a2dp_bottom_left_;
+    NodePath a2dp_bottom_right_;
+
+    NodePath mouse_watcher_;
+    MouseWatcher* mouse_watcher_node_;
+
     bool app_has_audio_focus_ = true;
     bool music_manager_is_valid_ = false;
+    bool sfx_active_ = false;
     bool music_active_ = false;
+
+    bool backface_culling_enabled_;
+    bool wireframe_enabled_;
 };
+
+AsyncTask::DoneStatus ShowBase::Impl::ival_loop(GenericAsyncTask *task, void *user_data)
+{
+    // Execute all intervals in the global ivalMgr.
+    CIntervalManager::get_global_ptr()->step();
+    return AsyncTask::DS_cont;
+}
 
 AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *user_data)
 {
@@ -44,13 +113,190 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
     {
         impl->music_manager_->update();
     }
-    //for x in self.sfxManagerList:
-    //    x.update()
+
+    for (auto& x: impl->sfx_manager_list_)
+        x.first->update();
+
     return AsyncTask::DS_cont;
+}
+
+ShowBase::Impl::Impl(ShowBase& self): self_(self)
+{
+}
+
+void ShowBase::Impl::Init(void)
+{
+    if (global_showbase)
+    {
+        rppanda_cat.error() << "ShowBase was already created!" << std::endl;
+        return;
+    }
+
+    rppanda_cat.debug() << "Creating ShowBase ..." << std::endl;
+
+    if (panda_framework_->get_num_windows() == 0)
+        window_framework_ = panda_framework_->open_window();
+    else
+        window_framework_ = panda_framework_->get_window(0);
+
+    sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
+    music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
+    want_render_2dp_ = ConfigVariableBool("want-render2dp", true).get_value();
+
+    // screenshot_extension in config_display.h
+
+    // If the aspect ratio is 0 or None, it means to infer the
+    // aspect ratio from the window size.
+    // If you need to know the actual aspect ratio call base.getAspectRatio()
+
+    // aspect_ratio in config_framework.h, but NOT exported.
+    config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
+
+    // This is set to the value of the window-type config variable, but may
+    // optionally be overridden in the Showbase constructor.  Should either be
+    // 'onscreen' (the default), 'offscreen' or 'none'.
+
+    // window_type in config_framework.h, but NOT exported.
+    window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
+    require_window_ = ConfigVariableBool("require-window", true).get_value();
+
+    // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
+    graphics_engine_ = GraphicsEngine::get_global_ptr();
+    self_.setup_render();
+    self_.setup_data_graph();
+
+    if (want_render_2dp_)
+        setup_render_2dp();
+
+    win_ = window_framework_->get_graphics_window();
+
+    // Open the default rendering window.
+    self_.open_default_window();
+
+    // The default is trackball mode, which is more convenient for
+    // ad-hoc development in Python using ShowBase.Applications
+    // can explicitly call base.useDrive() if they prefer a drive
+    // interface.
+    self_.use_trackball();
+
+    app_has_audio_focus_ = true;
+
+    self_.create_base_audio_managers();
+
+    global_showbase = &self_;
+
+    self_.restart();
+}
+
+void ShowBase::Impl::setup_mouse(void)
+{
+    self_.setup_mouse_cb();
+
+    mouse_watcher_ = window_framework_->get_mouse();
+    mouse_watcher_node_ = DCAST(MouseWatcher, mouse_watcher_.node());
+
+    // In C++, aspect2d has already mouse watcher.
+    DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+    DCAST(PGTop, self_.get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
+    DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+}
+
+void ShowBase::Impl::setup_render_2dp(void)
+{
+    rppanda_cat.debug() << "Setup 2D nodes." << std::endl;
+
+    render_2dp_ = NodePath("render2dp");
+
+    // Set up some overrides to turn off certain properties which
+    // we probably won't need for 2-d objects.
+
+    // It's probably important to turn off the depth test, since
+    // many 2-d objects will be drawn over each other without
+    // regard to depth position.
+
+    const RenderAttrib* dt = DepthTestAttrib::make(DepthTestAttrib::M_none);
+    const RenderAttrib* dw = DepthWriteAttrib::make(DepthWriteAttrib::M_off);
+    render_2dp_.set_depth_test(0);
+    render_2dp_.set_depth_write(0);
+
+    render_2dp_.set_material_off(1);
+    render_2dp_.set_two_sided(1);
+
+    // The normal 2-d DisplayRegion has an aspect ratio that
+    // matches the window, but its coordinate system is square.
+    // This means anything we parent to render2dp gets stretched.
+    // For things where that makes a difference, we set up
+    // aspect2dp, which scales things back to the right aspect
+    // ratio along the X axis (Z is still from -1 to 1)
+    PT(PGTop) aspect_2dp_pg_top = new PGTop("aspect2dp");
+    aspect_2dp_ = render_2dp_.attach_new_node(aspect_2dp_pg_top);
+    aspect_2dp_pg_top->set_start_sort(16384);
+
+    const float aspect_ratio = self_.get_aspect_ratio();
+    aspect_2dp_.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
+
+    // The Z position of the top border of the aspect2dp screen.
+    a2dp_top_ = 1.0f;
+    // The Z position of the bottom border of the aspect2dp screen.
+    a2dp_bottom_ = -1.0f;
+    // The X position of the left border of the aspect2dp screen.
+    a2dp_left_ = -aspect_ratio;
+    // The X position of the right border of the aspect2dp screen.
+    a2dp_right_ = aspect_ratio;
+
+    a2dp_top_center_ = aspect_2dp_.attach_new_node("a2dpTopCenter");
+    a2dp_bottom_center_ = aspect_2dp_.attach_new_node("a2dpBottomCenter");
+    a2dp_left_center_ = aspect_2dp_.attach_new_node("a2dpLeftCenter");
+    a2dp_right_center_ = aspect_2dp_.attach_new_node("a2dpRightCenter");
+
+    a2dp_top_left_ = aspect_2dp_.attach_new_node("a2dpTopLeft");
+    a2dp_top_right_ = aspect_2dp_.attach_new_node("a2dpTopRight");
+    a2dp_bottom_left_ = aspect_2dp_.attach_new_node("a2dpBottomLeft");
+    a2dp_bottom_right_ = aspect_2dp_.attach_new_node("a2dpBottomRight");
+
+    // Put the nodes in their places
+    a2dp_top_center_.set_pos(0, 0, a2dp_top_);
+    a2dp_bottom_center_.set_pos(0, 0, a2dp_bottom_);
+    a2dp_left_center_.set_pos(a2dp_left_, 0, 0);
+    a2dp_right_center_.set_pos(a2dp_right_, 0, 0);
+
+    a2dp_top_left_.set_pos(a2dp_left_, 0, a2dp_top_);
+    a2dp_top_right_.set_pos(a2dp_right_, 0, a2dp_top_);
+    a2dp_bottom_left_.set_pos(a2dp_left_, 0, a2dp_bottom_);
+    a2dp_bottom_right_.set_pos(a2dp_right_, 0, a2dp_bottom_);
+
+    // This special root, pixel2d, uses units in pixels that are relative
+    // to the window. The upperleft corner of the window is (0, 0),
+    // the lowerleft corner is (xsize, -ysize), in this coordinate system.
+    PT(PGTop) pixel_2dp_pg_top = new PGTop("pixel2dp");
+    pixel_2dp_ = render_2dp_.attach_new_node(pixel_2dp_pg_top);
+    pixel_2dp_pg_top->set_start_sort(16384);
+    pixel_2dp_.set_pos(-1, 0, 1);
+    const LVecBase2i& size = self_.get_size();
+    float xsize = size.get_x();
+    float ysize = size.get_y();
+    if (xsize > 0 && ysize > 0)
+        pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
+}
+
+void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
+{
+    // keep a list of sfx manager objects to apply settings to,
+    // since there may be others in addition to the one we create here
+    bool new_sfx_manager_is_valid = extra_sfx_manager && extra_sfx_manager->is_valid();
+    sfx_manager_list_.push_back({extra_sfx_manager, new_sfx_manager_is_valid});
+    if (new_sfx_manager_is_valid)
+        extra_sfx_manager->set_active(sfx_active_);
 }
 
 void ShowBase::Impl::create_base_audio_managers(void)
 {
+    rppanda_cat.debug() << "Creating base audio manager ..." << std::endl;
+
+    sfx_player_ = std::make_shared<SfxPlayer>();
+    sfx_manager_ = AudioManager::create_AudioManager();
+    add_sfx_manager(sfx_manager_);
+
     music_manager_ = AudioManager::create_AudioManager();
     music_manager_is_valid_ = music_manager_ && music_manager_->is_valid();
     if (music_manager_is_valid_)
@@ -80,65 +326,33 @@ void ShowBase::Impl::enable_music(bool enable)
     }
 }
 
+Filename ShowBase::Impl::get_screenshot_filename(const std::string& name_prefix, bool default_filename) const
+{
+    if (default_filename)
+        return GraphicsOutput::make_screenshot_filename(name_prefix);
+    else
+        return Filename(name_prefix);
+}
+
+void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
+{
+    // Announce to anybody that a screenshot has been taken
+    throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+}
+
 // ************************************************************************************************
 
-ShowBase::ShowBase(PandaFramework* framework, WindowFramework* window_framework) : impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this))
 {
-    if (global_showbase)
-    {
-        rppanda_cat.error() << "ShowBase was already created!" << std::endl;
-        return;
-    }
+    impl_->panda_framework_ = std::make_shared<PandaFramework>();
+    impl_->panda_framework_->open_framework(argc, argv);
+    impl_->Init();
+}
 
-    impl_->panda_framework_ = framework;
-    impl_->window_framework_ = window_framework;
-
-    /*
-    window_framework = panda_framework->open_window();
-    if (!window_framework)
-        throw std::runtime_error("Cannot open Panda3D window!");
-    */
-
-    impl_->music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
-    want_render_2dp = ConfigVariableBool("want-render2dp", true).get_value();
-
-    // If the aspect ratio is 0 or None, it means to infer the
-    // aspect ratio from the window size.
-    // If you need to know the actual aspect ratio call base.getAspectRatio()
-    config_aspect_ratio = ConfigVariableDouble("aspect-ratio", 0).get_value();
-
-    // This is set to the value of the window-type config variable, but may
-    // optionally be overridden in the Showbase constructor.  Should either be
-    // 'onscreen' (the default), 'offscreen' or 'none'.
-    this->window_type = ConfigVariableString("window-type", "onscreen").get_value();
-    require_window = ConfigVariableBool("require_window", true).get_value();
-
-    // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
-    graphics_engine = GraphicsEngine::get_global_ptr();
-    setup_render();
-    setup_data_graph();
-
-    if (want_render_2dp)
-        setup_render_2dp();
-
-    win = window_framework->get_graphics_window();
-
-    // Open the default rendering window.
-    open_default_window();
-
-    // The default is trackball mode, which is more convenient for
-    // ad-hoc development in Python using ShowBase.Applications
-    // can explicitly call base.useDrive() if they prefer a drive
-    // interface.
-    use_trackball();
-
-    impl_->app_has_audio_focus_ = true;
-
-    create_base_audio_managers();
-
-    global_showbase = this;
-
-    restart();
+ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
+{
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+    impl_->Init();
 }
 
 ShowBase::~ShowBase(void)
@@ -149,9 +363,12 @@ ShowBase::~ShowBase(void)
     {
         impl_->music_manager_->shutdown();
         impl_->music_manager_.clear();
+        for (auto& manager: impl_->sfx_manager_list_)
+            manager.first->shutdown();
+        impl_->sfx_manager_list_.clear();
     }
-    if (graphics_engine)
-        graphics_engine->remove_all_windows();
+
+    global_showbase = nullptr;
 }
 
 ShowBase* ShowBase::get_global_ptr(void)
@@ -161,12 +378,27 @@ ShowBase* ShowBase::get_global_ptr(void)
 
 PandaFramework* ShowBase::get_panda_framework(void) const
 {
-    return impl_->panda_framework_;
+    return impl_->panda_framework_.get();
 }
 
 WindowFramework* ShowBase::get_window_framework(void) const
 {
     return impl_->window_framework_;
+}
+
+GraphicsEngine* ShowBase::get_graphics_engine(void) const
+{
+    return impl_->graphics_engine_;
+}
+
+GraphicsWindow* ShowBase::get_win(void) const
+{
+    return impl_->win_;
+}
+
+SfxPlayer* ShowBase::get_sfx_player(void) const
+{
+    return impl_->sfx_player_.get();
 }
 
 AudioManager* ShowBase::get_music_manager(void) const
@@ -194,6 +426,21 @@ NodePath ShowBase::get_pixel_2d(void) const
     return impl_->window_framework_->get_pixel_2d();
 }
 
+NodePath ShowBase::get_render_2dp(void) const
+{
+    return impl_->render_2dp_;
+}
+
+NodePath ShowBase::get_pixel_2dp(void) const
+{
+    return impl_->pixel_2dp_;
+}
+
+float ShowBase::get_config_aspect_ratio(void) const
+{
+    return impl_->config_aspect_ratio_;
+}
+
 AsyncTaskManager* ShowBase::get_task_mgr(void) const
 {
     return AsyncTaskManager::get_global_ptr();
@@ -203,99 +450,40 @@ bool ShowBase::open_default_window(void)
 {
     open_main_window();
 
-    return win != nullptr;
+    return impl_->win_ != nullptr;
 }
 
 void ShowBase::open_main_window(void)
 {
-    // framework.open_window()
-
-    if (win)
+    if (impl_->win_)
     {
         setup_mouse();
-        make_camera2dp(win);
+        make_camera2dp(impl_->win_);
     }
 }
 
 void ShowBase::setup_render_2dp(void)
 {
-    render_2dp = NodePath("render2dp");
+    impl_->setup_render_2dp();
+}
 
-    // Set up some overrides to turn off certain properties which
-    // we probably won't need for 2-d objects.
+void ShowBase::setup_render(void)
+{
+    // C++ sets already render node.
+    //self.render.setAttrib(RescaleNormalAttrib.makeDefault())
+    //self.render.setTwoSided(0)
 
-    // It's probably important to turn off the depth test, since
-    // many 2-d objects will be drawn over each other without
-    // regard to depth position.
-
-    const RenderAttrib* dt = DepthTestAttrib::make(DepthTestAttrib::M_none);
-    const RenderAttrib* dw = DepthWriteAttrib::make(DepthWriteAttrib::M_off);
-    render_2dp.set_depth_test(0);
-    render_2dp.set_depth_write(0);
-
-    render_2dp.set_material_off(1);
-    render_2dp.set_two_sided(1);
-
-    // The normal 2-d DisplayRegion has an aspect ratio that
-    // matches the window, but its coordinate system is square.
-    // This means anything we parent to render2dp gets stretched.
-    // For things where that makes a difference, we set up
-    // aspect2dp, which scales things back to the right aspect
-    // ratio along the X axis (Z is still from -1 to 1)
-    PT(PGTop) aspect_2dp_pg_top = new PGTop("aspect2dp");
-    aspect_2dp = render_2dp.attach_new_node(aspect_2dp_pg_top);
-    aspect_2dp_pg_top->set_start_sort(16384);
-
-    const float aspect_ratio = get_aspect_ratio();
-    aspect_2dp.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
-
-    // The Z position of the top border of the aspect2dp screen.
-    a2dp_top = 1.0f;
-    // The Z position of the bottom border of the aspect2dp screen.
-    a2dp_bottom = -1.0f;
-    // The X position of the left border of the aspect2dp screen.
-    a2dp_left = -aspect_ratio;
-    // The X position of the right border of the aspect2dp screen.
-    a2dp_right = aspect_ratio;
-
-    a2dp_top_center = aspect_2dp.attach_new_node("a2dpTopCenter");
-    a2dp_bottom_center = aspect_2dp.attach_new_node("a2dpBottomCenter");
-    a2dp_left_center = aspect_2dp.attach_new_node("a2dpLeftCenter");
-    a2dp_right_center = aspect_2dp.attach_new_node("a2dpRightCenter");
-
-    a2dp_top_left = aspect_2dp.attach_new_node("a2dpTopLeft");
-    a2dp_top_right = aspect_2dp.attach_new_node("a2dpTopRight");
-    a2dp_bottom_left = aspect_2dp.attach_new_node("a2dpBottomLeft");
-    a2dp_bottom_right = aspect_2dp.attach_new_node("a2dpBottomRight");
-
-    // Put the nodes in their places
-    a2dp_top_center.set_pos(0, 0, a2dp_top);
-    a2dp_bottom_center.set_pos(0, 0, a2dp_bottom);
-    a2dp_left_center.set_pos(a2dp_left, 0, 0);
-    a2dp_right_center.set_pos(a2dp_right, 0, 0);
-
-    a2dp_top_left.set_pos(a2dp_left, 0, a2dp_top);
-    a2dp_top_right.set_pos(a2dp_right, 0, a2dp_top);
-    a2dp_bottom_left.set_pos(a2dp_left, 0, a2dp_bottom);
-    a2dp_bottom_right.set_pos(a2dp_right, 0, a2dp_bottom);
-
-    // This special root, pixel2d, uses units in pixels that are relative
-    // to the window. The upperleft corner of the window is (0, 0),
-    // the lowerleft corner is (xsize, -ysize), in this coordinate system.
-    PT(PGTop) pixel_2dp_pg_top = new PGTop("pixel2dp");
-    pixel_2dp = render_2dp.attach_new_node(pixel_2dp_pg_top);
-    pixel_2dp_pg_top->set_start_sort(16384);
-    pixel_2dp.set_pos(-1, 0, 1);
-    const LVecBase2i& size = get_size();
-    float xsize = size.get_x();
-    float ysize = size.get_y();
-    if (xsize > 0 && ysize > 0)
-        pixel_2dp.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
+    NodePath render = get_render();
+    impl_->backface_culling_enabled_ = render.get_two_sided();
+    //textureEnabled = 1;
+    impl_->wireframe_enabled_ = render.get_render_mode() == RenderModeAttrib::M_wireframe;
 }
 
 NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,
     const LVecBase4f& coords, Lens* lens, const std::string& camera_name)
 {
+    rppanda_cat.debug() << "Making 2D camera ..." << std::endl;
+
     DisplayRegion* dr = win->make_mono_display_region(display_region);
     dr->set_sort(sort);
 
@@ -327,11 +515,14 @@ NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4
 
     // self.camera2d is the analog of self.camera, although it's
     // not as clear how useful it is.
-    if (camera2dp.is_empty())
-        camera2dp = render_2dp.attach_new_node("camera2dp");
+    if (impl_->camera2dp_.is_empty())
+        impl_->camera2dp_ = impl_->render_2dp_.attach_new_node("camera2dp");
 
-    camera2dp = camera2dp.attach_new_node(cam2d_node);
+    NodePath camera2dp = impl_->camera2dp_.attach_new_node(cam2d_node);
     dr->set_camera(camera2dp);
+
+    if (impl_->cam2dp_.is_empty())
+        impl_->cam2dp_ = camera2dp;
 
     return camera2dp;
 }
@@ -343,15 +534,7 @@ void ShowBase::setup_data_graph(void)
 
 void ShowBase::setup_mouse(void)
 {
-    setup_mouse_cb();
-
-    mouse_watcher = impl_->window_framework_->get_mouse();
-    mouse_watcher_node = DCAST(MouseWatcher, mouse_watcher.node());
-
-    // In C++, aspect2d has already mouse watcher.
-    DCAST(PGTop, aspect_2dp.node())->set_mouse_watcher(mouse_watcher_node);
-    DCAST(PGTop, get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node);
-    DCAST(PGTop, pixel_2dp.node())->set_mouse_watcher(mouse_watcher_node);
+    impl_->setup_mouse();
 }
 
 void ShowBase::setup_mouse_cb(void)
@@ -361,16 +544,62 @@ void ShowBase::setup_mouse_cb(void)
     impl_->window_framework_->enable_keyboard();
 }
 
+void ShowBase::toggle_backface(void)
+{
+    if (impl_->backface_culling_enabled_)
+        backface_culling_off();
+    else
+        backface_culling_on();
+}
+
+void ShowBase::backface_culling_on(void)
+{
+    if (!impl_->backface_culling_enabled_)
+        get_render().set_two_sided(false);
+    impl_->backface_culling_enabled_ = true;
+}
+
+void ShowBase::backface_culling_off(void)
+{
+    if (!impl_->backface_culling_enabled_)
+        get_render().set_two_sided(true);
+    impl_->backface_culling_enabled_ = false;
+}
+
+void ShowBase::toggle_wireframe(void)
+{
+    if (impl_->wireframe_enabled_)
+        wireframe_off();
+    else
+        wireframe_on();
+}
+
+void ShowBase::wireframe_on(void)
+{
+    NodePath render = get_render();
+    render.set_render_mode_wireframe(100);
+    render.set_two_sided(1);
+    impl_->wireframe_enabled_ = true;
+}
+
+void ShowBase::wireframe_off(void)
+{
+    NodePath render = get_render();
+    render.clear_render_mode();
+    render.set_two_sided(!impl_->backface_culling_enabled_);
+    impl_->wireframe_enabled_ = false;
+}
+
 float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 {
     // If the config it set, we return that
-    if (config_aspect_ratio)
-        return config_aspect_ratio;
+    if (impl_->config_aspect_ratio_)
+        return impl_->config_aspect_ratio_;
 
     float aspect_ratio = 1.0f;
 
     if (!win)
-        win = this->win;
+        win = impl_->win_;
 
     if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
@@ -400,7 +629,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 const LVecBase2i& ShowBase::get_size(GraphicsOutput* win) const
 {
     if (!win)
-        win = this->win;
+        win = impl_->win_;
 
     if (win && win->has_size())
     {
@@ -452,6 +681,11 @@ Lens* ShowBase::get_cam_lens(int cam_index, int lens_index) const
     return get_cam_node(cam_index)->get_lens(lens_index);
 }
 
+MouseWatcher* ShowBase::get_mouse_watcher_node(void) const
+{
+    return impl_->mouse_watcher_node_;
+}
+
 NodePath ShowBase::get_button_thrower(void) const
 {
     // Node that WindowFramework::enable_keyboard
@@ -470,9 +704,11 @@ PandaNode* ShowBase::get_data_root_node(void) const
 
 void ShowBase::restart(void)
 {
+    rppanda_cat.debug() << "Re-staring ShowBase ..." << std::endl;
+
     shutdown();
 
-    add_task(ival_loop, nullptr, "ival_loop", 20);
+    add_task(Impl::ival_loop, nullptr, "ival_loop", 20);
 
     // the audioLoop updates the positions of 3D sounds.
     // as such, it needs to run after the cull traversal in the igLoop.
@@ -481,6 +717,8 @@ void ShowBase::restart(void)
 
 void ShowBase::shutdown(void)
 {
+    rppanda_cat.debug() << "Shutdown ShowBase ..." << std::endl;
+
     auto task_mgr = get_task_mgr();
     AsyncTask* task = nullptr;
 
@@ -503,6 +741,11 @@ void ShowBase::use_trackball(void)
     impl_->window_framework_->setup_trackball();
 }
 
+void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager)
+{
+    impl_->add_sfx_manager(extra_sfx_manager);
+}
+
 void ShowBase::create_base_audio_managers(void)
 {
     impl_->create_base_audio_managers();
@@ -513,10 +756,19 @@ void ShowBase::enable_music(bool enable)
     impl_->enable_music(enable);
 }
 
+void ShowBase::set_all_sfx_enables(bool enable)
+{
+    for (auto& manager_valid: impl_->sfx_manager_list_)
+    {
+        if (manager_valid.second)
+            manager_valid.first->set_active(enable);
+    }
+}
+
 void ShowBase::disable_all_audio(void)
 {
     impl_->app_has_audio_focus_ = false;
-    // self.SetAllSfxEnables(0)
+    set_all_sfx_enables(false);
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(false);
     rppanda_cat.debug() << "Disabling audio" << std::endl;
@@ -525,18 +777,115 @@ void ShowBase::disable_all_audio(void)
 void ShowBase::enable_all_audio(void)
 {
     impl_->app_has_audio_focus_ = true;
-    // self.SetAllSfxEnables(self.sfxActive)
+    set_all_sfx_enables(impl_->sfx_active_);
     if (impl_->music_manager_is_valid_)
         impl_->music_manager_->set_active(impl_->music_active_);
     rppanda_cat.debug() << "Enabling audio" << std::endl;
 }
 
-
-AsyncTask::DoneStatus ShowBase::ival_loop(GenericAsyncTask *task, void *user_data)
+void ShowBase::enable_sound_effects(bool enable_sound_effects)
 {
-    // Execute all intervals in the global ivalMgr.
-    CIntervalManager::get_global_ptr()->step();
-    return AsyncTask::DS_cont;
+    // don't setActive(1) if no audiofocus
+    if (impl_->app_has_audio_focus_ || !enable_sound_effects)
+        set_all_sfx_enables(enable_sound_effects);
+    impl_->sfx_active_ = enable_sound_effects;
+    if (enable_sound_effects)
+        rppanda_cat.debug() << "Enabling sound effects" << std::endl;
+    else
+        rppanda_cat.debug() << "Disabling sound effects" << std::endl;
+}
+
+void ShowBase::play_sfx(AudioSound* sfx, bool looping, bool interrupt, boost::optional<float> volume,
+    float time, boost::optional<NodePath> node, boost::optional<NodePath> listener_node,
+    boost::optional<float> cutoff)
+{
+    impl_->sfx_player_->play_sfx(sfx, looping, interrupt, volume, time, node, listener_node, cutoff);
+}
+
+void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float time, boost::optional<float> volume)
+{
+    if (!music)
+        return;
+
+    if (volume)
+        music->set_volume(volume.get());
+
+    if (interrupt || (music->status() != AudioSound::PLAYING))
+    {
+        music->set_time(time);
+        music->set_loop(looping);
+        music->play();
+    }
+}
+
+Filename ShowBase::screenshot(GraphicsOutput* source, const std::string& name_prefix, bool default_filename,
+    const std::string& image_comment)
+{
+    if (!source)
+        source = impl_->win_;
+
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
+
+    bool saved = source->save_screenshot(filename, image_comment);
+    if (saved)
+    {
+        impl_->send_screenshot_event(filename);
+        return filename;
+    }
+
+    return "";
+}
+
+Filename ShowBase::screenshot(Texture* source, const std::string& name_prefix, bool default_filename,
+    const std::string& image_comment)
+{
+    if (!source)
+    {
+        rppanda_cat.error() << "ShowBase::screenshot source is nullptr." << std::endl;
+        return "";
+    }
+
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
+
+    bool saved = false;
+    if (source->get_z_size() > 1)
+        saved = source->write(filename, 0, 0, true, false);
+    else
+        saved = source->write(filename);
+
+    if (saved)
+    {
+        impl_->send_screenshot_event(filename);
+        return filename;
+    }
+
+    return "";
+}
+
+Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_prefix, bool default_filename,
+    const std::string& image_comment)
+{
+    if (!source)
+    {
+        rppanda_cat.error() << "ShowBase::screenshot source is nullptr." << std::endl;
+        return "";
+    }
+
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
+
+    bool saved = source->save_screenshot(filename, image_comment);
+    if (saved)
+    {
+        impl_->send_screenshot_event(filename);
+        return filename;
+    }
+
+    return "";
+}
+
+void ShowBase::run(void)
+{
+    impl_->panda_framework_->main_loop();
 }
 
 }

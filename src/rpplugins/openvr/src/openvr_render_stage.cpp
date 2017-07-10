@@ -1,10 +1,10 @@
-#include "openvr_render_stage.h"
+#include "openvr_render_stage.hpp"
 
 #include <glgsg.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/render_target.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/render_target.hpp>
 
 namespace rpplugins {
 

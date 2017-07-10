@@ -1,4 +1,6 @@
-#include "render_pipeline/rpcore/render_pipeline.h"
+#include <dtoolbase.h>
+
+#include "render_pipeline/rpcore/render_pipeline.hpp"
 
 #include <cctype>
 #include <chrono>
@@ -16,34 +18,34 @@
 #include <genericAsyncTask.h>
 #include <geomTristrips.h>
 
-#include "render_pipeline/rpcore/globals.h"
-#include "render_pipeline/rppanda/showbase/showbase.h"
-#include "render_pipeline/rpcore/render_target.h"
-#include "render_pipeline/rpcore/stage_manager.h"
-#include "render_pipeline/rpcore/mount_manager.h"
-#include "render_pipeline/rpcore/light_manager.h"
-#include "render_pipeline/rpcore/util/task_scheduler.h"
-#include "render_pipeline/rpcore/pluginbase/day_manager.h"
-#include "render_pipeline/rpcore/pluginbase/manager.h"
-#include "render_pipeline/rpcore/image.h"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/mount_manager.hpp"
+#include "render_pipeline/rpcore/light_manager.hpp"
+#include "render_pipeline/rpcore/util/task_scheduler.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/logger.hpp"
 
-#include "render_pipeline/rpcore/stages/ambient_stage.h"
-#include "render_pipeline/rpcore/stages/combine_velocity_stage.h"
-#include "render_pipeline/rpcore/stages/downscale_z_stage.h"
-#include "render_pipeline/rpcore/stages/final_stage.h"
-#include "render_pipeline/rpcore/stages/gbuffer_stage.h"
-#include "render_pipeline/rpcore/stages/upscale_stage.h"
+#include "render_pipeline/rpcore/stages/ambient_stage.hpp"
+#include "render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
+#include "render_pipeline/rpcore/stages/downscale_z_stage.hpp"
+#include "render_pipeline/rpcore/stages/final_stage.hpp"
+#include "render_pipeline/rpcore/stages/gbuffer_stage.hpp"
+#include "render_pipeline/rpcore/stages/upscale_stage.hpp"
 
 #include "render_pipeline/rpcore/native/tag_state_manager.h"
 #include "render_pipeline/rpcore/native/rp_point_light.h"
 #include "render_pipeline/rpcore/native/rp_spot_light.h"
 
-#include "rpcore/common_resources.h"
-#include "rpcore/gui/debugger.h"
-#include "rpcore/gui/error_message_display.h"
-#include "rpcore/gui/loading_screen.h"
-#include "rpcore/util/ies_profile_loader.h"
+#include "rpcore/common_resources.hpp"
+#include "rpcore/gui/debugger.hpp"
+#include "rpcore/gui/error_message_display.hpp"
+#include "rpcore/gui/loading_screen.hpp"
+#include "rpcore/util/ies_profile_loader.hpp"
 #include "rplibs/yaml.hpp"
 
 namespace rpcore {
@@ -52,6 +54,8 @@ static RenderPipeline* global_ptr_ = nullptr;
 
 struct RenderPipeline::Impl
 {
+    static const char* stages[];
+
     Impl(RenderPipeline& self);
     ~Impl(void);
 
@@ -96,7 +100,7 @@ struct RenderPipeline::Impl
 
     void reload_shaders(void);
 
-    void create(PandaFramework* framework, WindowFramework* window_framework);
+    void create(void);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -155,6 +159,8 @@ struct RenderPipeline::Impl
      */
     void adjust_camera_settings(void);
 
+    void adjust_lens_setting(void);
+
     /**
      * Initialize the internally used render resolution. This might differ
      * from the window dimensions in case a resolution scale is set.
@@ -168,7 +174,7 @@ struct RenderPipeline::Impl
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    void init_showbase(PandaFramework* framework, WindowFramework* window_framework);
+    void init_showbase(void);
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
@@ -192,16 +198,10 @@ struct RenderPipeline::Impl
      */
     NodePath create_default_skybox(float size=40000);
 
-    /**
-     * Sets an effect to the given object, using the specified options.
-     * Check out the effect documentation for more information about possible
-     * options and configurations. The object should be a nodepath, and the
-     * effect will be applied to that nodepath and all nodepaths below whose
-     * current effect sort is less than the new effect sort (passed by the
-     * sort parameter).
-     */
     void internal_set_effect(NodePath nodepath, const std::string& effect_src,
         const Effect::OptionType& options=Effect::OptionType(), int sort=30);
+
+    void clear_effect(NodePath& nodepath);
 
     void handle_window_resize(void);
 
@@ -213,6 +213,9 @@ struct RenderPipeline::Impl
 
 public:
     RenderPipeline& self_;
+
+    std::shared_ptr<PandaFramework> panda_framework_;
+
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
     std::chrono::system_clock::time_point* first_frame_ = nullptr;
@@ -234,6 +237,8 @@ public:
     DayTimeManager* daytime_mgr_ = nullptr;
     IESProfileLoader* ies_loader_ = nullptr;
 };
+
+const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
 
 RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 {
@@ -273,7 +278,6 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
         return;
     }
 
-    const std::string stages[] ={std::string("gbuffer"), std::string("shadow"), std::string("voxelize"), std::string("envmap"), std::string("forward")};
     for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
     {
         const std::string& stage = stages[i];
@@ -284,7 +288,7 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
         else
         {
             Shader* shader = effect->get_shader_obj(stage);
-            if (stage == std::string("gbuffer"))
+            if (stage == "gbuffer")
             {
                 nodepath.set_shader(shader, 25);
             }
@@ -302,6 +306,41 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::str
             "same time! Either use render_gbuffer or use render_forward, "
             "but not both.");
     }
+}
+
+void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
+{
+    auto iter = applied_effects.begin();
+    const auto iter_end = applied_effects.end();
+    for (; iter != iter_end; ++iter)
+    {
+        if (std::get<0>(*iter) == nodepath)
+            break;
+    }
+
+    if (iter == iter_end)
+        return;
+
+    auto options = Effect::get_default_options();
+    options.insert(std::get<2>(*iter).begin(), std::get<2>(*iter).end());
+
+    for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
+    {
+        const std::string& stage = stages[i];
+        if (options.at("render_" + stage))
+        {
+            if (stage == "gbuffer")
+            {
+                nodepath.clear_shader();
+            }
+            else
+            {
+                tag_mgr_->cleanup_state(stage, nodepath);
+            }
+        }
+        nodepath.show(tag_mgr_->get_mask(stage));
+    }
+    applied_effects.erase(iter);
 }
 
 AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(GenericAsyncTask* task, void* user_data)
@@ -366,6 +405,8 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
     RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
     const auto& rp_impl = rp->impl_;
 
+    auto last_resolution = Globals::resolution;
+
     LVecBase2i window_dims(rp_impl->showbase_->get_win()->get_size());
     if (window_dims != rp_impl->last_window_dims && window_dims != Globals::native_resolution)
     {
@@ -386,6 +427,15 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
         rp_impl->compute_render_resolution();
         rp_impl->handle_window_resize();
     }
+
+    // set lens parameter after window event.
+    // and set highest priority for running first.
+    rp_impl->showbase_->add_task([](GenericAsyncTask* task, void* user_data) -> AsyncTask::DoneStatus
+    {
+        RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
+        rp_impl->adjust_lens_setting();
+        return AsyncTask::DS_done;
+    }, rp_impl.get(), "RP_HandleWindowResize", -100);
 }
 
 void RenderPipeline::Impl::reload_shaders(void)
@@ -413,10 +463,10 @@ void RenderPipeline::Impl::reload_shaders(void)
     apply_custom_shaders();
 }
 
-void RenderPipeline::Impl::create(PandaFramework* framework, WindowFramework* window_framework)
+void RenderPipeline::Impl::create(void)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    init_showbase(framework, window_framework);
+    init_showbase();
 
     if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
     {
@@ -465,6 +515,8 @@ void RenderPipeline::Impl::apply_custom_shaders(void)
 
 void RenderPipeline::Impl::create_managers(void)
 {
+    self_.trace("Creating managers ...");
+
     task_scheduler_ = new TaskScheduler(&self_);
     tag_mgr_ = new TagStateManager(Globals::base->get_cam());
     plugin_mgr_ = new PluginManager(self_);
@@ -496,6 +548,8 @@ void RenderPipeline::Impl::analyze_system(void)
 
 void RenderPipeline::Impl::initialize_managers(void)
 {
+    self_.trace("Initializing managers ...");
+
     stage_mgr_->setup();
     stage_mgr_->reload_shaders();
     light_mgr_->reload_shaders();
@@ -545,9 +599,7 @@ void RenderPipeline::Impl::set_default_effect(void)
 
 void RenderPipeline::Impl::adjust_camera_settings(void)
 {
-    Lens* lens = showbase_->get_cam_lens();
-    lens->set_near_far(0.1f, 70000.0f);
-    lens->set_fov(40.0f);
+    adjust_lens_setting();
 
     if (self_.get_setting<bool>("pipeline.stereo_mode"))
     {
@@ -559,6 +611,14 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
         if (cam.find("right_eye").is_empty())
             cam.attach_new_node("right_eye");
     }
+}
+
+void RenderPipeline::Impl::adjust_lens_setting(void)
+{
+    Lens* lens = showbase_->get_cam_lens();
+    lens->set_near_far(0.1f, 70000.0f);
+    lens->set_fov(40.0f);
+    lens->set_film_size(Globals::resolution.get_x(), Globals::resolution.get_y());
 }
 
 void RenderPipeline::Impl::compute_render_resolution(void)
@@ -585,13 +645,13 @@ void RenderPipeline::Impl::compute_render_resolution(void)
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-void RenderPipeline::Impl::init_showbase(PandaFramework* framework, WindowFramework* window_framework)
+void RenderPipeline::Impl::init_showbase(void)
 {
     // C++ Panda3D has no ShowBase.
     //if (!base)
     //{
     self_.pre_showbase_init();
-    showbase_ = new rppanda::ShowBase(framework, window_framework);
+    showbase_ = new rppanda::ShowBase(panda_framework_.get());
     //}
     //else
     //{
@@ -628,6 +688,8 @@ void RenderPipeline::Impl::create_common_defines(void)
 {
     static const double round_ratio = std::pow(10.0, 10.0);
 
+    self_.trace("Creating common defines ...");
+
     auto& defines = stage_mgr_->get_defines();
     defines["CAMERA_NEAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_near()) * round_ratio) / round_ratio);
     defines["CAMERA_FAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_far()) * round_ratio) / round_ratio);
@@ -660,6 +722,8 @@ void RenderPipeline::Impl::create_common_defines(void)
 
 void RenderPipeline::Impl::init_common_stages(void)
 {
+    self_.trace("Initailizing common stages ...");
+
     stage_mgr_->add_stage(std::make_shared<AmbientStage>(self_));
     stage_mgr_->add_stage(std::make_shared<GBufferStage>(self_));
     stage_mgr_->add_stage(std::make_shared<FinalStage>(self_));
@@ -692,6 +756,8 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
 
 void RenderPipeline::Impl::handle_window_resize(void)
 {
+    adjust_lens_setting();
+
     light_mgr_->compute_tile_size();
     stage_mgr_->handle_window_resize();
     if (debugger)
@@ -718,15 +784,42 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
 
 RenderPipeline* RenderPipeline::get_global_ptr(void)
 {
-	return global_ptr_;
+    return global_ptr_;
 }
 
-RenderPipeline::RenderPipeline(void): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
+RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
-    global_ptr_ = this;
-
     if (!RPLogger::get_instance().is_created())
         RPLogger::get_instance().create("render_pipeline.log");
+
+    global_ptr_ = this;
+
+    debug("Constructing render pipeline ...");
+
+    impl_->panda_framework_ = std::make_shared<PandaFramework>();
+    impl_->panda_framework_->open_framework(argc, argv);
+
+    impl_->analyze_system();
+
+    impl_->mount_mgr_ = new MountManager(*this);
+    impl_->pre_showbase_initialized = false;
+    set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
+}
+
+RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
+{
+    if (!RPLogger::get_instance().is_created())
+        RPLogger::get_instance().create("render_pipeline.log");
+
+    if (!framework)
+    {
+        error("PandaFramework is nullptr!");
+        return;
+    }
+
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+
+    global_ptr_ = this;
 
     debug("Constructing render pipeline ...");
 
@@ -738,6 +831,18 @@ RenderPipeline::RenderPipeline(void): RPObject("RenderPipeline"), impl_(std::mak
 }
 
 RenderPipeline::~RenderPipeline(void) = default;
+
+void RenderPipeline::run(void)
+{
+    if (impl_->showbase_)
+    {
+        impl_->showbase_->run();
+    }
+    else
+    {
+        error("ShowBase is not initialized! Call RenderPipeline::create() function, first!");
+    }
+}
 
 void RenderPipeline::load_settings(const std::string& path)
 {
@@ -798,9 +903,9 @@ void RenderPipeline::pre_showbase_init(void)
     impl_->pre_showbase_initialized = true;
 }
 
-void RenderPipeline::create(PandaFramework* framework, WindowFramework* window_framework)
+void RenderPipeline::create()
 {
-    impl_->create(framework, window_framework);
+    impl_->create();
 }
 
 void RenderPipeline::set_loading_screen_image(const std::string& image_source)
@@ -828,6 +933,11 @@ void RenderPipeline::set_effect(NodePath& nodepath, const std::string& effect_sr
     decltype(Impl::applied_effects)::value_type args(NodePath(nodepath), effect_src, options, sort);
     impl_->applied_effects.push_back(args);
     impl_->internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
+}
+
+void RenderPipeline::clear_effect(NodePath& nodepath)
+{
+    impl_->clear_effect(nodepath);
 }
 
 void RenderPipeline::prepare_scene(const NodePath& scene)
@@ -889,6 +999,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
         NodePath geom_np = gn_npc.get_path(k);
         GeomNode* geom_node = DCAST(GeomNode, geom_np.node());
         const int geom_count = geom_node->get_num_geoms();
+        bool has_transparency = false;
 
         for (int i = 0; i < geom_count; ++i)
         {
@@ -924,21 +1035,23 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
 
             Material* material = DCAST(MaterialAttrib, state->get_attrib(MaterialAttrib::get_class_type()))->get_material();
             float shading_model = material->get_emission().get_x();
+            if (!has_transparency && shading_model == 3)
+                has_transparency = true;
+        }
 
-            // SHADING_MODEL_TRANSPARENT
-            if (shading_model == 3)
+        // SHADING_MODEL_TRANSPARENT
+        if (has_transparency)
+        {
+            if (geom_count > 1)
             {
-                if (geom_count > 1)
-                {
-                    error(fmt::format("Transparent materials must be on their own geom!\n"
-                        "If you are exporting from blender, split them into\n"
-                        "seperate meshes, then re-export your scene. The\n"
-                        "problematic mesh is: {}", geom_np.get_name()));
-                    continue;
-                }
-                set_effect(geom_np, "effects/default.yaml",
-                    {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
+                error(fmt::format("Transparent materials must be on their own geom!\n"
+                    "If you are exporting from blender, split them into\n"
+                    "seperate meshes, then re-export your scene. The\n"
+                    "problematic mesh is: {}", geom_np.get_name()));
+                continue;
             }
+            set_effect(geom_np, "effects/default.yaml",
+                {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
         }
     }
 
@@ -1058,6 +1171,11 @@ template <>
 std::string RenderPipeline::get_setting(const std::string& setting_path, const std::string& fallback) const
 {
     return impl_->get_setting<std::string>(setting_path, fallback);
+}
+
+PandaFramework* RenderPipeline::get_panda_framework(void) const
+{
+    return impl_->panda_framework_.get();
 }
 
 rppanda::ShowBase* RenderPipeline::get_showbase(void) const

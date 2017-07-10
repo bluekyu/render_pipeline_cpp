@@ -5,18 +5,18 @@
 
 #include <nodePathCollection.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/util/task_scheduler.h>
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/stages/cull_lights_stage.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
-#include "probe_manager.h"
-#include "environment_capture_stage.h"
-#include "cull_probes_stage.h"
-#include "apply_envprobes_stage.h"
-#include "environment_probe.h"
+#include "probe_manager.hpp"
+#include "environment_capture_stage.hpp"
+#include "cull_probes_stage.hpp"
+#include "apply_envprobes_stage.hpp"
+#include "environment_probe.hpp"
 #include "pssm_plugin.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)

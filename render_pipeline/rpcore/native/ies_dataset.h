@@ -67,4 +67,4 @@ class IESDataset {
         PTA_float _candela_values;
 };
 
-}	// namespace rpcore
+}

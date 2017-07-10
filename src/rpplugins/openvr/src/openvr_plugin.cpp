@@ -16,11 +16,11 @@
 #include <textureAttrib.h>
 #include <geomVertexWriter.h>
 
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
-#include "openvr_render_stage.h"
+#include "openvr_render_stage.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::OpenVRPlugin)
 

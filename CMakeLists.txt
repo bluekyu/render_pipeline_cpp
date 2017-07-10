@@ -51,9 +51,39 @@ find_package(FreeType REQUIRED)
 if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
+
+# find flatbuffers
+if(NOT TARGET flatbuffers)
+    find_package(flatbuffers REQUIRED)
+endif()
+# ==================================================================================================
+
+# ==================================================================================================
+function(render_pipeline_generate_schema_headers)
+    # generate schema headers
+    if(NOT FlatBuffers_flatc)
+        message(FATAL_ERROR "Cannot find flatc program.")
+    endif()
+
+    file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
+    foreach(input_file ${flatc_input_files})
+        execute_process(
+            COMMAND ${FlatBuffers_flatc} -c --scoped-enums "${input_file}"
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/rpcore/schema"
+            RESULT_VARIABLE flatc_result
+        )
+        if(NOT (${flatc_result} EQUAL "0"))
+            message(SEND_ERROR "flatc returns error for a file '${input_file}'")
+        endif()
+    endforeach()
+
+    message(STATUS "Render Pipeline: Schema header files are generated.")
+endfunction()
 # ==================================================================================================
 
 # === target =======================================================================================
+render_pipeline_generate_schema_headers()
+
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 
@@ -63,6 +93,14 @@ if(MSVC)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
+
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+
+    # used for plugin postfix.
+    $<$<CONFIG:Debug>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_DEBUG_POSTFIX}">
+    $<$<CONFIG:RelWithDebInfo>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}">
+)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
@@ -77,14 +115,14 @@ target_link_libraries(${PROJECT_NAME}
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem
-    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
+    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog flatbuffers
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "render_pipeline"
     DEFINE_SYMBOL "RENDER_PIPELINE_BUILD"
-    DEBUG_POSTFIX "-debug"
-    RELWITHDEBINFO_POSTFIX "-reldeb"
+    DEBUG_POSTFIX ${${PROJECT_NAME}_DEBUG_POSTFIX}
+    RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
 
@@ -119,9 +157,14 @@ install(TARGETS ${PROJECT_NAME}
 )
 export(EXPORT ${TARGET_EXPORT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
 
-install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pdb"
+install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${${PROJECT_NAME}_DEBUG_POSTFIX}.pdb"
     DESTINATION "bin"
-    CONFIGURATIONS Debug RelWithDebInfo
+    CONFIGURATIONS Debug
+)
+
+install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}.pdb"
+    DESTINATION "bin"
+    CONFIGURATIONS RelWithDebInfo
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
@@ -136,9 +179,9 @@ install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pip
 install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
 # documents
-if(RENDER_PIPELINE_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
+if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
     set(DOCUMENTS_TARGET "documents")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in"
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/documents/Doxyfile.in"
         "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
         @ONLY
     )
@@ -147,12 +190,14 @@ if(RENDER_PIPELINE_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
         ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
+    set_target_properties(${DOCUMENTS_TARGET} PROPERTIES FOLDER "render_pipeline")
 
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/doc/")
+    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/documents/")
 endif()
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md"
+    "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
     DESTINATION "share/${PROJECT_NAME}/")
 # ==================================================================================================
 

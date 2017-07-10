@@ -1,7 +1,7 @@
-#include <render_pipeline/rpcore/gui/checkbox.h>
+#include "render_pipeline/rpcore/gui/checkbox.hpp"
 
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rppanda/gui/direct_check_box.h>
+#include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 
 namespace rpcore {
 
@@ -90,4 +90,4 @@ void Checkbox::set_checked(bool val, bool do_callback)
 		_callback(val, _extra_args);
 }
 
-}	// namespace rpcore
+}

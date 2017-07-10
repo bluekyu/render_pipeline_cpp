@@ -1,6 +1,6 @@
-#include "apply_clouds_stage.h"
+#include "apply_clouds_stage.hpp"
 
-#include <render_pipeline/rpcore/render_target.h>
+#include <render_pipeline/rpcore/render_target.hpp>
 
 namespace rpplugins {
 

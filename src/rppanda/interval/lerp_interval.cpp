@@ -1,4 +1,8 @@
-#include "render_pipeline/rppanda/interval/lerp_interval.h"
+/**
+ * This is C++ porting codes of direct/src/interval/LerpInterval.py
+ */
+
+#include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 
 namespace rppanda {
 
@@ -12,4 +16,4 @@ TypeHandle LerpScaleInterval::_type_handle;
 TypeHandle LerpShearInterval::_type_handle;
 TypeHandle LerpPosHprInterval::_type_handle;
 
-}	// namespace rppanda
+}

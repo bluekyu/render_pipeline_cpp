@@ -1,0 +1,11 @@
+include "rpmaterial_schema.fbs";
+
+namespace rpcore;
+
+table GeomNodeSchema {
+    geoms:[GeomSchema];
+}
+
+table GeomSchema {
+    material:RPMaterialSchema;
+}

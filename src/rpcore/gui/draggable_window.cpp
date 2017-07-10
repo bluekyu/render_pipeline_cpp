@@ -1,13 +1,13 @@
-#include "render_pipeline/rpcore/gui/draggable_window.h"
+#include "render_pipeline/rpcore/gui/draggable_window.hpp"
 
 #include <genericAsyncTask.h>
 #include <graphicsWindow.h>
 
-#include "render_pipeline/rpcore/globals.h"
-#include "render_pipeline/rppanda/showbase/showbase.h"
-#include "render_pipeline/rppanda/gui/direct_frame.h"
-#include "render_pipeline/rppanda/gui/direct_gui_globals.h"
-#include "render_pipeline/rppanda/gui/direct_button.h"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/gui/direct_frame.hpp"
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+#include "render_pipeline/rppanda/gui/direct_button.hpp"
 
 namespace rpcore {
 
@@ -143,4 +143,4 @@ AsyncTask::DoneStatus DraggableWindow::on_tick(GenericAsyncTask* task, void* use
     return AsyncTask::DS_cont;
 }
 
-}	// namespace rpcore
+}

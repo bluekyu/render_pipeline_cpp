@@ -1,14 +1,14 @@
-#include "rpcore/gui/pixel_inspector.h"
+#include "rpcore/gui/pixel_inspector.hpp"
 
 #include <cardMaker.h>
 #include <graphicsWindow.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/loader.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
 
 namespace rpcore {
 
@@ -64,11 +64,11 @@ AsyncTask::DoneStatus PixelInspector::late_init(GenericAsyncTask* task, void* us
 	PixelInspector* pixel_inspector = reinterpret_cast<PixelInspector*>(user_data);
 	PT(Texture) scene_tex = pixel_inspector->_pipeline->get_stage_mgr()->get_pipe("ShadedScene").get_texture();
 	pixel_inspector->_zoomer.set_shader(RPLoader::load_shader({
-			std::string("/$$rp/shader/default_gui_shader.vert.glsl"),
-			std::string("/$$rp/shader/pixel_inspector.frag.glsl")}));
+			"/$$rp/shader/default_gui_shader.vert.glsl",
+			"/$$rp/shader/pixel_inspector.frag.glsl"}));
 	pixel_inspector->_zoomer.set_shader_input("SceneTex", scene_tex);
 
 	return AsyncTask::DS_done;
 }
 
-}	// namespace rpcore
+}

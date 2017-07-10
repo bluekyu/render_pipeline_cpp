@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/util/generic.h"
+#include "render_pipeline/rpcore/util/generic.hpp"
 
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
 

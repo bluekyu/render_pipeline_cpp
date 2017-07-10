@@ -1,12 +1,12 @@
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
 
 #include <regex>
 
 #include <boost/format.hpp>
 
-#include <render_pipeline/rpcore/render_stage.h>
+#include <render_pipeline/rpcore/render_stage.hpp>
 
-#include "rpcore/util/post_process_region.h"
+#include "rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 
@@ -315,4 +315,4 @@ std::string GroupedInputBlock::generate_shader_code(void) const
 	return content;
 }
 
-}	// namespace rpcore
+}

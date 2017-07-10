@@ -69,7 +69,7 @@ class RENDER_PIPELINE_DECL RPSpotLight : public RPLight {
         LVecBase3f _direction;
 };
 
-}	// namespace rpcore
+}
 
 #include "rp_spot_light.I"
 

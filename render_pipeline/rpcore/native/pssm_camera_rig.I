@@ -243,4 +243,4 @@ inline const PTA_LVecBase2f &PSSMCameraRig::get_nearfar_array() {
     return _camera_nearfar;
 }
 
-}	// namespace rpcore
+}

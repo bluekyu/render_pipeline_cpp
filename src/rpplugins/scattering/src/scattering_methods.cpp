@@ -1,15 +1,15 @@
-#include "scattering_methods.h"
+#include "scattering_methods.hpp"
 
 #include <virtualFileSystem.h>
 #include <graphicsEngine.h>
 
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rppanda/stdpy/file.h>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/stdpy/file.hpp>
 
-#include "scattering_stage.h"
-#include "scattering_envmap_stage.h"
+#include "scattering_stage.hpp"
+#include "scattering_envmap_stage.hpp"
 
 namespace rpplugins {
 
@@ -168,10 +168,10 @@ void ScatteringMethodEricBruneton::create_shaders(void)
 {
 	_shaders.clear();
 
-	const std::string& resource_path = handle_.get_shader_resource("eric_bruneton");
+	const Filename& resource_path = handle_.get_shader_resource("eric_bruneton");
 	for (const auto& fname: rppanda::listdir(resource_path))
 	{
-		const std::string& fpath = rppanda::join(resource_path, fname);
+		const Filename& fpath = rppanda::join(resource_path, fname);
 
 		size_t pos;
 		if (rppanda::isfile(fpath) && ((pos=fname.rfind(".compute.glsl")) != std::string::npos &&

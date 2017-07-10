@@ -1,7 +1,7 @@
-#include <render_pipeline/rpcore/gui/labeled_checkbox.h>
+#include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
 
-#include <render_pipeline/rppanda/gui/direct_check_box.h>
-#include <render_pipeline/rpcore/gui/text.h>
+#include "render_pipeline/rppanda/gui/direct_check_box.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
 
 namespace rpcore {
 
@@ -51,4 +51,4 @@ void LabeledCheckbox::on_node_leave(const Event* ev, void* user_data)
 	lc->_text->get_node().set_fg(LColorf(lc->_text_color[0], lc->_text_color[1], lc->_text_color[2], 1.0f));
 }
 
-}	// namespace rpcore
+}

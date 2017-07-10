@@ -2,7 +2,7 @@
 
 #include <spdlog/logger.h>
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 

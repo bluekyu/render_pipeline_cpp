@@ -90,4 +90,4 @@ void RPPointLight::update_shadow_sources() {
     }
 }
 
-}	// namespace rpcore
+}

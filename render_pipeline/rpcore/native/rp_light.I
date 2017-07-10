@@ -405,5 +405,5 @@ inline float RPLight::get_near_plane() const {
     return _near_plane;
 }
 
-}	// namespace rpcore
+}
 

@@ -1,19 +1,17 @@
-#include "rpcore/gui/pipe_viewer.h"
-
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "rpcore/gui/pipe_viewer.hpp"
 
 #include <boost/algorithm/string.hpp>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/render_stage.h>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/util/generic.h>
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/render_stage.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/util/generic.hpp"
 
-#include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
-
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 
@@ -260,4 +258,4 @@ void PipeViewer::populate_content(void)
 	}
 }
 
-}	// namespace rpcore
+}

@@ -1,4 +1,4 @@
-#include "rpcore/pluginbase/setting_types.h"
+#include "rpcore/pluginbase/setting_types.hpp"
 
 #include <typeindex>
 #include <sstream>
@@ -270,4 +270,4 @@ void PathType::add_defines(const std::string& plugin_id,
 	// Paths are not available in shaders
 }
 
-}	// namespace rpcore
+}

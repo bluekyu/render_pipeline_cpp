@@ -63,7 +63,7 @@ class RENDER_PIPELINE_DECL RPPointLight : public RPLight {
 
 };
 
-}	// namespace rpcore
+}
 
 #include "rp_point_light.I"
 

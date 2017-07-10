@@ -1,23 +1,22 @@
-#include "buffer_viewer.h"
-
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "rpcore/gui/buffer_viewer.hpp"
 
 #include <regex>
 #include <unordered_set>
 
-#include <render_pipeline/rpcore/gui/text.h>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/gui/labeled_checkbox.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/image.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 
-#include <render_pipeline/rppanda/gui/direct_scrolled_frame.h>
-#include <render_pipeline/rppanda/gui/direct_scroll_bar.h>
-#include <render_pipeline/rppanda/gui/direct_gui_globals.h>
+#include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
+#include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
-#include "rpcore/gui/texture_preview.h"
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/gui/texture_preview.hpp"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 
@@ -316,4 +315,4 @@ void BufferViewer::render_stages(void)
 	set_scroll_height(50 + (entry_height - 14 + 10) * num_rows);
 }
 
-}	// namespace rpcore
+}

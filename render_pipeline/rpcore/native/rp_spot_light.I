@@ -73,4 +73,4 @@ inline void RPSpotLight::look_at(float x, float y, float z) {
     set_direction(LVecBase3f(x, y, z) - _position);
 }
 
-}	// namespace rpcore
+}

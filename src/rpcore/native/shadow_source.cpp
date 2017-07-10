@@ -42,4 +42,4 @@ ShadowSource::ShadowSource() {
     _region_uv.fill(0);
 }
 
-}	// namespace rpcore
+}

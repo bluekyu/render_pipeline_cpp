@@ -1,13 +1,13 @@
-#include "display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 #include <texture.h>
 #include <virtualFileSystem.h>
 
 #include <boost/format.hpp>
 
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/image.h>
-#include <render_pipeline/rppanda/stdpy/file.h>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/image.hpp>
+#include <render_pipeline/rppanda/stdpy/file.hpp>
 
 namespace rpcore {
 
@@ -170,4 +170,4 @@ std::pair<std::string, std::string> DisplayShaderBuilder::generate_sampling_code
 	return result;
 }
 
-}	// namespace rpcore
+}

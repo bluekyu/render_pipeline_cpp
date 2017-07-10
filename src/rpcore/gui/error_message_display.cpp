@@ -1,13 +1,13 @@
-#include "rpcore/gui/error_message_display.h"
-
-#include <render_pipeline/rpcore/gui/text.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "rpcore/gui/error_message_display.hpp"
 
 #include <lineStream.h>
 #include <pnotify.h>
 
 #include <boost/algorithm/string.hpp>
+
+#include "render_pipeline/rpcore/gui/text.hpp"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 namespace rpcore {
 
@@ -89,4 +89,4 @@ void ErrorMessageDisplay::init_notify(void)
 	Notify::ptr()->set_ostream_ptr(_notify_stream, false);
 }
 
-}	// namespace rpcore
+}

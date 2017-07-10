@@ -1,7 +1,7 @@
 // Jitters from
 // https://github.com/playdeadgames/temporal/blob/master/Assets/Scripts/FrustumJitter.cs
 
-#include "jitters.h"
+#include "jitters.hpp"
 
 namespace rpplugins {
 

@@ -37,6 +37,7 @@ void RPLogger::Impl::create(const std::string& file_path)
 
     logger_ = std::make_shared<spdlog::logger>("rpcpp_logger", std::begin(sinks), std::end(sinks));
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
+    logger_->flush_on(spdlog::level::err);
 
     global_logger_ = logger_.get();
 }

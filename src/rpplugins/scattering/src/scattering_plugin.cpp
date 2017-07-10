@@ -3,17 +3,17 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/util/task_scheduler.h>	
-#include <render_pipeline/rpcore/util/shader_input_blocks.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/stages/cull_lights_stage.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>	
+#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
-#include "scattering_stage.h"
-#include "scattering_envmap_stage.h"
-#include "godray_stage.h"
-#include "scattering_methods.h"
+#include "scattering_stage.hpp"
+#include "scattering_envmap_stage.hpp"
+#include "godray_stage.hpp"
+#include "scattering_methods.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 

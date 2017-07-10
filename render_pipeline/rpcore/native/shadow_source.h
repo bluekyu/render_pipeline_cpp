@@ -90,7 +90,7 @@ private:
     BoundingSphere _bounds;
 };
 
-}	// namespace rpcore
+}
 
 #include "shadow_source.I"
 

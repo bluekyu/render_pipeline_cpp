@@ -5,12 +5,12 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rplibs/py_to_cpp.hpp>
 
-#include "vxgi_stage.h"
-#include "voxelization_stage.h"
+#include "vxgi_stage.hpp"
+#include "voxelization_stage.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
 
@@ -106,7 +106,7 @@ VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pip
 {
 }
 
-VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins(void) const 
+VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins(void) const
 {
     return impl_->require_plugins_;
 }

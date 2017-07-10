@@ -1,66 +1,66 @@
 # list render_pipeline/
 set(header_rppanda_actor
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/actor/actor.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/actor/actor.hpp"
 )
 
 set(header_rppanda_stdpy
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/stdpy/file.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/stdpy/file.hpp"
 )
 
 set(header_rppanda_util
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/image_input.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/image_input.hpp"
 )
 
 set(header_rppanda_gui
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_button.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_check_box.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_frame.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_base.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_globals.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scroll_bar.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scrolled_frame.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_slider.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_image.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_text.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_button.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_check_box.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_frame.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_base.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_slider.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_image.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/onscreen_text.hpp"
 )
 
 set(header_rppanda_interval
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/lerp_interval.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/meta_interval.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/lerp_interval.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/meta_interval.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/sound_interval.hpp"
 )
 
 set(header_rppanda_showbase
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/direct_object.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/direct_object.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/sfx_player.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.hpp"
 )
 
 set(header_rpcore
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/config.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/effect.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/globals.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/image.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/light_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/loader.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/config.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/effect.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/globals.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/image.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/light_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/loader.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/logger.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/mount_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_pipeline.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_target.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/rpobject.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stage_manager.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/mount_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_pipeline.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/render_target.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/rpobject.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stage_manager.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp"
 )
 
 set(header_rpcore_gui
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox_collection.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/exposure_widget.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/render_mode_selector.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/sprite.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/text.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/exposure_widget.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/sprite.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/text.hpp"
 )
 
 set(header_rpcore_native
@@ -92,39 +92,39 @@ set(header_rpcore_native
 )
 
 set(header_rpcore_pluginbase
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/base_plugin.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_manager.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_setting_types.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/manager.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/base_plugin.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/manager.hpp"
 )
 
 set(header_rpcore_stages
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/ambient_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/apply_lights_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/collect_used_cells_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/combine_velocity_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/cull_lights_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/downscale_z_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/final_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/flag_used_cells_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/gbuffer_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/shadow_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/update_previous_pipes_stage.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/upscale_stage.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/ambient_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/apply_lights_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/collect_used_cells_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/cull_lights_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/downscale_z_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/final_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/flag_used_cells_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/gbuffer_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/shadow_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/update_previous_pipes_stage.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/stages/upscale_stage.hpp"
 )
 
 set(header_rpcore_util
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/circular_points_node.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/instancing_node.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/network_communication.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/primitives.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpgeomnode.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpmaterial.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/shader_input_blocks.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/submodule_downloader.h"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/task_scheduler.h"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpmodel.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/shader_input_blocks.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/task_scheduler.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/text3d.hpp"
 )
 
@@ -168,7 +168,7 @@ source_group("render_pipeline\\rplibs" FILES ${header_rplibs})
 # list src/
 set(source_rppanda
     "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.h"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.hpp"
 )
 
 set(source_rppanda_actor
@@ -191,20 +191,22 @@ set(source_rppanda_gui
 set(source_rppanda_interval
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/lerp_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/meta_interval.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/interval/sound_interval.cpp"
 )
 
 set(source_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/direct_object.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/sfx_player.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/showbase.cpp"
 )
 
 set(source_rpcore
     "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/effect.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/globals.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gpu_command_queue.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/image.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/light_manager.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/loader.cpp"
@@ -218,32 +220,30 @@ set(source_rpcore
 )
 
 set(source_rpcore_gui
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/checkbox.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/checkbox_collection.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/draggable_window.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/exposure_widget.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/labeled_checkbox.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/loading_screen.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.h"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/render_mode_selector.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/slider.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/sprite.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text_node.hpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/texture_preview.cpp"
 )
 
@@ -270,7 +270,7 @@ set(source_rpcore_pluginbase
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/day_setting_types.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/manager.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.hpp"
 )
 
 set(source_rpcore_stages
@@ -292,20 +292,20 @@ set(source_rpcore_util
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/circular_points_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/cubemap_filter.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/generic.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/instancing_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/movement_controller.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/network_communication.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/primitives.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/rpgeomnode.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/rpmodel.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/shader_input_blocks.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.h"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/submodule_downloader.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/task_scheduler.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/text3d.cpp"
 )

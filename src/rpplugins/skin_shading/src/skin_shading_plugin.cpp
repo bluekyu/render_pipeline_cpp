@@ -2,7 +2,7 @@
 
 #include <boost/dll/alias.hpp>
 
-#include "skin_shading_stage.h"
+#include "skin_shading_stage.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
 

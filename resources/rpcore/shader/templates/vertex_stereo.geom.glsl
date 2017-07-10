@@ -42,6 +42,8 @@ out VertexOutput vOutput;
 
 void main()
 {
+    %main_begin%
+
     for (int layer = 0; layer < 2; ++layer)
     {
         gl_Layer = layer;
@@ -53,4 +55,6 @@ void main()
         }
         EndPrimitive();
     }
+
+    %main_end%
 }

@@ -187,4 +187,4 @@ void ShadowAtlas::free_region(const LVecBase4i& region) {
     }
 }
 
-}	// namespace rpcore
+}

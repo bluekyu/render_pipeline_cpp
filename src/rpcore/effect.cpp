@@ -1,4 +1,6 @@
-#include "render_pipeline/rpcore/effect.h"
+#include <dtoolbase.h>
+
+#include "render_pipeline/rpcore/effect.hpp"
 
 #include <regex>
 
@@ -9,11 +11,11 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
-#include "render_pipeline/rpcore/globals.h"
-#include "render_pipeline/rpcore/loader.h"
-#include "render_pipeline/rpcore/stage_manager.h"
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "rplibs/yaml.hpp"
 
 namespace rpcore {
@@ -29,11 +31,11 @@ public:
      * Configuration options which can be set per effect instance.These control
      * which features are available in the effect, and which passes to render.
      */
-    const static OptionType DEFAULT_OPTIONS;
+    static const OptionType DEFAULT_OPTIONS;
 
     /** { Pass ID, Multiview flag } */
     using PassType = std::pair<std::string, bool>;
-    const static std::vector<PassType> PASSES;
+    static const std::vector<PassType> PASSES;
 
     static std::map<std::string, std::shared_ptr<Effect>> GLOBAL_CACHE;
 
@@ -98,7 +100,7 @@ const Effect::OptionType Effect::Impl::DEFAULT_OPTIONS =
     {"parallax_mapping", false},
 };
 
-const std::vector<Effect::Impl::PassType> Effect::Impl::PASSES ={{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
+const std::vector<Effect::Impl::PassType> Effect::Impl::PASSES = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
 
 std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::GLOBAL_CACHE;
 int Effect::Impl::EFFECT_ID = 0;
@@ -150,11 +152,13 @@ std::string Effect::Impl::convert_filename_to_name(std::string filename)
 void Effect::Impl::parse_content(YAML::Node& parsed_yaml)
 {
     YAML::Node& vtx_data = parsed_yaml["vertex"];
+    YAML::Node& geom_data = parsed_yaml["geometry"];
     YAML::Node& frag_data = parsed_yaml["fragment"];
 
     for (const auto& pass_id_multiview: PASSES)
     {
         parse_shader_template(pass_id_multiview, "vertex", vtx_data);
+        parse_shader_template(pass_id_multiview, "geometry", geom_data);
         parse_shader_template(pass_id_multiview, "fragment", frag_data);
     }
 }
@@ -177,16 +181,20 @@ void Effect::Impl::parse_shader_template(const PassType& pass_id_multiview, cons
         else
             template_src = "/$$rp/shader/templates/vertex.vert.glsl";
     }
+    else if (stage == "geometry")
+    {
+        // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
+        if (stereo_mode && RenderPipeline::get_global_ptr()->get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
+        {
+            template_src = "/$$rp/shader/templates/vertex_stereo.geom.glsl";
+        }
+    }
+
+    if (template_src.empty())
+        return;
 
     const std::string& shader_path = construct_shader_from_data(pass_id, stage, template_src, data);
     generated_shader_paths_[stage + "-" + pass_id] = shader_path;
-
-    // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
-    if (stereo_mode && RenderPipeline::get_global_ptr()->get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
-    {
-        const std::string& shader_path = construct_shader_from_data(pass_id, std::string("geometry"), "/$$rp/shader/templates/vertex_stereo.geom.glsl", YAML::Node());
-        generated_shader_paths_[std::string("geometry-") + pass_id] = shader_path;
-    }
 }
 
 std::string Effect::Impl::construct_shader_from_data(const std::string& pass_id, const std::string& stage,
@@ -368,19 +376,24 @@ std::string Effect::Impl::process_shader_template(const std::string& template_sr
 // ************************************************************************************************
 std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionType& options)
 {
-	const std::string& effect_hash = Impl::generate_hash(filename, options);
+    const std::string& effect_hash = Impl::generate_hash(filename, options);
     if (Impl::GLOBAL_CACHE.find(effect_hash) != Impl::GLOBAL_CACHE.end())
         return Impl::GLOBAL_CACHE[effect_hash];
 
-	auto effect = std::make_shared<Effect>();
-	effect->set_options(options);
-	if (!effect->do_load(filename))
-	{
-		RPObject::global_error("Effect", "Could not load effect!");
-		return nullptr;
-	}
+    auto effect = std::make_shared<Effect>();
+    effect->set_options(options);
+    if (!effect->do_load(filename))
+    {
+        RPObject::global_error("Effect", "Could not load effect!");
+        return nullptr;
+    }
 
-	return effect;
+    return effect;
+}
+
+const Effect::OptionType& Effect::get_default_options(void)
+{
+    return Impl::DEFAULT_OPTIONS;
 }
 
 Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>(*this))
@@ -405,15 +418,15 @@ bool Effect::get_option(const std::string& name) const
 
 void Effect::set_options(const OptionType& options)
 {
-	for (const auto& pair: options)
-	{
+    for (const auto& pair: options)
+    {
         if (impl_->options_.find(pair.first) == impl_->options_.end())
-		{
-			error("Unknown option: " + pair.first);
-			continue;
-		}
+        {
+            error("Unknown option: " + pair.first);
+            continue;
+        }
         impl_->options_[pair.first] = pair.second;
-	}
+    }
 }
 
 bool Effect::do_load(const std::string& filename)
@@ -451,15 +464,15 @@ bool Effect::do_load(const std::string& filename)
 
 Shader* Effect::get_shader_obj(const std::string& pass_id) const
 {
-	try
-	{
-		return impl_->shader_objs_.at(pass_id);
-	}
-	catch (const std::out_of_range&)
-	{
-		warn(std::string("Pass '") + pass_id + "' not found!");
-		return nullptr;
-	}
+    try
+    {
+        return impl_->shader_objs_.at(pass_id);
+    }
+    catch (const std::out_of_range&)
+    {
+        warn(std::string("Pass '") + pass_id + "' not found!");
+        return nullptr;
+    }
 }
 
 }

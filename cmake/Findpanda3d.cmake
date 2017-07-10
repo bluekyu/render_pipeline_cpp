@@ -23,7 +23,8 @@ cmake_minimum_required(VERSION 3.6)
 
 find_path(panda3d_INCLUDE_DIR
     NAMES "pandaFramework.h"
-    HINTS "${panda3d_ROOT}/include"
+    PATHS "${panda3d_ROOT}"
+    PATH_SUFFIXES include
 )
 
 set(panda3d_DEFAULT_COMPONENTS p3framework panda pandaexpress p3dtool p3dtoolconfig p3direct p3interrogatedb)
@@ -37,7 +38,8 @@ list(REMOVE_ITEM panda3d_NON_DEFAULT_COMPONENTS ${panda3d_DEFAULT_COMPONENTS})
 foreach(COMPONENT_NAME ${panda3d_FIND_COMPONENTS})
     find_library(panda3d_${COMPONENT_NAME}_LIBRARY
         NAMES lib${COMPONENT_NAME}
-        HINTS "${panda3d_ROOT}/lib"
+        PATHS "${panda3d_ROOT}"
+        PATH_SUFFIXES lib
     )
     list(APPEND panda3d_LIBRARY ${panda3d_${COMPONENT_NAME}_LIBRARY})
 endforeach()

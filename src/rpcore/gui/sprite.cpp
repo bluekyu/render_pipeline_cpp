@@ -1,6 +1,6 @@
-#include <render_pipeline/rpcore/gui/sprite.h>
+#include "render_pipeline/rpcore/gui/sprite.hpp"
 
-#include <render_pipeline/rpcore/loader.h>
+#include "render_pipeline/rpcore/loader.hpp"
 
 namespace rpcore {
 
@@ -56,4 +56,4 @@ void Sprite::init(Texture* image, int w, int h, NodePath parent, float x, float 
 	}
 }
 
-}	// namespace rpcore
+}

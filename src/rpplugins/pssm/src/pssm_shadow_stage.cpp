@@ -1,9 +1,9 @@
-#include "pssm_shadow_stage.h"
+#include "pssm_shadow_stage.hpp"
 
 #include <graphicsBuffer.h>
 
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 
 namespace rpplugins {
 

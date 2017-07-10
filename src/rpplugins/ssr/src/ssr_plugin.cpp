@@ -2,9 +2,9 @@
 
 #include <boost/dll/alias.hpp>
 
-#include <render_pipeline/rpcore/stages/ambient_stage.h>
+#include <render_pipeline/rpcore/stages/ambient_stage.hpp>
 
-#include "ssr_stage.h"
+#include "ssr_stage.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SSRPlugin)
 

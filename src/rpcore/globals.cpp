@@ -1,8 +1,8 @@
-#include <render_pipeline/rpcore/globals.h>
+#include "render_pipeline/rpcore/globals.hpp"
 
 #include <clockObject.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 namespace rpcore {
 
@@ -15,10 +15,10 @@ PT(TextFont) Globals::font = nullptr;
 
 void Globals::load(rppanda::ShowBase* showbase)
 {
-	Globals::base = showbase;
-	Globals::render = showbase->get_render();
-	Globals::clock = ClockObject::get_global_clock();
-	Globals::resolution = LVecBase2i(0, 0);
+    Globals::base = showbase;
+    Globals::render = showbase->get_render();
+    Globals::clock = ClockObject::get_global_clock();
+    Globals::resolution = LVecBase2i(0, 0);
 }
 
-}	// namespace rpcore
+}

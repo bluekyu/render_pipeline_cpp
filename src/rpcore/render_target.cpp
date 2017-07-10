@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/render_target.h"
+#include "render_pipeline/rpcore/render_target.hpp"
 
 #include <graphicsWindow.h>
 #include <graphicsEngine.h>
@@ -9,10 +9,10 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include "render_pipeline/rpcore/globals.h"
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
-#include "rpcore/util/post_process_region.h"
+#include "rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 
@@ -553,4 +553,4 @@ bool RenderTarget::get_create_default_region(void) const
     return impl_->create_default_region_;
 }
 
-}	// namespace rpcore
+}

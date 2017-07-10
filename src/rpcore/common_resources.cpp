@@ -1,4 +1,4 @@
-#include "common_resources.h"
+#include "rpcore/common_resources.hpp"
 
 #include <unordered_map>
 
@@ -7,14 +7,14 @@
 #include <clockObject.h>
 #include <dynamicTextFont.h>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/loader.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/light_manager.h>
-#include <render_pipeline/rpcore/image.h>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+#include <render_pipeline/rpcore/light_manager.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rpcore {
 
@@ -385,4 +385,4 @@ void CommonResources::setup_inputs(void)
 	Globals::clock->set_average_frame_rate_interval(3.0f);
 }
 
-}	// namespace rpcore
+}

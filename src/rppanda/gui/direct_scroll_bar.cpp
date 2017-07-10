@@ -1,4 +1,8 @@
-#include <render_pipeline/rppanda/gui/direct_scroll_bar.h>
+/**
+ * This is C++ porting codes of direct/src/gui/DirectScrollBar.py
+ */
+
+#include <render_pipeline/rppanda/gui/direct_scroll_bar.hpp>
 
 #include <pgSliderBar.h>
 
@@ -168,4 +172,4 @@ void DirectScrollBar::initialise_options(const std::shared_ptr<Options>& options
 	_f_init = false;
 }
 
-}	// namespace rppanda
+}

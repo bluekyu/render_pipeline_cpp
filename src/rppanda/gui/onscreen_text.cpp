@@ -1,13 +1,10 @@
 /**
- * @file	onscreen_text.cpp
- *
- * @Date	2012-05-28
- * @Author	dri
+ * This is C++ porting codes of direct/src/gui/OnscreeText.py
  */
 
-#include <render_pipeline/rppanda/gui/onscreen_text.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rppanda/gui/direct_gui_globals.h>
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
 
 namespace rppanda {
 
@@ -254,7 +251,7 @@ void OnscreenText::set_wordwrap(float wordwrap)
 
 // Reimplementation of TextNode::set_text_color.
 // fg: the (r, g, b, a) foreground color of the text.
-void OnscreenText::set_fg(const LColorf& fg)
+void OnscreenText::set_fg(const LColor& fg)
 {
 	DCAST(TextNode, _text_node)->set_text_color(fg);
 }
@@ -263,7 +260,7 @@ void OnscreenText::set_fg(const LColorf& fg)
 // bg: the (r, g, b, a) background color of the text.  If the
 //     fourth value, a, is nonzero, a card is created to place
 //     behind the text and set to the given color.
-void OnscreenText::set_bg(const LColorf& bg)
+void OnscreenText::set_bg(const LColor& bg)
 {
 	if (bg[3] != 0)
 	{
@@ -282,7 +279,7 @@ void OnscreenText::set_bg(const LColorf& bg)
 // shadow: the (r, g, b, a) color of the shadow behind the text.
 //         If the fourth value, a, is nonzero, a little drop shadow
 //         is created and placed behind the text.
-void OnscreenText::set_shadow(const LColorf& shadow)
+void OnscreenText::set_shadow(const LColor& shadow)
 {
 	if (shadow[3] != 0)
 	{
@@ -298,7 +295,7 @@ void OnscreenText::set_shadow(const LColorf& shadow)
 }
 
 // Reimplementation of TextNode::set_shadow.
-void OnscreenText::set_shadow_offset(const LVecBase2f& offset)
+void OnscreenText::set_shadow_offset(const LVecBase2& offset)
 {
 	DCAST(TextNode, _text_node)->set_shadow(offset);
 }
@@ -307,7 +304,7 @@ void OnscreenText::set_shadow_offset(const LVecBase2f& offset)
 // frame: the (r, g, b, a) color of the frame drawn around the
 //        text.  If the fourth value, a, is nonzero, a frame is
 //        created around the text.
-void OnscreenText::set_frame(const LColorf& frame)
+void OnscreenText::set_frame(const LColor& frame)
 {
 	if (frame[3] != 0)
 	{
@@ -329,4 +326,4 @@ void OnscreenText::set_align(TextNode::Alignment align)
 	return DCAST(TextNode, _text_node)->set_align(align);
 }
 
-}	// namespace rppanda
+}

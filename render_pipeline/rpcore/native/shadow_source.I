@@ -260,4 +260,4 @@ inline void ShadowSource::clear_region() {
     _region_uv.fill(0);
 }
 
-}	// namespace rpcore
+}

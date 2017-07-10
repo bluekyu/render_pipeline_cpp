@@ -1,4 +1,4 @@
-#include "render_pipeline/rpcore/util/movement_controller.h"
+#include "render_pipeline/rpcore/util/movement_controller.hpp"
 
 #include <parametricCurveCollection.h>
 #include <genericAsyncTask.h>
@@ -10,7 +10,7 @@
 
 #include <boost/format.hpp>
 
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
 
 namespace rpcore {

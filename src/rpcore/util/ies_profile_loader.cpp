@@ -1,9 +1,9 @@
-#include "rpcore/util/ies_profile_loader.h"
+#include "rpcore/util/ies_profile_loader.hpp"
 
 #include <shaderInput.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
 
 namespace rpcore {
 
@@ -36,4 +36,4 @@ void IESProfileLoader::create_storage(void)
     _pipeline->get_stage_mgr()->get_defines()["MAX_IES_PROFILES"] = std::to_string(_max_entries);
 }
 
-}	// namespace rpcore
+}

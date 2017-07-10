@@ -1,9 +1,9 @@
-#include "capture_stage.h"
+#include "capture_stage.hpp"
 
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rplibs/py_to_cpp.hpp>
 

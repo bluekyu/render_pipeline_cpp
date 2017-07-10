@@ -1,8 +1,8 @@
-#include "sharpen_stage.h"
+#include "sharpen_stage.hpp"
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 
 namespace rpplugins {
 

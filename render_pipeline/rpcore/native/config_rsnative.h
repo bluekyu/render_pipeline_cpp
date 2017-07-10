@@ -38,4 +38,4 @@ NotifyCategoryDecl(rsnative, EXPORT_CLASS, EXPORT_TEMPL);
 
 extern void init_librsnative();
 
-}	// namespace rpcore
+}

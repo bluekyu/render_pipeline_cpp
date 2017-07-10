@@ -1,8 +1,8 @@
 #pragma once
 
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "apply_clouds_stage.h"
+#include "apply_clouds_stage.hpp"
 
 namespace rpplugins {
 

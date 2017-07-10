@@ -32,7 +32,7 @@
 #include "gpu_command.h"
 #include "shadow_source.h"
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 
@@ -135,7 +135,7 @@ class RENDER_PIPELINE_DECL RPLight : public ReferenceCount {
         vector<ShadowSource*> _shadow_sources;
 };
 
-}	// namespace rpcore
+}
 
 #include "rp_light.I"
 

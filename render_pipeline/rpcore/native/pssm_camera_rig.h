@@ -35,7 +35,7 @@
 
 #include <vector>
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 
@@ -128,7 +128,7 @@ class RENDER_PIPELINE_DECL PSSMCameraRig {
 
 };
 
-}	// namespace rpcore
+}
 
 #include "pssm_camera_rig.I"
 

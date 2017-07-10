@@ -1,14 +1,14 @@
-#include "texture_preview.h"
+#include "rpcore/gui/texture_preview.hpp"
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/gui/labeled_checkbox.h>
-#include <render_pipeline/rpcore/gui/slider.h>
-#include <render_pipeline/rpcore/image.h>
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
+#include "render_pipeline/rpcore/gui/slider.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 
-#include "rpcore/util/display_shader_builder.h"
+#include "rpcore/util/display_shader_builder.hpp"
 
 namespace rpcore {
 
@@ -232,4 +232,4 @@ void TexturePreview::create_components(void)
 	_content_node = _node.attach_new_node("content");
 }
 
-}	// namespace rpcore
+}

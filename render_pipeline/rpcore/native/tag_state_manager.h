@@ -36,7 +36,7 @@
 #include "shaderAttrib.h"
 #include "colorWriteAttrib.h"
 
-#include <render_pipeline/rpcore/config.h>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 
@@ -58,6 +58,7 @@ class RENDER_PIPELINE_DECL TagStateManager {
         ~TagStateManager();
 
         inline void apply_state(const string& state, NodePath np, Shader* shader, const string &name, int sort);
+        void cleanup_state(const string& state, NodePath np);
         void cleanup_states();
 
         inline void register_camera(const string& state, Camera* source);
@@ -93,7 +94,7 @@ class RENDER_PIPELINE_DECL TagStateManager {
         NodePath _main_cam_node;
 };
 
-}	// namespace rpcore
+}
 
 #include "tag_state_manager.I"
 

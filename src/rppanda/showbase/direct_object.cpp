@@ -1,8 +1,12 @@
-#include <render_pipeline/rppanda/showbase/direct_object.h>
+/**
+ * This is C++ porting codes of direct/src/showbase/DirectObject.py
+ */
+
+#include "render_pipeline/rppanda/showbase/direct_object.hpp"
 
 #include <asyncTaskManager.h>
 
-#include "render_pipeline/rppanda/showbase/showbase.h"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 namespace rppanda {
 

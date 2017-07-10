@@ -1,10 +1,10 @@
-#include <render_pipeline/rpcore/pluginbase/day_setting_types.h>
+#include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 #include "rplibs/yaml.hpp"
 
-#include "rpcore/util/smooth_connected_curve.h"
+#include "rpcore/util/smooth_connected_curve.hpp"
 
 namespace rpcore {
 
@@ -213,4 +213,4 @@ std::vector<float> ColorType::get_linear_value(const std::vector<float>& scaled_
 	return v;
 }
 
-}	// namespace rpcore
+}

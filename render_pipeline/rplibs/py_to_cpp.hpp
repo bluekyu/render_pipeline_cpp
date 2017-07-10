@@ -20,4 +20,4 @@ inline long double py_fmod(long double x, long double y)
     return std::fmod(std::fmod(x, y) + y, y);
 }
 
-}   // namespace rplibs
+}

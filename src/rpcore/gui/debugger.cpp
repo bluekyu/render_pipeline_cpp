@@ -1,4 +1,4 @@
-#include "rpcore/gui/debugger.h"
+#include "rpcore/gui/debugger.hpp"
 
 #include <graphicsBuffer.h>
 #include <textNode.h>
@@ -10,28 +10,28 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/light_manager.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/gui/exposure_widget.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/util/task_scheduler.h>
-#include <render_pipeline/rpcore/pluginbase/manager.h>
-#include <render_pipeline/rpcore/pluginbase/day_manager.h>
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/light_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/util/task_scheduler.hpp"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/base_plugin.hpp"
 
 #include <rpplugins/scattering/include/scattering_plugin.hpp>
 #include <rpplugins/pssm/include/pssm_plugin.hpp>
 
+#include "rpcore/gpu_command_queue.hpp"
 #include "rpcore/gui/text_node.hpp"
-#include "rpcore/gpu_command_queue.h"
-#include "rpcore/gui/buffer_viewer.h"
-#include "rpcore/gui/error_message_display.h"
-#include "rpcore/gui/fps_chart.h"
-#include "rpcore/gui/pipe_viewer.h"
-#include "rpcore/gui/pixel_inspector.h"
+#include "rpcore/gui/buffer_viewer.hpp"
+#include "rpcore/gui/error_message_display.hpp"
+#include "rpcore/gui/fps_chart.hpp"
+#include "rpcore/gui/pipe_viewer.hpp"
+#include "rpcore/gui/pixel_inspector.hpp"
 
 namespace rpcore {
 

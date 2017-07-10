@@ -186,4 +186,4 @@ inline bool GPUCommand::get_uses_integer_packing() {
     return PACK_INT_AS_FLOAT;
 }
 
-}	// namespace rpcore
+}

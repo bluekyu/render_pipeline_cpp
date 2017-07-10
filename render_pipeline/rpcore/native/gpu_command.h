@@ -91,7 +91,7 @@ class GPUCommand {
         float _data[GPU_COMMAND_ENTRIES];
 };
 
-}	// namespace rpcore
+}
 
 #include "gpu_command.I"
 

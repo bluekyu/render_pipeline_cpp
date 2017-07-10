@@ -1,15 +1,17 @@
-#include "render_pipeline/rpcore/pluginbase/day_manager.h"
+#include <dtoolbase.h>
+
+#include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 
 #include <boost/format.hpp>
 
 #include <regex>
 #include <virtualFileSystem.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
-#include "render_pipeline/rpcore/stage_manager.h"
-#include "render_pipeline/rpcore/pluginbase/manager.h"
-#include "render_pipeline/rpcore/pluginbase/day_setting_types.h"
-#include "render_pipeline/rpcore/util/shader_input_blocks.h"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
+#include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
 
 namespace rpcore {

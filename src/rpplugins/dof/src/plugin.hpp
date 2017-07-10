@@ -1,8 +1,8 @@
 #pragma once
 
-#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "dof_stage.h"
+#include "dof_stage.hpp"
 
 namespace rpplugins {
 

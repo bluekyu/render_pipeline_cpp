@@ -1,12 +1,12 @@
-#include "pssm_dist_shadow_stage.h"
+#include "pssm_dist_shadow_stage.hpp"
 
-#include <render_pipeline/rpcore/render_pipeline.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
-#include <render_pipeline/rpcore/util/task_scheduler.h>
-#include <render_pipeline/rpcore/util/generic.h>
-#include <render_pipeline/rpcore/render_target.h>
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include <render_pipeline/rpcore/util/task_scheduler.hpp>
+#include <render_pipeline/rpcore/util/generic.hpp>
+#include <render_pipeline/rpcore/render_target.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rpplugins {
 
@@ -107,7 +107,7 @@ void PSSMDistShadowStage::update(void)
     if (pipeline_.get_task_scheduler()->is_scheduled("pssm_blur_distant_horiz"))
 	{
 		_target_blur_h->set_active(true);
-		
+
 		// Only update the MVP as soon as the shadow map is available
 		_pta_mvp[0] = mvp;
 	}

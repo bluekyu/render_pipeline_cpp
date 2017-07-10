@@ -1,23 +1,21 @@
-#include "render_pipeline/rpcore/pluginbase/manager.h"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
 
 #include <unordered_set>
-
-#include <virtualFileSystem.h>
-#include <virtualFileMountSystem.h>
 
 #include <boost/detail/winapi/dll.hpp>
 #include <boost/dll/import.hpp>
 
 #include <spdlog/fmt/fmt.h>
 
-#include "render_pipeline/rpcore/render_pipeline.h"
-#include "render_pipeline/rpcore/stage_manager.h"
-#include "render_pipeline/rpcore/pluginbase/day_setting_types.h"
-#include "render_pipeline/rppanda/stdpy/file.h"
+#include "render_pipeline/rpcore/mount_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 #include "rplibs/yaml.hpp"
 
-#include "setting_types.h"
+#include "rpcore/pluginbase/setting_types.hpp"
 
 namespace rpcore {
 
@@ -29,8 +27,6 @@ struct PluginManager::Impl
 
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
-
-    std::string convert_to_physical_path(const std::string& path) const;
 
     PluginManager& self_;
     RenderPipeline& pipeline_;
@@ -66,8 +62,9 @@ void PluginManager::Impl::unload(void)
 
     for (auto& id_handle: instances_)
     {
-        if (id_handle.second.use_count() != 1)
-            self_.warn(fmt::format("Plugin ({}) is used on somewhere before unloading.", id_handle.first));
+        auto count = id_handle.second.use_count();
+        if (count != 1)
+            self_.warn(fmt::format("Plugin ({}) is used as {} on somewhere before unloading.", id_handle.first, count));
 
         // delete plugin instance.
         id_handle.second.reset();
@@ -86,7 +83,11 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 {
     boost::filesystem::path plugin_path(plugin_dir_);
 
+#if defined(RENDER_PIPELINE_BUILD_CFG_POSTFIX)
+    plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX));
+#else
     plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id));
+#endif
 
     self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
 
@@ -106,31 +107,6 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     }
 
     // TODO: implement
-}
-
-std::string PluginManager::Impl::convert_to_physical_path(const std::string& path) const
-{
-    Filename plugin_dir_in_vfs(Filename::from_os_specific(path));
-    plugin_dir_in_vfs.standardize();
-
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
-    for (int k=0, k_end=vfs->get_num_mounts(); k < k_end; ++k)
-    {
-        const std::string mount_point = vfs->get_mount(k)->get_mount_point().to_os_specific();
-        const std::string plugin_dir_in_vfs_string = plugin_dir_in_vfs.to_os_specific();
-
-        // /{mount_point}/...
-        if (mount_point.substr(0, 2) == std::string("$$") && plugin_dir_in_vfs_string.find(mount_point) == 1)
-        {
-            boost::filesystem::path physical_plugin_dir = DCAST(VirtualFileMountSystem, vfs->get_mount(k))->get_physical_filename().to_os_specific();
-            physical_plugin_dir /= plugin_dir_in_vfs_string.substr(1+mount_point.length());
-            return physical_plugin_dir.string();
-        }
-    }
-
-    self_.error(fmt::format("Cannot convert to physical path from Panda Path ({}).", path));
-
-    return "";
 }
 
 // ************************************************************************************************
@@ -190,18 +166,20 @@ void PluginManager::unload(void)
     impl_->unload();
 }
 
-void PluginManager::load_base_settings(const std::string& plugin_dir)
+void PluginManager::load_base_settings(const Filename& plugin_dir)
 {
-    impl_->plugin_dir_ = impl_->convert_to_physical_path(plugin_dir);
+    trace(fmt::format("Loading base setting from '{}'", plugin_dir.c_str()));
+
+    impl_->plugin_dir_ = MountManager::convert_to_physical_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
-        error(fmt::format("Cannot find plugin directory ({}).", plugin_dir));
+        error(fmt::format("Cannot find plugin directory ({}).", plugin_dir.c_str()));
         return;
     }
 
     for (const auto& entry: rppanda::listdir(plugin_dir))
     {
-        const std::string& abspath = rppanda::join(plugin_dir, entry);
+        const Filename& abspath = rppanda::join(plugin_dir, entry);
         if (rppanda::isdir(abspath) && (entry != "__pycache__" || entry != "plugin_prefab"))
         {
             load_plugin_settings(entry, abspath);
@@ -209,9 +187,9 @@ void PluginManager::load_base_settings(const std::string& plugin_dir)
     }
 }
 
-void PluginManager::load_plugin_settings(const std::string& plugin_id, const std::string& plugin_pth)
+void PluginManager::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)
 {
-    const std::string& config_file = rppanda::join(plugin_pth, "config.yaml");
+    const Filename& config_file = rppanda::join(plugin_pth, "config.yaml");
 
     YAML::Node config;
     if (!rplibs::load_yaml_file(config_file, config))
@@ -272,6 +250,8 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const std
 
 void PluginManager::load_setting_overrides(const std::string& override_path)
 {
+    trace(fmt::format("Loading setting overrides from '{}'", override_path));
+
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {
@@ -309,6 +289,8 @@ void PluginManager::load_setting_overrides(const std::string& override_path)
 
 void PluginManager::load_daytime_overrides(const std::string& override_path)
 {
+    trace(fmt::format("Loading daytime overrides from '{}'", override_path));
+
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
     {

@@ -1,17 +1,17 @@
-#include <render_pipeline/rpcore/gui/exposure_widget.h>
+#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
 
 #include <computeNode.h>
 
-#include <render_pipeline/rppanda/gui/direct_frame.h>
-#include <render_pipeline/rppanda/showbase/showbase.h>
+#include "render_pipeline/rppanda/gui/direct_frame.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
-#include <render_pipeline/rpcore/globals.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/stage_manager.h>
-#include <render_pipeline/rpcore/image.h>
-#include <render_pipeline/rpcore/gui/sprite.h>
-#include <render_pipeline/rpcore/gui/text.h>
-#include <render_pipeline/rpcore/loader.h>
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
+#include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
 
 namespace rpcore {
 
@@ -82,7 +82,7 @@ AsyncTask::DoneStatus ExposureWidget::late_init(GenericAsyncTask* task, void* us
     ew->_node.show();
 
     Texture* exposure_tex = pipe.get_texture();
-    ew->_cshader = RPLoader::load_shader({std::string("/$$rp/shader/visualize_exposure.compute.glsl")});
+    ew->_cshader = RPLoader::load_shader({"/$$rp/shader/visualize_exposure.compute.glsl"});
     ew->_cshader_np.set_shader(ew->_cshader);
     ew->_cshader_np.set_shader_input("DestTex", ew->_storage_tex->get_texture());
     ew->_cshader_np.set_shader_input("ExposureTex", exposure_tex);
@@ -90,4 +90,4 @@ AsyncTask::DoneStatus ExposureWidget::late_init(GenericAsyncTask* task, void* us
     return AsyncTask::DS_done;
 }
 
-}	// namespace rpcore
+}

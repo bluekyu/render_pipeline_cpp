@@ -26,7 +26,7 @@
 
 
 #include <render_pipeline/rpcore/native/pssm_camera_rig.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -397,4 +397,4 @@ void PSSMCameraRig::update(NodePath cam_node, const LVecBase3f &light_vector) {
     _update_collector.stop();
 }
 
-}	// namespace rpcore
+}

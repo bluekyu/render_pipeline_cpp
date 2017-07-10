@@ -52,6 +52,9 @@ layout(location = 0) out VertexOutput vOutput;
 %inout%
 
 void main() {
+
+    %main_begin%
+
     vOutput.texcoord = p3d_MultiTexCoord0;
     vOutput.normal = normalize(tpose_world_to_model * p3d_Normal).xyz;
     vOutput.position = (p3d_ModelMatrix * p3d_Vertex).xyz;
@@ -72,4 +75,6 @@ void main() {
     gl_Position = p3d_ViewProjectionMatrix * vec4(vOutput.position, 1);
 
     %post_transform%
+
+    %main_end%
 }

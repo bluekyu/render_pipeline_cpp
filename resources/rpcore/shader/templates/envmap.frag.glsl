@@ -42,7 +42,7 @@ layout(location = 0) out vec4 result;
 
 void main() {
 
-    %pretest%
+    %main_begin%
 
     vec2 texcoord = vOutput.texcoord;
     MaterialBaseInput mInput = get_input_from_p3d(p3d_Material);
@@ -62,4 +62,6 @@ void main() {
 
     vec3 combined_lighting = ambient + lights + sun_lighting;
     result = vec4(combined_lighting, 1);
+
+    %main_end%
 }
