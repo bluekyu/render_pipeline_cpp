@@ -68,8 +68,7 @@ function(render_pipeline_generate_schema_headers)
     file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
     foreach(input_file ${flatc_input_files})
         execute_process(
-            COMMAND ${FlatBuffers_flatc} -c --scoped-enums "${input_file}"
-            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/rpcore/schema"
+            COMMAND ${FlatBuffers_flatc} -c --scoped-enums -o "${PROJECT_BINARY_DIR}/rpcore/schema" "${input_file}"
             RESULT_VARIABLE flatc_result
         )
         if(NOT (${flatc_result} EQUAL "0"))
