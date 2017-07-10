@@ -2,9 +2,10 @@
 
 #include <shader.h>
 #include <nodePath.h>
-#include <textFont.h>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
+
+class TextFont;
 
 namespace rpcore {
 
@@ -25,7 +26,7 @@ public:
     static Texture* load_3d_texture(const std::string& filename);
 
     /** Loads a font from disk. */
-    static PT(TextFont) load_font(const std::string& filename);
+    static TextFont* load_font(const std::string& filename);
 
     /** Loads a shader from disk. */
     static PT(Shader) load_shader(const std::vector<std::string>& path_args);
