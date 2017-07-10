@@ -11,6 +11,8 @@
 
 #include <boost/algorithm/string/join.hpp>
 
+#include <spdlog/fmt/ostr.h>
+
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 
@@ -31,12 +33,6 @@ public:
         enter();
     }
 
-    template <class SequenceSequenceT>
-    TimedLoadingOperation(const SequenceSequenceT& resource):
-        TimedLoadingOperation(boost::algorithm::join(resource, ", "))
-    {
-    }
-
     ~TimedLoadingOperation(void)
     {
         exit();
@@ -54,8 +50,7 @@ private:
         if (duration > 80.0f && WARNING_COUNT < 5)
         {
             RPObject::global_warn("RPLoader",
-                std::string("Loading '") + resource_ + std::string("' took ") +
-                std::to_string(std::round(duration * 100.0f) / 100.0f) + " ms");
+                fmt::format("Loading '{}' took {} ms", resource_, (std::round(duration * 100.0f) / 100.0f)));
             ++WARNING_COUNT;
             if (WARNING_COUNT == 5)
             {
@@ -72,30 +67,45 @@ private:
 int TimedLoadingOperation::WARNING_COUNT = 0;
 
 // ************************************************************************************************
-Texture* RPLoader::load_texture(const std::string& filename)
+Texture* RPLoader::load_texture(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
     return TexturePool::load_texture(filename);
 }
 
-Texture* RPLoader::load_cube_map(const std::string& filename, bool read_mipmaps)
+Texture* RPLoader::load_cube_map(const Filename& filename, bool read_mipmaps)
 {
     TimedLoadingOperation tlo(filename);
 
     return TexturePool::load_cube_map(filename, read_mipmaps);
 }
 
-Texture* RPLoader::load_3d_texture(const std::string& filename)
+Texture* RPLoader::load_3d_texture(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
     return TexturePool::load_3d_texture(filename);
 }
 
-PT(Shader) RPLoader::load_shader(const std::vector<std::string>& path_args)
+PT(Shader) RPLoader::load_shader(const std::vector<Filename>& path_args)
 {
-    TimedLoadingOperation tlo(path_args);
+    std::string resources;
+    auto iter = path_args.begin();
+    const auto iter_end = path_args.end();
+    if (iter != iter_end)
+    {
+        resources += iter->c_str();
+        ++iter;
+
+        for (; iter != iter_end; ++iter)
+        {
+            resources += ", ";
+            resources += iter->c_str();
+        }
+    }
+
+    TimedLoadingOperation tlo(resources);
 
     const size_t len = path_args.size();
 
@@ -111,31 +121,31 @@ PT(Shader) RPLoader::load_shader(const std::vector<std::string>& path_args)
         len > 4 ? path_args[4] : "");
 }
 
-TextFont* RPLoader::load_font(const std::string& filename)
+TextFont* RPLoader::load_font(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
     return FontPool::load_font(filename);
 }
 
-NodePath RPLoader::load_model(const std::string& filename)
+NodePath RPLoader::load_model(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
     return Globals::base->get_window_framework()->load_model(Globals::base->get_panda_framework()->get_models(), filename);
 }
 
-Texture* RPLoader::load_sliced_3d_texture(const std::string& filename, int tile_size_x)
+Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_size_x)
 {
     return RPLoader::load_sliced_3d_texture(filename, tile_size_x, tile_size_x, tile_size_x);
 }
 
-Texture* RPLoader::load_sliced_3d_texture(const std::string& filename, int tile_size_x, int tile_size_y)
+Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_size_x, int tile_size_y)
 {
     return RPLoader::load_sliced_3d_texture(filename, tile_size_x, tile_size_y, tile_size_x);
 }
 
-Texture* RPLoader::load_sliced_3d_texture(const std::string& filename, int tile_size_x, int tile_size_y, int num_tiles)
+Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_size_x, int tile_size_y, int num_tiles)
 {
     TimedLoadingOperation tlo(filename);
 

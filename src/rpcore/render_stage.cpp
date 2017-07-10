@@ -80,14 +80,14 @@ void RenderStage::remove_target(const std::shared_ptr<RenderTarget>& target)
     }
 }
 
-PT(Shader) RenderStage::load_shader(const std::vector<std::string>& args, bool stereo_post, bool use_post_gs) const
+PT(Shader) RenderStage::load_shader(const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const
 {
     return get_shader_handle("/$$rp/shader/", args, stereo_post, use_post_gs);
 }
 
-PT(Shader) RenderStage::load_plugin_shader(const std::vector<std::string>& args, bool stereo_post, bool use_post_gs) const
+PT(Shader) RenderStage::load_plugin_shader(const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const
 {
-    const std::string& shader_path = pipeline_.get_plugin_mgr()->get_instance(get_plugin_id())->get_shader_resource("");
+    const Filename& shader_path = pipeline_.get_plugin_mgr()->get_instance(get_plugin_id())->get_shader_resource("");
     return get_shader_handle(shader_path, args, stereo_post, use_post_gs);
 }
 
@@ -106,21 +106,21 @@ std::pair<std::shared_ptr<Image>, std::shared_ptr<Image>> RenderStage::prepare_u
     return{ counter, buf };
 }
 
-PT(Shader) RenderStage::get_shader_handle(const std::string& base_path, const std::vector<std::string>& args, bool stereo_post, bool use_post_gs) const
+PT(Shader) RenderStage::get_shader_handle(const Filename& base_path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const
 {
     static const char* prefix[] ={"/$$rpconfig", "/$$rp/shader", "/$$rptemp"};
 
     if (args.size() <= 0 || args.size() > 3)
         throw std::runtime_error("args.size() <= 0 || args.size() > 3");
 
-    std::vector<std::string> path_args;
+    std::vector<Filename> path_args;
 
     for (const auto& source: args)
     {
         bool found = false;
         for (size_t k = 0; k < std::extent<decltype(prefix)>::value; k++)
         {
-            if (source.find(prefix[k]) != std::string::npos)
+            if (source.to_os_generic().find(prefix[k]) != std::string::npos)
             {
                 found = true;
                 path_args.push_back(source);
@@ -129,7 +129,7 @@ PT(Shader) RenderStage::get_shader_handle(const std::string& base_path, const st
         }
 
         if (!found)
-            path_args.push_back(base_path + source);
+            path_args.push_back(base_path / source);
     }
 
     if (args.size() == 1)

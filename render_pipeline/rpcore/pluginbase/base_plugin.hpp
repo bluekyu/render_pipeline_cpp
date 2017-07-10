@@ -44,13 +44,13 @@ public:
     virtual ~BasePlugin(void) {}
 
     /** Returns the path to the root directory of the plugin. */
-    virtual std::string get_base_path(void) const;
+    virtual Filename get_base_path(void) const;
 
     /** Converts a local path from the plugins resource directory into an absolute path.*/
-    std::string get_resource(const std::string& pth) const;
+    Filename get_resource(const Filename& pth) const;
 
     /** Converts a local path from the plugins shader directory into an absolute path. */
-    std::string get_shader_resource(const std::string& pth) const;
+    Filename get_shader_resource(const Filename& pth) const;
 
     void add_stage(const std::shared_ptr<RenderStage>& stage);
 

@@ -30,7 +30,7 @@ struct PluginManager::Impl
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
-    std::string convert_to_physical_path(const std::string& path) const;
+    std::string convert_to_physical_path(const Filename& path) const;
 
     PluginManager& self_;
     RenderPipeline& pipeline_;
@@ -113,9 +113,9 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     // TODO: implement
 }
 
-std::string PluginManager::Impl::convert_to_physical_path(const std::string& path) const
+std::string PluginManager::Impl::convert_to_physical_path(const Filename& path) const
 {
-    Filename plugin_dir_in_vfs(Filename::from_os_specific(path));
+    Filename plugin_dir_in_vfs(path);
     plugin_dir_in_vfs.standardize();
 
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
@@ -133,7 +133,7 @@ std::string PluginManager::Impl::convert_to_physical_path(const std::string& pat
         }
     }
 
-    self_.error(fmt::format("Cannot convert to physical path from Panda Path ({}).", path));
+    self_.error(fmt::format("Cannot convert to physical path from Panda Path ({}).", path.c_str()));
 
     return "";
 }
@@ -195,20 +195,20 @@ void PluginManager::unload(void)
     impl_->unload();
 }
 
-void PluginManager::load_base_settings(const std::string& plugin_dir)
+void PluginManager::load_base_settings(const Filename& plugin_dir)
 {
-    trace(fmt::format("Loading base setting from '{}'", plugin_dir));
+    trace(fmt::format("Loading base setting from '{}'", plugin_dir.c_str()));
 
     impl_->plugin_dir_ = impl_->convert_to_physical_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
-        error(fmt::format("Cannot find plugin directory ({}).", plugin_dir));
+        error(fmt::format("Cannot find plugin directory ({}).", plugin_dir.c_str()));
         return;
     }
 
     for (const auto& entry: rppanda::listdir(plugin_dir))
     {
-        const std::string& abspath = rppanda::join(plugin_dir, entry);
+        const Filename& abspath = rppanda::join(plugin_dir, entry);
         if (rppanda::isdir(abspath) && (entry != "__pycache__" || entry != "plugin_prefab"))
         {
             load_plugin_settings(entry, abspath);
@@ -216,9 +216,9 @@ void PluginManager::load_base_settings(const std::string& plugin_dir)
     }
 }
 
-void PluginManager::load_plugin_settings(const std::string& plugin_id, const std::string& plugin_pth)
+void PluginManager::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)
 {
-    const std::string& config_file = rppanda::join(plugin_pth, "config.yaml");
+    const Filename& config_file = rppanda::join(plugin_pth, "config.yaml");
 
     YAML::Node config;
     if (!rplibs::load_yaml_file(config_file, config))

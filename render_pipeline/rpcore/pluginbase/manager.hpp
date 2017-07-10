@@ -61,13 +61,13 @@ public:
      * Loads the base settings of all plugins, even of disabled plugins.
      * This is required to verify all overrides.
      */
-    void load_base_settings(const std::string& plugin_dir);
+    void load_base_settings(const Filename& plugin_dir);
 
     /**
      * Internal method to load all settings of a plugin, given its plugin
      * id and path to the plugin base directory.
      */
-    void load_plugin_settings(const std::string& plugin_id, const std::string& plugin_pth);
+    void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
 
     /**
      * Loads an override file for the settings, which contains values to

@@ -4,16 +4,16 @@
 
 namespace rppanda {
 
-inline std::string join(const std::string& lhs, const Filename& rhs)
+inline Filename join(const Filename& lhs, const Filename& rhs)
 {
-    return std::string(Filename::from_os_specific(lhs) / rhs);
+    return lhs / rhs;
 }
 
-inline std::vector<std::string> listdir(const std::string& path)
+inline std::vector<std::string> listdir(const Filename& path)
 {
-    auto dir_list = VirtualFileSystem::get_global_ptr()->scan_directory(Filename::from_os_specific(path));
+    auto dir_list = VirtualFileSystem::get_global_ptr()->scan_directory(path);
     if (!dir_list)
-        throw std::runtime_error("No such file or directory: " + path);
+        throw std::runtime_error(std::string("No such file or directory: ") + path.c_str());
 
     std::vector<std::string> files;
     for (size_t k=0, k_end=dir_list->get_num_files(); k < k_end; ++k)
@@ -21,14 +21,14 @@ inline std::vector<std::string> listdir(const std::string& path)
     return files;
 }
 
-inline bool isfile(const std::string& path)
+inline bool isfile(const Filename& path)
 {
-    return VirtualFileSystem::get_global_ptr()->is_regular_file(Filename::from_os_specific(path));
+    return VirtualFileSystem::get_global_ptr()->is_regular_file(path);
 }
 
-inline bool isdir(const std::string& path)
+inline bool isdir(const Filename& path)
 {
-    return VirtualFileSystem::get_global_ptr()->is_directory(Filename::from_os_specific(path));
+    return VirtualFileSystem::get_global_ptr()->is_directory(path);
 }
 
 }

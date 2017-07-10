@@ -118,14 +118,14 @@ public:
      */
     void remove_target(const std::shared_ptr<RenderTarget>& target);
 
-    PT(Shader) load_shader(const std::vector<std::string>& args, bool stereo_post=false, bool use_post_gs=false) const;
+    PT(Shader) load_shader(const std::vector<Filename>& args, bool stereo_post=false, bool use_post_gs=false) const;
 
     /**
      * Loads a shader from the plugin directory. This method is useful
      * for RenderStages created by plugins. For a description of the arguments,
      * see the load_shader function.
      */
-    PT(Shader) load_plugin_shader(const std::vector<std::string>& args, bool stereo_post=false, bool use_post_gs=false) const;
+    PT(Shader) load_plugin_shader(const std::vector<Filename>& args, bool stereo_post=false, bool use_post_gs=false) const;
 
     /**
      * Prepares the two textures required for processing invalid pixels
@@ -143,7 +143,7 @@ protected:
     virtual std::string get_plugin_id(void) const = 0;
 
 private:
-    PT(Shader) get_shader_handle(const std::string& path, const std::vector<std::string>& args, bool stereo_post, bool use_post_gs) const;
+    PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const;
 
     const std::string stage_id_;
     bool active_ = true;

@@ -20,19 +20,19 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id): 
     //self._set_debug_color("magenta", "bright")
 }
 
-std::string BasePlugin::get_base_path(void) const
+Filename BasePlugin::get_base_path(void) const
 {
     return Filename("/$$rp/rpplugins") / plugin_id_;
 }
 
-std::string BasePlugin::get_resource(const std::string& pth) const
+Filename BasePlugin::get_resource(const Filename& pth) const
 {
-    return Filename::from_os_specific(get_base_path()) / "resources" / pth;
+    return get_base_path() / "resources" / pth;
 }
 
-std::string BasePlugin::get_shader_resource(const std::string& pth) const
+Filename BasePlugin::get_shader_resource(const Filename& pth) const
 {
-    return Filename::from_os_specific(get_base_path()) / "shader" / pth;
+    return get_base_path() / "shader" / pth;
 }
 
 void BasePlugin::add_stage(const std::shared_ptr<RenderStage>& stage)

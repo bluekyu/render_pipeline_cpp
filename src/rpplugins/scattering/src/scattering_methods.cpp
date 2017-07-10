@@ -168,10 +168,10 @@ void ScatteringMethodEricBruneton::create_shaders(void)
 {
 	_shaders.clear();
 
-	const std::string& resource_path = handle_.get_shader_resource("eric_bruneton");
+	const Filename& resource_path = handle_.get_shader_resource("eric_bruneton");
 	for (const auto& fname: rppanda::listdir(resource_path))
 	{
-		const std::string& fpath = rppanda::join(resource_path, fname);
+		const Filename& fpath = rppanda::join(resource_path, fname);
 
 		size_t pos;
 		if (rppanda::isfile(fpath) && ((pos=fname.rfind(".compute.glsl")) != std::string::npos &&

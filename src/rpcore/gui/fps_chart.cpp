@@ -87,7 +87,7 @@ AsyncTask::DoneStatus FPSChart::late_init(GenericAsyncTask* task, void* user_dat
 	fc->_cshader_node->add_dispatch(250 / 10, 120 / 4, 1);
 	fc->_cshader_np = fc->_node.attach_new_node(fc->_cshader_node);
 
-	fc->_cshader = RPLoader::load_shader({std::string("/$$rp/shader/fps_chart.compute.glsl")});
+	fc->_cshader = RPLoader::load_shader({"/$$rp/shader/fps_chart.compute.glsl"});
 	fc->_cshader_np.set_shader(fc->_cshader);
 	fc->_cshader_np.set_shader_input("DestTex", fc->_display_tex->get_texture());
     fc->_cshader_np.set_shader_input("FPSValues", fc->_storage_buffer->get_texture());
@@ -98,7 +98,7 @@ AsyncTask::DoneStatus FPSChart::late_init(GenericAsyncTask* task, void* user_dat
 	fc->_update_shader_node->add_dispatch(1, 1, 1);
 	fc->_update_shader_np = fc->_node.attach_new_node(fc->_update_shader_node);
 
-	fc->_ushader = RPLoader::load_shader({std::string("/$$rp/shader/fps_chart_update.compute.glsl")});
+	fc->_ushader = RPLoader::load_shader({"/$$rp/shader/fps_chart_update.compute.glsl"});
 	fc->_update_shader_np.set_shader(fc->_ushader);
     fc->_update_shader_np.set_shader_input("DestTex", fc->_storage_buffer->get_texture());
 	fc->_update_shader_np.set_shader_input("index", fc->_store_index);

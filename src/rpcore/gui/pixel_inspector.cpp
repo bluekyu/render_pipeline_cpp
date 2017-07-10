@@ -64,8 +64,8 @@ AsyncTask::DoneStatus PixelInspector::late_init(GenericAsyncTask* task, void* us
 	PixelInspector* pixel_inspector = reinterpret_cast<PixelInspector*>(user_data);
 	PT(Texture) scene_tex = pixel_inspector->_pipeline->get_stage_mgr()->get_pipe("ShadedScene").get_texture();
 	pixel_inspector->_zoomer.set_shader(RPLoader::load_shader({
-			std::string("/$$rp/shader/default_gui_shader.vert.glsl"),
-			std::string("/$$rp/shader/pixel_inspector.frag.glsl")}));
+			"/$$rp/shader/default_gui_shader.vert.glsl",
+			"/$$rp/shader/pixel_inspector.frag.glsl"}));
 	pixel_inspector->_zoomer.set_shader_input("SceneTex", scene_tex);
 
 	return AsyncTask::DS_done;
