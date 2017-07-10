@@ -1,0 +1,23 @@
+include "luse_schema.fbs";
+
+namespace rpcore;
+
+enum ShadingModelSchema: byte {
+    None=-1,
+    Default=0,
+    Emissive,
+    Clearcoat,
+    Transparent,
+    Skin,
+    Foliage,
+}
+
+table RPMaterialSchema {
+    base_color:LVecBase4Schema;
+    specular_ior:float;
+    metallic:float;
+    roughness:float;
+    shading_model:ShadingModelSchema = None;
+    normal_factor:float;
+    arbitrary0:float;
+}

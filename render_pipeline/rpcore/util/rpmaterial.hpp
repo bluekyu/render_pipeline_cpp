@@ -10,7 +10,7 @@ namespace rpcore {
 class RPMaterial
 {
 public:
-    enum class ShadingModel: int
+    enum class ShadingModel: int8_t
     {
         DEFAULT_MODEL = 0,
         EMISSIVE_MODEL,

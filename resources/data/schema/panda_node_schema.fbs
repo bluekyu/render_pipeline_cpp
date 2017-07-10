@@ -1,0 +1,20 @@
+include "geom_node_schema.fbs";
+
+namespace rpcore;
+
+enum NodeTypeSchema : ubyte {
+    PandaNode,
+    GeomNode,
+}
+
+table PandaNodeSchema {
+    node_type:NodeTypeSchema;
+
+    name:string;
+    material:RPMaterialSchema;
+
+    children:[PandaNodeSchema];
+
+    // sub-class
+    geom_node:GeomNodeSchema;
+}

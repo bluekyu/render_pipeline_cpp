@@ -1,0 +1,9 @@
+namespace rpcore;
+
+struct LVecBase4Schema
+{
+    x:float;
+    y:float;
+    z:float;
+    w:float;
+}

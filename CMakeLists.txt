@@ -51,9 +51,39 @@ find_package(FreeType REQUIRED)
 if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
+
+# find flatbuffers
+if(NOT TARGET flatbuffers)
+    find_package(flatbuffers REQUIRED)
+endif()
+# ==================================================================================================
+
+# ==================================================================================================
+function(render_pipeline_generate_schema_headers)
+    # generate schema headers
+    if(NOT FlatBuffers_flatc)
+        message(FATAL_ERROR "Cannot find flatc program.")
+    endif()
+
+    file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
+    foreach(input_file ${flatc_input_files})
+        execute_process(
+            COMMAND ${FlatBuffers_flatc} -c --scoped-enums "${input_file}"
+            WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/rpcore/schema"
+            RESULT_VARIABLE flatc_result
+        )
+        if(NOT (${flatc_result} EQUAL "0"))
+            message(SEND_ERROR "flatc returns error for a file '${input_file}'")
+        endif()
+    endforeach()
+
+    message(STATUS "Render Pipeline: Schema header files are generated.")
+endfunction()
 # ==================================================================================================
 
 # === target =======================================================================================
+render_pipeline_generate_schema_headers()
+
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 
@@ -85,7 +115,7 @@ target_link_libraries(${PROJECT_NAME}
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem
-    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
+    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog flatbuffers
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

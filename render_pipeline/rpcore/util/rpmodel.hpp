@@ -19,8 +19,8 @@ public:
     RPModel(void) = default;
     RPModel(NodePath nodepath);
 
-    void load_meta_file(const std::string& file_path="");
-    void load_meta_data(const YAML::Node& yaml_node);
+    void load_meta_file(const Filename& file_path="");
+    void load_meta_data(const std::string& json_string);
 
 private:
     // function only PImpl

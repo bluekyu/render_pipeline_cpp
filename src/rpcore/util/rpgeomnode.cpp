@@ -37,10 +37,7 @@ RPMaterial RPGeomNode::get_material(int geom_index) const
     const RenderState* state = geom_node->get_geom_state(geom_index);
 
     if (!state->has_attrib(MaterialAttrib::get_class_type()))
-    {
-        RPObject::global_warn("RPGeomNode", fmt::format("Geom {} has no material!", geom_node->get_name()));
         return RPMaterial(nullptr);
-    }
 
     return RPMaterial(DCAST(MaterialAttrib, state->get_attrib(MaterialAttrib::get_class_type()))->get_material());
 }

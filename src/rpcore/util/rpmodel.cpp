@@ -1,51 +1,57 @@
 #include "render_pipeline/rpcore/util/rpmodel.hpp"
 
+#include <virtualFileSystem.h>
 #include <modelRoot.h>
 
 #include <spdlog/fmt/ostr.h>
 
+#include <flatbuffers/idl.h>
+#include <flatbuffers/util.h>
+
+#include "render_pipeline/rpcore/mount_manager.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/rpobject.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
+#include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 
 #include "rplibs/yaml.hpp"
+#include "rpcore/schema/model_root_schema_generated.h"
 
 namespace rpcore {
+
+static const std::string CONTEXT_NAME("RPModel");
 
 struct RPModel::Impl
 {
     struct MetaData
     {
-        static void load_nodepath(NodePath nodepath, const YAML::Node& yaml_node);
-        static void load_material(RPMaterial& material, const YAML::Node& yaml_node);
+        static void load_panda_node(NodePath nodepath, const PandaNodeSchema* panda_node_data);
+        static void load_geom_node(NodePath nodepath, const GeomNodeSchema* geom_node_data);
+        static void load_geom(RPGeomNode& geom_node, size_t index, const GeomSchema* geom_data);
+        static void load_material(RPMaterial& material, const RPMaterialSchema* rpmaterial_data);
     };
 };
 
-void RPModel::Impl::MetaData::load_nodepath(NodePath nodepath, const YAML::Node& yaml_node)
+void RPModel::Impl::MetaData::load_panda_node(NodePath nodepath, const PandaNodeSchema* panda_node_data)
 {
     if (nodepath.is_empty())
     {
-        RPObject::global_error("RPModel", "NodePath is emtpy!");
+        RPObject::global_error(CONTEXT_NAME, "NodePath is emtpy!");
         return;
     }
 
-    if (!yaml_node)
-        return;
-
-    RPObject::global_trace("RPModel", fmt::format("Parsing NodePath ({}) and YAML node ({}) ...", nodepath, YAML::Dump(yaml_node)));
-
-    if (const auto& name_node = yaml_node["name"])
+    if (!panda_node_data)
     {
-        try
-        {
-            nodepath.set_name(name_node.as<std::string>());
-        }
-        catch (const YAML::Exception&)
-        {
-            RPObject::global_error("RPModel", "Cannot convert 'name' node to string.");
-        }
+        RPObject::global_error(CONTEXT_NAME, "PandaNodeSchema is nullptr!");
+        return;
     }
 
-    if (const auto& material_node = yaml_node["material"])
+    RPObject::global_trace(CONTEXT_NAME, fmt::format("Parsing NodePath ({}) and PandaNodeSchema ...", nodepath));
+
+    if (const auto name_data = panda_node_data->name())
+        nodepath.set_name(name_data->str());
+
+    if (const auto material_data = panda_node_data->material())
     {
         RPMaterial mat(nullptr);
         if (nodepath.has_material())
@@ -58,103 +64,168 @@ void RPModel::Impl::MetaData::load_nodepath(NodePath nodepath, const YAML::Node&
             mat.set_default();
         }
 
-        load_material(mat, material_node);
+        load_material(mat, material_data);
 
         nodepath.set_material(mat.get_material());
     }
 
-    const auto& children_node = yaml_node["children"];
+    switch (panda_node_data->node_type())
+    {
+    case NodeTypeSchema::GeomNode:
+        load_geom_node(nodepath, panda_node_data->geom_node());
+        break;
+    default:
+        break;
+    }
+
+    const auto& children_node = panda_node_data->children();
     if (children_node)
     {
-        for (size_t k=0,k_end=children_node.size(); k < k_end; ++k)
-            load_nodepath(nodepath.get_child(k), children_node[k]);
+        for (size_t k=0,k_end=children_node->size(); k < k_end; ++k)
+            load_panda_node(nodepath.get_child(k), (*children_node)[k]);
     }
 }
 
-void RPModel::Impl::MetaData::load_material(RPMaterial& material, const YAML::Node& yaml_node)
+void RPModel::Impl::MetaData::load_geom_node(NodePath nodepath, const GeomNodeSchema* geom_node_data)
 {
-    try
+    if (nodepath.is_empty())
     {
-        if (const auto& c = yaml_node["base_color"])
-            material.set_base_color(LColor(c[0].as<float>(), c[1].as<float>(), c[2].as<float>(), c[3].as<float>()));
-
-        if (const auto& f = yaml_node["specular_ior"])
-            material.set_specular_ior(f.as<float>());
-
-        if (const auto& f = yaml_node["metallic"])
-            material.set_metallic(f.as<float>());
-
-        if (const auto& f = yaml_node["roughness"])
-            material.set_roughness(f.as<float>());
-
-        if (const auto& s = yaml_node["shading_model"])
-        {
-            RPMaterial::ShadingModel shading_model = RPMaterial::ShadingModel::DEFAULT_MODEL;
-            const std::string shading_model_string(s.as<std::string>());
-
-            if (shading_model_string == "default")
-                shading_model = RPMaterial::ShadingModel::DEFAULT_MODEL;
-            else if (shading_model_string == "emissive")
-                shading_model = RPMaterial::ShadingModel::EMISSIVE_MODEL;
-            else if (shading_model_string == "clearcoat")
-                shading_model = RPMaterial::ShadingModel::CLEARCOAT_MODEL;
-            else if (shading_model_string == "transparent")
-                shading_model = RPMaterial::ShadingModel::TRANSPARENT_MODEL;
-            else if (shading_model_string == "skin")
-                shading_model = RPMaterial::ShadingModel::SKIN_MODEL;
-            else if (shading_model_string == "foliage")
-                shading_model = RPMaterial::ShadingModel::FOLIAGE_MODEL;
-            else
-                RPObject::global_error("RPModel", fmt::format("Invalid shading model: {}", shading_model_string));
-
-            material.set_shading_model(shading_model);
-        }
-
-        if (const auto& f = yaml_node["normal_factor"])
-            material.set_normal_factor(f.as<float>());
-
-        if (const auto& f = yaml_node["alpha"])
-            material.set_alpha(f.as<float>());
+        RPObject::global_error(CONTEXT_NAME, "NodePath is emtpy!");
+        return;
     }
-    catch (const YAML::Exception&)
+
+    if (!nodepath.node()->is_geom_node())
     {
-        RPObject::global_error("RPModel", fmt::format("Cannot parse YAML node: {}", YAML::Dump(yaml_node)));
+        RPObject::global_error(CONTEXT_NAME, "NodePath is not GeomNode!");
+        return;
     }
+
+    if (!geom_node_data)
+    {
+        RPObject::global_error(CONTEXT_NAME, "GeomNodeSchema is nullptr!");
+        return;
+    }
+
+    RPGeomNode geom_node(nodepath);
+    if (const auto geoms_data = geom_node_data->geoms())
+    {
+        for (size_t k=0,k_end=geoms_data->size(); k < k_end; ++k)
+            load_geom(geom_node, k, (*geoms_data)[k]);
+    }
+}
+
+void RPModel::Impl::MetaData::load_geom(RPGeomNode& gemo_node, size_t index, const GeomSchema* geom_data)
+{
+    if (const auto rpmeterial_data = geom_data->material())
+    {
+        RPMaterial mat = gemo_node.get_material(index);
+        if (!mat.get_material())
+            mat.set_material(new Material);
+        load_material(mat, rpmeterial_data);
+        gemo_node.set_material(index, mat);
+    }
+}
+
+void RPModel::Impl::MetaData::load_material(RPMaterial& material, const RPMaterialSchema* rpmaterial_data)
+{
+    if (!rpmaterial_data)
+        return;
+
+    if (const auto c = rpmaterial_data->base_color())
+        material.set_base_color(LColor(c->x(), c->y(), c->z(), c->w()));
+
+    if (const auto f = rpmaterial_data->specular_ior())
+        material.set_specular_ior(f);
+
+    if (const auto& f = rpmaterial_data->metallic())
+        material.set_metallic(f);
+
+    if (const auto& f = rpmaterial_data->roughness())
+        material.set_roughness(f);
+
+    switch (const auto shading_model = rpmaterial_data->shading_model())
+    {
+    case ShadingModelSchema::None:
+        break;
+
+    default:
+        material.set_shading_model(RPMaterial::ShadingModel(shading_model));
+    }
+
+    if (const auto& f = rpmaterial_data->normal_factor())
+        material.set_normal_factor(f);
+
+    if (const auto& f = rpmaterial_data->arbitrary0())
+        material.set_arbitrary0(f);
 }
 
 // ************************************************************************************************
-void RPModel::load_meta_file(const std::string& file_path)
+void RPModel::load_meta_file(const Filename& file_path)
 {
-    Filename _file_path = file_path;
-    if (file_path.empty())
+    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+
+    Filename file_path_ = file_path;
+    if (file_path_.empty())
     {
         if (!nodepath_.node()->is_of_type(ModelRoot::get_class_type()))
         {
-            RPObject::global_error("RPModel", fmt::format("NodePath ({}) is NOT ModelRoot type.", nodepath_));
+            RPObject::global_error(CONTEXT_NAME, fmt::format("NodePath ({}) is NOT ModelRoot type.", nodepath_));
             return;
         }
 
         const Filename& model_path = DCAST(ModelRoot, nodepath_.node())->get_fullpath();
-        _file_path = Filename(model_path.get_dirname()) / (model_path.get_basename_wo_extension() + ".meta.yaml");
+        file_path_ = Filename(model_path.get_dirname()) / (model_path.get_basename_wo_extension() + ".meta.json");
     }
 
-    YAML::Node node_root;
-    if (!rplibs::load_yaml_file(_file_path, node_root))
+    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read JSON meta file ({}).", file_path_.c_str()));
+
+    std::string file_contents;
+    if (!vfs->read_file(file_path_, file_contents, false))
     {
-        RPObject::global_warn("RPModel", fmt::format("Failed to load model meta file: {}", file_path));
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read JSON meta file ({}).", file_path_.c_str()));
         return;
     }
 
-    load_meta_data(node_root);
+    load_meta_data(file_contents);
 }
 
-void RPModel::load_meta_data(const YAML::Node& yaml_node)
+void RPModel::load_meta_data(const std::string& json_string)
 {
-    if (!yaml_node)
-        return;
+    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
 
-    if (const auto& model_node = yaml_node["nodepath"])
-        Impl::MetaData::load_nodepath(nodepath_, model_node);
+    const Filename schema_path = Filename("/$$rp/data/schema/model_root_schema.fbs");
+
+    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read schema file ({}).", schema_path.c_str()));
+
+    std::string schema_conents;
+    if (!vfs->read_file(schema_path, schema_conents, false))
+    {
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read schema file ({}).", schema_path.c_str()));
+        return;
+    }
+
+    const std::string schema_dir = MountManager::convert_to_physical_path(schema_path.get_dirname());
+
+    flatbuffers::Parser parser;
+    const char* include_directories[] = { schema_dir.c_str(), nullptr };
+    if (!parser.Parse(schema_conents.c_str(), include_directories))
+    {
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Cannot parse schema file ({}): {}",
+            schema_path.c_str(), parser.error_));
+        return;
+    }
+
+    if (!parser.Parse(json_string.c_str()))
+    {
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Cannot parse JSON meta contents ({}).", json_string));
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Parsing error: {}.", parser.error_));
+        return;
+    }
+
+    auto model_root_data = GetModelRootSchema(parser.builder_.GetBufferPointer());
+
+    if (auto root_node_data = model_root_data->root_node())
+        Impl::MetaData::load_panda_node(nodepath_, root_node_data);
 }
 
 }
