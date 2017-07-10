@@ -11,7 +11,6 @@
 - CMake (build tool)
 
 ### Optional
-- OpenVR (to build OpenVR plugin)
 - Doxygen (to create doxygen documents)
 
 
@@ -38,10 +37,7 @@ Render Pipeline C++ will build core library (render_pipeline), native module, in
 Native module is the same as original Render Pipeline. This will be linked statically.
 
 Internal plugins are built as Module, not library. Therefore, it creates only shared library (.dll or .so files.)
-and install this into `etc/render_pipeline/rpplugins`.
-
-If the `BUILD_ALL_SAMPLES` option is enabled, all samples are built and installed in `bin` directory.
-And enabling `BUILD_DOCUMENTS` option will build documents using Doxygen.
+and install this into `share/render_pipeline/rpplugins`.
 
 
 

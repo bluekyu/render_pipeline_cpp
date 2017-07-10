@@ -10,7 +10,6 @@
 - CMake (빌드 도구)
 
 ### 선택사항
-- OpenVR (OpenVR 플러그인 빌드)
 - Doxygen (Doxygen 문서 생성)
 
 
@@ -38,10 +37,7 @@ Render Pipeline C++ 는 핵심 라이브러리(render_pipeline), native 모듈, 
 Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크된다.
 
 내부 플러그인은 라이브러리가 아닌 플러그인 모듈로 빌드된다. 따라서 빌드 시에 동적 라이브러리 파일(.dll or .so files)만 생성하고,
-`etc/render_pipeline/rpplugins` 경로에 설치된다.
-
-`BUILD_ALL_SAMPLES` 옵션이 활성화 되어 있다면, 모든 예제를 빌드하고 `bin` 폴더에 설치한다.
-그리고 `BUILD_DOCUMENTS` 옵션을 키면 Doxygen을 사용해서 문서를 빌드한다.
+`share/render_pipeline/rpplugins` 경로에 설치된다.
 
 
 
