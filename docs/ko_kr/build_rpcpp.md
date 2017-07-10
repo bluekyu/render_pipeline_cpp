@@ -6,6 +6,7 @@
 - Boost
 - YAML-CPP
 - spdlog
+- flatbuffers
 - CMake (빌드 도구)
 
 ### 선택사항
@@ -52,6 +53,7 @@ set(BOOST_ROOT "......" CACHE PATH "" FORCE)
 set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
 set(panda3d_ROOT "......" CACHE PATH "" FORCE)
 set(ENV{FREETYPE_DIR} "......")
+set(FlatBuffers_ROOT "......" CACHE PATH "" FORCE)
 set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
 set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
 set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
