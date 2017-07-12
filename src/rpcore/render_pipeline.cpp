@@ -817,7 +817,7 @@ RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipel
         return;
     }
 
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
 
     global_ptr_ = this;
 

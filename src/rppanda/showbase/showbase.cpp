@@ -351,7 +351,7 @@ ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this)
 
 ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
 {
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
     impl_->Init();
 }
 
