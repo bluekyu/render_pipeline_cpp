@@ -19,8 +19,9 @@
 
 namespace rpcore {
 
-struct StageManager::Impl
+class StageManager::Impl
 {
+public:
     Impl(StageManager& self, RenderPipeline& pipeline);
 
     /** Loads the order of all stages from the stages.yaml configuration file. */

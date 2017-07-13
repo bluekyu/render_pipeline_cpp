@@ -16,7 +16,7 @@ public:
     void on_window_resized(void) final;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

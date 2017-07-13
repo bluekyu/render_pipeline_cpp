@@ -11,14 +11,16 @@
 
 namespace rppanda {
 
-struct SoundInterval::Impl
+class SoundInterval::Impl
 {
+public:
     Impl(SoundInterval& self, const Parameters& params);
 
     void priv_initialize(double t);
     void priv_step(double t);
     void priv_finalize(void);
 
+public:
     SoundInterval& self_;
 
     std::string id_;

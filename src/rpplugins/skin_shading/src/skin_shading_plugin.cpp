@@ -8,8 +8,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
 
 namespace rpplugins {
 
-struct SkinShadingPlugin::Impl
+class SkinShadingPlugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<SkinShadingStage> stage_;

@@ -24,8 +24,9 @@ inline static int max_color_bits(const LVecBase4i& color_bits)
 }
 
 // ************************************************************************************************
-struct RenderTarget::Impl
+class RenderTarget::Impl
 {
+public:
     Impl(RenderTarget& self);
 
     int percent_to_number(const std::string& v) const NOEXCEPT;

@@ -17,8 +17,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SMAAPlugin)
 
 namespace rpplugins {
 
-struct SMAAPlugin::Impl
+class SMAAPlugin::Impl
 {
+public:
     Impl(SMAAPlugin& self);
 
     void on_pre_render_update(void);

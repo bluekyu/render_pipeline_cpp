@@ -15,8 +15,9 @@
 
 namespace rpcore {
 
-struct MovementController::Impl
+class MovementController::Impl
 {
+public:
     /** Internal update method. */
     static AsyncTask::DoneStatus update(GenericAsyncTask* task, void* user_data);
 

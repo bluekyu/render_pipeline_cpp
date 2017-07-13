@@ -12,8 +12,9 @@ namespace rppanda {
 
 bool SfxPlayer::use_inverse_suqare_ = false;
 
-struct SfxPlayer::Impl
+class SfxPlayer::Impl
 {
+public:
     void set_cutoff_distance(float d);
 
     float cutoff_volume_;

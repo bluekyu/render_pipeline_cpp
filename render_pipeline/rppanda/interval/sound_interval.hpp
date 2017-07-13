@@ -53,7 +53,7 @@ public:
     void priv_interrupt(void) override;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 
 public:

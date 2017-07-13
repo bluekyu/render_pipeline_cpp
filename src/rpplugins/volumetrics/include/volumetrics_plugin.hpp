@@ -18,7 +18,7 @@ public:
     virtual const std::shared_ptr<VolumetricsStage>& get_stage(void) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

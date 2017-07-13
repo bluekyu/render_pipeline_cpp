@@ -187,7 +187,7 @@ public:
     DayTimeManager* get_daytime_mgr(void) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

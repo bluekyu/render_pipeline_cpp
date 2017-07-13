@@ -27,7 +27,7 @@ public:
     virtual const std::shared_ptr<ScatteringEnvmapStage>& get_envmap_stage(void) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

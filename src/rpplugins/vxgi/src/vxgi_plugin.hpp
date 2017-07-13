@@ -16,7 +16,7 @@ public:
     void on_pre_render_update(void) final;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

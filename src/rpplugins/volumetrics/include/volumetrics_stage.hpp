@@ -23,7 +23,7 @@ public:
 private:
     std::string get_plugin_id(void) const final;
 
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

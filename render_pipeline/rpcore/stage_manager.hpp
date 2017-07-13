@@ -73,7 +73,7 @@ public:
     void write_autoconfig(void);
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

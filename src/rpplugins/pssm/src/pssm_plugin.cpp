@@ -25,8 +25,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
 
 namespace rpplugins {
 
-struct PSSMPlugin::Impl
+class PSSMPlugin::Impl
 {
+public:
     static void toggle_update_enabled(const Event* ev, void* user_data);
 
     Impl(PSSMPlugin& self);

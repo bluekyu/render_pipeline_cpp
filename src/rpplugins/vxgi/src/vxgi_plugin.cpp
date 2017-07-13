@@ -16,8 +16,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
 
 namespace rpplugins {
 
-struct VXGIPlugin::Impl
+class VXGIPlugin::Impl
 {
+public:
     Impl(VXGIPlugin& self);
 
     void on_pipeline_created(void);

@@ -9,8 +9,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VolumentricsPlugin)
 
 namespace rpplugins {
 
-struct VolumentricsPlugin::Impl
+class VolumentricsPlugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<VolumetricsStage> stage_;

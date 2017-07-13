@@ -4,8 +4,9 @@
 
 namespace rpplugins {
 
-struct VolumetricsStage::Impl
+class VolumetricsStage::Impl
 {
+public:
     Impl(VolumetricsStage& self);
 
     void create(void);

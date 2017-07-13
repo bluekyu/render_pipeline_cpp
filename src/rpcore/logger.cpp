@@ -6,8 +6,9 @@ namespace rpcore {
 
 spdlog::logger* global_logger_ = nullptr;
 
-struct RPLogger::Impl
+class RPLogger::Impl
 {
+public:
     ~Impl(void);
 
     void create(const std::string& file_path);

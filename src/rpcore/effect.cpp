@@ -20,8 +20,9 @@
 
 namespace rpcore {
 
-struct Effect::Impl
+class Effect::Impl
 {
+public:
     using InjectionType = std::map<std::string, std::vector<std::string>>;
 
     static std::string generate_hash(const std::string& filename, const OptionType& options);

@@ -47,7 +47,7 @@ public:
     void set_active_point_count(int count);
 
 private:
-    struct Impl;
+    class Impl;
     std::shared_ptr<Impl> impl_;
 };
 

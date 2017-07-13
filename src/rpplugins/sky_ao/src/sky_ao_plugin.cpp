@@ -13,8 +13,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 
 namespace rpplugins {
 
-struct SkyAOPlugin::Impl
+class SkyAOPlugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<SkyAOCaptureStage> capture_stage_;

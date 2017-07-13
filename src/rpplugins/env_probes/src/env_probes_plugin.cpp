@@ -23,8 +23,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
 namespace rpplugins {
 
-struct EnvProbesPlugin::Impl
+class EnvProbesPlugin::Impl
 {
+public:
     Impl(EnvProbesPlugin& self);
     ~Impl(void);
 

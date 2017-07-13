@@ -19,8 +19,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 
 namespace rpplugins {
 
-struct ScatteringPlugin::Impl
+class ScatteringPlugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<ScatteringStage> display_stage_;

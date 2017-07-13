@@ -65,7 +65,7 @@ public:
     LMatrix4f get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::shared_ptr<Impl> impl_;
 };
 

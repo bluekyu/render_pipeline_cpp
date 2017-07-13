@@ -24,7 +24,7 @@ public:
 
 private:
     // function only PImpl
-    struct Impl;
+    class Impl;
 
     NodePath nodepath_;
 };

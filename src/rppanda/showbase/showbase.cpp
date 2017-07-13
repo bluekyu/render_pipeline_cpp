@@ -25,8 +25,9 @@ namespace rppanda {
 
 static ShowBase* global_showbase = nullptr;
 
-struct ShowBase::Impl
+class ShowBase::Impl
 {
+public:
     static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 

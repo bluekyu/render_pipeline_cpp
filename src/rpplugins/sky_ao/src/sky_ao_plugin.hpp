@@ -15,7 +15,7 @@ public:
     void on_post_stage_setup(void) final;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

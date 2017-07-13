@@ -18,7 +18,7 @@ public:
     virtual std::shared_ptr<rpcore::RenderStage> get_capture_stage(void);
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

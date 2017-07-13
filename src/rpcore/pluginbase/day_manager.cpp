@@ -16,10 +16,12 @@
 
 namespace rpcore {
 
-struct DayTimeManager::Impl
+class DayTimeManager::Impl
 {
+public:
     Impl(RenderPipeline& pipeline);
 
+public:
     RenderPipeline& pipeline_;
 
     std::shared_ptr<GroupedInputBlock> input_ubo_;

@@ -16,8 +16,9 @@
 
 namespace rpcore {
 
-struct MountManager::Impl
+class MountManager::Impl
 {
+public:
     Impl(MountManager& self, RenderPipeline& pipeline);
 
     void set_write_path(const std::string& pth);

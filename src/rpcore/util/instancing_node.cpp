@@ -9,8 +9,9 @@ namespace rpcore {
 static_assert(std::is_standard_layout<LMatrix4f>::value, "std::is_standard_layout<LMatrix4f>::value");
 static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeof(float)*16");
 
-struct InstancingNode::Impl
+class InstancingNode::Impl
 {
+public:
     Impl(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint);
 
     void set_instance_count(int instance_count);
@@ -20,6 +21,7 @@ struct InstancingNode::Impl
 
     void upload_transforms(void);
 
+public:
     bool dirty_ = true;
     NodePath instanced_np_;
     std::vector<LMatrix4f> transforms_;

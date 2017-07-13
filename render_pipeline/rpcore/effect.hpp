@@ -38,7 +38,7 @@ public:
     Shader* get_shader_obj(const std::string& pass_id) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

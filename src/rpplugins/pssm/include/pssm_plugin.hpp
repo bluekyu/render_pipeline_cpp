@@ -19,7 +19,7 @@ public:
     virtual bool get_last_focus(LVecBase3f& focus_point, float& focus_size) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

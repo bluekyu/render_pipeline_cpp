@@ -17,7 +17,7 @@
 
 namespace rppanda {
 
-struct Actor::Impl
+class Actor::Impl
 {
 public:
     class AnimDef

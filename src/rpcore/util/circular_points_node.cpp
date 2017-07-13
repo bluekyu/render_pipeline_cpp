@@ -13,8 +13,9 @@ namespace rpcore {
 static_assert(std::is_standard_layout<LMatrix4f>::value, "std::is_standard_layout<LMatrix4f>::value");
 static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeof(float)*16");
 
-struct CircularPointsNode::Impl
+class CircularPointsNode::Impl
 {
+public:
     Impl(const std::string& name, const std::vector<LPoint3f>& positions, float radius, const std::string& effect_path,
         GeomEnums::UsageHint buffer_hint);
 
@@ -27,6 +28,7 @@ struct CircularPointsNode::Impl
 
     void set_active_point_count(int count);
 
+public:
     bool dirty_ = true;
     NodePath points_np_;
     std::vector<LPoint3f> positions_;

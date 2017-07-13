@@ -10,8 +10,9 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SSRPlugin)
 
 namespace rpplugins {
 
-struct SSRPlugin::Impl
+class SSRPlugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<SSRStage> ssr_stage_;

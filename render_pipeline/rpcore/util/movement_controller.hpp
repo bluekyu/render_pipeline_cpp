@@ -67,7 +67,7 @@ public:
     void play_motion_path(const MotionPathType& points, float point_duration=1.2f);
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

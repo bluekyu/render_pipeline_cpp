@@ -19,8 +19,9 @@
 
 namespace rpcore {
 
-struct PluginManager::Impl
+class PluginManager::Impl
 {
+public:
     Impl(PluginManager& self, RenderPipeline& pipeline);
 
     void unload(void);
@@ -28,6 +29,7 @@ struct PluginManager::Impl
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
+public:
     PluginManager& self_;
     RenderPipeline& pipeline_;
     std::string plugin_dir_;

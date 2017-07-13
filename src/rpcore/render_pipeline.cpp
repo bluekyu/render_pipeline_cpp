@@ -52,8 +52,9 @@ namespace rpcore {
 
 static RenderPipeline* global_ptr_ = nullptr;
 
-struct RenderPipeline::Impl
+class RenderPipeline::Impl
 {
+public:
     static const char* stages[];
 
     Impl(RenderPipeline& self);

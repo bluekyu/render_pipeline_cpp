@@ -109,7 +109,7 @@ public:
     bool get_create_default_region(void) const;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

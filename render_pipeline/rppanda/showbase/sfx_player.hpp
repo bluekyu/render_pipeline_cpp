@@ -46,7 +46,7 @@ public:
         boost::optional<NodePath> listener_node, boost::optional<float> cutoff={});
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

@@ -20,8 +20,9 @@ static const std::map<std::string, ::TextNode::Alignment> text_align_map ={
     {"boxed_center", ::TextNode::Alignment::A_boxed_center},
 };
 
-struct TextNode::Impl
+class TextNode::Impl
 {
+public:
     ::TextNode* node_;
     NodePath nodepath_;
 };

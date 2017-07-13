@@ -54,7 +54,7 @@ public:
     void set_pixel_size(PN_stdfloat size);
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 

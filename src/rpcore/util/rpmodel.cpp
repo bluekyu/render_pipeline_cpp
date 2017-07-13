@@ -21,8 +21,9 @@ namespace rpcore {
 
 static const std::string CONTEXT_NAME("RPModel");
 
-struct RPModel::Impl
+class RPModel::Impl
 {
+public:
     struct MetaData
     {
         static void load_panda_node(NodePath nodepath, const PandaNodeSchema* panda_node_data);

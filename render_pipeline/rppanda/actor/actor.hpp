@@ -63,7 +63,7 @@ public:
         bool copy=true, const boost::optional<bool>& ok_missing={}, bool auto_bind_anims=true);
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };
 
