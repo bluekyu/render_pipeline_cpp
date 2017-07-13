@@ -5,21 +5,24 @@ export(EXPORT ${TARGET_EXPORT_NAME}
     FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
 )
 
-install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${render_pipeline_DEBUG_POSTFIX}.pdb"
-    DESTINATION ${RPPLUGIN_INSTALL_DIR}
-    CONFIGURATIONS Debug
-)
+if(MSVC)
+    install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${render_pipeline_DEBUG_POSTFIX}.pdb"
+        DESTINATION ${RPPLUGIN_INSTALL_DIR}
+        CONFIGURATIONS Debug
+    )
 
-install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${render_pipeline_RELWITHDEBINFO_POSTFIX}.pdb"
-    DESTINATION ${RPPLUGIN_INSTALL_DIR}
-    CONFIGURATIONS RelWithDebInfo
-)
+    install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${render_pipeline_RELWITHDEBINFO_POSTFIX}.pdb"
+        DESTINATION ${RPPLUGIN_INSTALL_DIR}
+        CONFIGURATIONS RelWithDebInfo
+    )
+endif()
 
 install(FILES "${PROJECT_SOURCE_DIR}/config.yaml" DESTINATION ${RPPLUGIN_INSTALL_DIR})
 foreach(directory_name "include" "resources" "shader")
-    if(EXISTS "${PROJECT_SOURCE_DIR}/${directory_name}")
-        install(DIRECTORY "${PROJECT_SOURCE_DIR}/${directory_name}" DESTINATION ${RPPLUGIN_INSTALL_DIR})
-    endif()
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/${directory_name}"
+        DESTINATION ${RPPLUGIN_INSTALL_DIR}
+        OPTIONAL
+    )
 endforeach()
 
 install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
