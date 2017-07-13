@@ -156,6 +156,21 @@ install(TARGETS ${PROJECT_NAME}
 )
 export(EXPORT ${TARGET_EXPORT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
 
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render_pipeline_DATA_DIR}/")
+
+install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_MACRO_CMAKE_FILE}
+    DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
+)
+install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
+
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+    DESTINATION "share/${PROJECT_NAME}/"
+)
+
 if(MSVC)
     install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${${PROJECT_NAME}_DEBUG_POSTFIX}.pdb"
         DESTINATION "bin"
@@ -167,17 +182,6 @@ if(MSVC)
         CONFIGURATIONS RelWithDebInfo
     )
 endif()
-
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render_pipeline_DATA_DIR}/")
-
-install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${render_pipeline_MACRO_CMAKE_FILE}
-    DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
-)
-install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
 # documents
 if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
@@ -195,11 +199,6 @@ if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
 
     install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/documents/")
 endif()
-
-install(FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md"
-    "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-    DESTINATION "share/${PROJECT_NAME}/")
 # ==================================================================================================
 
 # === subdirectory =================================================================================
