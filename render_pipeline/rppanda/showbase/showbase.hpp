@@ -40,6 +40,11 @@ public:
 
     ~ShowBase(void);
 
+    ShowBase(const ShowBase&) = delete;
+    ShowBase(ShowBase&&) = delete;
+    ShowBase& operator=(const ShowBase&) = delete;
+    ShowBase& operator=(ShowBase&&) = delete;
+
     static ShowBase* get_global_ptr(void);
 
     PandaFramework* get_panda_framework(void) const;
@@ -129,6 +134,8 @@ public:
     void setup_render_2dp(void);
 
     void setup_render(void);
+
+    void setup_render_2d(void);
 
     NodePath make_camera2dp(GraphicsWindow* win, int sort=20,
         const LVecBase4f& display_region=LVecBase4f(0, 1, 0, 1),

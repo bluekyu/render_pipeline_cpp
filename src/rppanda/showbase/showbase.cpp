@@ -36,6 +36,7 @@ struct ShowBase::Impl
 
     void setup_mouse(void);
     void setup_render_2dp(void);
+    void setup_render_2d(void);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
@@ -85,6 +86,30 @@ public:
     NodePath a2dp_top_right_;
     NodePath a2dp_bottom_left_;
     NodePath a2dp_bottom_right_;
+
+    NodePath a2d_background_;
+    float a2d_top_;
+    float a2d_bottom_;
+    float a2d_left_;
+    float a2d_right_;
+
+    NodePath a2d_top_center_;
+    NodePath a2d_top_center_ns_;
+    NodePath a2d_bottom_center_;
+    NodePath a2d_bottom_center_ns_;
+    NodePath a2d_left_center_;
+    NodePath a2d_left_center_ns_;
+    NodePath a2d_right_center_;
+    NodePath a2d_right_center_ns_;
+
+    NodePath a2d_top_left_;
+    NodePath a2d_top_left_ns_;
+    NodePath a2d_top_right_;
+    NodePath a2d_top_right_ns_;
+    NodePath a2d_bottom_left_;
+    NodePath a2d_bottom_left_ns_;
+    NodePath a2d_bottom_right_;
+    NodePath a2d_bottom_right_ns_;
 
     NodePath mouse_watcher_;
     MouseWatcher* mouse_watcher_node_;
@@ -163,10 +188,11 @@ void ShowBase::Impl::Init(void)
     // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
     graphics_engine_ = GraphicsEngine::get_global_ptr();
     self_.setup_render();
+    self_.setup_render_2d();
     self_.setup_data_graph();
 
     if (want_render_2dp_)
-        setup_render_2dp();
+        self_.setup_render_2dp();
 
     win_ = window_framework_->get_graphics_window();
 
@@ -279,6 +305,67 @@ void ShowBase::Impl::setup_render_2dp(void)
         pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
 }
 
+void ShowBase::Impl::setup_render_2d(void)
+{
+    // Window framework already created render2d.
+    NodePath render2d = self_.get_render_2d();
+
+    // Window framework already created aspect2d.
+    NodePath aspect_2d = self_.get_aspect_2d();
+
+    a2d_background_ = aspect_2d.attach_new_node("a2d_background");
+
+    const float aspect_ratio = self_.get_aspect_ratio();
+
+    // The Z position of the top border of the aspect2d screen.
+    a2d_top_ = 1.0f;
+    // The Z position of the bottom border of the aspect2d screen.
+    a2d_bottom_ = -1.0f;
+    // The X position of the left border of the aspect2d screen.
+    a2d_left_ = -aspect_ratio;
+    // The X position of the right border of the aspect2d screen.
+    a2d_right_ = aspect_ratio;
+
+    a2d_top_center_ = aspect_2d.attach_new_node("a2d_top_center");
+    a2d_top_center_ns_ = aspect_2d.attach_new_node("a2d_top_center_ns");
+    a2d_bottom_center_ = aspect_2d.attach_new_node("a2d_bottom_center");
+    a2d_bottom_center_ns_ = aspect_2d.attach_new_node("a2d_bottom_center_ns");
+    a2d_left_center_ = aspect_2d.attach_new_node("a2d_left_center");
+    a2d_left_center_ns_ = aspect_2d.attach_new_node("a2d_left_center_ns");
+    a2d_right_center_ = aspect_2d.attach_new_node("a2d_right_center");
+    a2d_right_center_ns_ = aspect_2d.attach_new_node("a2d_right_center_ns");
+
+    a2d_top_left_ = aspect_2d.attach_new_node("a2d_top_left");
+    a2d_top_left_ns_ = aspect_2d.attach_new_node("a2d_top_left_ns");
+    a2d_top_right_ = aspect_2d.attach_new_node("a2d_top_right");
+    a2d_top_right_ns_ = aspect_2d.attach_new_node("a2d_top_right_ns");
+    a2d_bottom_left_ = aspect_2d.attach_new_node("a2d_bottom_left");
+    a2d_bottom_left_ns_ = aspect_2d.attach_new_node("a2d_bottom_left_ns");
+    a2d_bottom_right_ = aspect_2d.attach_new_node("a2d_bottom_right");
+    a2d_bottom_right_ns_ = aspect_2d.attach_new_node("a2d_bottom_right_ns");
+
+    // Put the nodes in their places
+    a2d_top_center_.set_pos(0, 0, a2d_top_);
+    a2d_top_center_ns_.set_pos(0, 0, a2d_top_);
+    a2d_bottom_center_.set_pos(0, 0, a2d_bottom_);
+    a2d_bottom_center_ns_.set_pos(0, 0, a2d_bottom_);
+    a2d_left_center_.set_pos(a2d_left_, 0, 0);
+    a2d_left_center_ns_.set_pos(a2d_left_, 0, 0);
+    a2d_right_center_.set_pos(a2d_right_, 0, 0);
+    a2d_right_center_ns_.set_pos(a2d_right_, 0, 0);
+
+    a2d_top_left_.set_pos(a2d_left_, 0, a2d_top_);
+    a2d_top_left_ns_.set_pos(a2d_left_, 0, a2d_top_);
+    a2d_top_right_.set_pos(a2d_right_, 0, a2d_top_);
+    a2d_top_right_ns_.set_pos(a2d_right_, 0, a2d_top_);
+    a2d_bottom_left_.set_pos(a2d_left_, 0, a2d_bottom_);
+    a2d_bottom_left_ns_.set_pos(a2d_left_, 0, a2d_bottom_);
+    a2d_bottom_right_.set_pos(a2d_right_, 0, a2d_bottom_);
+    a2d_bottom_right_ns_.set_pos(a2d_right_, 0, a2d_bottom_);
+
+    // pixel2d is created in window framework.
+}
+
 void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
 {
     // keep a list of sfx manager objects to apply settings to,
@@ -351,7 +438,11 @@ ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this)
 
 ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
 {
+#if _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
+#else
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+#endif
     impl_->Init();
 }
 
@@ -477,6 +568,11 @@ void ShowBase::setup_render(void)
     impl_->backface_culling_enabled_ = render.get_two_sided();
     //textureEnabled = 1;
     impl_->wireframe_enabled_ = render.get_render_mode() == RenderModeAttrib::M_wireframe;
+}
+
+void ShowBase::setup_render_2d(void)
+{
+    impl_->setup_render_2d();
 }
 
 NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,

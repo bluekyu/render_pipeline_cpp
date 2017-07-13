@@ -202,6 +202,21 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
         std::string new_lod_name = lod_name;
         if (merge_LOD_bundles)
             new_lod_name = "common";
+
+#if _MSC_VER >= 1900
+        anim_control_dict_.insert_or_assign(new_lod_name, {});
+        anim_control_dict_.at(new_lod_name).insert_or_assign(part_name, {});
+
+        for (int i = 0; i < num_anims; ++i)
+        {
+            auto anim_contorl = acc->get_anim(i);
+            auto anim_name = acc->get_anim_name(i);
+
+            Impl::AnimDef anim_def;
+            anim_def.anim_control = anim_contorl;
+            anim_control_dict_.at(new_lod_name).at(part_name).insert_or_assign(anim_name, anim_def);
+        }
+#else
         anim_control_dict_.insert({new_lod_name, {}});
         anim_control_dict_.at(new_lod_name).insert({part_name, {}});
 
@@ -214,6 +229,7 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
             anim_def.anim_control = anim_contorl;
             anim_control_dict_.at(new_lod_name).at(part_name).insert({anim_name, anim_def});
         }
+#endif
     }
 }
 
@@ -278,7 +294,11 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 
     rppanda_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
 
+#if _MSC_VER >= 1900
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](auto){});
+#else
+    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](LoaderOptions*){});
+#endif
     if (!copy)
     {
         // If copy = 0, then we should always hit the disk.

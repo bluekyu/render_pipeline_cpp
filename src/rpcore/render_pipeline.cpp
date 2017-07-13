@@ -817,7 +817,11 @@ RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipel
         return;
     }
 
+#if _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
+#else
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
+#endif
 
     global_ptr_ = this;
 
