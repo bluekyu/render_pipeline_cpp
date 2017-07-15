@@ -1,4 +1,6 @@
 @PACKAGE_INIT@
 
 include(${CMAKE_CURRENT_LIST_DIR}/@TARGET_EXPORT_NAME@.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_NAME@-macro.cmake OPTIONAL)
+
 check_required_components(@PACKAGE_NAME@)
