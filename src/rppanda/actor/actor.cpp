@@ -204,8 +204,8 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
             new_lod_name = "common";
 
 #if _MSC_VER >= 1900
-        anim_control_dict_.insert_or_assign(new_lod_name, {});
-        anim_control_dict_.at(new_lod_name).insert_or_assign(part_name, {});
+        anim_control_dict_.insert_or_assign(new_lod_name, decltype(anim_control_dict_)::mapped_type{});
+        anim_control_dict_.at(new_lod_name).insert_or_assign(part_name, decltype(anim_control_dict_)::mapped_type::mapped_type{});
 
         for (int i = 0; i < num_anims; ++i)
         {
