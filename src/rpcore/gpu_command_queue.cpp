@@ -39,8 +39,8 @@ void GPUCommandQueue::process_queue(void)
 void GPUCommandQueue::reload_shaders(void)
 {
 	_command_target->set_shader(RPLoader::load_shader({
-		std::string("/$$rp/shader/default_post_process.vert.glsl"),
-		std::string("/$$rp/shader/process_command_queue.frag.glsl")}
+		"/$$rp/shader/default_post_process.vert.glsl",
+		"/$$rp/shader/process_command_queue.frag.glsl"}
 	));
 }
 
