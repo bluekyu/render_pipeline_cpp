@@ -4,6 +4,25 @@
 
 namespace rppanda {
 
+inline std::string join_to_string(const std::vector<Filename>& filenames)
+{
+    std::string resources;
+    auto iter = filenames.begin();
+    const auto iter_end = filenames.end();
+    if (iter != iter_end)
+    {
+        resources += iter->c_str();
+        ++iter;
+
+        for (; iter != iter_end; ++iter)
+        {
+            resources += ", ";
+            resources += iter->c_str();
+        }
+    }
+    return resources;
+}
+
 inline Filename join(const Filename& lhs, const Filename& rhs)
 {
     return lhs / rhs;

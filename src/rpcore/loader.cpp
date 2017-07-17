@@ -15,6 +15,7 @@
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 namespace rpcore {
 
@@ -90,22 +91,7 @@ Texture* RPLoader::load_3d_texture(const Filename& filename)
 
 PT(Shader) RPLoader::load_shader(const std::vector<Filename>& path_args)
 {
-    std::string resources;
-    auto iter = path_args.begin();
-    const auto iter_end = path_args.end();
-    if (iter != iter_end)
-    {
-        resources += iter->c_str();
-        ++iter;
-
-        for (; iter != iter_end; ++iter)
-        {
-            resources += ", ";
-            resources += iter->c_str();
-        }
-    }
-
-    TimedLoadingOperation tlo(resources);
+    TimedLoadingOperation tlo(rppanda::join_to_string(path_args));
 
     const size_t len = path_args.size();
 
