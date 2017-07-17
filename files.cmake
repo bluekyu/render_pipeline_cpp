@@ -32,6 +32,7 @@ set(header_rppanda_interval
 
 set(header_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/direct_object.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/loader.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/sfx_player.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.hpp"
 )
@@ -196,6 +197,7 @@ set(source_rppanda_interval
 
 set(source_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/direct_object.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/loader.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/sfx_player.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/showbase.cpp"
 )

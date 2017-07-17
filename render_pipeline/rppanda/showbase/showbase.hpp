@@ -28,6 +28,7 @@ class AudioSound;
 namespace rppanda {
 
 class SfxPlayer;
+class Loader;
 
 class RENDER_PIPELINE_DECL ShowBase: public DirectObject
 {
@@ -50,10 +51,12 @@ public:
     PandaFramework* get_panda_framework(void) const;
     WindowFramework* get_window_framework(void) const;
 
+    rppanda::Loader* get_loader(void) const;
     GraphicsEngine* get_graphics_engine(void) const;
     GraphicsWindow* get_win(void) const;
 
     SfxPlayer* get_sfx_player(void) const;
+    const std::vector<PT(AudioManager)>& get_sfx_manager_list(void) const;
     AudioManager* get_music_manager(void) const;
 
     NodePath get_render(void) const;

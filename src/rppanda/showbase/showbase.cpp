@@ -18,6 +18,7 @@
 #include <throw_event.h>
 
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
+#include "render_pipeline/rppanda/showbase/loader.hpp"
 
 #include "rppanda/config_rppanda.hpp"
 
@@ -52,6 +53,7 @@ public:
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
+    rppanda::Loader* loader_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win_ = nullptr;
 
@@ -59,7 +61,8 @@ public:
     PT(AudioManager) sfx_manager_;
     PT(AudioManager) music_manager_;
 
-    std::vector<std::pair<PT(AudioManager), bool>> sfx_manager_list_;
+    std::vector<PT(AudioManager)> sfx_manager_list_;
+    std::vector<bool> sfx_manager_is_valid_list_;
 
     bool want_render_2dp_;
     float config_aspect_ratio_;
@@ -141,7 +144,7 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
     }
 
     for (auto& x: impl->sfx_manager_list_)
-        x.first->update();
+        x->update();
 
     return AsyncTask::DS_cont;
 }
@@ -205,6 +208,8 @@ void ShowBase::Impl::Init(void)
     // can explicitly call base.useDrive() if they prefer a drive
     // interface.
     self_.use_trackball();
+
+    loader_ = new rppanda::Loader(self_);
 
     app_has_audio_focus_ = true;
 
@@ -371,8 +376,9 @@ void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
 {
     // keep a list of sfx manager objects to apply settings to,
     // since there may be others in addition to the one we create here
+    sfx_manager_list_.push_back(extra_sfx_manager);
     bool new_sfx_manager_is_valid = extra_sfx_manager && extra_sfx_manager->is_valid();
-    sfx_manager_list_.push_back({extra_sfx_manager, new_sfx_manager_is_valid});
+    sfx_manager_is_valid_list_.push_back(new_sfx_manager_is_valid);
     if (new_sfx_manager_is_valid)
         extra_sfx_manager->set_active(sfx_active_);
 }
@@ -456,9 +462,19 @@ ShowBase::~ShowBase(void)
         impl_->music_manager_->shutdown();
         impl_->music_manager_.clear();
         for (auto& manager: impl_->sfx_manager_list_)
-            manager.first->shutdown();
+            manager->shutdown();
         impl_->sfx_manager_list_.clear();
+        impl_->sfx_manager_is_valid_list_.clear();
     }
+
+    if (impl_->loader_)
+    {
+        delete impl_->loader_;
+        impl_->loader_ = nullptr;
+    }
+
+    // will remove in PandaFramework::~PandaFramework
+    //impl_->graphics_engine_->remove_all_windows();
 
     global_showbase = nullptr;
 }
@@ -478,6 +494,11 @@ WindowFramework* ShowBase::get_window_framework(void) const
     return impl_->window_framework_;
 }
 
+rppanda::Loader* ShowBase::get_loader(void) const
+{
+    return impl_->loader_;
+}
+
 GraphicsEngine* ShowBase::get_graphics_engine(void) const
 {
     return impl_->graphics_engine_;
@@ -486,6 +507,11 @@ GraphicsEngine* ShowBase::get_graphics_engine(void) const
 GraphicsWindow* ShowBase::get_win(void) const
 {
     return impl_->win_;
+}
+
+const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list(void) const
+{
+    return impl_->sfx_manager_list_;
 }
 
 SfxPlayer* ShowBase::get_sfx_player(void) const
@@ -855,10 +881,11 @@ void ShowBase::enable_music(bool enable)
 
 void ShowBase::set_all_sfx_enables(bool enable)
 {
-    for (auto& manager_valid: impl_->sfx_manager_list_)
+    
+    for (size_t k=0, k_end=impl_->sfx_manager_list_.size(); k < k_end; ++k)
     {
-        if (manager_valid.second)
-            manager_valid.first->set_active(enable);
+        if (impl_->sfx_manager_is_valid_list_[k])
+            impl_->sfx_manager_list_[k]->set_active(enable);
     }
 }
 
