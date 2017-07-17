@@ -10,10 +10,10 @@ namespace rppanda {
 
 class ImageInput;
 
-class DirectCheckBox: public DirectButton
+class RENDER_PIPELINE_DECL DirectCheckBox: public DirectButton
 {
 public:
-	struct Options: public DirectButton::Options
+	struct RENDER_PIPELINE_DECL Options: public DirectButton::Options
 	{
 		Options(void);
 

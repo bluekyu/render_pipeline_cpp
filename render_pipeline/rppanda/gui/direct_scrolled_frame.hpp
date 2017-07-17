@@ -11,10 +11,10 @@ class PGScrollFrame;
 
 namespace rppanda {
 
-class DirectScrolledFrame: public DirectFrame
+class RENDER_PIPELINE_DECL DirectScrolledFrame: public DirectFrame
 {
 public:
-	struct Options: public DirectFrame::Options
+	struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
 	{
 		Options(void);
 

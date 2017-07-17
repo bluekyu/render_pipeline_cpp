@@ -9,10 +9,10 @@
 
 namespace rppanda {
 
-class DirectFrame: public DirectGuiWidget
+class RENDER_PIPELINE_DECL DirectFrame: public DirectGuiWidget
 {
 public:
-    struct Options: public DirectGuiWidget::Options
+    struct RENDER_PIPELINE_DECL Options: public DirectGuiWidget::Options
     {
         Options(void);
 

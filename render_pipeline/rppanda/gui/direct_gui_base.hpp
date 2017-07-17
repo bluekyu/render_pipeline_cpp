@@ -21,7 +21,7 @@ namespace rppanda {
  * Base class for all Direct Gui items.  Handles composite widgets and
  * command line argument parsing.
  */
-class DirectGuiBase: public DirectObject
+class RENDER_PIPELINE_DECL DirectGuiBase: public DirectObject
 {
 public:
 	DirectGuiBase(void) = default;
@@ -71,10 +71,10 @@ inline const std::string& DirectGuiBase::get_gui_id(void) const
 }
 
 // ************************************************************************************************
-class DirectGuiWidget: public DirectGuiBase, public NodePath
+class RENDER_PIPELINE_DECL DirectGuiWidget: public DirectGuiBase, public NodePath
 {
 public:
-	struct Options
+	struct RENDER_PIPELINE_DECL Options
 	{
 		Options(void);
 		virtual ~Options(void) = default;

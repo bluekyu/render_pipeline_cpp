@@ -11,10 +11,10 @@ class PGSliderBar;
 
 namespace rppanda {
 
-class DirectScrollBar: public DirectFrame
+class RENDER_PIPELINE_DECL DirectScrollBar: public DirectFrame
 {
 public:
-	struct Options: public DirectFrame::Options
+	struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
 	{
 		Options(void);
 

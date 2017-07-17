@@ -11,11 +11,13 @@
 
 #include <boost/optional.hpp>
 
+#include <render_pipeline/rpcore/config.hpp>
+
 class AudioSound;
 
 namespace rppanda {
 
-class SoundInterval: public CInterval
+class RENDER_PIPELINE_DECL SoundInterval: public CInterval
 {
 public:
     static size_t sound_num_;   //!< Name counter
