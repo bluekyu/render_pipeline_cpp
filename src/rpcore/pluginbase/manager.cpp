@@ -104,8 +104,10 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     }
     catch (const std::exception& err)
     {
-        self_.error(fmt::format("Failed to import plugin or to create plugin ({}). Error message: {}", plugin_id, err.what()));
-        return std::shared_ptr<BasePlugin>();
+        self_.error(fmt::format("Failed to import plugin or to create plugin ({}).", plugin_id));
+        self_.error(fmt::format("Loaded path: {}{}", plugin_path.string(), boost::dll::shared_library::suffix().string()));
+        self_.error(fmt::format("Boost::DLL Error message: {}", err.what()));
+        return nullptr;
     }
 
     // TODO: implement
@@ -140,7 +142,7 @@ void PluginManager::load(void)
             continue;
         }
 
-        const std::shared_ptr<BasePlugin>& handle = impl_->load_plugin(plugin_id);
+        std::shared_ptr<BasePlugin> handle = impl_->load_plugin(plugin_id);
 
         if (handle)
             impl_->instances_[plugin_id] = handle;
