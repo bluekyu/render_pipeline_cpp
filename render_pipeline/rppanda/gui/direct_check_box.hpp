@@ -13,6 +13,7 @@ class ImageInput;
 class RENDER_PIPELINE_DECL DirectCheckBox: public DirectButton
 {
 public:
+    /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options: public DirectButton::Options
     {
         Options(void);
