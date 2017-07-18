@@ -20,6 +20,32 @@ namespace rppanda {
 class Actor::Impl
 {
 public:
+    /**
+     * Instances of this class are stored within the
+     * PartBundleDict to track all of the individual PartBundles
+     * associated with the Actor.  In general, each separately loaded
+     * model file is a different PartBundle.  This can include the
+     * multiple different LOD's, as well as the multiple different
+     * pieces of a multipart Actor.
+     */
+    class PartDef
+    {
+    public:
+        NodePath part_bundle_np;
+        PT(PartBundleHandle) part_bundle_handle;
+        PT(PandaNode) part_model;
+    };
+
+    /**
+     * Instances of this class are stored within the
+     * AnimControlDict to track all of the animations associated with
+     * the Actor.  This includes animations that have already been
+     * bound (these have a valid AnimControl) as well as those that
+     * have not yet been bound (for these, self.animControl is None).
+     * 
+     * There is a different AnimDef for each different part or
+     * sub-part, times each different animation in the AnimDict.
+     */
     class AnimDef
     {
     public:
@@ -48,6 +74,12 @@ public:
     void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
     void prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
 
+    /**
+     * Cache the sorted LOD names so we don't have to grab them
+     * and sort them every time somebody asks for the list.
+     */
+    void update_sorted_LOD_names(void);
+
 public:
     Actor& self_;
 
@@ -60,6 +92,10 @@ public:
     std::unordered_map<std::string,
         std::unordered_map<std::string,
         std::unordered_map<std::string, AnimDef>>> anim_control_dict_;
+    std::unordered_map<std::string, std::unordered_map<std::string, PartDef>> part_bundle_dict_;
+    std::unordered_map<std::string, PT(PartBundleHandle)> common_bundle_handles_;
+
+    std::vector<std::string> sorted_LOD_names_;
 
     bool got_name_;
 
@@ -235,7 +271,88 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
 
 void Actor::Impl::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name, const std::string& lod_name)
 {
-    // TODO
+    if (subpart_dict_.find(part_name) != subpart_dict_.end())
+        throw std::runtime_error("Subpart (" + part_name + ") already exists");
+
+    // Rename the node at the top of the hierarchy, if we
+    // haven't already, to make it easier to identify this
+    // actor in the scene graph.
+    if (!got_name_)
+    {
+        self_.node()->set_name(bundle_np.node()->get_name());
+        got_name_ = true;
+    }
+
+    if (part_bundle_dict_.find(lod_name) == part_bundle_dict_.end())
+    {
+        // make a dictionary to store these parts in
+#if _MSC_VER >= 1900
+        part_bundle_dict_.insert_or_assign(lod_name, decltype(part_bundle_dict_)::mapped_type{});
+#else
+        part_bundle_dict_.insert({lod_name, {}});
+#endif
+        update_sorted_LOD_names();
+    }
+
+    auto& bundle_dict = part_bundle_dict_.at(lod_name);
+
+    Character* node = DCAST(Character, bundle_np.node());
+    // A model loaded from disk will always have just one bundle.
+    if (node->get_num_bundles() != 1)
+        throw std::runtime_error("The number of bundles is NOT 1");
+
+    PT(PartBundleHandle) bundle_handle = node->get_bundle_handle(0);
+
+    if (merge_LOD_bundles_)
+    {
+        if (common_bundle_handles_.find(part_name) != common_bundle_handles_.end())
+        {
+            // We've already got a bundle for this part; merge it.
+            auto loaded_bundle_handle = common_bundle_handles_.at(part_name);
+            node->merge_bundles(bundle_handle, loaded_bundle_handle);
+            bundle_handle = loaded_bundle_handle;
+        }
+        else
+        {
+#if _MSC_VER >= 1900
+            common_bundle_handles_.insert_or_assign(part_name, bundle_handle);
+#else
+            common_bundle_handles_.insert({part_name, bundle_handle});
+#endif
+        }
+    }
+
+#if _MSC_VER >= 1900
+    bundle_dict.insert_or_assign(part_name, Impl::PartDef{bundle_np, bundle_handle, part_model});
+#else
+    bundle_dict.insert({part_name, Impl::PartDef{bundle_np, bundle_handle, part_model}});
+#endif
+}
+
+void Actor::Impl::update_sorted_LOD_names(void)
+{
+    sorted_LOD_names_.clear();
+    sorted_LOD_names_.reserve(part_bundle_dict_.size());
+    for (auto& bundle: part_bundle_dict_)
+        sorted_LOD_names_.push_back(bundle.first);
+
+    std::sort(sorted_LOD_names_.begin(), sorted_LOD_names_.end(),
+        [](const std::string& lhs, const std::string& rhs){
+
+        auto sort_key = [](const std::string& x) {
+            static const std::unordered_map<std::string, int> smap = {
+                {"h", 3}, {"m", 2}, {"l", 1}, {"f", 0}
+            };
+
+            char x_char = x[0];
+
+            // TODO
+        };
+
+
+
+        return rhs < lhs;
+    });
 }
 
 // ************************************************************************************************
