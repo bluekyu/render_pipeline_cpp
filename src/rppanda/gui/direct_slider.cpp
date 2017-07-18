@@ -145,13 +145,13 @@ void DirectSlider::initialise_options(const std::shared_ptr<Options>& options)
 {
     DirectFrame::initialise_options(options);
 
-    _f_init = true;
+    f_init_ = true;
     set_range(options->range);
     set_value(options->value);
     set_scroll_size(options->scroll_size);
     set_page_size(options->page_size);
     set_orientation(options->orientation);
-    _f_init = false;
+    f_init_ = false;
 }
 
 }

@@ -166,10 +166,10 @@ void DirectFrame::initialise_options(const std::shared_ptr<Options>& options)
 {
     DirectGuiWidget::initialise_options(options);
 
-    _f_init = true;
+    f_init_ = true;
     set_text(options->text);
     set_image(options->image);
-    _f_init = false;
+    f_init_ = false;
 }
 
 }

@@ -67,8 +67,8 @@ void DirectCheckBox::initialise_options(const std::shared_ptr<Options>& options)
 {
     DirectButton::initialise_options(options);
 
-    _f_init = true;
-    _f_init = false;
+    f_init_ = true;
+    f_init_ = false;
 }
 
 }

@@ -163,7 +163,7 @@ void DirectScrollBar::initialise_options(const std::shared_ptr<Options>& options
 {
     DirectFrame::initialise_options(options);
 
-    _f_init = true;
+    f_init_ = true;
     set_range(options->range);
     set_value(options->value);
     set_scroll_size(options->scroll_size);
@@ -171,7 +171,7 @@ void DirectScrollBar::initialise_options(const std::shared_ptr<Options>& options
     set_orientation(options->orientation);
     set_manage_buttons(options->manage_buttons);
     set_resize_thumb(options->resize_thumb);
-    _f_init = false;
+    f_init_ = false;
 }
 
 }

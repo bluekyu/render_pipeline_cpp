@@ -135,9 +135,9 @@ void DirectButton::initialise_options(const std::shared_ptr<Options>& options)
 {
     DirectFrame::initialise_options(options);
 
-    _f_init = true;
+    f_init_ = true;
     set_command_buttons();
-    _f_init = false;
+    f_init_ = false;
 }
 
 }

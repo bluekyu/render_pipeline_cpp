@@ -47,34 +47,40 @@ public:
     void unbind(const std::string& event_name);
 
 protected:
-    bool _f_init = true;
-    std::string _gui_id = "guiObject";
+    bool f_init_ = true;
+    std::string gui_id_ = "guiObject";
 
 private:
-    std::unordered_map<std::string, boost::any> _component_info;
+    std::unordered_map<std::string, boost::any> component_info_;
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
+    static const std::type_info& get_class_type(void) { return type_handle_; }
     virtual const std::type_info& get_type(void) const { return get_class_type(); }
 
 private:
-    static const std::type_info& _type_handle;
+    static const std::type_info& type_handle_;
 };
 
 inline bool DirectGuiBase::has_component(const std::string& name) const
 {
-    return _component_info.find(name) != _component_info.end();
+    return component_info_.find(name) != component_info_.end();
 }
 
 inline const std::string& DirectGuiBase::get_gui_id(void) const
 {
-    return _gui_id;
+    return gui_id_;
 }
 
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL DirectGuiWidget: public DirectGuiBase, public NodePath
 {
 public:
+    /**
+     * Options for Direct GUI.
+     *
+     * DirectGuiWidget use and **hold** these options, so those are NOT just parameters.
+     * Options class should be created using shared pointer (std::shared_ptr)
+     */
     struct RENDER_PIPELINE_DECL Options
     {
         Options(void);
@@ -162,7 +168,7 @@ protected:
     void initialise_options(const std::shared_ptr<Options>& options);
     void frame_initialise_func(void);
 
-    PGItem* const _gui_item;        ///< This is just for access.
+    PGItem* const _gui_item;    ///< This is just for access and stored in NodePath
     std::vector<NodePath> _state_node_path;
     std::shared_ptr<Options> _options;
 

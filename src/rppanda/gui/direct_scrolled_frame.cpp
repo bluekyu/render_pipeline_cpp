@@ -85,11 +85,11 @@ void DirectScrolledFrame::initialise_options(const std::shared_ptr<Options>& opt
 {
     DirectFrame::initialise_options(options);
 
-    _f_init = true;
+    f_init_ = true;
     set_canvas_size(options->canvas_size);
     set_manage_scroll_bars(options->manage_scroll_bars);
     set_auto_hide_scroll_bars(options->auto_hide_scroll_bars);
-    _f_init = false;
+    f_init_ = false;
 }
 
 }

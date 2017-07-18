@@ -23,7 +23,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectGuiBase::_type_handle(typeid(DirectGuiBase));
+const std::type_info& DirectGuiBase::type_handle_(typeid(DirectGuiBase));
 
 boost::any& DirectGuiBase::create_component(const std::string& component_name, boost::any&& component)
 {
@@ -53,19 +53,19 @@ boost::any& DirectGuiBase::create_component(const std::string& component_name, b
     }
 
     // Create the widget
-    _component_info[component_name] = component;
+    component_info_[component_name] = component;
 
-    return _component_info.at(component_name);
+    return component_info_.at(component_name);
 }
 
 boost::any& DirectGuiBase::get_component(const std::string& name)
 {
-    return _component_info.at(name);
+    return component_info_.at(name);
 }
 
 void DirectGuiBase::remove_component(const std::string& name)
 {
-    _component_info.erase(name);
+    component_info_.erase(name);
 }
 
 void DirectGuiBase::bind(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
@@ -112,7 +112,7 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
 
     // Override automatically generated guiId
     //if (_gui_id.empty())
-    _gui_id = _gui_item->get_id();
+    gui_id_ = _gui_item->get_id();
 
     // Update pose to initial values
     if (options->pos)
@@ -224,7 +224,7 @@ void DirectGuiWidget::set_state(bool state)
 
 void DirectGuiWidget::reset_frame_size(void)
 {
-    if (!_f_init)
+    if (!f_init_)
         set_frame_size(true);
 }
 
@@ -303,7 +303,7 @@ PGFrameStyle::Type DirectGuiWidget::get_frame_type(int state)
 
 void DirectGuiWidget::update_frame_style(void)
 {
-    if (!_f_init)
+    if (!f_init_)
     {
         for (int k=0; k < _options->num_states; ++k)
         {
@@ -446,7 +446,7 @@ const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options
 
 void DirectGuiWidget::initialise_options(const std::shared_ptr<Options>& options)
 {
-    _f_init = true;
+    f_init_ = true;
     set_state(options->state);
     set_relief(options->relief);
     set_border_width(options->border_width);
@@ -456,7 +456,7 @@ void DirectGuiWidget::initialise_options(const std::shared_ptr<Options>& options
     set_frame_texture(options->frame_texture);
     set_frame_visible_scale(options->frame_visible_scale.get());
     reset_frame_size();
-    _f_init = false;
+    f_init_ = false;
 }
 
 void DirectGuiWidget::frame_initialise_func(void)
