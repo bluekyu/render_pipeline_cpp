@@ -55,7 +55,7 @@ public:
      * this is the 'config/pipeline.ini' file. If you call this more than once,
      * only the settings of the last file will be used.
      */
-    void load_settings(const std::string& path);
+    bool load_settings(const std::string& path);
 
     /**
      * Reloads all shaders. This will reload the shaders of all plugins,
@@ -75,9 +75,9 @@ public:
      * call it manually before you init your custom showbase instance.
      * See the 00-Loading the pipeline sample for more information.
      */
-    void pre_showbase_init(void);
+    bool pre_showbase_init(void);
 
-    void create(void);
+    bool create(void);
 
     /**
      * Tells the pipeline to use the default loading screen, which consists

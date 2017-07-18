@@ -101,7 +101,7 @@ public:
 
     void reload_shaders(void);
 
-    void create(void);
+    bool create(void);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -175,7 +175,7 @@ public:
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    void init_showbase(void);
+    bool init_showbase(void);
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
@@ -464,16 +464,18 @@ void RenderPipeline::Impl::reload_shaders(void)
     apply_custom_shaders();
 }
 
-void RenderPipeline::Impl::create(void)
+bool RenderPipeline::Impl::create(void)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    init_showbase();
+    if (!init_showbase())
+        return false;
 
     if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
     {
         self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
             "you have the latest drivers. If you already have, your gpu might\n"
             "be too old, or you might be using the open source drivers on linux.");
+        return false;
     }
 
     init_globals();
@@ -505,6 +507,8 @@ void RenderPipeline::Impl::create(void)
     const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
     first_frame_ = new auto(std::chrono::system_clock::now());
     self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
+
+    return true;
 }
 
 void RenderPipeline::Impl::apply_custom_shaders(void)
@@ -646,12 +650,13 @@ void RenderPipeline::Impl::compute_render_resolution(void)
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-void RenderPipeline::Impl::init_showbase(void)
+bool RenderPipeline::Impl::init_showbase(void)
 {
     // C++ Panda3D has no ShowBase.
     //if (!base)
     //{
-    self_.pre_showbase_init();
+    if (!self_.pre_showbase_init())
+        return false;
     showbase_ = new rppanda::ShowBase(panda_framework_.get());
     //}
     //else
@@ -671,6 +676,8 @@ void RenderPipeline::Impl::init_showbase(void)
     self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
     self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
     self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
+
+    return true;
 }
 
 void RenderPipeline::Impl::init_bindings(void)
@@ -849,9 +856,11 @@ void RenderPipeline::run(void)
     }
 }
 
-void RenderPipeline::load_settings(const std::string& path)
+bool RenderPipeline::load_settings(const std::string& path)
 {
     impl_->settings = rplibs::load_yaml_file_flat(path);
+    if (impl_->settings.empty())
+        return false;
 
     // set log level
     const auto& level = get_setting<std::string>("pipeline.logging_level", "debug");
@@ -877,8 +886,11 @@ void RenderPipeline::load_settings(const std::string& path)
     }
     else
     {
-        error(fmt::format("Invalid logging level: {}", level));
+        error(fmt::format("Invalid logging level: {}. Fallback to debug level", level));
+        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::debug);
     }
+
+    return true;
 }
 
 void RenderPipeline::reload_shaders(void)
@@ -886,7 +898,7 @@ void RenderPipeline::reload_shaders(void)
     impl_->reload_shaders();
 }
 
-void RenderPipeline::pre_showbase_init(void)
+bool RenderPipeline::pre_showbase_init(void)
 {
     if (!impl_->mount_mgr_->is_mounted())
     {
@@ -894,10 +906,11 @@ void RenderPipeline::pre_showbase_init(void)
         impl_->mount_mgr_->mount();
     }
 
-    if (impl_->settings.size() == 0)
+    if (impl_->settings.empty())
     {
         debug("No settings loaded, loading from default location");
-        load_settings("/$$rpconfig/pipeline.yaml");
+        if (!load_settings("/$$rpconfig/pipeline.yaml"))
+            return false;
     }
 
     // C++ does not require checking install.flag.
@@ -906,11 +919,13 @@ void RenderPipeline::pre_showbase_init(void)
 
     load_prc_file("/$$rpconfig/panda3d-config.prc");
     impl_->pre_showbase_initialized = true;
+
+    return true;
 }
 
-void RenderPipeline::create()
+bool RenderPipeline::create(void)
 {
-    impl_->create();
+    return impl_->create();
 }
 
 void RenderPipeline::set_loading_screen_image(const std::string& image_source)

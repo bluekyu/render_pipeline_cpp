@@ -38,13 +38,23 @@ bool load_yaml_file(const std::string& filename, YAML::Node& result)
         file = vfs->open_read_file(filename, false);
         if (!file)
             throw std::runtime_error("Failed: vfs->open_read_file(filename, false)");
-    } catch (const std::exception& err)
+    }
+    catch (const std::exception& err)
     {
         std::cout << "Failed to read file (" << filename << "): " << err.what();
         return false;
     }
 
-    result = YAML::Load(*file);
+    try
+    {
+        result = YAML::Load(*file);
+    }
+    catch (const std::exception& err)
+    {
+        std::cout << "Failed to parse YAML file (" << filename << "): " << err.what();
+        vfs->close_read_file(file);
+        return false;
+    }
 
     vfs->close_read_file(file);
 
@@ -67,4 +77,4 @@ YamlFlatType load_yaml_file_flat(const std::string& filename)
     return root;
 }
 
-}    // namespace rplibs
+}
