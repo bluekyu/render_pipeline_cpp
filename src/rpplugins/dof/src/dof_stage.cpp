@@ -9,9 +9,9 @@ DoFStage::RequireType DoFStage::required_pipes = { "ShadedScene", "GBuffer", "Do
 
 DoFStage::ProduceType DoFStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("ShadedScene", target_merge_->get_color_tex()),
-	};
+    return {
+        ShaderInput("ShadedScene", target_merge_->get_color_tex()),
+    };
 }
 
 void DoFStage::create(void)
@@ -78,7 +78,7 @@ void DoFStage::reload_shaders(void)
 
 std::string DoFStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

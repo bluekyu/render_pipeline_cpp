@@ -10,9 +10,9 @@ SkyAOStage::RequireType SkyAOStage::required_pipes = { "SkyAOHeight", "GBuffer" 
 
 SkyAOStage::ProduceType SkyAOStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("SkyAO", target_upscale_->get_color_tex()),
-	};
+    return {
+        ShaderInput("SkyAO", target_upscale_->get_color_tex()),
+    };
 }
 
 void SkyAOStage::create(void)
@@ -48,7 +48,7 @@ void SkyAOStage::reload_shaders(void)
 
 std::string SkyAOStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

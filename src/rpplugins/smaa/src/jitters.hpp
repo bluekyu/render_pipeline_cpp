@@ -19,4 +19,4 @@ private:
 
 extern const JitterType JITTERS;
 
-}	// namespace rpplugins
+}    // namespace rpplugins

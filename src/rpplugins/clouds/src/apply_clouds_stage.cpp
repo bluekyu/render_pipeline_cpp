@@ -9,9 +9,9 @@ ApplyCloudsStage::RequireType ApplyCloudsStage::required_pipes = { "ShadedScene"
 
 ApplyCloudsStage::ProduceType ApplyCloudsStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("ShadedScene", _target_apply_clouds->get_color_tex()),
-	};
+    return {
+        ShaderInput("ShadedScene", _target_apply_clouds->get_color_tex()),
+    };
 }
 
 void ApplyCloudsStage::create(void)
@@ -36,14 +36,14 @@ void ApplyCloudsStage::create(void)
 
 void ApplyCloudsStage::reload_shaders(void)
 {
-	_target_apply_clouds->set_shader(load_plugin_shader({ "apply_clouds.frag.glsl" }));
+    _target_apply_clouds->set_shader(load_plugin_shader({ "apply_clouds.frag.glsl" }));
     _render_target->set_shader(load_plugin_shader({ "render_clouds.frag.glsl" }));
     _upscale_target->set_shader(load_plugin_shader({ "/$$rp/shader/bilateral_upscale.frag.glsl" }));
 }
 
 std::string ApplyCloudsStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

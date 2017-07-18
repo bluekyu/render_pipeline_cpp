@@ -10,9 +10,9 @@ ColorCorrectionStage::RequireType ColorCorrectionStage::required_pipes = { "Shad
 
 ColorCorrectionStage::ProduceType ColorCorrectionStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("ShadedScene", target_->get_color_tex()),
-	};
+    return {
+        ShaderInput("ShadedScene", target_->get_color_tex()),
+    };
 }
 
 void ColorCorrectionStage::create(void)
@@ -28,12 +28,12 @@ void ColorCorrectionStage::create(void)
 
 void ColorCorrectionStage::reload_shaders(void)
 {
-	target_->set_shader(load_plugin_shader({"post_fx.frag.glsl"}, stereo_mode_));
+    target_->set_shader(load_plugin_shader({"post_fx.frag.glsl"}, stereo_mode_));
 }
 
 std::string ColorCorrectionStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

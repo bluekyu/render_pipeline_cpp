@@ -94,7 +94,7 @@ void SMAAStage::reload_shaders(void)
 
 std::string SMAAStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

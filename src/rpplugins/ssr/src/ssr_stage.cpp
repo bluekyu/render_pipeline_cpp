@@ -13,9 +13,9 @@ SSRStage::RequireType SSRStage::required_pipes = {
 
 SSRStage::ProduceType SSRStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("SSRSpecular", _target_resolve->get_color_tex()),
-	};
+    return {
+        ShaderInput("SSRSpecular", _target_resolve->get_color_tex()),
+    };
 }
 
 void SSRStage::create(void)
@@ -63,7 +63,7 @@ void SSRStage::reload_shaders(void)
 
 std::string SSRStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

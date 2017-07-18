@@ -12,10 +12,10 @@ PSSMShadowStage::RequireType PSSMShadowStage::required_pipes;
 
 PSSMShadowStage::ProduceType PSSMShadowStage::get_produced_pipes(void) const
 {
-	return {
+    return {
         ShaderInput("PSSMShadowAtlas", _target->get_depth_tex()),
         ShaderInput("PSSMShadowAtlasPCF", _target->get_depth_tex(), make_pcf_state()),
-	};
+    };
 }
 
 SamplerState PSSMShadowStage::make_pcf_state(void) const
@@ -68,7 +68,7 @@ void PSSMShadowStage::set_shader_input(const ShaderInput& inp)
 
 std::string PSSMShadowStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

@@ -13,11 +13,11 @@ VXGIStage::RequireType VXGIStage::required_pipes = {
 
 VXGIStage::ProduceType VXGIStage::get_produced_pipes(void) const
 {
-	return {
-		//ShaderInput("VXGISpecular", _target_spec->get_color_tex()),
+    return {
+        //ShaderInput("VXGISpecular", _target_spec->get_color_tex()),
         ShaderInput("VXGIDiffuse", _target_resolve->get_color_tex()),
         ShaderInput("VXGIPostSample", _target_resolve->get_color_tex()),
-	};
+    };
 }
 
 void VXGIStage::create(void)
@@ -68,7 +68,7 @@ void VXGIStage::create(void)
 
 void VXGIStage::reload_shaders(void)
 {
-	//_target_spec->set_shader(load_plugin_shader({ "vxgi_specular.frag.glsl" }));
+    //_target_spec->set_shader(load_plugin_shader({ "vxgi_specular.frag.glsl" }));
     _target_diff->set_shader(load_plugin_shader({"vxgi_diffuse.frag.glsl"}));
     _target_upscale_diff->set_shader(load_plugin_shader({"/$$rp/shader/bilateral_upscale.frag.glsl"}));
 
@@ -80,7 +80,7 @@ void VXGIStage::reload_shaders(void)
 
 std::string VXGIStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

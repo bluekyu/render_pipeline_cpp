@@ -30,11 +30,11 @@ PSSMSceneShadowStage::ProduceType PSSMSceneShadowStage::get_produced_pipes(void)
 PSSMSceneShadowStage::PSSMSceneShadowStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "PSSMSceneShadowStage")
 {
     _pta_mvp = PTA_LMatrix4f::empty_array(1);
-	_focus.reset();
+    _focus.reset();
 
-	// Store last focus entirely for the purpose of being able to see
-	// it in the debugger
-	_last_focus.reset();
+    // Store last focus entirely for the purpose of being able to see
+    // it in the debugger
+    _last_focus.reset();
 }
 
 SamplerState PSSMSceneShadowStage::make_pcf_state(void) const
@@ -115,7 +115,7 @@ void PSSMSceneShadowStage::set_shader_input(const ShaderInput& inp)
 
 std::string PSSMSceneShadowStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

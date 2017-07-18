@@ -129,4 +129,4 @@ float JitterType::halton_seq(int prime, int index)
     return r;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

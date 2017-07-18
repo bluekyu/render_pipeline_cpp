@@ -139,7 +139,7 @@ void EnvProbesPlugin::on_stage_setup(void)
 
 void EnvProbesPlugin::on_prepare_scene(NodePath scene)
 {
-	const NodePathCollection& ep_npc = scene.find_all_matches("**/ENVPROBE*");
+    const NodePathCollection& ep_npc = scene.find_all_matches("**/ENVPROBE*");
     for (int k=0, k_end=ep_npc.get_num_paths(); k < k_end; ++k)
     {
         auto probe = std::make_shared<EnvironmentProbe>();

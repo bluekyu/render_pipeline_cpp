@@ -23,9 +23,9 @@ VoxelizationStage::ProduceType VoxelizationStage::get_produced_inputs(void) cons
 
 VoxelizationStage::ProduceType VoxelizationStage::get_produced_pipes(void) const
 {
-	return {
+    return {
         ShaderInput("SceneVoxels", _voxel_grid->get_texture()),
-	};
+    };
 }
 
 void VoxelizationStage::create_ptas(void)
@@ -167,7 +167,7 @@ void VoxelizationStage::update(void)
 
 void VoxelizationStage::reload_shaders(void)
 {
-	_copy_target->set_shader(load_plugin_shader({ "/$$rp/shader/default_post_process_instanced.vert.glsl", "copy_voxels.frag.glsl" }));
+    _copy_target->set_shader(load_plugin_shader({ "/$$rp/shader/default_post_process_instanced.vert.glsl", "copy_voxels.frag.glsl" }));
 
     PT(Shader) mip_shader = load_plugin_shader({"/$$rp/shader/default_post_process_instanced.vert.glsl", "generate_mipmaps.frag.glsl"});
     for (auto& target: _mip_targets)
@@ -181,7 +181,7 @@ void VoxelizationStage::set_shader_input(const ShaderInput& inp)
 
 std::string VoxelizationStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

@@ -115,7 +115,7 @@ VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins(void) const
 void VXGIPlugin::on_stage_setup(void)
 {
     impl_->voxel_stage_ = std::make_shared<VoxelizationStage>(pipeline_);
-	add_stage(impl_->voxel_stage_);
+    add_stage(impl_->voxel_stage_);
 
     impl_->vxgi_stage_ = std::make_shared<VXGIStage>(pipeline_);
     add_stage(impl_->vxgi_stage_);

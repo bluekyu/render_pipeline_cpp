@@ -10,9 +10,9 @@ TonemappingStage::RequireType TonemappingStage::required_pipes = { "ShadedScene"
 
 TonemappingStage::ProduceType TonemappingStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("ShadedScene", target_->get_color_tex()),
-	};
+    return {
+        ShaderInput("ShadedScene", target_->get_color_tex()),
+    };
 }
 
 void TonemappingStage::create(void)
@@ -28,12 +28,12 @@ void TonemappingStage::create(void)
 
 void TonemappingStage::reload_shaders(void)
 {
-	target_->set_shader(load_plugin_shader({"apply_tonemap.frag.glsl"}, stereo_mode_));
+    target_->set_shader(load_plugin_shader({"apply_tonemap.frag.glsl"}, stereo_mode_));
 }
 
 std::string TonemappingStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

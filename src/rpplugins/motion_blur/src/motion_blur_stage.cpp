@@ -9,9 +9,9 @@ MotionBlurStage::RequireType MotionBlurStage::required_pipes = { "ShadedScene", 
 
 MotionBlurStage::ProduceType MotionBlurStage::get_produced_pipes(void) const
 {
-	return {
-		ShaderInput("ShadedScene", _target_cam_blur->get_color_tex()),
-	};
+    return {
+        ShaderInput("ShadedScene", _target_cam_blur->get_color_tex()),
+    };
 }
 
 void MotionBlurStage::create(void)
@@ -72,7 +72,7 @@ void MotionBlurStage::reload_shaders(void)
 
 std::string MotionBlurStage::get_plugin_id(void) const
 {
-	return RPPLUGIN_ID_STRING;
+    return RPPLUGIN_ID_STRING;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins

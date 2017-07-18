@@ -31,8 +31,8 @@ SkinShadingPlugin::RequrieType& SkinShadingPlugin::get_required_plugins(void) co
 
 void SkinShadingPlugin::on_stage_setup(void)
 {
-	impl_->stage_ = std::make_shared<SkinShadingStage>(pipeline_);
-	add_stage(impl_->stage_);
+    impl_->stage_ = std::make_shared<SkinShadingStage>(pipeline_);
+    add_stage(impl_->stage_);
 }
 
 }

@@ -19,12 +19,12 @@ class PSSMSceneShadowStage: public rpcore::RenderStage
 public:
     PSSMSceneShadowStage(rpcore::RenderPipeline& pipeline);
 
-	RequireType& get_required_inputs(void) const final { return required_inputs; }
-	RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs(void) const final { return required_inputs; }
+    RequireType& get_required_pipes(void) const final { return required_pipes; }
     ProduceType get_produced_inputs(void) const final;
-	ProduceType get_produced_pipes(void) const final;
+    ProduceType get_produced_pipes(void) const final;
 
-	void create(void) final;
+    void create(void) final;
     void update(void) final;
 
     void set_shader_input(const ShaderInput& inp) final;
@@ -35,17 +35,17 @@ public:
 
     LMatrix4f get_mvp(void) const;
 
-	void set_resolution(int resolution);
+    void set_resolution(int resolution);
     void set_sun_vector(const LVecBase3f& sun_vector);
     void set_sun_distance(float sun_distance);
 
-	const boost::optional<std::pair<LVecBase3f, float>>& get_last_focus(void) const;
+    const boost::optional<std::pair<LVecBase3f, float>>& get_last_focus(void) const;
 
 private:
-	std::string get_plugin_id(void) const final;
+    std::string get_plugin_id(void) const final;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 
     int _resolution = 2048;
     LVecBase3f _sun_vector = LVecBase3f(0, 0, 1);
@@ -58,7 +58,7 @@ private:
     PT(OrthographicLens) _cam_lens;
     NodePath _cam_node;
 
-	std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
 };
 
 inline void PSSMSceneShadowStage::set_resolution(int resolution)
@@ -78,7 +78,7 @@ inline void PSSMSceneShadowStage::set_sun_distance(float sun_distance)
 
 inline const boost::optional<std::pair<LVecBase3f, float>>& PSSMSceneShadowStage::get_last_focus(void) const
 {
-	return _last_focus;
+    return _last_focus;
 }
 
-}	// namespace rpplugins
+}    // namespace rpplugins
