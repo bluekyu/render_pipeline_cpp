@@ -91,6 +91,16 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id));
 #endif
 
+#if defined(BOOST_OS_WINDOWS)
+    // try to use extended-length in Windows
+    // see http://www.boost.org/doc/libs/1_64_0/libs/filesystem/doc/reference.html#long-path-warning
+    if (plugin_path.size() > 259)
+    {
+        self_.warn(fmt::format("Plugin ({}) path has long path. Try to use extended-length path.", plugin_id));
+        plugin_path = "\\\\?\\" + plugin_path.string();
+    }
+#endif
+
     self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
 
     try
