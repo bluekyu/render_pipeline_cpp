@@ -133,7 +133,7 @@ private:
     bool _may_change = true;
     bool _is_clean = false;
 
-    PandaNode* _text_node;		///< This is just for access.
+    PandaNode* _text_node;        ///< This is just for access.
 };
 
 // ************************************************************************************************
