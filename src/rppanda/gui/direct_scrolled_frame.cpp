@@ -6,6 +6,8 @@
 
 #include <pgScrollFrame.h>
 
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+
 namespace rppanda {
 
 const std::type_info& DirectScrolledFrame::_type_handle(typeid(DirectScrolledFrame));

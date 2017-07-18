@@ -9,6 +9,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <render_pipeline/rpcore/config.hpp>
+
 class TextFont;
 
 namespace rppanda {
@@ -29,7 +31,7 @@ static const PGFrameStyle::Type GROOVE = PGFrameStyle::Type::T_groove;
 static const PGFrameStyle::Type RIDGE = PGFrameStyle::Type::T_ridge;
 static const PGFrameStyle::Type TEXTUREBORDER = PGFrameStyle::Type::T_texture_border;
 
-extern const std::unordered_map<std::string, PGFrameStyle::Type> FrameStyleDict;
+RENDER_PIPELINE_DECL extern const std::unordered_map<std::string, PGFrameStyle::Type> FrameStyleDict;
 
 // Orientation of DirectSlider and DirectScrollBar
 static const std::string HORIZONTAL("horizontal");
@@ -40,28 +42,28 @@ static const std::string VERTICAL_INVERTED("vertical_inverted");
 static const std::string DESTROY("destroy-");
 static const std::string PRINT("print-");
 
-extern const std::string ENTER;
-extern const std::string EXIT;
-extern const std::string WITHIN;
-extern const std::string WITHOUT;
+RENDER_PIPELINE_DECL extern const std::string ENTER;
+RENDER_PIPELINE_DECL extern const std::string EXIT;
+RENDER_PIPELINE_DECL extern const std::string WITHIN;
+RENDER_PIPELINE_DECL extern const std::string WITHOUT;
 
-extern const std::string B1CLICK;
-extern const std::string B2CLICK;
-extern const std::string B3CLICK;
-extern const std::string B1PRESS;
-extern const std::string B2PRESS;
-extern const std::string B3PRESS;
-extern const std::string B1RELEASE;
-extern const std::string B2RELEASE;
-extern const std::string B3RELEASE;
+RENDER_PIPELINE_DECL extern const std::string B1CLICK;
+RENDER_PIPELINE_DECL extern const std::string B2CLICK;
+RENDER_PIPELINE_DECL extern const std::string B3CLICK;
+RENDER_PIPELINE_DECL extern const std::string B1PRESS;
+RENDER_PIPELINE_DECL extern const std::string B2PRESS;
+RENDER_PIPELINE_DECL extern const std::string B3PRESS;
+RENDER_PIPELINE_DECL extern const std::string B1RELEASE;
+RENDER_PIPELINE_DECL extern const std::string B2RELEASE;
+RENDER_PIPELINE_DECL extern const std::string B3RELEASE;
 // For DirectSlider and DirectScrollBar widgets
-extern const std::string ADJUST;
+RENDER_PIPELINE_DECL extern const std::string ADJUST;
 
 // For setting the sorting order of a widget's visible components
 static const int IMAGE_SORT_INDEX = 10;
 static const int GEOM_SORT_INDEX = 20;
 static const int TEXT_SORT_INDEX = 30;
 
-extern TextFont* get_default_font(void);
+RENDER_PIPELINE_DECL extern TextFont* get_default_font(void);
 
 }

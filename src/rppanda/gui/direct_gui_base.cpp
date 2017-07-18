@@ -17,6 +17,8 @@
 
 #include <spdlog/fmt/fmt.h>
 
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+
 #include "rppanda/config_rppanda.hpp"
 
 namespace rppanda {

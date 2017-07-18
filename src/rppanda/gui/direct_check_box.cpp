@@ -7,6 +7,7 @@
 #include <pgButton.h>
 
 #include <render_pipeline/rppanda/util/image_input.hpp>
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 namespace rppanda {
 

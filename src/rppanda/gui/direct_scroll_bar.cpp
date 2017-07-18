@@ -6,6 +6,8 @@
 
 #include <pgSliderBar.h>
 
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+
 namespace rppanda {
 
 const std::type_info& DirectScrollBar::_type_handle(typeid(DirectScrollBar));

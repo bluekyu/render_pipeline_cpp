@@ -2,6 +2,7 @@
 
 #include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rppanda/gui/direct_check_box.hpp"
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 namespace rpcore {
 
