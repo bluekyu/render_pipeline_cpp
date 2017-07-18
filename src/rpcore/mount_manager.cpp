@@ -32,7 +32,7 @@ public:
     void wrtie_lock(void);
 
     /**
-     * @param[in] fname	Panda3D path (unix-style).
+     * @param[in] fname    Panda3D path (unix-style).
      */
     bool try_remove(const std::string& fname);
 

@@ -109,20 +109,20 @@ void Debugger::create_components(void)
 
 void Debugger::update(void)
 {
-	_error_msg_handler->update();
-	_pixel_widget->update();
+    _error_msg_handler->update();
+    _pixel_widget->update();
 }
 
 AsyncTask::DoneStatus Debugger::collect_scene_data(GenericAsyncTask* task, void* user_data)
 {
-	_analyzer->clear();
-	const auto& npc = Globals::base->get_render().find_all_matches("**/+GeomNode");
-	for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-		_analyzer->add_node(npc.get_path(k).node());
+    _analyzer->clear();
+    const auto& npc = Globals::base->get_render().find_all_matches("**/+GeomNode");
+    for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
+        _analyzer->add_node(npc.get_path(k).node());
 
-	if (task)
-		return AsyncTask::DS_again;
-	return AsyncTask::DS_done;
+    if (task)
+        return AsyncTask::DS_again;
+    return AsyncTask::DS_done;
 }
 
 void Debugger::create_stats(void)
@@ -164,10 +164,10 @@ void Debugger::create_hints(void)
 
 void Debugger::set_reload_hint_visible(bool flag)
 {
-	if (flag)
-		_hint_reloading->show();
-	else
-		_hint_reloading->hide();
+    if (flag)
+        _hint_reloading->show();
+    else
+        _hint_reloading->hide();
 }
 
 void Debugger::handle_window_resize(void)

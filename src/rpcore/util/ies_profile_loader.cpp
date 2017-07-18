@@ -8,19 +8,19 @@
 namespace rpcore {
 
 const std::vector<std::string> IESProfileLoader::PROFILES = {
-	"IESNA:LM-63-1986",
-	"IESNA:LM-63-1991",
-	"IESNA91",
-	"IESNA:LM-63-1995",
-	"IESNA:LM-63-2002",
-	"ERCO Leuchten GmbH  BY: ERCO/LUM650/8701",
-	"ERCO Leuchten GmbH"
+    "IESNA:LM-63-1986",
+    "IESNA:LM-63-1991",
+    "IESNA91",
+    "IESNA:LM-63-1995",
+    "IESNA:LM-63-2002",
+    "ERCO Leuchten GmbH  BY: ERCO/LUM650/8701",
+    "ERCO Leuchten GmbH"
 };
 
 size_t IESProfileLoader::load(const std::string& filename)
 {
-	// TODO: implement
-	return 0;
+    // TODO: implement
+    return 0;
 }
 
 void IESProfileLoader::create_storage(void)

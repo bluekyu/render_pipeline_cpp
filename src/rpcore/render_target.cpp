@@ -402,36 +402,36 @@ void RenderTarget::prepare_render(const NodePath& camera_np)
         impl_->source_postprocess_region_ = nullptr;
     }
 
-	if (!camera_np.is_empty())
-	{
+    if (!camera_np.is_empty())
+    {
         Camera* camera = DCAST(Camera, camera_np.node());
 
-		NodePath initial_state("rtis");
-		initial_state.set_state(camera->get_initial_state());
+        NodePath initial_state("rtis");
+        initial_state.set_state(camera->get_initial_state());
 
         if (impl_->aux_count_)
             initial_state.set_attrib(AuxBitplaneAttrib::make(impl_->aux_bits_), 20);
 
-		initial_state.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
+        initial_state.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
 
         if (max_color_bits(impl_->color_bits_) == 0)
-			initial_state.set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
+            initial_state.set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
 
-		// Disable existing regions of the camera
-		for (int k = 0, k_end = camera->get_num_display_regions(); k < k_end; ++k)
-			DCAST(DisplayRegion, camera->get_display_region(k))->set_active(false);
+        // Disable existing regions of the camera
+        for (int k = 0, k_end = camera->get_num_display_regions(); k < k_end; ++k)
+            DCAST(DisplayRegion, camera->get_display_region(k))->set_active(false);
 
-		// Remove the existing display region of the camera
+        // Remove the existing display region of the camera
         for (int k = 0, k_end = impl_->source_window->get_num_display_regions(); k < k_end; ++k)
-		{
+        {
             DisplayRegion* region = impl_->source_window->get_display_region(k);
-			if (region && region->get_camera() == camera_np)
+            if (region && region->get_camera() == camera_np)
                 impl_->source_window->remove_display_region(region);
-		}
+        }
 
-		camera->set_initial_state(initial_state.get_state());
+        camera->set_initial_state(initial_state.get_state());
         impl_->source_display_region_->set_camera(camera_np);
-	}
+    }
 
     impl_->internal_buffer->disable_clears();
     impl_->source_display_region_->disable_clears();
@@ -497,7 +497,7 @@ bool RenderTarget::get_active(void) const
 void RenderTarget::set_active(bool flag)
 {
     const int num_display_regions = impl_->internal_buffer->get_num_display_regions();
-	for (int k = 0; k < num_display_regions; k++)
+    for (int k = 0; k < num_display_regions; k++)
         impl_->internal_buffer->get_display_region(k)->set_active(flag);
     impl_->active = flag;
 }
@@ -510,11 +510,11 @@ void RenderTarget::set_shader_input(const ShaderInput& inp, bool override_input)
 
 void RenderTarget::set_shader(const Shader* sha)
 {
-	if (!sha)
-	{
-		error("shader must not be nullptr!");
-		return;
-	}
+    if (!sha)
+    {
+        error("shader must not be nullptr!");
+        return;
+    }
     impl_->source_postprocess_region_->set_shader(sha, 0);
 }
 

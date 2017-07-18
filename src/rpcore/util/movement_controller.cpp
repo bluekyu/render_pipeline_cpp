@@ -209,147 +209,147 @@ void MovementController::setup(void)
 {
     auto showbase = impl_->showbase_;
 
-	// x
-	showbase->accept("raw-w",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(0, 1);
-	}, this);
-	showbase->accept("raw-w-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(0, 0);
-	}, this);
-	showbase->accept("raw-s",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(0, -1);
-	}, this);
-	showbase->accept("raw-s-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(0, 0);
-	}, this);
+    // x
+    showbase->accept("raw-w",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(0, 1);
+    }, this);
+    showbase->accept("raw-w-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(0, 0);
+    }, this);
+    showbase->accept("raw-s",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(0, -1);
+    }, this);
+    showbase->accept("raw-s-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(0, 0);
+    }, this);
 
-	// y
-	showbase->accept("raw-a",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(1, -1);
-	}, this);
-	showbase->accept("raw-a-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(1, 0);
-	}, this);
-	showbase->accept("raw-d",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(1, 1);
-	}, this);
-	showbase->accept("raw-d-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(1, 0);
-	}, this);
+    // y
+    showbase->accept("raw-a",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(1, -1);
+    }, this);
+    showbase->accept("raw-a-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(1, 0);
+    }, this);
+    showbase->accept("raw-d",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(1, 1);
+    }, this);
+    showbase->accept("raw-d-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(1, 0);
+    }, this);
 
-	// z
-	showbase->accept("space",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(2, 1);
-	}, this);
-	showbase->accept("space-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(2, 0);
-	}, this);
-	showbase->accept("shift",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(2, -1);
-	}, this);
-	showbase->accept("shift-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_movement(2, 0);
-	}, this);
+    // z
+    showbase->accept("space",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(2, 1);
+    }, this);
+    showbase->accept("space-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(2, 0);
+    }, this);
+    showbase->accept("shift",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(2, -1);
+    }, this);
+    showbase->accept("shift-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_movement(2, 0);
+    }, this);
 
-	// wireframe + debug + buffer viewer
-	showbase->accept("f3",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->impl_->showbase_->toggle_wireframe();
-	}, this);
-	showbase->accept("f11",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->impl_->showbase_->get_win()->save_screenshot("screenshot.png");
-	}, this);
-	showbase->accept("j",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->print_position();
-	}, this);
+    // wireframe + debug + buffer viewer
+    showbase->accept("f3",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->impl_->showbase_->toggle_wireframe();
+    }, this);
+    showbase->accept("f11",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->impl_->showbase_->get_win()->save_screenshot("screenshot.png");
+    }, this);
+    showbase->accept("j",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->print_position();
+    }, this);
 
-	// mouse
-	showbase->accept("mouse1",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_mouse_enabled(true);
-	}, this);
-	showbase->accept("mouse1-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_mouse_enabled(false);
-	}, this);
+    // mouse
+    showbase->accept("mouse1",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_mouse_enabled(true);
+    }, this);
+    showbase->accept("mouse1-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_mouse_enabled(false);
+    }, this);
 
-	// arrow mouse navigation
-	showbase->accept("arrow_up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 1);
-	}, this);
-	showbase->accept("arrow_up-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 0);
-	}, this);
-	showbase->accept("arrow_down",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, -1);
-	}, this);
-	showbase->accept("arrow_down-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 0);
-	}, this);
-	showbase->accept("arrow_left",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 1);
-	}, this);
-	showbase->accept("arrow_left-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 0);
-	}, this);
-	showbase->accept("arrow_right",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, -1);
-	}, this);
-	showbase->accept("arrow_right-up",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 0);
-	}, this);
+    // arrow mouse navigation
+    showbase->accept("arrow_up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 1);
+    }, this);
+    showbase->accept("arrow_up-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 0);
+    }, this);
+    showbase->accept("arrow_down",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, -1);
+    }, this);
+    showbase->accept("arrow_down-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(1, 0);
+    }, this);
+    showbase->accept("arrow_left",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 1);
+    }, this);
+    showbase->accept("arrow_left-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 0);
+    }, this);
+    showbase->accept("arrow_right",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, -1);
+    }, this);
+    showbase->accept("arrow_right-up",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->set_hpr_movement(0, 0);
+    }, this);
 
-	// increase / decrease speed
-	showbase->accept("+",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->increase_speed();
-	}, this);
-	showbase->accept("-",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->decrease_speed();
-	}, this);
+    // increase / decrease speed
+    showbase->accept("+",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->increase_speed();
+    }, this);
+    showbase->accept("-",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->decrease_speed();
+    }, this);
 
-	// disable modifier buttons to be able to move while pressing shift for example
-	showbase->get_mouse_watcher_node()->set_modifier_buttons(ModifierButtons());
-	DCAST(ButtonThrower, showbase->get_button_thrower().node())->set_modifier_buttons(ModifierButtons());
+    // disable modifier buttons to be able to move while pressing shift for example
+    showbase->get_mouse_watcher_node()->set_modifier_buttons(ModifierButtons());
+    DCAST(ButtonThrower, showbase->get_button_thrower().node())->set_modifier_buttons(ModifierButtons());
 
-	// disable pandas builtin mouse control
-	showbase->disable_mouse();
+    // disable pandas builtin mouse control
+    showbase->disable_mouse();
 
-	// add ourself as an update task which gets executed very early before the rendering
-	impl_->update_task_ = showbase->add_task(&Impl::update, impl_.get(), "RP_UpdateMovementController", -40);
+    // add ourself as an update task which gets executed very early before the rendering
+    impl_->update_task_ = showbase->add_task(&Impl::update, impl_.get(), "RP_UpdateMovementController", -40);
 
-	// Hotkeys to connect to pstats and reset the initial position
-	showbase->accept("1",
-		[](const Event* ev, void* data) {
-		PStatClient::connect();
-	}, this);
-	showbase->accept("3",
-		[](const Event* ev, void* data) {
-		reinterpret_cast<MovementController*>(data)->reset_to_initial();
-	}, this);
+    // Hotkeys to connect to pstats and reset the initial position
+    showbase->accept("1",
+        [](const Event* ev, void* data) {
+        PStatClient::connect();
+    }, this);
+    showbase->accept("3",
+        [](const Event* ev, void* data) {
+        reinterpret_cast<MovementController*>(data)->reset_to_initial();
+    }, this);
 }
 
 void MovementController::print_position(void)
@@ -361,24 +361,24 @@ void MovementController::print_position(void)
 
 void MovementController::play_motion_path(const MotionPathType& points, float point_duration)
 {
-	CurveFitter fitter;
-	for (size_t k=0, k_end=points.size(); k < k_end; ++k)
-		fitter.add_xyz_hpr(k, points[k].first, points[k].second);
+    CurveFitter fitter;
+    for (size_t k=0, k_end=points.size(); k < k_end; ++k)
+        fitter.add_xyz_hpr(k, points[k].first, points[k].second);
 
-	fitter.compute_tangents(1.0f);
-	PT(ParametricCurveCollection) curve = fitter.make_hermite();
-	std::cout << "Starting motion path with " << points.size() << " CVs" << std::endl;
+    fitter.compute_tangents(1.0f);
+    PT(ParametricCurveCollection) curve = fitter.make_hermite();
+    std::cout << "Starting motion path with " << points.size() << " CVs" << std::endl;
 
     impl_->showbase_->get_render_2d().hide();
     impl_->showbase_->get_aspect_2d().hide();
 
-	impl_->curve_ = curve;
-	impl_->curve_time_start_ = get_clock_obj()->get_frame_time();
-	impl_->curve_time_end_ = get_clock_obj()->get_frame_time() + points.size() * point_duration;
-	impl_->delta_time_sum_ = 0;
-	impl_->delta_time_count_ = 0;
-	impl_->showbase_->add_task(&Impl::camera_motion_update, impl_.get(), "RP_CameraMotionPath", -50);
-	impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
+    impl_->curve_ = curve;
+    impl_->curve_time_start_ = get_clock_obj()->get_frame_time();
+    impl_->curve_time_end_ = get_clock_obj()->get_frame_time() + points.size() * point_duration;
+    impl_->delta_time_sum_ = 0;
+    impl_->delta_time_count_ = 0;
+    impl_->showbase_->add_task(&Impl::camera_motion_update, impl_.get(), "RP_CameraMotionPath", -50);
+    impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
 }
 
 void MovementController::set_initial_position(const LVecBase3& pos, const LVecBase3& target)

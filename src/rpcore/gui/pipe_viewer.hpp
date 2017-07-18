@@ -19,34 +19,34 @@ class StageManager;
 class PipeViewer: public DraggableWindow
 {
 public:
-	PipeViewer(RenderPipeline* pipeline, NodePath parent);
+    PipeViewer(RenderPipeline* pipeline, NodePath parent);
 
-	void toggle(void);
+    void toggle(void);
 
 private:
-	static AsyncTask::DoneStatus update_task(GenericAsyncTask* task, void* user_data);
+    static AsyncTask::DoneStatus update_task(GenericAsyncTask* task, void* user_data);
 
-	/**
-	 * Reads the pipes and stages from the stage manager and renders those
-	 * into the window.
-	 */
-	void populate_content(void);
+    /**
+     * Reads the pipes and stages from the stage manager and renders those
+     * into the window.
+     */
+    void populate_content(void);
 
-	/** Internal method to create the window components. */
-	virtual void create_components(void);
+    /** Internal method to create the window components. */
+    virtual void create_components(void);
 
-	RenderPipeline* _pipeline;
-	int _scroll_width = 8000;
-	int _scroll_height = 3000;
-	bool _created = false;
+    RenderPipeline* _pipeline;
+    int _scroll_width = 8000;
+    int _scroll_height = 3000;
+    bool _created = false;
 
-	rppanda::DirectScrolledFrame* _content_frame;
-	NodePath _content_node;
-	NodePath _pipe_node;
-	NodePath _stage_node;
+    rppanda::DirectScrolledFrame* _content_frame;
+    NodePath _content_node;
+    NodePath _pipe_node;
+    NodePath _stage_node;
 
 
-	NodePath _pipe_descriptions;
+    NodePath _pipe_descriptions;
 };
 
 }

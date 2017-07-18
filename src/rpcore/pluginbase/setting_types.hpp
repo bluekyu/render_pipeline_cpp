@@ -16,30 +16,30 @@ namespace rpcore {
 class BaseType: public RPObject
 {
 public:
-	BaseType(YAML::Node& data);
-	virtual ~BaseType(void) {}
+    BaseType(YAML::Node& data);
+    virtual ~BaseType(void) {}
 
-	virtual std::string get_value_as_string(void) const = 0;
-	const boost::any& get_value(void) const { return _value; }
+    virtual std::string get_value_as_string(void) const = 0;
+    const boost::any& get_value(void) const { return _value; }
 
-	virtual void set_value(const YAML::Node& value) = 0;
+    virtual void set_value(const YAML::Node& value) = 0;
 
-	virtual void add_defines(const std::string& plugin_id,
-		const std::string& setting_id, StageManager::DefinesType& defines) const;
+    virtual void add_defines(const std::string& plugin_id,
+        const std::string& setting_id, StageManager::DefinesType& defines) const;
 
-	const std::string& get_type(void) const { return _type; }
-	const std::string& get_label(void) const { return _label; }
-	const std::string& get_description(void) const { return _description; }
-	bool is_runtime(void) const { return _runtime; }
-	bool is_shader_runtime(void) const { return _shader_runtime; }
+    const std::string& get_type(void) const { return _type; }
+    const std::string& get_label(void) const { return _label; }
+    const std::string& get_description(void) const { return _description; }
+    bool is_runtime(void) const { return _runtime; }
+    bool is_shader_runtime(void) const { return _shader_runtime; }
 
 protected:
-	boost::any _value;
-	std::string _type;
-	std::string _label;
-	std::string _description;
-	bool _runtime;
-	bool _shader_runtime;
+    boost::any _value;
+    std::string _type;
+    std::string _label;
+    std::string _description;
+    bool _runtime;
+    bool _shader_runtime;
     std::unordered_map<std::string, std::string> _display_conditions;
 };
 
@@ -52,51 +52,51 @@ template <class T>
 class TemplatedType: public BaseType
 {
 public:
-	TemplatedType(YAML::Node& data);
+    TemplatedType(YAML::Node& data);
 
-	std::string get_value_as_string(void) const override;
-	void set_value(const YAML::Node& value) override;
-	virtual void set_value(T value);
+    std::string get_value_as_string(void) const override;
+    void set_value(const YAML::Node& value) override;
+    virtual void set_value(T value);
 
 protected:
-	const std::string _template_type;
-	T _default;
-	T _minval;
-	T _maxval;
+    const std::string _template_type;
+    T _default;
+    T _minval;
+    T _maxval;
 };
 
 template <class T>
 TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data), _template_type(typeid(T).name())
 {
-	_default = data["default"].as<T>();
-	data.remove("default");
-	_value = _default;
+    _default = data["default"].as<T>();
+    data.remove("default");
+    _value = _default;
 
-	const std::vector<T>& setting_range = data["range"].as<std::vector<T>>();
-	_minval = setting_range[0];
-	_maxval = setting_range[1];
-	data.remove("range");
+    const std::vector<T>& setting_range = data["range"].as<std::vector<T>>();
+    _minval = setting_range[0];
+    _maxval = setting_range[1];
+    data.remove("range");
 }
 
 template <class T>
 std::string TemplatedType<T>::get_value_as_string(void) const
 {
-	return std::to_string(boost::any_cast<T>(_value));
+    return std::to_string(boost::any_cast<T>(_value));
 }
 
 template <class T>
 void TemplatedType<T>::set_value(const YAML::Node& value)
 {
-	set_value(value.as<T>());
+    set_value(value.as<T>());
 }
 
 template <class T>
 void TemplatedType<T>::set_value(T value)
 {
-	if (_minval <= value && value <= _maxval)
-		_value = value;
-	else
-		error(std::string("Invalid value: ") + std::to_string(value));
+    if (_minval <= value && value <= _maxval)
+        _value = value;
+    else
+        error(std::string("Invalid value: ") + std::to_string(value));
 }
 
 // ************************************************************************************************
@@ -141,14 +141,14 @@ inline void PowerOfTwoType::set_value(int value)
 class BoolType: public BaseType
 {
 public:
-	BoolType(YAML::Node& data);
+    BoolType(YAML::Node& data);
 
-	std::string get_value_as_string(void) const final;
-	void set_value(const YAML::Node& value) final;
-	void set_value(bool value) { _value = value; }
+    std::string get_value_as_string(void) const final;
+    void set_value(const YAML::Node& value) final;
+    void set_value(bool value) { _value = value; }
 
 private:
-	bool _default;
+    bool _default;
 };
 
 // ************************************************************************************************
@@ -156,17 +156,17 @@ private:
 class EnumType: public BaseType
 {
 public:
-	EnumType(YAML::Node& data);
+    EnumType(YAML::Node& data);
 
-	std::string get_value_as_string(void) const final;
-	void set_value(const YAML::Node& value) final;
-	void set_value(const std::string& value);
-	void add_defines(const std::string& plugin_id,
-		const std::string& setting_id, StageManager::DefinesType& defines) const final;
+    std::string get_value_as_string(void) const final;
+    void set_value(const YAML::Node& value) final;
+    void set_value(const std::string& value);
+    void add_defines(const std::string& plugin_id,
+        const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
 private:
-	std::vector<std::string> _values;
-	std::string _default;
+    std::vector<std::string> _values;
+    std::string _default;
 };
 
 // ************************************************************************************************
@@ -212,28 +212,28 @@ inline void SampleSequenceType::set_value(const std::string& value)
 class PathType: public BaseType
 {
 public:
-	PathType(YAML::Node& data);
+    PathType(YAML::Node& data);
 
-	std::string get_value_as_string(void) const final;
-	void set_value(const YAML::Node& value) final;
-	void set_value(const std::string& value);
-	void add_defines(const std::string& plugin_id,
-		const std::string& setting_id, StageManager::DefinesType& defines) const final;
+    std::string get_value_as_string(void) const final;
+    void set_value(const YAML::Node& value) final;
+    void set_value(const std::string& value);
+    void add_defines(const std::string& plugin_id,
+        const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
 private:
-	std::string _default;
-	std::string _file_type;
-	std::string _base_path;
+    std::string _default;
+    std::string _file_type;
+    std::string _base_path;
 };
 
 inline std::string PathType::get_value_as_string(void) const
 {
-	return boost::any_cast<const std::string&>(_value);
+    return boost::any_cast<const std::string&>(_value);
 }
 
 inline void PathType::set_value(const std::string& value)
 {
-	_value = value;
+    _value = value;
 }
 
 // ************************************************************************************************

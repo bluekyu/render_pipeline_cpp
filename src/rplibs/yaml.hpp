@@ -16,4 +16,4 @@ bool load_yaml_file(const std::string& filename, YAML::Node& result);
 using YamlFlatType = std::unordered_map<std::string, YAML::Node>;
 YamlFlatType load_yaml_file_flat(const std::string& filename);
 
-}	// namespace rplibs
+}    // namespace rplibs

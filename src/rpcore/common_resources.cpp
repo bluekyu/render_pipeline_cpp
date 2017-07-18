@@ -29,19 +29,19 @@ CommonResources::CommonResources(RenderPipeline* pipeline): RPObject("CommonReso
 
 void CommonResources::write_config(void)
 {
-	const std::string& content = _input_ubo->generate_shader_code();
-	VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
-	try
-	{
-		// Try to write the temporary file
-		std::ostream* file = vfs->open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, false);
-		*file << content;
-		vfs->close_write_file(file);
-	}
-	catch (const std::exception& err)
-	{
-		error(std::string("Failed to write common resources shader configuration! ") + err.what());
-	}
+    const std::string& content = _input_ubo->generate_shader_code();
+    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+    try
+    {
+        // Try to write the temporary file
+        std::ostream* file = vfs->open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, false);
+        *file << content;
+        vfs->close_write_file(file);
+    }
+    catch (const std::exception& err)
+    {
+        error(std::string("Failed to write common resources shader configuration! ") + err.what());
+    }
 }
 
 void CommonResources::load_skydome(void)
@@ -54,7 +54,7 @@ void CommonResources::load_skydome(void)
 
 NodePath CommonResources::load_default_skybox(void)
 {
-	return RPLoader::load_model("/$$rp/data/builtin_models/skybox/skybox.bam");
+    return RPLoader::load_model("/$$rp/data/builtin_models/skybox/skybox.bam");
 }
 
 void CommonResources::update(void)
@@ -101,23 +101,23 @@ void CommonResources::update(void)
         _input_ubo->update_input("stereo_view_mat_billboard", view_mat_billboard[0], 0);
         _input_ubo->update_input("stereo_view_mat_billboard", view_mat_billboard[1], 1);
 
-		// Panda3D stereoscopic rendering
-		if (cam_lens->get_interocular_distance() != 0)
-		{
-			// see: PerspectiveLens::do_compute_projection_mat
-			const LVector3& iod = cam_lens->get_interocular_distance() * 0.5f * LVector3::left(cam_lens->get_coordinate_system());
+        // Panda3D stereoscopic rendering
+        if (cam_lens->get_interocular_distance() != 0)
+        {
+            // see: PerspectiveLens::do_compute_projection_mat
+            const LVector3& iod = cam_lens->get_interocular_distance() * 0.5f * LVector3::left(cam_lens->get_coordinate_system());
 
-			eye_path[0].set_mat(Globals::render, LMatrix4::translate_mat(iod) * _showbase->get_cam().get_mat(Globals::render));
-			eye_path[1].set_mat(Globals::render, LMatrix4::translate_mat(-iod) * _showbase->get_cam().get_mat(Globals::render));
+            eye_path[0].set_mat(Globals::render, LMatrix4::translate_mat(iod) * _showbase->get_cam().get_mat(Globals::render));
+            eye_path[1].set_mat(Globals::render, LMatrix4::translate_mat(-iod) * _showbase->get_cam().get_mat(Globals::render));
 
-			// Panda3D stereo projection matrix is already applied for IOD. We need to remove this.
-			// see: PerspectiveLens::do_compute_projection_mat
-			stereo_proj_mat[0] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(iod) * cam_lens->get_lens_mat() * stereo_proj_mat[0];        // for left camera
-			stereo_proj_mat[1] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(-iod) * cam_lens->get_lens_mat() * stereo_proj_mat[1];        // for right camera
-		}
+            // Panda3D stereo projection matrix is already applied for IOD. We need to remove this.
+            // see: PerspectiveLens::do_compute_projection_mat
+            stereo_proj_mat[0] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(iod) * cam_lens->get_lens_mat() * stereo_proj_mat[0];        // for left camera
+            stereo_proj_mat[1] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(-iod) * cam_lens->get_lens_mat() * stereo_proj_mat[1];        // for right camera
+        }
 
-		_input_ubo->update_input("stereo_camera_pos", eye_path[0].get_pos(Globals::render), 0);
-		_input_ubo->update_input("stereo_camera_pos", eye_path[1].get_pos(Globals::render), 1);
+        _input_ubo->update_input("stereo_camera_pos", eye_path[0].get_pos(Globals::render), 0);
+        _input_ubo->update_input("stereo_camera_pos", eye_path[1].get_pos(Globals::render), 1);
 
         // Compute last view projection mat
         {
@@ -142,16 +142,16 @@ void CommonResources::update(void)
             LMatrix4f::convert_mat(CS_yup_right, CS_zup_right) * stereo_proj_mat[1],
         };
 
-		const LMatrix4f stereo_view_proj_mat[2] = {
-			view_mat[0] * stereo_proj_mat[0],
-			view_mat[1] * stereo_proj_mat[1]
-		};
+        const LMatrix4f stereo_view_proj_mat[2] = {
+            view_mat[0] * stereo_proj_mat[0],
+            view_mat[1] * stereo_proj_mat[1]
+        };
 
         _input_ubo->update_input("stereo_ViewProjectionMatrix", stereo_view_proj_mat[0], 0);
         _input_ubo->update_input("stereo_ViewProjectionMatrix", stereo_view_proj_mat[1], 1);
 
-		_input_ubo->update_input("stereo_ViewProjectionMatrixInverse", invert(stereo_view_proj_mat[0]), 0);
-		_input_ubo->update_input("stereo_ViewProjectionMatrixInverse", invert(stereo_view_proj_mat[1]), 1);
+        _input_ubo->update_input("stereo_ViewProjectionMatrixInverse", invert(stereo_view_proj_mat[0]), 0);
+        _input_ubo->update_input("stereo_ViewProjectionMatrixInverse", invert(stereo_view_proj_mat[1]), 1);
 
         // Set the projection matrix as an input, but convert it to the correct
         // coordinate system before.
@@ -251,39 +251,39 @@ void CommonResources::update(void)
     _input_ubo->update_input("current_film_offset", _showbase->get_cam_lens()->get_film_offset());
     _input_ubo->update_input("frame_index", Globals::clock->get_frame_count());
 
-	_input_ubo->update_input("screen_size", Globals::resolution);
-	_input_ubo->update_input("native_screen_size", Globals::native_resolution);
-	_input_ubo->update_input("lc_tile_count", _pipeline->get_light_mgr()->get_num_tiles());
+    _input_ubo->update_input("screen_size", Globals::resolution);
+    _input_ubo->update_input("native_screen_size", Globals::native_resolution);
+    _input_ubo->update_input("lc_tile_count", _pipeline->get_light_mgr()->get_num_tiles());
 }
 
 void CommonResources::load_fonts(void)
 {
-	Globals::font = RPLoader::load_font("/$$rp/data/font/Roboto-Medium.ttf");
-	DynamicTextFont* dfont = DCAST(DynamicTextFont, Globals::font);
-	dfont->set_pixels_per_unit(35);
-	dfont->set_poly_margin(0.0f);
-	dfont->set_texture_margin(1);
-	dfont->set_bg(LColor(1, 1, 1, 0));
-	dfont->set_fg(LColor(1, 1, 1, 1));
+    Globals::font = RPLoader::load_font("/$$rp/data/font/Roboto-Medium.ttf");
+    DynamicTextFont* dfont = DCAST(DynamicTextFont, Globals::font);
+    dfont->set_pixels_per_unit(35);
+    dfont->set_poly_margin(0.0f);
+    dfont->set_texture_margin(1);
+    dfont->set_bg(LColor(1, 1, 1, 0));
+    dfont->set_fg(LColor(1, 1, 1, 1));
 }
 
 void CommonResources::load_textures(void)
 {
-	load_environment_cubemap();
-	load_prefilter_brdf();
-	load_skydome();
+    load_environment_cubemap();
+    load_prefilter_brdf();
+    load_skydome();
 }
 
 void CommonResources::load_environment_cubemap(void)
 {
-	Texture* envmap = RPLoader::load_cube_map("/$$rp/data/default_cubemap/cubemap.txo", true);
-	envmap->set_minfilter(SamplerState::FT_linear_mipmap_linear);
-	envmap->set_format(Texture::F_rgba16);
-	envmap->set_magfilter(SamplerState::FT_linear);
-	envmap->set_wrap_u(SamplerState::WM_repeat);
-	envmap->set_wrap_v(SamplerState::WM_repeat);
-	envmap->set_wrap_w(SamplerState::WM_repeat);
-	_pipeline->get_stage_mgr()->add_input(ShaderInput("DefaultEnvmap", envmap));
+    Texture* envmap = RPLoader::load_cube_map("/$$rp/data/default_cubemap/cubemap.txo", true);
+    envmap->set_minfilter(SamplerState::FT_linear_mipmap_linear);
+    envmap->set_format(Texture::F_rgba16);
+    envmap->set_magfilter(SamplerState::FT_linear);
+    envmap->set_wrap_u(SamplerState::WM_repeat);
+    envmap->set_wrap_v(SamplerState::WM_repeat);
+    envmap->set_wrap_w(SamplerState::WM_repeat);
+    _pipeline->get_stage_mgr()->add_input(ShaderInput("DefaultEnvmap", envmap));
 }
 
 void CommonResources::load_prefilter_brdf(void)
@@ -320,16 +320,16 @@ void CommonResources::setup_inputs(void)
 {
     const bool stereo_mode = _pipeline->get_setting<bool>("pipeline.stereo_mode");
 
-	_input_ubo = std::make_shared<GroupedInputBlock>("MainSceneData");
+    _input_ubo = std::make_shared<GroupedInputBlock>("MainSceneData");
 
-	if (stereo_mode)
-	{
-		_input_ubo->register_pta("stereo_camera_pos[2]", "vec3");
-		_input_ubo->register_pta("stereo_view_proj_mat_no_jitter[2]", "mat4");
-		_input_ubo->register_pta("stereo_last_view_proj_mat_no_jitter[2]", "mat4");
-		_input_ubo->register_pta("stereo_last_inv_view_proj_mat_no_jitter[2]", "mat4");
+    if (stereo_mode)
+    {
+        _input_ubo->register_pta("stereo_camera_pos[2]", "vec3");
+        _input_ubo->register_pta("stereo_view_proj_mat_no_jitter[2]", "mat4");
+        _input_ubo->register_pta("stereo_last_view_proj_mat_no_jitter[2]", "mat4");
+        _input_ubo->register_pta("stereo_last_inv_view_proj_mat_no_jitter[2]", "mat4");
         _input_ubo->register_pta("stereo_view_mat_z_up[2]", "mat4");
-	}
+    }
     else
     {
         _input_ubo->register_pta("camera_pos", "vec3");
@@ -371,7 +371,7 @@ void CommonResources::setup_inputs(void)
         _input_ubo->register_pta("ws_frustum_directions", "mat4");    // world space frustum
     }
 
-	_pipeline->get_stage_mgr()->add_input_blocks(_input_ubo);
+    _pipeline->get_stage_mgr()->add_input_blocks(_input_ubo);
 
     if (!stereo_mode)
     {
@@ -381,8 +381,8 @@ void CommonResources::setup_inputs(void)
         _pipeline->get_stage_mgr()->add_input(ShaderInput("mainRender", _showbase->get_render()));
     }
 
-	// Set the correct frame rate interval
-	Globals::clock->set_average_frame_rate_interval(3.0f);
+    // Set the correct frame rate interval
+    Globals::clock->set_average_frame_rate_interval(3.0f);
 }
 
 }

@@ -99,10 +99,10 @@ PT(Shader) RPLoader::load_shader(const std::vector<Filename>& path_args)
         return Shader::load_compute(Shader::SL_GLSL, path_args[0]);
 
     return Shader::load(
-        Shader::SL_GLSL,				// ShaderLanguage
-        path_args[0],					// vertex
-        path_args[1],					// fragment
-        len > 2 ? path_args[2] : "",	// geometry
+        Shader::SL_GLSL,                // ShaderLanguage
+        path_args[0],                    // vertex
+        path_args[1],                    // fragment
+        len > 2 ? path_args[2] : "",    // geometry
         len > 3 ? path_args[3] : "",
         len > 4 ? path_args[4] : "");
 }

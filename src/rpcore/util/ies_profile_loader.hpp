@@ -17,29 +17,29 @@ class RenderPipeline;
 class IESProfileLoader: public RPObject
 {
 public:
-	/**< Supported IES Profiles. */
-	static const std::vector<std::string> PROFILES;
+    /**< Supported IES Profiles. */
+    static const std::vector<std::string> PROFILES;
 
-	IESProfileLoader(RenderPipeline* pipeline);
+    IESProfileLoader(RenderPipeline* pipeline);
 
-	/**
-	 * Loads a profile from a given filename and returns the internal
-	 * used index which can be assigned to a light.
-	 */
-	size_t load(const std::string& filename);
+    /**
+     * Loads a profile from a given filename and returns the internal
+     * used index which can be assigned to a light.
+     */
+    size_t load(const std::string& filename);
 
 private:
-	/** Internal method to create the storage for the profile dataset textures. */
-	void create_storage(void);
+    /** Internal method to create the storage for the profile dataset textures. */
+    void create_storage(void);
 
-	RenderPipeline* _pipeline;
-	int _max_entries = 32;
-	std::shared_ptr<Image> _storage_tex;
+    RenderPipeline* _pipeline;
+    int _max_entries = 32;
+    std::shared_ptr<Image> _storage_tex;
 };
 
 inline IESProfileLoader::IESProfileLoader(RenderPipeline* pipeline): RPObject("IESProfileLoader"), _pipeline(pipeline)
 {
-	create_storage();
+    create_storage();
 }
 
 }

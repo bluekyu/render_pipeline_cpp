@@ -76,124 +76,124 @@ static std::shared_ptr<BaseType> make_setting_from_factory(YAML::Node& data)
 
 std::shared_ptr<BaseType> make_setting_from_data(YAML::Node& data)
 {
-	return make_setting_from_factory(data);
+    return make_setting_from_factory(data);
 }
 
 // ************************************************************************************************
 BaseType::BaseType(YAML::Node& data): RPObject("BaseType")
 {
-	_type = data["type"].as<std::string>();
-	data.remove("type");
-	
-	_label = boost::trim_copy(data["label"].as<std::string>());
-	data.remove("label");
+    _type = data["type"].as<std::string>();
+    data.remove("type");
+    
+    _label = boost::trim_copy(data["label"].as<std::string>());
+    data.remove("label");
 
-	_description = boost::trim_copy(data["description"].as<std::string>());
-	data.remove("description");
+    _description = boost::trim_copy(data["description"].as<std::string>());
+    data.remove("description");
 
-	if (data["runtime"])
-	{
-		_runtime = data["runtime"].as<bool>();
-		data.remove("runtime");
-	}
-	else
-	{
-		_runtime = false;
-	}
+    if (data["runtime"])
+    {
+        _runtime = data["runtime"].as<bool>();
+        data.remove("runtime");
+    }
+    else
+    {
+        _runtime = false;
+    }
 
-	if (data["shader_runtime"])
-	{
-		_shader_runtime = data["shader_runtime"].as<bool>();
-		data.remove("shader_runtime");
-	}
-	else
-	{
-		_shader_runtime = false;
-	}
+    if (data["shader_runtime"])
+    {
+        _shader_runtime = data["shader_runtime"].as<bool>();
+        data.remove("shader_runtime");
+    }
+    else
+    {
+        _shader_runtime = false;
+    }
 
     for (auto key_val: data["display_if"])
 #if _MSC_VER >= 1900
         _display_conditions.insert_or_assign(key_val.first.as<std::string>(), key_val.second.as<std::string>());
 #else
-		_display_conditions[key_val.first.as<std::string>()] = key_val.second.as<std::string>();
+        _display_conditions[key_val.first.as<std::string>()] = key_val.second.as<std::string>();
 #endif
     data.remove("display_if");
 
-	set_debug_name("psetting:" + _label);
+    set_debug_name("psetting:" + _label);
 }
 
 void BaseType::add_defines(const std::string& plugin_id, const std::string& setting_id,
-	StageManager::DefinesType& defines) const
+    StageManager::DefinesType& defines) const
 {
-	defines[plugin_id + "_" + setting_id] = get_value_as_string();
+    defines[plugin_id + "_" + setting_id] = get_value_as_string();
 }
 
 // ************************************************************************************************
 BoolType::BoolType(YAML::Node& data): BaseType(data)
 {
-	_default = data["default"].as<bool>();
-	data.remove("default");
+    _default = data["default"].as<bool>();
+    data.remove("default");
 
-	_value = _default;
+    _value = _default;
 }
 
 std::string BoolType::get_value_as_string(void) const
 {
-	return boost::any_cast<bool>(_value) ? "1" : "0";
+    return boost::any_cast<bool>(_value) ? "1" : "0";
 }
 
 void BoolType::set_value(const YAML::Node& value)
 {
-	const std::string& b = boost::to_lower_copy(value.as<std::string>());
-	if (b == "true" || b == "1")
-		_value = true;
-	else
-		_value = false;
+    const std::string& b = boost::to_lower_copy(value.as<std::string>());
+    if (b == "true" || b == "1")
+        _value = true;
+    else
+        _value = false;
 }
 
 // ************************************************************************************************
 EnumType::EnumType(YAML::Node& data): BaseType(data)
 {
-	_values = data["values"].as<std::vector<std::string>>();
-	data.remove("values");
+    _values = data["values"].as<std::vector<std::string>>();
+    data.remove("values");
 
-	_default = data["default"].as<std::string>();
-	data.remove("default");
+    _default = data["default"].as<std::string>();
+    data.remove("default");
 
-	if (std::find(_values.begin(), _values.end(), _default) == _values.end())
-		throw std::runtime_error(std::string("Enum default not in enum values: ") + _default);
+    if (std::find(_values.begin(), _values.end(), _default) == _values.end())
+        throw std::runtime_error(std::string("Enum default not in enum values: ") + _default);
 
-	_value = _default;
+    _value = _default;
 }
 
 std::string EnumType::get_value_as_string(void) const
 {
-	return boost::any_cast<const std::string&>(_value);
+    return boost::any_cast<const std::string&>(_value);
 }
 
 void EnumType::set_value(const YAML::Node& value)
 {
-	set_value(value.as<std::string>());
+    set_value(value.as<std::string>());
 }
 
 void EnumType::set_value(const std::string& value)
 {
-	if (std::find(_values.begin(), _values.end(), value) == _values.end())
-	{
+    if (std::find(_values.begin(), _values.end(), value) == _values.end())
+    {
         error("Value '" + value + "' not in enum values!");
-		return;
-	}
-	_value = value;
+        return;
+    }
+    _value = value;
 }
 
 void EnumType::add_defines(const std::string& plugin_id,
-	const std::string& setting_id, StageManager::DefinesType& defines) const
+    const std::string& setting_id, StageManager::DefinesType& defines) const
 {
-	auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const std::string&>(_value)));
-	defines[plugin_id + "_" + setting_id] = std::to_string(1000 + index);
-	
-	for (size_t i=0, i_end=_values.size(); i < i_end; ++i)
-		defines[std::string("enum_") + plugin_id + "_" + setting_id + "_" + _values[i]] = std::to_string(1000 + i);
+    auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const std::string&>(_value)));
+    defines[plugin_id + "_" + setting_id] = std::to_string(1000 + index);
+    
+    for (size_t i=0, i_end=_values.size(); i < i_end; ++i)
+        defines[std::string("enum_") + plugin_id + "_" + setting_id + "_" + _values[i]] = std::to_string(1000 + i);
 }
 
 // ************************************************************************************************
@@ -247,27 +247,27 @@ std::vector<std::string> SampleSequenceType::get_sequences(void) const
 // ************************************************************************************************
 PathType::PathType(YAML::Node& data): BaseType(data)
 {
-	_default = data["default"].as<std::string>();
-	data.remove("default");
+    _default = data["default"].as<std::string>();
+    data.remove("default");
 
-	_value = _default;
+    _value = _default;
 
-	_file_type = data["file_type"].as<std::string>();
-	data.remove("file_type");
+    _file_type = data["file_type"].as<std::string>();
+    data.remove("file_type");
 
-	_base_path = data["base_path"].as<std::string>();
-	data.remove("base_path");
+    _base_path = data["base_path"].as<std::string>();
+    data.remove("base_path");
 }
 
 void PathType::set_value(const YAML::Node& value)
 {
-	_value = value.as<std::string>();
+    _value = value.as<std::string>();
 }
 
 void PathType::add_defines(const std::string& plugin_id,
-	const std::string& setting_id, StageManager::DefinesType& defines) const
+    const std::string& setting_id, StageManager::DefinesType& defines) const
 {
-	// Paths are not available in shaders
+    // Paths are not available in shaders
 }
 
 }

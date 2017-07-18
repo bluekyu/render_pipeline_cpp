@@ -10,28 +10,28 @@ namespace rpcore {
 
 TaskScheduler::TaskScheduler(RenderPipeline* pipeline): RPObject("TaskScheduler"), _pipeline(pipeline)
 {
-	_frame_index = 0;
+    _frame_index = 0;
 
-	load_config();
+    load_config();
 }
 
 bool TaskScheduler::is_scheduled(const std::string& task_name) const
 {
-	check_missing_schedule(task_name);
-	return std::find(_tasks[_frame_index].begin(), _tasks[_frame_index].end(), task_name) != _tasks[_frame_index].end();
+    check_missing_schedule(task_name);
+    return std::find(_tasks[_frame_index].begin(), _tasks[_frame_index].end(), task_name) != _tasks[_frame_index].end();
 }
 
 void TaskScheduler::step(void)
 {
-	_frame_index = (_frame_index + 1) % _tasks.size();
+    _frame_index = (_frame_index + 1) % _tasks.size();
 }
 
 size_t TaskScheduler::get_num_tasks(void) const
 {
-	return std::accumulate(_tasks.begin(), _tasks.end(), size_t(0), [](const size_t& sum, const std::vector<std::string>& tasks) {
-		return sum + tasks.size();
-	});
-	return 0;
+    return std::accumulate(_tasks.begin(), _tasks.end(), size_t(0), [](const size_t& sum, const std::vector<std::string>& tasks) {
+        return sum + tasks.size();
+    });
+    return 0;
 }
 
 void TaskScheduler::load_config(void)
@@ -40,34 +40,34 @@ void TaskScheduler::load_config(void)
     if (!rplibs::load_yaml_file("/$$rpconfig/task-scheduler.yaml", config_node))
         return;
 
-	for (const auto& frame_node: config_node["frame_cycles"])
-	{
-		// add frame
-		_tasks.push_back({});
+    for (const auto& frame_node: config_node["frame_cycles"])
+    {
+        // add frame
+        _tasks.push_back({});
 
-		// XXX: omap of yaml-cpp is list.
-		for (const auto& frame_name_tasks: frame_node)
-		{
-			for (const auto& task_name: frame_name_tasks.second)
-				_tasks.back().push_back(task_name.as<std::string>());
-		}
-	}
+        // XXX: omap of yaml-cpp is list.
+        for (const auto& frame_name_tasks: frame_node)
+        {
+            for (const auto& task_name: frame_name_tasks.second)
+                _tasks.back().push_back(task_name.as<std::string>());
+        }
+    }
 }
 
 void TaskScheduler::check_missing_schedule(const std::string& task_name) const
 {
-	bool found = false;
-	for (const auto& tasks: _tasks)
-	{
-		if (std::find(tasks.begin(), tasks.end(), task_name) != tasks.end())
-		{
-			found = true;
-			break;
-		}
-	}
+    bool found = false;
+    for (const auto& tasks: _tasks)
+    {
+        if (std::find(tasks.begin(), tasks.end(), task_name) != tasks.end())
+        {
+            found = true;
+            break;
+        }
+    }
 
-	if (!found)
-		error(std::string("Task '") + task_name + "' is never scheduled and thus will never run!");
+    if (!found)
+        error(std::string("Task '") + task_name + "' is never scheduled and thus will never run!");
 }
 
 }

@@ -49,7 +49,7 @@ IESDataset::IESDataset() {
  */
 void IESDataset::set_vertical_angles(const PTA_float &vertical_angles) {
     nassertv(vertical_angles.size() > 0);
-	_vertical_angles = vertical_angles;
+    _vertical_angles = vertical_angles;
 }
 
 /**
@@ -60,7 +60,7 @@ void IESDataset::set_vertical_angles(const PTA_float &vertical_angles) {
  */
 void IESDataset::set_horizontal_angles(const PTA_float &horizontal_angles) {
     nassertv(horizontal_angles.size() > 0);
-	_horizontal_angles = horizontal_angles;
+    _horizontal_angles = horizontal_angles;
 }
 
 /**
@@ -71,8 +71,8 @@ void IESDataset::set_horizontal_angles(const PTA_float &horizontal_angles) {
  * @param candela_values Interleaved 2D-vector of candela values.
  */
 void IESDataset::set_candela_values(const PTA_float &candela_values) {
-	nassertv(candela_values.size() == _horizontal_angles.size() * _vertical_angles.size());
-	_candela_values = candela_values;
+    nassertv(candela_values.size() == _horizontal_angles.size() * _vertical_angles.size());
+    _candela_values = candela_values;
 }
 
 /**
@@ -87,9 +87,9 @@ void IESDataset::set_candela_values(const PTA_float &candela_values) {
  * @return Candela value between 0 .. 1
  */
 float IESDataset::get_candela_value_from_index(size_t vertical_angle_idx, size_t horizontal_angle_idx) const {
-	size_t index = vertical_angle_idx + horizontal_angle_idx * _vertical_angles.size();
-	nassertr(index >= 0 && index < _candela_values.size(), 0.0);
-	return _candela_values[index];
+    size_t index = vertical_angle_idx + horizontal_angle_idx * _vertical_angles.size();
+    nassertr(index >= 0 && index < _candela_values.size(), 0.0);
+    return _candela_values[index];
 }
 
 /**

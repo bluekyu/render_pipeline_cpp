@@ -541,9 +541,9 @@ void RenderPipeline::Impl::analyze_system(void)
     // C++ does not require checking version.
     //if (check_version())
     //{
-    //	fatal("Your Panda3D version is outdated! Please update to the newest \n"
-    //	"git version! Checkout https://github.com/panda3d/panda3d to "
-    //	"compile panda from source, or get a recent buildbot build.")
+    //    fatal("Your Panda3D version is outdated! Please update to the newest \n"
+    //    "git version! Checkout https://github.com/panda3d/panda3d to "
+    //    "compile panda from source, or get a recent buildbot build.")
     //}
 }
 
@@ -656,14 +656,14 @@ void RenderPipeline::Impl::init_showbase(void)
     //}
     //else
     //{
-    //	if (!pre_showbase_initialized)
-    //	{
-    //		fatal(	"You constructed your own ShowBase object but you\n"
-    //				"did not call pre_show_base_init() on the render\n"
-    //				"pipeline object before! Checkout the 00-Loading the\n"
-    //				"pipeline sample to see how to initialize the RP.");
-    //	}
-    //	showbase = base;
+    //    if (!pre_showbase_initialized)
+    //    {
+    //        fatal(    "You constructed your own ShowBase object but you\n"
+    //                "did not call pre_show_base_init() on the render\n"
+    //                "pipeline object before! Checkout the 00-Loading the\n"
+    //                "pipeline sample to see how to initialize the RP.");
+    //    }
+    //    showbase = base;
     //}
 
     // Now that we have a showbase and a window, we can print out driver info
