@@ -59,32 +59,32 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
 # ==================================================================================================
 
 # ==================================================================================================
-function(render_pipeline_generate_schema_headers)
+function(render_pipeline_generate_schema_headers target_)
     # generate schema headers
     if(NOT FlatBuffers_flatc)
         message(FATAL_ERROR "Cannot find flatc program.")
     endif()
 
+    set(schema_output_dir "${PROJECT_BINARY_DIR}/rpcore/schema")
     file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
     foreach(input_file ${flatc_input_files})
-        execute_process(
-            COMMAND ${FlatBuffers_flatc} -c --scoped-enums -o "${PROJECT_BINARY_DIR}/rpcore/schema" "${input_file}"
-            RESULT_VARIABLE flatc_result
-        )
-        if(NOT (${flatc_result} EQUAL "0"))
-            message(SEND_ERROR "flatc returns error for a file '${input_file}'")
-        endif()
-    endforeach()
+        get_filename_component(input_file_name ${input_file} NAME_WE)
 
-    message(STATUS "Render Pipeline: Schema header files are generated.")
+        set(schema_header_file "${schema_output_dir}/${input_file_name}_generated.h")
+        add_custom_command(OUTPUT ${schema_header_file}
+            COMMAND ${FlatBuffers_flatc} -c --scoped-enums -o "${schema_output_dir}" "${input_file}"
+            DEPENDS "${input_file}"
+        )
+
+        target_sources(${target_} PRIVATE ${schema_header_file})
+    endforeach()
 endfunction()
 # ==================================================================================================
 
 # === target =======================================================================================
-render_pipeline_generate_schema_headers()
-
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
+render_pipeline_generate_schema_headers(${PROJECT_NAME})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_final PRIVATE cxx_auto_type)
 if(MSVC)
