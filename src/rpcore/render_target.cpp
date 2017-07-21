@@ -31,6 +31,10 @@ public:
 
     void initilize(void);
 
+    void set_active(bool flag);
+    void prepare_render(const NodePath& camera_np);
+    void remove(void);
+
     int percent_to_number(const std::string& v) const NOEXCEPT;
 
     void create_buffer(void);
@@ -80,8 +84,89 @@ void RenderTarget::Impl::initilize(void)
     const int num_display_region = source_window_->get_num_display_regions();
     for (int k = 0; k < num_display_region; k++)
         source_window_->get_display_region(k)->disable_clears();
+}
 
+void RenderTarget::Impl::set_active(bool flag)
+{
+    const int num_display_regions = internal_buffer_->get_num_display_regions();
+    for (int k = 0; k < num_display_regions; k++)
+        internal_buffer_->get_display_region(k)->set_active(flag);
+    active_ = flag;
+}
 
+void RenderTarget::Impl::prepare_render(const NodePath& camera_np)
+{
+    create_default_region_ = false;
+    create_buffer();
+    source_display_region_ = internal_buffer_->get_display_region(0);
+    if (source_postprocess_region_)
+    {
+        delete source_postprocess_region_;
+        source_postprocess_region_ = nullptr;
+    }
+
+    if (!camera_np.is_empty())
+    {
+        Camera* camera = DCAST(Camera, camera_np.node());
+
+        NodePath initial_state("rtis");
+        initial_state.set_state(camera->get_initial_state());
+
+        if (aux_count_)
+            initial_state.set_attrib(AuxBitplaneAttrib::make(aux_bits_), 20);
+
+        initial_state.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
+
+        if (max_color_bits(color_bits_) == 0)
+            initial_state.set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
+
+        // Disable existing regions of the camera
+        for (int k = 0, k_end = camera->get_num_display_regions(); k < k_end; ++k)
+            DCAST(DisplayRegion, camera->get_display_region(k))->set_active(false);
+
+        // Remove the existing display region of the camera
+        for (int k = 0, k_end = source_window_->get_num_display_regions(); k < k_end; ++k)
+        {
+            DisplayRegion* region = source_window_->get_display_region(k);
+            if (region && region->get_camera() == camera_np)
+                source_window_->remove_display_region(region);
+        }
+
+        camera->set_initial_state(initial_state.get_state());
+        source_display_region_->set_camera(camera_np);
+    }
+
+    internal_buffer_->disable_clears();
+    source_display_region_->disable_clears();
+    source_display_region_->set_active(true);
+    source_display_region_->set_sort(20);
+
+    // Reenable depth-clear, usually desireable
+    source_display_region_->set_clear_depth_active(true);
+    source_display_region_->set_clear_depth(1.0f);
+    active_ = true;
+}
+
+void RenderTarget::Impl::remove(void)
+{
+    if (internal_buffer_)
+    {
+        internal_buffer_->clear_render_textures();
+        engine_->remove_window(internal_buffer_);
+
+        RenderTarget::REGISTERED_TARGETS.erase(std::find(RenderTarget::REGISTERED_TARGETS.begin(), RenderTarget::REGISTERED_TARGETS.end(), &self_));
+        internal_buffer_.clear();
+    }
+    else
+    {
+        delete source_postprocess_region_;
+        source_postprocess_region_ = nullptr;
+    }
+
+    active_ = false;
+    for (auto& target: targets_)
+        target.second->release_all();
+    targets_.clear();
 }
 
 int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
@@ -300,6 +385,10 @@ RenderTarget::~RenderTarget(void)
     remove();
 }
 
+void RenderTarget::set_active(bool flag) { impl_->set_active(flag); }
+void RenderTarget::remove(void) { impl_->remove(); }
+void RenderTarget::prepare_render(const NodePath& camera_np) { impl_->prepare_render(camera_np); }
+
 void RenderTarget::add_color_attachment(const LVecBase4i& bits)
 {
     impl_->targets_["color"] = new Texture(get_debug_name() + "_color");
@@ -393,64 +482,6 @@ void RenderTarget::set_size(const std::string& width, const std::string& height)
     impl_->size_constraint_ = LVecBase2i(impl_->percent_to_number(width), impl_->percent_to_number(height));
 }
 
-void RenderTarget::set_size(const std::string& size) NOEXCEPT
-{
-    set_size(size, size);
-}
-
-void RenderTarget::prepare_render(const NodePath& camera_np)
-{
-    impl_->create_default_region_ = false;
-    impl_->create_buffer();
-    impl_->source_display_region_ = impl_->internal_buffer_->get_display_region(0);
-    if (impl_->source_postprocess_region_)
-    {
-        delete impl_->source_postprocess_region_;
-        impl_->source_postprocess_region_ = nullptr;
-    }
-
-    if (!camera_np.is_empty())
-    {
-        Camera* camera = DCAST(Camera, camera_np.node());
-
-        NodePath initial_state("rtis");
-        initial_state.set_state(camera->get_initial_state());
-
-        if (impl_->aux_count_)
-            initial_state.set_attrib(AuxBitplaneAttrib::make(impl_->aux_bits_), 20);
-
-        initial_state.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
-
-        if (max_color_bits(impl_->color_bits_) == 0)
-            initial_state.set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
-
-        // Disable existing regions of the camera
-        for (int k = 0, k_end = camera->get_num_display_regions(); k < k_end; ++k)
-            DCAST(DisplayRegion, camera->get_display_region(k))->set_active(false);
-
-        // Remove the existing display region of the camera
-        for (int k = 0, k_end = impl_->source_window_->get_num_display_regions(); k < k_end; ++k)
-        {
-            DisplayRegion* region = impl_->source_window_->get_display_region(k);
-            if (region && region->get_camera() == camera_np)
-                impl_->source_window_->remove_display_region(region);
-        }
-
-        camera->set_initial_state(initial_state.get_state());
-        impl_->source_display_region_->set_camera(camera_np);
-    }
-
-    impl_->internal_buffer_->disable_clears();
-    impl_->source_display_region_->disable_clears();
-    impl_->source_display_region_->set_active(true);
-    impl_->source_display_region_->set_sort(20);
-
-    // Reenable depth-clear, usually desireable
-    impl_->source_display_region_->set_clear_depth_active(true);
-    impl_->source_display_region_->set_clear_depth(1.0f);
-    impl_->active_ = true;
-}
-
 void RenderTarget::prepare_buffer(void)
 {
     impl_->create_buffer();
@@ -461,28 +492,6 @@ void RenderTarget::present_on_screen(void)
 {
     impl_->source_postprocess_region_ = PostProcessRegion::make(impl_->source_window_);
     impl_->source_postprocess_region_->set_sort(5);
-}
-
-void RenderTarget::remove(void)
-{
-    if (impl_->internal_buffer_)
-    {
-        impl_->internal_buffer_->clear_render_textures();
-        impl_->engine_->remove_window(impl_->internal_buffer_);
-
-        RenderTarget::REGISTERED_TARGETS.erase(std::find(RenderTarget::REGISTERED_TARGETS.begin(), RenderTarget::REGISTERED_TARGETS.end(), this));
-        impl_->internal_buffer_.clear();
-    }
-    else
-    {
-        delete impl_->source_postprocess_region_;
-        impl_->source_postprocess_region_ = nullptr;
-    }
-
-    impl_->active_ = false;
-    for (auto& target: impl_->targets_)
-        target.second->release_all();
-    impl_->targets_.clear();
 }
 
 void RenderTarget::set_clear_color(const LColor& color)
@@ -499,14 +508,6 @@ void RenderTarget::set_instance_count(int count)
 bool RenderTarget::get_active(void) const
 {
     return impl_->active_;
-}
-
-void RenderTarget::set_active(bool flag)
-{
-    const int num_display_regions = impl_->internal_buffer_->get_num_display_regions();
-    for (int k = 0; k < num_display_regions; k++)
-        impl_->internal_buffer_->get_display_region(k)->set_active(flag);
-    impl_->active_ = flag;
 }
 
 void RenderTarget::set_shader_input(const ShaderInput& inp, bool override_input)

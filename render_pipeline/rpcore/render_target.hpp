@@ -124,4 +124,9 @@ inline void RenderTarget::add_color_attachment(int bits, bool alpha)
     add_color_attachment(LVecBase4i(bits, bits, bits, alpha ? bits : 0));
 }
 
+inline void RenderTarget::set_size(const std::string& size) NOEXCEPT
+{
+    set_size(size, size);
+}
+
 }
