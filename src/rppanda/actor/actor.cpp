@@ -42,7 +42,7 @@ public:
      * AnimControlDict to track all of the animations associated with
      * the Actor.  This includes animations that have already been
      * bound (these have a valid AnimControl) as well as those that
-     * have not yet been bound (for these, self.animControl is None).
+     * have not yet been bound (for these, self->animControl is None).
      * 
      * There is a different AnimDef for each different part or
      * sub-part, times each different animation in the AnimDict.
@@ -71,9 +71,7 @@ public:
     };
 
 public:
-    Impl(Actor& self);
-
-    void initialize(
+    void initialize(Actor* self,
         const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models,
         const boost::variant<void*, AnimsType, MultiPartAnimsType>& anims,
         boost::optional<NodePath> other,
@@ -84,8 +82,8 @@ public:
         boost::optional<bool> allow_async_bind,
         boost::optional<bool> ok_missing);
 
-    void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
-    void prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
+    void post_load_model(Actor* self, NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
+    void prepare_bundle(Actor* self, NodePath bundle_np, PandaNode* part_model, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
 
     /**
      * Cache the sorted LOD names so we don't have to grab them
@@ -94,8 +92,6 @@ public:
     void update_sorted_LOD_names(void);
 
 public:
-    Actor& self_;
-
     Loader* loader_;
 
     bool merge_LOD_bundles_;
@@ -116,11 +112,7 @@ public:
     NodePath lod_node_;
 };
 
-Actor::Impl::Impl(Actor& self): self_(self)
-{
-}
-
-void Actor::Impl::initialize(
+void Actor::Impl::initialize(Actor* self,
     const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models,
     const boost::variant<void*, AnimsType, MultiPartAnimsType>& anims,
     boost::optional<NodePath> other,
@@ -174,8 +166,8 @@ void Actor::Impl::initialize(
             // those ModelNodes, and the GeomNode is the same as
             // the root.
             root = new PandaNode("actor");
-            self_.NodePath::operator=(std::move(NodePath(root)));
-            self_.set_geom_node(self_);
+            self->NodePath::operator=(std::move(NodePath(root)));
+            self->set_geom_node(*self);
         }
         else
         {
@@ -185,8 +177,8 @@ void Actor::Impl::initialize(
             root = model;
 
             model->set_preserve_transform(ModelNode::PreserveTransform::PT_local);
-            self_.NodePath::operator=(std::move(NodePath(root)));
-            self_.set_geom_node(self_.attach_new_node(new ModelNode("actorGeom")));
+            self->NodePath::operator=(std::move(NodePath(root)));
+            self->set_geom_node(self->attach_new_node(new ModelNode("actorGeom")));
         }
 
         // do we have a map of models?
@@ -197,7 +189,7 @@ void Actor::Impl::initialize(
         // else it is a single part actor
         else if (models.which() == 1)
         {
-            self_.load_model(boost::get<ModelsType>(models), "modelRoot", "lodRoot", copy, ok_missing);
+            self->load_model(boost::get<ModelsType>(models), "modelRoot", "lodRoot", copy, ok_missing);
         }
 
         // load anims
@@ -220,14 +212,14 @@ void Actor::Impl::initialize(
                 {
                     // iterate over both dicts
                     for (const auto& partname_anims: multipart_anims)
-                        self_.load_anims(partname_anims.second, partname_anims.first, lod_name);
+                        self->load_anims(partname_anims.second, partname_anims.first, lod_name);
                 }
             }
             else if (models.which() == 1)
             {
                 // then it must be multi-part w/o LOD
                 for (const auto& partname_anims: multipart_anims)
-                    self_.load_anims(partname_anims.second, partname_anims.first);
+                    self->load_anims(partname_anims.second, partname_anims.first);
             }
         }
         // then we have single-part w/ LOD
@@ -240,12 +232,12 @@ void Actor::Impl::initialize(
                 sorted_keys.push_back(key_val.first);
             std::sort(sorted_keys.begin(), sorted_keys.end());
             for (const auto& lod_name: sorted_keys)
-                self_.load_anims(boost::get<AnimsType>(anims), "modelRoot", lod_name);
+                self->load_anims(boost::get<AnimsType>(anims), "modelRoot", lod_name);
         }
         // else it is single-part w/o LOD
         else if (anims.which() == 1)
         {
-            self_.load_anims(boost::get<AnimsType>(anims));
+            self->load_anims(boost::get<AnimsType>(anims));
         }
     }
     else
@@ -274,7 +266,7 @@ void Actor::Impl::initialize(
     }
 }
 
-void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims)
+void Actor::Impl::post_load_model(Actor* self, NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims)
 {
     if (model.is_empty())
         throw std::runtime_error(fmt::format("Could not load Actor model {}", model));
@@ -316,7 +308,7 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
         {
             bundle_np.reparent_to(geom_node_);
         }
-        prepare_bundle(bundle_np, model.node(), part_name, lod_name);
+        prepare_bundle(self, bundle_np, model.node(), part_name, lod_name);
 
         // we rename this node to make Actor copying easier
         bundle_np.node()->set_name(fmt::format("{}{}", Actor::part_prefix, part_name));
@@ -352,7 +344,7 @@ void Actor::Impl::post_load_model(NodePath model, const std::string& part_name, 
     }
 }
 
-void Actor::Impl::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name, const std::string& lod_name)
+void Actor::Impl::prepare_bundle(Actor* self, NodePath bundle_np, PandaNode* part_model, const std::string& part_name, const std::string& lod_name)
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
         throw std::runtime_error("Subpart (" + part_name + ") already exists");
@@ -362,7 +354,7 @@ void Actor::Impl::prepare_bundle(NodePath bundle_np, PandaNode* part_model, cons
     // actor in the scene graph.
     if (!got_name_)
     {
-        self_.node()->set_name(bundle_np.node()->get_name());
+        self->node()->set_name(bundle_np.node()->get_name());
         got_name_ = true;
     }
 
@@ -451,12 +443,14 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     bool set_final,
     boost::optional<bool> merge_LOD_bundles,
     boost::optional<bool> allow_async_bind,
-    boost::optional<bool> ok_missing): impl_(std::make_unique<Impl>(*this))
+    boost::optional<bool> ok_missing): impl_(std::make_unique<Impl>())
 {
-    impl_->initialize(models, anims, other, copy, flattenable, set_final, merge_LOD_bundles, allow_async_bind, ok_missing);
+    impl_->initialize(this, models, anims, other, copy, flattenable, set_final, merge_LOD_bundles, allow_async_bind, ok_missing);
 }
 
 Actor::~Actor(void) = default;
+
+Actor& Actor::operator=(Actor&&) = default;
 
 bool Actor::has_LOD(void) const
 {
@@ -477,7 +471,7 @@ void Actor::load_model(NodePath model_path, const std::string& part_name, const 
         return;
     }
 
-    rppanda_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
+    rppanda_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;
 
     NodePath model;
     if (copy)
@@ -485,7 +479,7 @@ void Actor::load_model(NodePath model_path, const std::string& part_name, const 
     else
         model = model_path;
 
-    impl_->post_load_model(model, part_name, lod_name, auto_bind_anims);
+    impl_->post_load_model(this, model, part_name, lod_name, auto_bind_anims);
 }
 
 void Actor::load_model(const Filename& model_path, const std::string& part_name, const std::string& lod_name,
@@ -529,7 +523,7 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
     if (model_node)
         model = NodePath(model_node);
 
-    impl_->post_load_model(model, part_name, lod_name, auto_bind_anims);
+    impl_->post_load_model(this, model, part_name, lod_name, auto_bind_anims);
 }
 
 void Actor::load_anims(const AnimsType& anims, const std::string& part_name, const std::string& lod_name)

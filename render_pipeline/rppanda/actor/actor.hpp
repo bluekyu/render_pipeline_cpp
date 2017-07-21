@@ -52,7 +52,13 @@ public:
         boost::optional<bool> allow_async_bind={},
         boost::optional<bool> ok_missing={}
     );
+    Actor(const Actor&) = delete;
+    Actor(Actor&&) = default;
+
     ~Actor(void);
+
+    Actor& operator=(const Actor&) = delete;
+    Actor& operator=(Actor&&);
 
     bool has_LOD(void) const;
 

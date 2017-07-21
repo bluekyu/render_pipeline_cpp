@@ -479,6 +479,12 @@ ShowBase::~ShowBase(void)
     global_showbase = nullptr;
 }
 
+void ShowBase::setup_render_2dp(void) { impl_->setup_render_2dp(); }
+void ShowBase::setup_mouse(void) { impl_->setup_mouse(); }
+void ShowBase::create_base_audio_managers(void) { impl_->create_base_audio_managers(); }
+void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
+void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
+
 ShowBase* ShowBase::get_global_ptr(void)
 {
     return global_showbase;
@@ -580,11 +586,6 @@ void ShowBase::open_main_window(void)
     }
 }
 
-void ShowBase::setup_render_2dp(void)
-{
-    impl_->setup_render_2dp();
-}
-
 void ShowBase::setup_render(void)
 {
     // C++ sets already render node.
@@ -653,11 +654,6 @@ NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4
 void ShowBase::setup_data_graph(void)
 {
 
-}
-
-void ShowBase::setup_mouse(void)
-{
-    impl_->setup_mouse();
 }
 
 void ShowBase::setup_mouse_cb(void)
@@ -864,24 +860,8 @@ void ShowBase::use_trackball(void)
     impl_->window_framework_->setup_trackball();
 }
 
-void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager)
-{
-    impl_->add_sfx_manager(extra_sfx_manager);
-}
-
-void ShowBase::create_base_audio_managers(void)
-{
-    impl_->create_base_audio_managers();
-}
-
-void ShowBase::enable_music(bool enable)
-{
-    impl_->enable_music(enable);
-}
-
 void ShowBase::set_all_sfx_enables(bool enable)
 {
-    
     for (size_t k=0, k_end=impl_->sfx_manager_list_.size(); k < k_end; ++k)
     {
         if (impl_->sfx_manager_is_valid_list_[k])
