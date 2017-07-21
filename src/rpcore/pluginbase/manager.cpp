@@ -29,6 +29,19 @@ public:
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
+    void load_setting_overrides(const std::string& override_path);
+
+    void on_load(void);
+    void on_stage_setup(void);
+    void on_post_stage_setup(void);
+    void on_pipeline_created(void);
+    void on_prepare_scene(NodePath scene);
+    void on_pre_render_update(void);
+    void on_post_render_update(void);
+    void on_shader_reload(void);
+    void on_window_resized(void);
+    void on_unload(void);
+
 public:
     PluginManager& self_;
     RenderPipeline& pipeline_;
@@ -123,6 +136,123 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     // TODO: implement
 }
 
+void PluginManager::Impl::load_setting_overrides(const std::string& override_path)
+{
+    self_.trace(fmt::format("Loading setting overrides from '{}'", override_path));
+
+    YAML::Node overrides;
+    if (!rplibs::load_yaml_file(override_path, overrides))
+    {
+        self_.warn("Failed to load overrides");
+        return;
+    }
+
+    for (const auto& plugin_id: overrides["enabled"])
+    {
+        enabled_plugins_.insert(plugin_id.as<std::string>());
+    }
+
+    for (const auto& id_settings: overrides["overrides"])
+    {
+        const std::string plugin_id(id_settings.first.as<std::string>());
+        if (settings_.find(plugin_id) == settings_.end())
+        {
+            self_.warn(fmt::format("Unknown plugin in plugin ({}) config.", plugin_id));
+            continue;
+        }
+
+        for (const auto& id_val: id_settings.second)
+        {
+            const std::string setting_id(id_val.first.as<std::string>());
+            const auto& plugin_setting = settings_.at(plugin_id);
+            if (plugin_setting.find(setting_id) == plugin_setting.end())
+            {
+                self_.warn(fmt::format("Unknown override: {}:{}", plugin_id, setting_id));
+                continue;
+            }
+            plugin_setting.at(setting_id)->set_value(id_val.second);
+        }
+    }
+}
+
+void PluginManager::Impl::on_load(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_load() in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_load();
+    }
+}
+
+void PluginManager::Impl::on_stage_setup(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_stage_setup() in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_stage_setup();
+    }
+}
+
+void PluginManager::Impl::on_post_stage_setup(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_post_stage_setup() in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_post_stage_setup();
+    }
+}
+
+void PluginManager::Impl::on_pipeline_created(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_pipeline_created() in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_pipeline_created();
+    }
+}
+
+void PluginManager::Impl::on_prepare_scene(NodePath scene)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_prepare_scene(NodePath) in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_prepare_scene(scene);
+    }
+}
+
+void PluginManager::Impl::on_pre_render_update(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+        instances_.at(plugin_id)->on_pre_render_update();
+}
+
+void PluginManager::Impl::on_post_render_update(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+        instances_.at(plugin_id)->on_post_render_update();
+}
+
+void PluginManager::Impl::on_shader_reload(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+        instances_.at(plugin_id)->on_shader_reload();
+}
+
+void PluginManager::Impl::on_window_resized(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+        instances_.at(plugin_id)->on_window_resized();
+}
+
+void PluginManager::Impl::on_unload(void)
+{
+    for (const auto& plugin_id: enabled_plugins_)
+    {
+        self_.trace(fmt::format("Call on_unload() in plugin ({}).", plugin_id));
+        instances_.at(plugin_id)->on_unload();
+    }
+}
+
 // ************************************************************************************************
 
 PluginManager::PluginManager(RenderPipeline& pipeline): RPObject("PluginManager"), impl_(std::make_unique<Impl>(*this, pipeline))
@@ -173,11 +303,6 @@ void PluginManager::disable_plugin(const std::string& plugin_id)
         if (std::find(plugins.begin(), plugins.end(), plugin_id) != plugins.end())
             disable_plugin(id_handle.second->get_plugin_id());
     }
-}
-
-void PluginManager::unload(void)
-{
-    impl_->unload();
 }
 
 void PluginManager::load_base_settings(const Filename& plugin_dir)
@@ -258,45 +383,6 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const Fil
             {
                 day_settings[key_val.first.as<std::string>()] = make_daysetting_from_data(key_val.second);
             }
-        }
-    }
-}
-
-void PluginManager::load_setting_overrides(const std::string& override_path)
-{
-    trace(fmt::format("Loading setting overrides from '{}'", override_path));
-
-    YAML::Node overrides;
-    if (!rplibs::load_yaml_file(override_path, overrides))
-    {
-        warn("Failed to load overrides");
-        return;
-    }
-
-    for (const auto& plugin_id: overrides["enabled"])
-    {
-        impl_->enabled_plugins_.insert(plugin_id.as<std::string>());
-    }
-
-    for (const auto& id_settings: overrides["overrides"])
-    {
-        const std::string plugin_id(id_settings.first.as<std::string>());
-        if (impl_->settings_.find(plugin_id) == impl_->settings_.end())
-        {
-            warn(fmt::format("Unknown plugin in plugin ({}) config.", plugin_id));
-            continue;
-        }
-
-        for (const auto& id_val: id_settings.second)
-        {
-            const std::string setting_id(id_val.first.as<std::string>());
-            const auto& plugin_setting = impl_->settings_.at(plugin_id);
-            if (plugin_setting.find(setting_id) == plugin_setting.end())
-            {
-                warn(fmt::format("Unknown override: {}:{}", plugin_id, setting_id));
-                continue;
-            }
-            plugin_setting.at(setting_id)->set_value(id_val.second);
         }
     }
 }
@@ -403,82 +489,17 @@ const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& Plugi
     return impl_->day_settings_;
 }
 
-void PluginManager::on_load(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_load() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_load();
-    }
-}
-
-void PluginManager::on_stage_setup(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_stage_setup() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_stage_setup();
-    }
-}
-
-void PluginManager::on_post_stage_setup(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_post_stage_setup() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_post_stage_setup();
-    }
-}
-
-void PluginManager::on_pipeline_created(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_pipeline_created() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_pipeline_created();
-    }
-}
-
-void PluginManager::on_prepare_scene(NodePath scene)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_prepare_scene() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_prepare_scene(scene);
-    }
-}
-
-void PluginManager::on_pre_render_update(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-        impl_->instances_.at(plugin_id)->on_pre_render_update();
-}
-
-void PluginManager::on_post_render_update(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-        impl_->instances_.at(plugin_id)->on_post_render_update();
-}
-
-void PluginManager::on_shader_reload(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-        impl_->instances_.at(plugin_id)->on_shader_reload();
-}
-
-void PluginManager::on_window_resized(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-        impl_->instances_.at(plugin_id)->on_window_resized();
-}
-
-void PluginManager::on_unload(void)
-{
-    for (const auto& plugin_id: impl_->enabled_plugins_)
-    {
-        trace(fmt::format("Call on_unload() in plugin ({}).", plugin_id));
-        impl_->instances_.at(plugin_id)->on_unload();
-    }
-}
+void PluginManager::unload(void) { impl_->unload(); }
+void PluginManager::load_setting_overrides(const std::string& override_path) { impl_->load_setting_overrides(override_path); }
+void PluginManager::on_load(void) { impl_->on_load(); }
+void PluginManager::on_stage_setup(void) { impl_->on_stage_setup(); }
+void PluginManager::on_post_stage_setup(void) { impl_->on_post_stage_setup(); }
+void PluginManager::on_pipeline_created(void) { impl_->on_pipeline_created(); }
+void PluginManager::on_prepare_scene(NodePath scene) { impl_->on_prepare_scene(scene); }
+void PluginManager::on_pre_render_update(void) { impl_->on_pre_render_update(); }
+void PluginManager::on_post_render_update(void) { impl_->on_post_render_update(); }
+void PluginManager::on_shader_reload(void) { impl_->on_shader_reload(); }
+void PluginManager::on_window_resized(void) { impl_->on_window_resized(); }
+void PluginManager::on_unload(void) { impl_->on_unload(); }
 
 }
