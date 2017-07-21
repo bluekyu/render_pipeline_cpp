@@ -2,7 +2,7 @@
 
 Render Pipeline C++
 
-Copyright (c) 2016, center of human-centered interaction for coexistence. All right reserved.
+Copyright (c) 2016-2017, Center of human-centered interaction for coexistence. All right reserved.
 
 
 

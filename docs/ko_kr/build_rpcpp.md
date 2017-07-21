@@ -1,4 +1,5 @@
 # Render Pipeline C++ 빌드
+**Translation**: [English](build_rpcpp)
 
 ## 요구사항
 - Panda3D
