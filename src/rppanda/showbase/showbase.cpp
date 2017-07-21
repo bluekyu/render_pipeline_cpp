@@ -34,7 +34,7 @@ public:
 
     Impl(ShowBase& self);
 
-    void Init(void);
+    void initailize(void);
 
     void setup_mouse(void);
     void setup_render_2dp(void);
@@ -153,7 +153,7 @@ ShowBase::Impl::Impl(ShowBase& self): self_(self)
 {
 }
 
-void ShowBase::Impl::Init(void)
+void ShowBase::Impl::initailize(void)
 {
     if (global_showbase)
     {
@@ -440,7 +440,7 @@ ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this)
 {
     impl_->panda_framework_ = std::make_shared<PandaFramework>();
     impl_->panda_framework_->open_framework(argc, argv);
-    impl_->Init();
+    impl_->initailize();
 }
 
 ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
@@ -450,7 +450,7 @@ ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*thi
 #else
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
 #endif
-    impl_->Init();
+    impl_->initailize();
 }
 
 ShowBase::~ShowBase(void)

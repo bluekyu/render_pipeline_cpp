@@ -18,9 +18,9 @@ namespace rpcore {
 
 inline static int max_color_bits(const LVecBase4i& color_bits)
 {
-    const int t1 = max(color_bits[0], color_bits[1]);
-    const int t2 = max(color_bits[2], color_bits[3]);
-    return max(t1, t2);
+    return (std::max)(
+        (std::max)(color_bits[0], color_bits[1]),
+        (std::max)(color_bits[2], color_bits[3]));
 }
 
 // ************************************************************************************************
@@ -28,6 +28,8 @@ class RenderTarget::Impl
 {
 public:
     Impl(RenderTarget& self);
+
+    void initilize(void);
 
     int percent_to_number(const std::string& v) const NOEXCEPT;
 
@@ -38,19 +40,17 @@ public:
     bool create(void);
 
 public:
-    RenderTarget& self;
+    RenderTarget& self_;
 
-    std::unordered_map<std::string, int> percent_to_number_map;
-
-    PT(GraphicsBuffer) internal_buffer = nullptr;
-    GraphicsWindow* source_window = nullptr;
+    PT(GraphicsBuffer) internal_buffer_ = nullptr;
+    GraphicsWindow* source_window_ = nullptr;
 
     PT(DisplayRegion) source_display_region_ = nullptr;
     PostProcessRegion* source_postprocess_region_ = nullptr;
 
     GraphicsEngine* engine_ = nullptr;
 
-    bool active = false;
+    bool active_ = false;
     bool support_transparency_ = false;
     bool create_default_region_ = true;
 
@@ -65,34 +65,40 @@ public:
     LVecBase2i size_constraint_ = LVecBase2i(-1);
 };
 
-RenderTarget::Impl::Impl(RenderTarget& self): self(self)
+RenderTarget::Impl::Impl(RenderTarget& self): self_(self)
 {
-    source_window = Globals::base->get_win();
+}
+
+void RenderTarget::Impl::initilize(void)
+{
+    source_window_ = Globals::base->get_win();
 
     // Public attributes
     engine_ = Globals::base->get_graphics_engine();
 
     // Disable all global clears, since they are not required
-    const int num_display_region = source_window->get_num_display_regions();
+    const int num_display_region = source_window_->get_num_display_regions();
     for (int k = 0; k < num_display_region; k++)
-        source_window->get_display_region(k)->disable_clears();
+        source_window_->get_display_region(k)->disable_clears();
 
-    percent_to_number_map.insert({
-        { "100%", -1 },
-        { "50%", -2 },
-        { "25%", -4 }
-    });
+
 }
 
 int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
 {
+    static const std::unordered_map<std::string, int> percent_to_number_map = {
+        { "100%", -1 },
+        { "50%", -2 },
+        { "25%", -4 }
+    };
+
     try
     {
         return percent_to_number_map.at(v);
     }
     catch (...)
     {
-        self.error(fmt::format("Invalid percent: {}", v));
+        self_.error(fmt::format("Invalid percent: {}", v));
         return -1;
     }
 }
@@ -102,13 +108,13 @@ void RenderTarget::Impl::create_buffer(void)
     compute_size_from_constraint();
     if (!create())
     {
-        self.error("Failed to create buffer!");
+        self_.error("Failed to create buffer!");
         return;
     }
 
     if (create_default_region_)
     {
-        source_postprocess_region_ = PostProcessRegion::make(internal_buffer);
+        source_postprocess_region_ = PostProcessRegion::make(internal_buffer_);
         source_display_region_.clear();
 
         if (max_color_bits(color_bits_) == 0)
@@ -134,7 +140,7 @@ void RenderTarget::Impl::setup_textures(void)
 {
     for (int k = 0; k < aux_count_; k++)
     {
-        targets_[std::string("aux_") + std::to_string(k)] = new Texture(self.get_debug_name() + "_aux_" + std::to_string(k));
+        targets_[std::string("aux_") + std::to_string(k)] = new Texture(self_.get_debug_name() + "_aux_" + std::to_string(k));
     }
 
     for (auto& tex: targets_)
@@ -209,7 +215,7 @@ void RenderTarget::Impl::make_properties(WindowProperties& window_props, FrameBu
     else if (aux_bits_ == 32)
         buffer_props.set_aux_float(aux_count_);
     else
-        self.error("Invalid aux bits");
+        self_.error("Invalid aux bits");
 }
 
 bool RenderTarget::Impl::create(void)
@@ -219,19 +225,19 @@ bool RenderTarget::Impl::create(void)
     FrameBufferProperties buffer_props;
     make_properties(window_props, buffer_props);
 
-    internal_buffer = DCAST(GraphicsBuffer, engine_->make_output(
-        source_window->get_pipe(),
-        self.get_debug_name(),
+    internal_buffer_ = DCAST(GraphicsBuffer, engine_->make_output(
+        source_window_->get_pipe(),
+        self_.get_debug_name(),
         1,
         buffer_props,
         window_props,
         GraphicsPipe::BF_refuse_window | GraphicsPipe::BF_resizeable,
-        source_window->get_gsg(),
-        source_window));
+        source_window_->get_gsg(),
+        source_window_));
 
-    if (internal_buffer == nullptr)
+    if (internal_buffer_ == nullptr)
     {
-        self.error("Failed to create buffer.");
+        self_.error("Failed to create buffer.");
         return false;
     }
 
@@ -241,13 +247,13 @@ bool RenderTarget::Impl::create(void)
 
     if (depth_bits_)
     {
-        internal_buffer->add_render_texture(self.get_depth_tex(), rtmode,
+        internal_buffer_->add_render_texture(self_.get_depth_tex(), rtmode,
             GraphicsOutput::RTP_depth);
     }
 
     if (max_color_bits(color_bits_) > 0)
     {
-        internal_buffer->add_render_texture(self.get_color_tex(), rtmode,
+        internal_buffer_->add_render_texture(self_.get_color_tex(), rtmode,
             GraphicsOutput::RTP_color);
     }
 
@@ -258,7 +264,7 @@ bool RenderTarget::Impl::create(void)
     for (int k = 0; k < aux_count_; k++)
     {
         int target_mode = aux_prefix + k;
-        internal_buffer->add_render_texture(self.get_aux_tex(k), rtmode,
+        internal_buffer_->add_render_texture(self_.get_aux_tex(k), rtmode,
             DrawableRegion::RenderTexturePlane(target_mode));
     }
 
@@ -268,13 +274,13 @@ bool RenderTarget::Impl::create(void)
         sort_ = RenderTarget::CURRENT_SORT;
     }
 
-    internal_buffer->set_sort(sort_.get());
-    internal_buffer->disable_clears();
-    internal_buffer->get_display_region(0)->disable_clears();
-    internal_buffer->get_overlay_display_region()->disable_clears();
-    internal_buffer->get_overlay_display_region()->set_active(false);
+    internal_buffer_->set_sort(sort_.get());
+    internal_buffer_->disable_clears();
+    internal_buffer_->get_display_region(0)->disable_clears();
+    internal_buffer_->get_overlay_display_region()->disable_clears();
+    internal_buffer_->get_overlay_display_region()->set_active(false);
 
-    RenderTarget::REGISTERED_TARGETS.push_back(&self);
+    RenderTarget::REGISTERED_TARGETS.push_back(&self_);
 
     return true;
 }
@@ -286,6 +292,7 @@ int RenderTarget::CURRENT_SORT = -300;
 
 RenderTarget::RenderTarget(const std::string& name): RPObject(name), impl_(std::make_unique<Impl>(*this))
 {
+    impl_->initilize();
 }
 
 RenderTarget::~RenderTarget(void)
@@ -395,7 +402,7 @@ void RenderTarget::prepare_render(const NodePath& camera_np)
 {
     impl_->create_default_region_ = false;
     impl_->create_buffer();
-    impl_->source_display_region_ = impl_->internal_buffer->get_display_region(0);
+    impl_->source_display_region_ = impl_->internal_buffer_->get_display_region(0);
     if (impl_->source_postprocess_region_)
     {
         delete impl_->source_postprocess_region_;
@@ -422,18 +429,18 @@ void RenderTarget::prepare_render(const NodePath& camera_np)
             DCAST(DisplayRegion, camera->get_display_region(k))->set_active(false);
 
         // Remove the existing display region of the camera
-        for (int k = 0, k_end = impl_->source_window->get_num_display_regions(); k < k_end; ++k)
+        for (int k = 0, k_end = impl_->source_window_->get_num_display_regions(); k < k_end; ++k)
         {
-            DisplayRegion* region = impl_->source_window->get_display_region(k);
+            DisplayRegion* region = impl_->source_window_->get_display_region(k);
             if (region && region->get_camera() == camera_np)
-                impl_->source_window->remove_display_region(region);
+                impl_->source_window_->remove_display_region(region);
         }
 
         camera->set_initial_state(initial_state.get_state());
         impl_->source_display_region_->set_camera(camera_np);
     }
 
-    impl_->internal_buffer->disable_clears();
+    impl_->internal_buffer_->disable_clears();
     impl_->source_display_region_->disable_clears();
     impl_->source_display_region_->set_active(true);
     impl_->source_display_region_->set_sort(20);
@@ -441,30 +448,30 @@ void RenderTarget::prepare_render(const NodePath& camera_np)
     // Reenable depth-clear, usually desireable
     impl_->source_display_region_->set_clear_depth_active(true);
     impl_->source_display_region_->set_clear_depth(1.0f);
-    impl_->active = true;
+    impl_->active_ = true;
 }
 
 void RenderTarget::prepare_buffer(void)
 {
     impl_->create_buffer();
-    impl_->active = true;
+    impl_->active_ = true;
 }
 
 void RenderTarget::present_on_screen(void)
 {
-    impl_->source_postprocess_region_ = PostProcessRegion::make(impl_->source_window);
+    impl_->source_postprocess_region_ = PostProcessRegion::make(impl_->source_window_);
     impl_->source_postprocess_region_->set_sort(5);
 }
 
 void RenderTarget::remove(void)
 {
-    if (impl_->internal_buffer)
+    if (impl_->internal_buffer_)
     {
-        impl_->internal_buffer->clear_render_textures();
-        impl_->engine_->remove_window(impl_->internal_buffer);
+        impl_->internal_buffer_->clear_render_textures();
+        impl_->engine_->remove_window(impl_->internal_buffer_);
 
         RenderTarget::REGISTERED_TARGETS.erase(std::find(RenderTarget::REGISTERED_TARGETS.begin(), RenderTarget::REGISTERED_TARGETS.end(), this));
-        impl_->internal_buffer.clear();
+        impl_->internal_buffer_.clear();
     }
     else
     {
@@ -472,7 +479,7 @@ void RenderTarget::remove(void)
         impl_->source_postprocess_region_ = nullptr;
     }
 
-    impl_->active = false;
+    impl_->active_ = false;
     for (auto& target: impl_->targets_)
         target.second->release_all();
     impl_->targets_.clear();
@@ -480,8 +487,8 @@ void RenderTarget::remove(void)
 
 void RenderTarget::set_clear_color(const LColor& color)
 {
-    impl_->internal_buffer->set_clear_color_active(true);
-    impl_->internal_buffer->set_clear_color(color);
+    impl_->internal_buffer_->set_clear_color_active(true);
+    impl_->internal_buffer_->set_clear_color(color);
 }
 
 void RenderTarget::set_instance_count(int count)
@@ -491,15 +498,15 @@ void RenderTarget::set_instance_count(int count)
 
 bool RenderTarget::get_active(void) const
 {
-    return impl_->active;
+    return impl_->active_;
 }
 
 void RenderTarget::set_active(bool flag)
 {
-    const int num_display_regions = impl_->internal_buffer->get_num_display_regions();
+    const int num_display_regions = impl_->internal_buffer_->get_num_display_regions();
     for (int k = 0; k < num_display_regions; k++)
-        impl_->internal_buffer->get_display_region(k)->set_active(flag);
-    impl_->active = flag;
+        impl_->internal_buffer_->get_display_region(k)->set_active(flag);
+    impl_->active_ = flag;
 }
 
 void RenderTarget::set_shader_input(const ShaderInput& inp, bool override_input)
@@ -520,7 +527,7 @@ void RenderTarget::set_shader(const Shader* sha)
 
 GraphicsBuffer* RenderTarget::get_internal_buffer(void) const
 {
-    return impl_->internal_buffer;
+    return impl_->internal_buffer_;
 }
 
 DisplayRegion* RenderTarget::get_display_region(void) const
@@ -539,8 +546,8 @@ void RenderTarget::consider_resize(void)
     impl_->compute_size_from_constraint();
     if (current_size != impl_->size_)
     {
-        if (impl_->internal_buffer)
-            impl_->internal_buffer->set_size(impl_->size_.get_x(), impl_->size_.get_y());
+        if (impl_->internal_buffer_)
+            impl_->internal_buffer_->set_size(impl_->size_.get_x(), impl_->size_.get_y());
     }
 }
 

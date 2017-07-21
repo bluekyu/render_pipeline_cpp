@@ -14,7 +14,9 @@ namespace rppanda {
 class SoundInterval::Impl
 {
 public:
-    Impl(SoundInterval& self, const Parameters& params);
+    Impl(SoundInterval& self);
+
+    void initialize(const Parameters& params);
 
     void priv_initialize(double t);
     void priv_step(double t);
@@ -39,7 +41,11 @@ public:
     bool in_finish_ = false;
 };
 
-SoundInterval::Impl::Impl(SoundInterval& self, const Parameters& params): self_(self)
+SoundInterval::Impl::Impl(SoundInterval& self): self_(self)
+{
+}
+
+void SoundInterval::Impl::initialize(const Parameters& params)
 {
     // Generate unique name
     id_ = "Sound-" + std::to_string(SoundInterval::sound_num_);
@@ -147,8 +153,9 @@ size_t SoundInterval::sound_num_ = 1;
 
 TypeHandle SoundInterval::_type_handle;
 
-SoundInterval::SoundInterval(const Parameters& params): CInterval("unnamed", 0.0f, false), impl_(std::make_unique<Impl>(*this, params))
+SoundInterval::SoundInterval(const Parameters& params): CInterval("unnamed", 0.0f, false), impl_(std::make_unique<Impl>(*this))
 {
+    impl_->initialize(params);
 }
 
 SoundInterval::~SoundInterval(void) = default;

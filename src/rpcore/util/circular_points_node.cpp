@@ -16,7 +16,7 @@ static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeo
 class CircularPointsNode::Impl
 {
 public:
-    Impl(const std::string& name, const std::vector<LPoint3f>& positions, float radius, const std::string& effect_path,
+    void initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius, const std::string& effect_path,
         GeomEnums::UsageHint buffer_hint);
 
     void set_position(const LPoint3f& position, int point_index);
@@ -34,7 +34,7 @@ public:
     std::vector<LPoint3f> positions_;
 };
 
-CircularPointsNode::Impl::Impl(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+void CircularPointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     const std::string& effect_path, GeomEnums::UsageHint buffer_hint)
 {
     points_np_ = create_points(name, positions);
@@ -104,9 +104,9 @@ void CircularPointsNode::Impl::set_active_point_count(int count)
 
 // ************************************************************************************************
 CircularPointsNode::CircularPointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
-    const std::string& effect_path, GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>(name, positions,
-        radius, effect_path, buffer_hint))
+    const std::string& effect_path, GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>())
 {
+    impl_->initialize(name, positions, radius, effect_path, buffer_hint);
 }
 
 CircularPointsNode::~CircularPointsNode(void) = default;

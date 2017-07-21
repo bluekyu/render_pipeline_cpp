@@ -79,7 +79,6 @@ public:
 
 StageManager::Impl::Impl(StageManager& self, RenderPipeline& pipeline): self_(self), pipeline_(pipeline)
 {
-    load_stage_order();
 }
 
 void StageManager::Impl::load_stage_order(void)
@@ -342,6 +341,7 @@ void StageManager::Impl::apply_future_bindings(void)
 
 StageManager::StageManager(RenderPipeline& pipeline): RPObject("StageManager"), impl_(std::make_unique<Impl>(*this, pipeline))
 {
+    impl_->load_stage_order();
 }
 
 StageManager::~StageManager(void) = default;

@@ -12,7 +12,7 @@ static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeo
 class InstancingNode::Impl
 {
 public:
-    Impl(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint);
+    void initilize(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint);
 
     void set_instance_count(int instance_count);
 
@@ -28,8 +28,10 @@ public:
     PT(Texture) buffer_texture_;
 };
 
-InstancingNode::Impl::Impl(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint): instanced_np_(np)
+void InstancingNode::Impl::initilize(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint)
 {
+    instanced_np_ = np;
+
     // Allocate storage for the matrices, each matrix has 16 elements,
     // but because one pixel has four components, we need amount * 4 pixels.
     buffer_texture_ = new Texture;
@@ -89,9 +91,12 @@ void InstancingNode::Impl::upload_transforms(void)
     dirty_ = false;
 }
 
+// ************************************************************************************************
+
 InstancingNode::InstancingNode(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint):
-    impl_(std::make_unique<Impl>(np, effect_path, buffer_hint))
+    impl_(std::make_unique<Impl>())
 {
+    impl_->initilize(np, effect_path, buffer_hint);
 }
 
 InstancingNode::InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
