@@ -6,14 +6,13 @@
 
 #pragma once
 
+#include <audioSound.h>
 #include <nodePath.h>
 #include <cInterval.h>
 
 #include <boost/optional.hpp>
 
 #include <render_pipeline/rpcore/config.hpp>
-
-class AudioSound;
 
 namespace rppanda {
 
@@ -23,24 +22,21 @@ public:
     static size_t sound_num_;   //!< Name counter
 
 public:
-    struct Parameters
-    {
-        AudioSound* sound = nullptr;
-        bool loop = false;
-        double duration = 0.0;
-        boost::optional<std::string> name;
-        double volume = 1.0;
-        double start_time = 0.0;
-        boost::optional<NodePath> node;
-        bool seamless_loop = true;
-        boost::optional<NodePath> listener_node;
-        boost::optional<float> cut_off;
-    };
+    SoundInterval(AudioSound* sound, bool loop=false, double duration=0.0,
+        const boost::optional<std::string>& name={}, double volume=1.0, double start_time=0.0,
+        boost::optional<NodePath> node={}, bool seamless_loop=true, boost::optional<NodePath> listener_node={},
+        boost::optional<float> cut_off={});
 
-public:
-    SoundInterval(const Parameters& params);
+    ~SoundInterval(void) = default;
 
-    ~SoundInterval(void);
+    AudioSound* get_sound(void) const;
+    float get_sound_duration(void) const;
+    bool get_f_loop(void) const;
+    double get_volume(void) const;
+    double get_start_time(void) const;
+    boost::optional<NodePath> get_node(void) const;
+    boost::optional<NodePath> get_listener_node(void) const;
+    boost::optional<float> get_cut_off(void) const;
 
     void loop(double start_t=0.0, double end_t=-1.0, double play_rate=1.0, bool stagger=false);
     void finish(void);
@@ -54,9 +50,19 @@ public:
     void priv_reverse_finalize(void) override;
     void priv_interrupt(void) override;
 
-private:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
+protected:
+    PT(AudioSound) sound_;
+    float sound_duration_;
+    bool f_loop_;
+    double volume_;
+    double start_time_;
+    boost::optional<NodePath> node_;
+    boost::optional<NodePath> listener_node_;
+    boost::optional<float> cut_off_;
+    bool seamless_loop_;
+    bool sound_playing_;
+    bool reverse_;
+    bool in_finish_ = false;
 
 public:
     static TypeHandle get_class_type()
@@ -77,5 +83,47 @@ public:
 private:
     static TypeHandle _type_handle;
 };
+
+// ************************************************************************************************
+
+inline AudioSound* SoundInterval::get_sound(void) const
+{
+    return sound_;
+}
+
+inline float SoundInterval::get_sound_duration(void) const
+{
+    return sound_duration_;
+}
+
+inline bool SoundInterval::get_f_loop(void) const
+{
+    return f_loop_;
+}
+
+inline double SoundInterval::get_volume(void) const
+{
+    return volume_;
+}
+
+inline double SoundInterval::get_start_time(void) const
+{
+    return start_time_;
+}
+
+inline boost::optional<NodePath> SoundInterval::get_node(void) const
+{
+    return node_;
+}
+
+inline boost::optional<NodePath> SoundInterval::get_listener_node(void) const
+{
+    return listener_node_;
+}
+
+inline boost::optional<float> SoundInterval::get_cut_off(void) const
+{
+    return cut_off_;
+}
 
 }
