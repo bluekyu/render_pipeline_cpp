@@ -17,7 +17,13 @@ class RENDER_PIPELINE_DECL Loader: public DirectObject
 {
 public:
     Loader(ShowBase& base);
+    Loader(const Loader&) = delete;
+    Loader(Loader&&);
+
     ~Loader(void);
+
+    Loader& operator=(const Loader&) = delete;
+    Loader& operator=(Loader&&);
 
     NodePath load_model(const Filename& model_path, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache={}, bool allow_instance=false, boost::optional<bool> ok_missing={});

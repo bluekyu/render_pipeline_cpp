@@ -32,13 +32,11 @@ public:
     static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
     static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
 
-    Impl(ShowBase& self);
+    void initailize(ShowBase* self);
 
-    void initailize(void);
-
-    void setup_mouse(void);
-    void setup_render_2dp(void);
-    void setup_render_2d(void);
+    void setup_mouse(ShowBase* self);
+    void setup_render_2dp(ShowBase* self);
+    void setup_render_2d(ShowBase* self);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers(void);
@@ -48,8 +46,6 @@ public:
     void send_screenshot_event(const Filename& filename) const;
 
 public:
-    ShowBase& self_;
-
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
@@ -149,11 +145,7 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *u
     return AsyncTask::DS_cont;
 }
 
-ShowBase::Impl::Impl(ShowBase& self): self_(self)
-{
-}
-
-void ShowBase::Impl::initailize(void)
+void ShowBase::Impl::initailize(ShowBase* self)
 {
     if (global_showbase)
     {
@@ -191,49 +183,49 @@ void ShowBase::Impl::initailize(void)
 
     // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
     graphics_engine_ = GraphicsEngine::get_global_ptr();
-    self_.setup_render();
-    self_.setup_render_2d();
-    self_.setup_data_graph();
+    self->setup_render();
+    self->setup_render_2d();
+    self->setup_data_graph();
 
     if (want_render_2dp_)
-        self_.setup_render_2dp();
+        self->setup_render_2dp();
 
     win_ = window_framework_->get_graphics_window();
 
     // Open the default rendering window.
-    self_.open_default_window();
+    self->open_default_window();
 
     // The default is trackball mode, which is more convenient for
     // ad-hoc development in Python using ShowBase.Applications
     // can explicitly call base.useDrive() if they prefer a drive
     // interface.
-    self_.use_trackball();
+    self->use_trackball();
 
-    loader_ = new rppanda::Loader(self_);
+    loader_ = new rppanda::Loader(*self);
 
     app_has_audio_focus_ = true;
 
-    self_.create_base_audio_managers();
+    self->create_base_audio_managers();
 
-    global_showbase = &self_;
+    global_showbase = self;
 
-    self_.restart();
+    self->restart();
 }
 
-void ShowBase::Impl::setup_mouse(void)
+void ShowBase::Impl::setup_mouse(ShowBase* self)
 {
-    self_.setup_mouse_cb();
+    self->setup_mouse_cb();
 
     mouse_watcher_ = window_framework_->get_mouse();
     mouse_watcher_node_ = DCAST(MouseWatcher, mouse_watcher_.node());
 
     // In C++, aspect2d has already mouse watcher.
     DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
-    DCAST(PGTop, self_.get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
+    DCAST(PGTop, self->get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
     DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
 }
 
-void ShowBase::Impl::setup_render_2dp(void)
+void ShowBase::Impl::setup_render_2dp(ShowBase* self)
 {
     rppanda_cat.debug() << "Setup 2D nodes." << std::endl;
 
@@ -264,7 +256,7 @@ void ShowBase::Impl::setup_render_2dp(void)
     aspect_2dp_ = render_2dp_.attach_new_node(aspect_2dp_pg_top);
     aspect_2dp_pg_top->set_start_sort(16384);
 
-    const float aspect_ratio = self_.get_aspect_ratio();
+    const float aspect_ratio = self->get_aspect_ratio();
     aspect_2dp_.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
 
     // The Z position of the top border of the aspect2dp screen.
@@ -304,24 +296,24 @@ void ShowBase::Impl::setup_render_2dp(void)
     pixel_2dp_ = render_2dp_.attach_new_node(pixel_2dp_pg_top);
     pixel_2dp_pg_top->set_start_sort(16384);
     pixel_2dp_.set_pos(-1, 0, 1);
-    const LVecBase2i& size = self_.get_size();
+    const LVecBase2i& size = self->get_size();
     float xsize = size.get_x();
     float ysize = size.get_y();
     if (xsize > 0 && ysize > 0)
         pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
 }
 
-void ShowBase::Impl::setup_render_2d(void)
+void ShowBase::Impl::setup_render_2d(ShowBase* self)
 {
     // Window framework already created render2d.
-    NodePath render2d = self_.get_render_2d();
+    NodePath render2d = self->get_render_2d();
 
     // Window framework already created aspect2d.
-    NodePath aspect_2d = self_.get_aspect_2d();
+    NodePath aspect_2d = self->get_aspect_2d();
 
     a2d_background_ = aspect_2d.attach_new_node("a2d_background");
 
-    const float aspect_ratio = self_.get_aspect_ratio();
+    const float aspect_ratio = self->get_aspect_ratio();
 
     // The Z position of the top border of the aspect2d screen.
     a2d_top_ = 1.0f;
@@ -436,21 +428,21 @@ void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
 
 // ************************************************************************************************
 
-ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>(*this))
+ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>())
 {
     impl_->panda_framework_ = std::make_shared<PandaFramework>();
     impl_->panda_framework_->open_framework(argc, argv);
-    impl_->initailize();
+    impl_->initailize(this);
 }
 
-ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>(*this))
+ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
 {
 #if _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
 #else
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
 #endif
-    impl_->initailize();
+    impl_->initailize(this);
 }
 
 ShowBase::~ShowBase(void)
@@ -479,8 +471,9 @@ ShowBase::~ShowBase(void)
     global_showbase = nullptr;
 }
 
-void ShowBase::setup_render_2dp(void) { impl_->setup_render_2dp(); }
-void ShowBase::setup_mouse(void) { impl_->setup_mouse(); }
+void ShowBase::setup_render_2d(void) { impl_->setup_render_2d(this); }
+void ShowBase::setup_render_2dp(void) { impl_->setup_render_2dp(this); }
+void ShowBase::setup_mouse(void) { impl_->setup_mouse(this); }
 void ShowBase::create_base_audio_managers(void) { impl_->create_base_audio_managers(); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
@@ -596,11 +589,6 @@ void ShowBase::setup_render(void)
     impl_->backface_culling_enabled_ = render.get_two_sided();
     //textureEnabled = 1;
     impl_->wireframe_enabled_ = render.get_render_mode() == RenderModeAttrib::M_wireframe;
-}
-
-void ShowBase::setup_render_2d(void)
-{
-    impl_->setup_render_2d();
 }
 
 NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,

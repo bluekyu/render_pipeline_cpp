@@ -39,10 +39,11 @@ public:
     /** Initialize ShowBase with given PandaFramework. */
     ShowBase(PandaFramework* framework);
 
-    ~ShowBase(void);
-
     ShowBase(const ShowBase&) = delete;
     ShowBase(ShowBase&&) = delete;
+
+    ~ShowBase(void);
+
     ShowBase& operator=(const ShowBase&) = delete;
     ShowBase& operator=(ShowBase&&) = delete;
 

@@ -14,19 +14,17 @@ namespace rppanda {
 class Loader::Impl
 {
 public:
-    Impl(Loader& self, ShowBase& base);
+    Impl(ShowBase& base);
 
     void pre_load_model(LoaderOptions& this_options, bool& this_ok_missing,
         boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing);
 
 public:
-    Loader& self_;
-
     ShowBase& base_;
     ::Loader* loader_;
 };
 
-Loader::Impl::Impl(Loader& self, ShowBase& base): self_(self), base_(base)
+Loader::Impl::Impl(ShowBase& base): base_(base)
 {
     loader_ = ::Loader::get_global_ptr();
 }
@@ -61,11 +59,15 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
 
 // ************************************************************************************************
 
-Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(*this, base))
+Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
 }
 
+Loader::Loader(Loader&&) = default;
+
 Loader::~Loader(void) = default;
+
+Loader& Loader::operator=(Loader&&) = default;
 
 NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
