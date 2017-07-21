@@ -6,9 +6,7 @@
 
 namespace rpcore {
 
-class RenderPipeline;
-
-class RENDER_PIPELINE_DECL MountManager : public RPObject
+class RENDER_PIPELINE_DECL MountManager: public RPObject
 {
 public:
     /**
@@ -19,8 +17,14 @@ public:
      */
     static std::string convert_to_physical_path(const std::string& path);
 
-    MountManager(RenderPipeline& pipeline);
+    MountManager(void);
+    MountManager(const MountManager&) = delete;
+    MountManager(MountManager&&) = delete;
+
     ~MountManager(void);
+
+    MountManager& operator=(const MountManager&) = delete;
+    MountManager& operator=(MountManager&&) = delete;
 
     const std::string& get_write_path(void) const;
     void set_write_path(const std::string& pth);

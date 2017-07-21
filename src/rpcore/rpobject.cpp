@@ -4,7 +4,7 @@
 
 namespace rpcore {
 
-extern spdlog::logger* global_logger_;
+extern std::shared_ptr<spdlog::logger> global_logger_;
 
 void RPObject::global_trace(const std::string& context, const std::string& message)
 {

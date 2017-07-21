@@ -4,7 +4,7 @@
 
 namespace rpcore {
 
-spdlog::logger* global_logger_ = nullptr;
+std::shared_ptr<spdlog::logger> global_logger_ = spdlog::stdout_color_mt("rpcpp_default_logger");
 
 class RPLogger::Impl
 {
@@ -19,7 +19,7 @@ public:
 
 RPLogger::Impl::~Impl(void)
 {
-    global_logger_ = nullptr;
+    global_logger_.reset();
 }
 
 void RPLogger::Impl::create(const std::string& file_path)
@@ -40,7 +40,7 @@ void RPLogger::Impl::create(const std::string& file_path)
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
     logger_->flush_on(spdlog::level::err);
 
-    global_logger_ = logger_.get();
+    global_logger_ = logger_;
 }
 
 // ************************************************************************************************

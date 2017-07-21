@@ -19,13 +19,11 @@ namespace rpcore {
 class MountManager::Impl
 {
 public:
-    Impl(MountManager& self, RenderPipeline& pipeline);
-
     void set_write_path(const std::string& pth);
 
     bool get_lock(void);
 
-    void mount(void);
+    void mount(MountManager* self);
 
     std::string find_basepath(void) const;
 
@@ -34,19 +32,16 @@ public:
     /**
      * @param[in] fname    Panda3D path (unix-style).
      */
-    bool try_remove(const std::string& fname);
+    bool try_remove(MountManager* self, const std::string& fname);
 
     /** Gets called when the manager is destructed. */
-    void on_exit_cleanup(void);
+    void on_exit_cleanup(MountManager* self);
 
 public:
-    MountManager& self_;
-    RenderPipeline& pipeline_;
-
     /** This is Panda3D path (unix-style). */
     ///@{
     std::string base_path_;
-    std::string lock_file_;
+    std::string lock_file_ = "instance.pid";
     std::string write_path_;
     std::string config_dir_;
     ///@}
@@ -54,11 +49,6 @@ public:
     bool mounted_ = false;
     bool do_cleanup_ = true;
 };
-
-MountManager::Impl::Impl(MountManager& self, RenderPipeline& pipeline): self_(self), pipeline_(pipeline)
-{
-    lock_file_ = "instance.pid";
-}
 
 void MountManager::Impl::set_write_path(const std::string& pth)
 {
@@ -90,9 +80,9 @@ bool MountManager::Impl::get_lock(void)
     }
 }
 
-void MountManager::Impl::mount(void)
+void MountManager::Impl::mount(MountManager* self)
 {
-    self_.debug("Setting up virtual filesystem");
+    self->debug("Setting up virtual filesystem");
     mounted_ = true;
 
     auto convert_path = [](const std::string& pth) {
@@ -104,12 +94,12 @@ void MountManager::Impl::mount(void)
     if (config_dir_.empty())
     {
         const std::string& config_dir = convert_path(rppanda::join(base_path_, "config/"));
-        self_. debug("Mounting auto-detected config dir: " + config_dir);
+        self-> debug("Mounting auto-detected config dir: " + config_dir);
         vfs->mount(config_dir, "/$$rpconfig", 0);
     }
     else
     {
-        self_.debug("Mounting custom config dir: " + config_dir_);
+        self->debug("Mounting custom config dir: " + config_dir_);
         vfs->mount(convert_path(config_dir_), "/$$rpconfig", 0);
     }
 
@@ -122,7 +112,7 @@ void MountManager::Impl::mount(void)
     // If no write path is specified, use a virtual ramdisk
     if (write_path_.empty())
     {
-        self_.debug("Mounting ramdisk as /$$rptemp");
+        self->debug("Mounting ramdisk as /$$rptemp");
         vfs->mount(new VirtualFileMountRamdisk, "/$$rptemp", 0);
     }
     else
@@ -131,18 +121,18 @@ void MountManager::Impl::mount(void)
         // Ensure the pipeline write path exists, and if not, create it
         if (!rppanda::isdir(write_path_))
         {
-            self_.debug("Creating temporary path, since it does not exist yet");
+            self->debug("Creating temporary path, since it does not exist yet");
             try
             {
                 vfs->make_directory_full(Filename(write_path_));
             }
             catch (const std::exception& err)
             {
-                self_.fatal(std::string("Failed to create temporary path: ") + err.what());
+                self->fatal(std::string("Failed to create temporary path: ") + err.what());
             }
         }
 
-        self_.debug("Mounting " + write_path_ + " as /$$rptemp");
+        self->debug("Mounting " + write_path_ + " as /$$rptemp");
         vfs->mount(convert_path(write_path_), "/$$rptemp", 0);
     }
 
@@ -166,11 +156,11 @@ void MountManager::Impl::wrtie_lock(void)
     // TODO: implmeent this.
 }
 
-bool MountManager::Impl::try_remove(const std::string& fname)
+bool MountManager::Impl::try_remove(MountManager* self, const std::string& fname)
 {
     try
     {
-        self_.debug("Try to remove '" + fname + "'");
+        self->debug("Try to remove '" + fname + "'");
         boost::filesystem::remove(Filename(fname).to_os_specific());
         return true;
     }
@@ -180,11 +170,11 @@ bool MountManager::Impl::try_remove(const std::string& fname)
     return false;
 }
 
-void MountManager::Impl::on_exit_cleanup(void)
+void MountManager::Impl::on_exit_cleanup(MountManager* self)
 {
     if (do_cleanup_)
     {
-        self_.debug("Cleaning up ..");
+        self->debug("Cleaning up ..");
 
         if (!write_path_.empty())
         {
@@ -205,7 +195,7 @@ void MountManager::Impl::on_exit_cleanup(void)
                 // Tempfiles from the pipeline start with "$$" to distinguish
                 // them from user created files.
                 if (rppanda::isfile(pth) && fname.substr(0, 2) == "$$")
-                    try_remove(pth);
+                    try_remove(self, pth);
             }
 
             // Delete the write path if no files are left.
@@ -217,7 +207,7 @@ void MountManager::Impl::on_exit_cleanup(void)
                 try
                 {
                     boost::filesystem::remove(write_path_os);
-                    self_.debug("Remove '" + write_path_os + "'");
+                    self->debug("Remove '" + write_path_os + "'");
                 }
                 catch (...)
                 {
@@ -229,7 +219,7 @@ void MountManager::Impl::on_exit_cleanup(void)
 
 // ************************************************************************************************
 
-MountManager::MountManager(RenderPipeline& pipeline): RPObject("MountManager"), impl_(std::make_unique<Impl>(*this, pipeline))
+MountManager::MountManager(void): RPObject("MountManager"), impl_(std::make_unique<Impl>())
 {
     set_base_path(impl_->find_basepath());
 
@@ -238,17 +228,16 @@ MountManager::MountManager(RenderPipeline& pipeline): RPObject("MountManager"), 
 
 MountManager::~MountManager(void)
 {
-    impl_->on_exit_cleanup();
+    impl_->on_exit_cleanup(this);
 }
+
+void MountManager::mount(void) { impl_->mount(this); }
+void MountManager::set_write_path(const std::string& pth) { impl_->set_write_path(pth); }
+bool MountManager::get_lock(void) { return impl_->get_lock(); }
 
 inline const std::string& MountManager::get_write_path(void) const
 {
     return impl_->write_path_;
-}
-
-void MountManager::set_write_path(const std::string& pth)
-{
-    impl_->set_write_path(pth);
 }
 
 inline const std::string& MountManager::get_base_path(void) const
@@ -282,19 +271,9 @@ inline void MountManager::set_do_cleanup(bool cleanup)
     impl_->do_cleanup_ = cleanup;
 }
 
-bool MountManager::get_lock(void)
-{
-    return impl_->get_lock();
-}
-
 inline bool MountManager::is_mounted(void) const
 {
     return impl_->mounted_;
-}
-
-void MountManager::mount(void)
-{
-    impl_->mount();
 }
 
 void MountManager::unmount(void)

@@ -809,7 +809,7 @@ RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipelin
 
     impl_->analyze_system();
 
-    impl_->mount_mgr_ = new MountManager(*this);
+    impl_->mount_mgr_ = new MountManager;
     impl_->pre_showbase_initialized = false;
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
@@ -837,7 +837,7 @@ RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipel
 
     impl_->analyze_system();
 
-    impl_->mount_mgr_ = new MountManager(*this);
+    impl_->mount_mgr_ = new MountManager;
     impl_->pre_showbase_initialized = false;
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
