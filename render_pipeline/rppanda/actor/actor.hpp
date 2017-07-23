@@ -81,6 +81,17 @@ public:
     void load_anims(const AnimsType& anims, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
 
     /**
+     * exposeJoint(self, NodePath, string, string, key="lodRoot")
+     * Starts the joint animating the indicated node.  As the joint
+     * animates, it will transform the node by the corresponding
+     * amount.  This will replace whatever matrix is on the node each
+     * frame.  The default is to expose the net transform from the root,
+     * but if localTransform is true, only the node's local transform
+     * from its parent is exposed.
+     */
+    NodePath expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot", bool local_transform=false);
+
+    /**
      * The converse of exposeJoint: this associates the joint with
      * the indicated node, so that the joint transform will be copied
      * from the node to the joint each frame.  This can be used for

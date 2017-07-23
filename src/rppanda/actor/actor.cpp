@@ -357,6 +357,52 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     }
 }
 
+NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name, bool local_transform)
+{
+    const auto& part_bundle_dict_iter = part_bundle_dict_.find(lod_name);
+    if (part_bundle_dict_iter == part_bundle_dict_.end())
+    {
+        rppanda_actor_cat.warning() << "No lod named: " << lod_name;
+        return NodePath();
+    }
+    const auto& part_bundle_dict = part_bundle_dict_iter->second;
+
+    std::string true_name;
+    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
+    if (subpart_dict_iter != subpart_dict_.end())
+        true_name = subpart_dict_iter->second.true_part_name;
+    else
+        true_name = part_name;
+
+    const auto& iter = part_bundle_dict.find(true_name);
+    if (iter == part_bundle_dict.end())
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name;
+        return NodePath();
+    }
+    PartBundle* bundle = iter->second.get_bundle();
+
+    // Get a handle to the joint.
+    auto joint = DCAST(CharacterJoint, bundle->find_child(joint_name));
+
+    if (node.is_empty())
+        node = this->attach_new_node(joint_name);
+
+    if (joint)
+    {
+        if (local_transform)
+            joint->add_local_transform(node.node());
+        else
+            joint->add_net_transform(node.node());
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "No joint named: " << joint_name;
+    }
+
+    return node;
+}
+
 NodePath Actor::control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name)
 {
     std::string true_name;
