@@ -5,6 +5,7 @@
 #pragma once
 
 #include <nodePath.h>
+#include <partSubset.h>
 
 #include <unordered_map>
 
@@ -14,6 +15,10 @@
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class Loader;
+class AnimControl;
+class PartBundleHandle;
+class AnimBundle;
+class PartBundle;
 
 namespace rppanda {
 
@@ -79,9 +84,105 @@ public:
      */
     void load_anims(const AnimsType& anims, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
 
+    /**
+     * The converse of exposeJoint: this associates the joint with
+     * the indicated node, so that the joint transform will be copied
+     * from the node to the joint each frame.  This can be used for
+     * programmer animation of a particular joint at runtime.
+     * 
+     * The parameter node should be the NodePath for the node whose
+     * transform will animate the joint.  If node is None, a new node
+     * will automatically be created and loaded with the joint's
+     * initial transform.  In either case, the node used will be
+     * returned.
+     * 
+     * It used to be necessary to call this before any animations
+     * have been loaded and bound, but that is no longer so.
+     */
+    NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot");
+
+protected:
+    Loader* loader_;
+
+    bool merge_LOD_bundles_;
+    bool allow_async_bind_;
+
 private:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
+    /**
+     * Instances of this class are stored within the
+     * PartBundleDict to track all of the individual PartBundles
+     * associated with the Actor.  In general, each separately loaded
+     * model file is a different PartBundle.  This can include the
+     * multiple different LOD's, as well as the multiple different
+     * pieces of a multipart Actor.
+     */
+    class PartDef
+    {
+    public:
+        PartBundle* get_bundle(void) const;
+
+        NodePath part_bundle_np;
+        PT(PartBundleHandle) part_bundle_handle;
+        PT(PandaNode) part_model;
+    };
+
+    /**
+     * Instances of this class are stored within the
+     * AnimControlDict to track all of the animations associated with
+     * the Actor.  This includes animations that have already been
+     * bound (these have a valid AnimControl) as well as those that
+     * have not yet been bound (for these, self->animControl is None).
+     *
+     * There is a different AnimDef for each different part or
+     * sub-part, times each different animation in the AnimDict.
+     */
+    class AnimDef
+    {
+    public:
+        std::string filename;
+        PT(AnimControl) anim_control;
+        PT(AnimBundle) anim_bundle;
+    };
+
+    /**
+     * Instances of this class are stored within the SubpartDict
+     * to track the existance of arbitrary sub-parts.  These are
+     * designed to appear to the user to be identical to true "part"
+     * of a multi-part Actor, but in fact each subpart represents a
+     * subset of the joints of an existing part (which is accessible
+     * via a different name).
+     */
+    class SubpartDef
+    {
+    public:
+        SubpartDef(const std::string& true_part_name, const PartSubset& subset=PartSubset{});
+
+        std::string true_part_name;
+        PartSubset subset;
+    };
+
+    void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
+
+    void prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
+
+    /**
+     * Cache the sorted LOD names so we don't have to grab them
+     * and sort them every time somebody asks for the list.
+     */
+    void update_sorted_LOD_names(void);
+
+    std::unordered_map<std::string, PT(PartBundleHandle)> common_bundle_handles_;
+    std::unordered_map<std::string, SubpartDef> subpart_dict_;
+    std::unordered_map<std::string,
+        std::unordered_map<std::string,
+        std::unordered_map<std::string, AnimDef>>> anim_control_dict_;
+    std::unordered_map<std::string, std::unordered_map<std::string, PartDef>> part_bundle_dict_;
+
+    std::vector<std::string> sorted_LOD_names_;
+
+    bool got_name_;
+    NodePath geom_node_;
+    NodePath lod_node_;
 };
 
 }
