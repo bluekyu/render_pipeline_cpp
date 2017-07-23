@@ -26,11 +26,6 @@ Slider::Slider(const Parameters& params): RPObject("Slider")
     node_ = new rppanda::DirectSlider(params.parent, options);
 }
 
-Slider::~Slider(void)
-{
-    delete node_;
-}
-
 float Slider::get_value(void) const
 {
     return node_->get_value();

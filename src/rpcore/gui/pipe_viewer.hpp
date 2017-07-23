@@ -40,7 +40,7 @@ private:
     int _scroll_height = 3000;
     bool _created = false;
 
-    rppanda::DirectScrolledFrame* _content_frame;
+    PT(rppanda::DirectScrolledFrame) _content_frame;
     NodePath _content_node;
     NodePath _pipe_node;
     NodePath _stage_node;

@@ -57,11 +57,6 @@ Checkbox::Checkbox(const Parameters& params): RPObject("Checkbox")
         set_checked(true, false);
 }
 
-Checkbox::~Checkbox(void)
-{
-    delete _node;
-}
-
 bool Checkbox::is_checked(void) const
 {
     return _node->is_checked();

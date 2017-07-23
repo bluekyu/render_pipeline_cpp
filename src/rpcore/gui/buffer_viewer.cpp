@@ -3,17 +3,18 @@
 #include <regex>
 #include <unordered_set>
 
-#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
+#include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+#include "render_pipeline/rppanda/gui/direct_check_box.hpp"
+
+#include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/image.hpp"
-
-#include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
-#include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
-#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 #include "rpcore/gui/texture_preview.hpp"
 #include "rpcore/util/display_shader_builder.hpp"
@@ -111,7 +112,7 @@ void BufferViewer::create_components(void)
     content_frame_options->horizontal_scroll_options->inc_button_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->dec_button_options->relief = PGFrameStyle::Type(0);
     content_frame_options->pos = LVecBase3f(0, 1, -_height);
-    _content_frame = std::make_shared<rppanda::DirectScrolledFrame>(_node, content_frame_options);
+    _content_frame = new rppanda::DirectScrolledFrame(_node, content_frame_options);
 
     _content_node = _content_frame->get_canvas().attach_new_node("BufferComponents");
     _content_node.set_scale(1, 1, -1);
@@ -266,10 +267,10 @@ void BufferViewer::render_stages(void)
         frame_hover_options->frame_color = LColor(0);
         frame_hover_options->pos = LVecBase3(0, 0, 0);
         frame_hover_options->state = rppanda::NORMAL;
-        auto frame_hover = std::make_shared<rppanda::DirectFrame>(node, frame_hover_options);
+        PT(rppanda::DirectFrame) frame_hover = new rppanda::DirectFrame(node, frame_hover_options);
         frame_hovers_.push_back(frame_hover);
-        frame_hover->bind(rppanda::ENTER, on_texture_hovered, frame_hover.get());
-        frame_hover->bind(rppanda::EXIT, on_texture_blurred, frame_hover.get());
+        frame_hover->bind(rppanda::ENTER, on_texture_hovered, frame_hover.p());
+        frame_hover->bind(rppanda::EXIT, on_texture_blurred, frame_hover.p());
         
         frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
         frame_hover->bind(rppanda::B1PRESS, on_texture_clicked, frame_click_data.back().get());

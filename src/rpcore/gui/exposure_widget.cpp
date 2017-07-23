@@ -24,7 +24,6 @@ ExposureWidget::ExposureWidget(RenderPipeline* pipeline, NodePath parent): RPObj
 
 ExposureWidget::~ExposureWidget(void)
 {
-    delete _bg_frame;
     delete _display_img;
     delete _display_txt;
 }

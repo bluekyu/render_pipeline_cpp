@@ -66,14 +66,14 @@ private:
     RenderPipeline* _pipeline;
     int _scroll_height = 3000;
     bool _display_images = false;
-    std::shared_ptr<rppanda::DirectScrolledFrame> _content_frame;
+    PT(rppanda::DirectScrolledFrame) _content_frame;
     NodePath _content_node;
     std::shared_ptr<LabeledCheckbox> _chb_show_images;
 
     std::vector<std::pair<Texture*, EntryID>> _stages;
     std::shared_ptr<TexturePreview> _tex_preview;
 
-    std::vector<std::shared_ptr<rppanda::DirectFrame>> frame_hovers_;
+    std::vector<PT(rppanda::DirectFrame)> frame_hovers_;
 
     struct FrameClickDataType
     {

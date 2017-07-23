@@ -82,10 +82,10 @@ private:
     LVecBase2f _set_pos;
 
     Text* _window_title = nullptr;
-    rppanda::DirectFrame* _border_frame = nullptr;
-    rppanda::DirectFrame* _background = nullptr;
-    rppanda::DirectFrame* _title_bar = nullptr;
-    rppanda::DirectButton* _btn_close = nullptr;
+    PT(rppanda::DirectFrame) _border_frame = nullptr;
+    PT(rppanda::DirectFrame) _background = nullptr;
+    PT(rppanda::DirectFrame) _title_bar = nullptr;
+    PT(rppanda::DirectButton) _btn_close = nullptr;
 };
 
 // ************************************************************************************************

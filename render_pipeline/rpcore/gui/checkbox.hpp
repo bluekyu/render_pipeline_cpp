@@ -34,7 +34,6 @@ public:
 
 public:
     Checkbox(const Parameters& params=Parameters());
-    ~Checkbox(void);
 
     /** Returns whether the node is currently checked. */
     bool is_checked(void) const;
@@ -49,7 +48,7 @@ public:
     void set_checked(bool val, bool do_callback=true);
 
 private:
-    rppanda::DirectCheckBox* _node;
+    PT(rppanda::DirectCheckBox) _node;
 
     std::function<void(bool, void*)> _callback;
     void* _extra_args = nullptr;

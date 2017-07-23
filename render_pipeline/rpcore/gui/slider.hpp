@@ -32,7 +32,6 @@ public:
 
 public:
     Slider(const Parameters& params=Parameters());
-    ~Slider(void);
 
     /** Returns the currently assigned value. */
     float get_value(void) const;
@@ -44,7 +43,7 @@ public:
     rppanda::DirectSlider* get_node(void) const;
 
 private:
-    rppanda::DirectSlider* node_;
+    PT(rppanda::DirectSlider) node_;
 };
 
 // ************************************************************************************************

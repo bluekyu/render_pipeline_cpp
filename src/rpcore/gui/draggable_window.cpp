@@ -20,10 +20,6 @@ DraggableWindow::DraggableWindow(int width, int height, const std::string& title
 DraggableWindow::~DraggableWindow(void)
 {
     delete _window_title;
-    delete _border_frame;
-    delete _background;
-    delete _title_bar;
-    delete _btn_close;
 }
 
 void DraggableWindow::center_on_screen(void)

@@ -10,11 +10,12 @@
 
 #include <spdlog/fmt/fmt.h>
 
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/light_manager.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
-#include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rpcore/gui/exposure_widget.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
