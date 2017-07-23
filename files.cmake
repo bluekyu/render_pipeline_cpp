@@ -25,6 +25,7 @@ set(header_rppanda_gui
 )
 
 set(header_rppanda_interval
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/actor_interval.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/lerp_interval.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/meta_interval.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/interval/sound_interval.hpp"
@@ -190,6 +191,7 @@ set(source_rppanda_gui
 )
 
 set(source_rppanda_interval
+    "${PROJECT_SOURCE_DIR}/src/rppanda/interval/actor_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/lerp_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/meta_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/sound_interval.cpp"

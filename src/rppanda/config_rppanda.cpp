@@ -1,5 +1,6 @@
 #include "rppanda/config_rppanda.hpp"
 
+#include "render_pipeline/rppanda/interval/actor_interval.hpp"
 #include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 #include "render_pipeline/rppanda/interval/meta_interval.hpp"
 #include "render_pipeline/rppanda/interval/sound_interval.hpp"
@@ -23,11 +24,7 @@ void init_librppanda()
 
     initialized = true;
 
-    rppanda::MetaInterval::init_type();
-    rppanda::Sequence::init_type();
-    rppanda::Parallel::init_type();
-    rppanda::ParallelEndTogether::init_type();
-    rppanda::Track::init_type();
+    rppanda::ActorInterval::init_type();
 
     rppanda::LerpNodePathInterval::init_type();
     rppanda::LerpPosInterval::init_type();
@@ -36,6 +33,12 @@ void init_librppanda()
     rppanda::LerpScaleInterval::init_type();
     rppanda::LerpShearInterval::init_type();
     rppanda::LerpPosHprInterval::init_type();
+
+    rppanda::MetaInterval::init_type();
+    rppanda::Sequence::init_type();
+    rppanda::Parallel::init_type();
+    rppanda::ParallelEndTogether::init_type();
+    rppanda::Track::init_type();
 
     rppanda::SoundInterval::init_type();
 }
