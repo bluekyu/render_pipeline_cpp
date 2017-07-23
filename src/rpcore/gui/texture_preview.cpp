@@ -185,11 +185,11 @@ void TexturePreview::present(Texture* tex)
     }
     x_pos += 90 + 30;
 
-    NodePath image_np = image->get_node();
-    image_np.set_shader_input("slice", 0);
-    image_np.set_shader_input("mipmap", 0);
-    image_np.set_shader_input("brightness", 1);
-    image_np.set_shader_input("tonemap", false);
+    auto image_np = image->get_node();
+    image_np->set_shader_input("slice", 0);
+    image_np->set_shader_input("mipmap", 0);
+    image_np->set_shader_input("brightness", 1);
+    image_np->set_shader_input("tonemap", false);
 
     PT(Shader) preview_shader = DisplayShaderBuilder::build(tex, display_w, display_h);
     image->set_shader(preview_shader);

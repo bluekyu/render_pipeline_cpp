@@ -7,7 +7,7 @@
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 
-#include "rppanda/config_rppanda.hpp"
+#include "rppanda/showbase/config_rppanda_showbase.hpp"
 
 namespace rppanda {
 
@@ -59,6 +59,8 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
 
 // ************************************************************************************************
 
+TypeHandle Loader::type_handle_;
+
 Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
 }
@@ -72,7 +74,7 @@ Loader& Loader::operator=(Loader&&) = default;
 NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
 {
-    rppanda_cat.debug() << "Loading model: " << model_path << std::endl;
+    rppanda_showbase_cat.debug() << "Loading model: " << model_path << std::endl;
 
     LoaderOptions this_options(loader_options);
     bool this_ok_missing;
@@ -92,7 +94,7 @@ NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loa
 std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
 {
-    rppanda_cat.debug() << "Loading model: " << join_to_string(model_list) << std::endl;
+    rppanda_showbase_cat.debug() << "Loading model: " << join_to_string(model_list) << std::endl;
 
     LoaderOptions this_options(loader_options);
     bool this_ok_missing;

@@ -29,20 +29,10 @@ public:
         NodePath other={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        CLerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpNodePathInterval", CLerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -57,6 +47,28 @@ inline LerpNodePathInterval::LerpNodePathInterval(NodePath nodepath, const boost
     ++lerp_node_path_num;
 }
 
+inline TypeHandle LerpNodePathInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpNodePathInterval::init_type(void)
+{
+    CLerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpNodePathInterval", CLerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpNodePathInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpNodePathInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpPosInterval: public LerpNodePathInterval
 {
@@ -67,20 +79,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpPosInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -97,6 +99,28 @@ inline LerpPosInterval::LerpPosInterval(NodePath nodepath, double duration, cons
         set_start_pos(start_pos.get());
 }
 
+inline TypeHandle LerpPosInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpPosInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpPosInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpPosInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpPosInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpHprInterval: public LerpNodePathInterval
 {
@@ -108,20 +132,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpHprInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -141,6 +155,28 @@ inline LerpHprInterval::LerpHprInterval(NodePath nodepath, double duration, cons
         set_start_quat(start_quat.get());
 }
 
+inline TypeHandle LerpHprInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpHprInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpHprInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpHprInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpHprInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpQuatInterval: public LerpNodePathInterval
 {
@@ -155,20 +191,10 @@ public:
         const boost::optional<LVecBase3>& hpr={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpQuatInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -203,6 +229,28 @@ inline LerpQuatInterval::LerpQuatInterval(NodePath nodepath, double duration,
         set_start_quat(start_quat.get());
 }
 
+inline TypeHandle LerpQuatInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpQuatInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpQuatInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpQuatInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpQuatInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpScaleInterval: public LerpNodePathInterval
 {
@@ -215,20 +263,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpScaleInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -246,6 +284,28 @@ inline LerpScaleInterval::LerpScaleInterval(NodePath nodepath, double duration,
         set_start_hpr(start_scale.get());
 }
 
+inline TypeHandle LerpScaleInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpScaleInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpScaleInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpScaleInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpScaleInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpShearInterval: public LerpNodePathInterval
 {
@@ -258,20 +318,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpShearInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -290,6 +340,28 @@ inline LerpShearInterval::LerpShearInterval(NodePath nodepath, double duration,
         set_start_hpr(start_shear.get());
 }
 
+inline TypeHandle LerpShearInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpShearInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpShearInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpShearInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpShearInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
+
 // ************************************************************************************************
 class RENDER_PIPELINE_DECL LerpPosHprInterval: public LerpNodePathInterval
 {
@@ -304,20 +376,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return type_handle_;
-    }
-    static void init_type()
-    {
-        LerpNodePathInterval::init_type();
-        register_type(type_handle_, "LerpPosHprInterval", LerpNodePathInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
     static TypeHandle type_handle_;
@@ -341,6 +403,28 @@ inline LerpPosHprInterval::LerpPosHprInterval(NodePath nodepath, double duration
         set_start_hpr(start_hpr.get());
     if (start_quat)
         set_start_quat(start_quat.get());
+}
+
+inline TypeHandle LerpPosHprInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void LerpPosHprInterval::init_type(void)
+{
+    LerpNodePathInterval::init_type();
+    register_type(type_handle_, "LerpPosHprInterval", LerpNodePathInterval::get_class_type());
+}
+
+inline TypeHandle LerpPosHprInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle LerpPosHprInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

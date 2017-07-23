@@ -35,7 +35,7 @@ public:
     std::shared_ptr<ImageInput> get_unchecked_image(void) const;
 
 protected:
-    DirectCheckBox(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectCheckBox(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
 
@@ -43,11 +43,13 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& _type_handle;
+    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
@@ -69,6 +71,28 @@ inline std::shared_ptr<ImageInput> DirectCheckBox::get_checked_image(void) const
 inline std::shared_ptr<ImageInput> DirectCheckBox::get_unchecked_image(void) const
 {
     return std::dynamic_pointer_cast<Options>(_options)->unchecked_image;
+}
+
+inline TypeHandle DirectCheckBox::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectCheckBox::init_type(void)
+{
+    DirectButton::init_type();
+    register_type(type_handle_, "DirectCheckBox", DirectButton::get_class_type());
+}
+
+inline TypeHandle DirectCheckBox::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectCheckBox::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

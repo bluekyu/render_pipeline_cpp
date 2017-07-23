@@ -228,7 +228,7 @@ public:
     LoadingScreen* loading_screen = nullptr;
     CommonResources* common_resources = nullptr;
 
-    rppanda::ShowBase* showbase_ = nullptr;
+    PT(rppanda::ShowBase) showbase_ = nullptr;
     TaskScheduler* task_scheduler_ = nullptr;
     TagStateManager* tag_mgr_ = nullptr;
     PluginManager* plugin_mgr_ = nullptr;
@@ -258,7 +258,7 @@ RenderPipeline::Impl::~Impl(void)
     delete stage_mgr_;
     delete tag_mgr_;
     delete task_scheduler_;
-    delete showbase_;
+    showbase_.clear();
     delete debugger;
 
     // should delete at last to delete resources in DLL module.

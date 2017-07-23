@@ -55,7 +55,7 @@ public:
     /** Returns whether the image is hidden. */
     bool is_hidden(void) const;
 
-    rppanda::OnscreenImage get_node(void) const;
+    rppanda::OnscreenImage* get_node(void) const;
 
 private:
     void init(Texture* image, int w, int h, NodePath parent, float x, float y,
@@ -66,7 +66,7 @@ private:
     int _height;
     LVecBase3f _initial_pos;
 
-    rppanda::OnscreenImage node;
+    PT(rppanda::OnscreenImage) node_;
 };
 
 // ************************************************************************************************
@@ -98,37 +98,37 @@ inline int Sprite::get_height(void) const
 
 inline void Sprite::set_pos(float x, float y)
 {
-    node.set_pos(translate_pos(x, y));
+    node_->set_pos(translate_pos(x, y));
 }
 
 inline void Sprite::set_shader(const Shader* shader, int priority)
 {
-    node.set_shader(shader, priority);
+    node_->set_shader(shader, priority);
 }
 
 inline void Sprite::set_shader_input(const ShaderInput& inp)
 {
-    node.set_shader_input(inp);
+    node_->set_shader_input(inp);
 }
 
 inline void Sprite::hide(void)
 {
-    node.hide();
+    node_->hide();
 }
 
 inline void Sprite::show(void)
 {
-    node.show();
+    node_->show();
 }
 
 inline bool Sprite::is_hidden(void) const
 {
-    return node.is_hidden();
+    return node_->is_hidden();
 }
 
-inline rppanda::OnscreenImage Sprite::get_node(void) const
+inline rppanda::OnscreenImage* Sprite::get_node(void) const
 {
-    return node;
+    return node_;
 }
 
 }

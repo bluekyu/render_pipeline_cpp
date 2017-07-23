@@ -163,15 +163,15 @@ void PipeViewer::populate_content(void)
             else
             {
                 Sprite preview(pipe_texture, w, h, node, 0, 50 + pipe_idx * pipe_height, false, true, false);
-                NodePath preview_np = preview.get_node();
+                auto preview_np = preview.get_node();
 
                 PT(Shader) preview_shader = DisplayShaderBuilder::build(pipe_texture, int(w), int(h));
-                preview_np.set_shader(preview_shader);
+                preview_np->set_shader(preview_shader);
 
-                preview_np.set_shader_input("mipmap", 0);
-                preview_np.set_shader_input("slice", 0);
-                preview_np.set_shader_input("brightness", 1);
-                preview_np.set_shader_input("tonemap", false);
+                preview_np->set_shader_input("mipmap", 0);
+                preview_np->set_shader_input("slice", 0);
+                preview_np->set_shader_input("brightness", 1);
+                preview_np->set_shader_input("tonemap", false);
             }
 
             if (!icon_file.empty())

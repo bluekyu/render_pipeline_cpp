@@ -10,7 +10,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectScrollBar::_type_handle(typeid(DirectScrollBar));
+TypeHandle DirectScrollBar::type_handle_;
 
 DirectScrollBar::Options::Options(void)
 {
@@ -27,19 +27,19 @@ DirectScrollBar::DirectScrollBar(NodePath parent, const std::shared_ptr<Options>
 {
 }
 
-DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectFrame(gui_item, parent, define_options(options), type_handle)
 {
     options->thumb_options->border_width = options->border_width;
-    _thumb = std::make_shared<DirectButton>(*this, options->thumb_options);
+    _thumb = new DirectButton(*this, options->thumb_options);
     create_component("thumb", boost::any(_thumb));
 
     options->inc_button_options->border_width = options->border_width;
-    _inc_button = std::make_shared<DirectButton>(*this, options->inc_button_options);
+    _inc_button = new DirectButton(*this, options->inc_button_options);
     create_component("incButton", boost::any(_thumb));
 
     options->dec_button_options->border_width = options->border_width;
-    _dec_button = std::make_shared<DirectButton>(*this, options->dec_button_options);
+    _dec_button = new DirectButton(*this, options->dec_button_options);
     create_component("decButton", boost::any(_thumb));
 
     if (!_dec_button->get_frame_size() && _dec_button->get_bounds() == LVecBase4(0))
@@ -69,7 +69,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     this->bind(ADJUST, command_func, this);
 
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

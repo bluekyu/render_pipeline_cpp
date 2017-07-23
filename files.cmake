@@ -168,16 +168,15 @@ source_group("render_pipeline\\rplibs" FILES ${header_rplibs})
 
 
 # list src/
-set(source_rppanda
-    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rppanda/config_rppanda.hpp"
-)
-
 set(source_rppanda_actor
+    "${PROJECT_SOURCE_DIR}/src/rppanda/actor/config_rppanda_actor.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/actor/config_rppanda_actor.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/actor/actor.cpp"
 )
 
 set(source_rppanda_gui
+    "${PROJECT_SOURCE_DIR}/src/rppanda/gui/config_rppanda_gui.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/gui/config_rppanda_gui.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_button.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_check_box.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_frame.cpp"
@@ -192,12 +191,16 @@ set(source_rppanda_gui
 
 set(source_rppanda_interval
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/actor_interval.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/interval/config_rppanda_interval.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/interval/config_rppanda_interval.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/lerp_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/meta_interval.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/interval/sound_interval.cpp"
 )
 
 set(source_rppanda_showbase
+    "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/config_rppanda_showbase.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/config_rppanda_showbase.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/direct_object.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/loader.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/sfx_player.cpp"
@@ -320,7 +323,6 @@ set(source_rplibs
 )
 
 set(render_pipeline_sources
-    ${source_rppanda}
     ${source_rppanda_actor}
     ${source_rppanda_gui}
     ${source_rppanda_interval}
@@ -335,7 +337,6 @@ set(render_pipeline_sources
 )
 
 # grouping
-source_group("src\\rppanda" FILES ${source_rppanda})
 source_group("src\\rppanda\\actor" FILES ${source_rppanda_actor})
 source_group("src\\rppanda\\gui" FILES ${source_rppanda_gui})
 source_group("src\\rppanda\\interval" FILES ${source_rppanda_interval})

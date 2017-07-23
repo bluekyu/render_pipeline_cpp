@@ -10,7 +10,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectSlider::type_handle_(typeid(DirectSlider));
+TypeHandle DirectSlider::type_handle_;
 
 DirectSlider::Options::Options(void)
 {
@@ -25,11 +25,11 @@ DirectSlider::DirectSlider(NodePath parent, const std::shared_ptr<Options>& opti
 {
 }
 
-DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectFrame(gui_item, parent, define_options(options), type_handle)
 {
     options->thumb_options->border_width = options->border_width;
-    thumb_ = std::make_shared<DirectButton>(*this, options->thumb_options);
+    thumb_ = new DirectButton(*this, options->thumb_options);
     create_component("thumb", boost::any(thumb_));
 
     if (!thumb_->get_frame_size() && thumb_->get_bounds() == LVecBase4(0.0))
@@ -48,7 +48,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     this->bind(ADJUST, command_func, this);
 
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

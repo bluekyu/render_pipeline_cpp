@@ -12,7 +12,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectFrame::type_handle_(typeid(DirectFrame));
+TypeHandle DirectFrame::type_handle_;
 
 DirectFrame::Options::Options(void)
 {
@@ -24,11 +24,11 @@ DirectFrame::DirectFrame(NodePath parent, const std::shared_ptr<Options>& option
 {
 }
 
-DirectFrame::DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectFrame::DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectGuiWidget(gui_item, parent, define_options(options), type_handle)
 {
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();
@@ -128,12 +128,12 @@ void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& imag
         {
             if (!image || image->is_none())
             {
-                boost::any_cast<OnscreenImage&>(get_component(component_name)).destroy();
+                boost::any_cast<PT(OnscreenImage)>(get_component(component_name))->destroy();
                 remove_component(component_name);
             }
             else
             {
-                boost::any_cast<OnscreenImage&>(get_component(component_name)).set_image(image);
+                boost::any_cast<PT(OnscreenImage)>(get_component(component_name))->set_image(image);
             }
         }
         else
@@ -144,9 +144,8 @@ void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& imag
             }
             else
             {
-                create_component(component_name, boost::any(
-                    OnscreenImage(image, _state_node_path.at(i), IMAGE_SORT_INDEX)
-                ));
+                PT(OnscreenImage) onscreen_image = new OnscreenImage(image, _state_node_path.at(i), IMAGE_SORT_INDEX);
+                create_component(component_name, boost::any(onscreen_image));
             }
         }
     }

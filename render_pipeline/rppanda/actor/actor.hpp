@@ -5,7 +5,7 @@
 #pragma once
 
 #include <nodePath.h>
-#include <partSubset.h>
+#include <partBundleHandle.h>
 
 #include <unordered_map>
 
@@ -15,10 +15,6 @@
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class Loader;
-class AnimControl;
-class PartBundleHandle;
-class AnimBundle;
-class PartBundle;
 
 namespace rppanda {
 
@@ -183,6 +179,39 @@ private:
     bool got_name_;
     NodePath geom_node_;
     NodePath lod_node_;
+
+public:
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
+
+private:
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
+
+inline TypeHandle Actor::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void Actor::init_type(void)
+{
+    DirectObject::init_type();
+    register_type(type_handle_, "Actor", DirectObject::get_class_type());
+}
+
+inline TypeHandle Actor::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle Actor::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
 
 }

@@ -65,23 +65,13 @@ protected:
     bool in_finish_ = false;
 
 public:
-    static TypeHandle get_class_type()
-    {
-        return _type_handle;
-    }
-    static void init_type()
-    {
-        CInterval::init_type();
-        register_type(_type_handle, "SoundInterval", CInterval::get_class_type());
-    }
-    virtual TypeHandle get_type() const
-    {
-        return get_class_type();
-    }
-    virtual TypeHandle force_init_type() { init_type(); return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static TypeHandle _type_handle;
+    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
@@ -124,6 +114,28 @@ inline boost::optional<NodePath> SoundInterval::get_listener_node(void) const
 inline boost::optional<float> SoundInterval::get_cut_off(void) const
 {
     return cut_off_;
+}
+
+inline TypeHandle SoundInterval::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void SoundInterval::init_type(void)
+{
+    CInterval::init_type();
+    register_type(type_handle_, "SoundInterval", CInterval::get_class_type());
+}
+
+inline TypeHandle SoundInterval::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle SoundInterval::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

@@ -10,7 +10,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectScrolledFrame::_type_handle(typeid(DirectScrolledFrame));
+TypeHandle DirectScrolledFrame::type_handle_;
 
 DirectScrolledFrame::Options::Options(void)
 {
@@ -25,7 +25,7 @@ DirectScrolledFrame::DirectScrolledFrame(NodePath parent, const std::shared_ptr<
 {
 }
 
-DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectFrame(gui_item, parent, define_options(options), type_handle)
 {
     float w = options->scroll_bar_width;
@@ -33,13 +33,13 @@ DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, cons
     options->vertical_scroll_options->border_width = options->border_width;
     options->vertical_scroll_options->frame_size = LVecBase4f(-w / 2.0f, w / 2.0f, -1, 1);
     options->vertical_scroll_options->orientation = VERTICAL;
-    _vertical_scroll = std::make_shared<DirectScrollBar>(*this, options->vertical_scroll_options);
+    _vertical_scroll = new DirectScrollBar(*this, options->vertical_scroll_options);
     create_component("verticalScroll", boost::any(_vertical_scroll));
 
     options->horizontal_scroll_options->border_width = options->border_width;
     options->horizontal_scroll_options->frame_size = LVecBase4f(-1, 1, -w / 2.0f, w / 2.0f);
     options->horizontal_scroll_options->orientation = HORIZONTAL;
-    _horizontal_scroll = std::make_shared<DirectScrollBar>(*this, options->horizontal_scroll_options);
+    _horizontal_scroll = new DirectScrollBar(*this, options->horizontal_scroll_options);
     create_component("horizontalScroll", boost::any(_horizontal_scroll));
 
     PGScrollFrame* item = get_gui_item();
@@ -49,7 +49,7 @@ DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, cons
     _canvas = NodePath(item->get_canvas_node());
 
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

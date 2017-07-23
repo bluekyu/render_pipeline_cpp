@@ -5,25 +5,21 @@
 #include <render_pipeline/rppanda/gui/direct_gui_base.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 
-#include <regex>
-
 #include <pgItem.h>
 #include <dconfig.h>
 #include <texturePool.h>
 #include <nodePathCollection.h>
 #include <throw_event.h>
 
-#include <boost/core/typeinfo.hpp>
-
 #include <spdlog/fmt/fmt.h>
 
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
-#include "rppanda/config_rppanda.hpp"
+#include "rppanda/gui/config_rppanda_gui.hpp"
 
 namespace rppanda {
 
-const std::type_info& DirectGuiBase::type_handle_(typeid(DirectGuiBase));
+TypeHandle DirectGuiBase::type_handle_;
 
 boost::any& DirectGuiBase::create_component(const std::string& component_name, boost::any&& component)
 {
@@ -31,7 +27,7 @@ boost::any& DirectGuiBase::create_component(const std::string& component_name, b
     if (component_name.find("_") != component_name.npos)
     {
         const std::string& msg = fmt::format("Component name \"{}\" must not contain \"_\"", component_name);
-        rppanda_cat.error() << msg << std::endl;
+        rppanda_gui_cat.error() << msg << std::endl;
         throw std::runtime_error(msg);
     }
 
@@ -85,7 +81,7 @@ void DirectGuiBase::unbind(const std::string& ev_name)
 }
 
 // ************************************************************************************************
-const std::type_info& DirectGuiWidget::_type_handle(typeid(DirectGuiWidget));
+TypeHandle DirectGuiWidget::type_handle_;
 
 bool DirectGuiWidget::_snap_to_grid = false;
 float DirectGuiWidget::_grid_spacing = 0.05f;
@@ -102,7 +98,7 @@ DirectGuiWidget::DirectGuiWidget(NodePath parent, const std::shared_ptr<Options>
 {
 }
 
-DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     _gui_item(gui_item), _options(define_options(options))
 {
     // Attach button to parent and make that self
@@ -126,11 +122,7 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
 
     // Initialize names
     // Putting the class name in helps with debugging.
-    const std::regex re("^class ([A-Za-z_][A-Za-z0-9_]*::)*(.*)$");
-    const std::string demangled_name(boost::core::demangled_name(type_handle));
-    std::smatch results;
-    std::regex_search(demangled_name, results, re);
-    set_name(results[results.size()-1].str() + "-" + get_gui_id());
+    set_name(type_handle.get_name() + "-" + get_gui_id());
 
     for (int k=0; k < options->num_states; ++k)
     {
@@ -163,7 +155,7 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
     _gui_item->set_suppress_flags(suppress_flags);
 
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

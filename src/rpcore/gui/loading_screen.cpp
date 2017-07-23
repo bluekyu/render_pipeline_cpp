@@ -44,7 +44,7 @@ void LoadingScreen::create(void)
 
 void LoadingScreen::remove(void)
 {
-    fullscreen_bg->get_node().get_texture()->release_all();
+    fullscreen_bg->get_node()->get_texture()->release_all();
     fullscreen_node.remove_node();
     delete fullscreen_bg;
     fullscreen_bg = nullptr;

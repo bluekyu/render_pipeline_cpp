@@ -11,7 +11,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectButton::type_handle_(typeid(DirectButton));
+TypeHandle DirectButton::type_handle_;
 
 DirectButton::Options::Options(void)
 {
@@ -29,7 +29,7 @@ DirectButton::DirectButton(NodePath parent, const std::shared_ptr<Options>& opti
 {
 }
 
-DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectFrame(gui_item, parent, define_options(options), type_handle)
 {
     NodePath press_effect_np;
@@ -40,7 +40,7 @@ DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_
     }
 
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

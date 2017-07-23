@@ -22,7 +22,7 @@ namespace rppanda {
 /**
  * Play sound effects, potentially localized.
  */
-class RENDER_PIPELINE_DECL SfxPlayer
+class RENDER_PIPELINE_DECL SfxPlayer: public TypedReferenceCount
 {
 public:
     static bool use_inverse_suqare_;
@@ -48,6 +48,39 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
+
+public:
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
+
+private:
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
+
+inline TypeHandle SfxPlayer::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void SfxPlayer::init_type(void)
+{
+    TypedReferenceCount::init_type();
+    register_type(type_handle_, "SfxPlayer", TypedReferenceCount::get_class_type());
+}
+
+inline TypeHandle SfxPlayer::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle SfxPlayer::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
 
 }

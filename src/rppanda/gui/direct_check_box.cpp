@@ -11,7 +11,7 @@
 
 namespace rppanda {
 
-const std::type_info& DirectCheckBox::_type_handle(typeid(DirectCheckBox));
+TypeHandle DirectCheckBox::type_handle_;
 
 DirectCheckBox::Options::Options(void)
 {
@@ -29,11 +29,11 @@ DirectCheckBox::DirectCheckBox(NodePath parent, const std::shared_ptr<Options>& 
 {
 }
 
-DirectCheckBox::DirectCheckBox(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle):
+DirectCheckBox::DirectCheckBox(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectButton(gui_item, parent, define_options(options), type_handle)
 {
     // Call option initialization functions
-    if (get_class_type() == type_handle)
+    if (is_exact_type(type_handle))
     {
         initialise_options(options);
         frame_initialise_func();

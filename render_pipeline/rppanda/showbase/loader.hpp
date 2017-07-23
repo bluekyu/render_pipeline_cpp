@@ -55,6 +55,39 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
+
+public:
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
+
+private:
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
+
+inline TypeHandle Loader::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void Loader::init_type(void)
+{
+    DirectObject::init_type();
+    register_type(type_handle_, "Loader", DirectObject::get_class_type());
+}
+
+inline TypeHandle Loader::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle Loader::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
 
 }

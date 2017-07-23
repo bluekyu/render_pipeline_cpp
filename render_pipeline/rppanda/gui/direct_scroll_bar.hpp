@@ -50,28 +50,54 @@ public:
     static void command_func(const Event* ev, void* user_data);
 
 protected:
-    DirectScrollBar(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectScrollBar(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
 
 private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
-    std::shared_ptr<DirectButton> _thumb;
-    std::shared_ptr<DirectButton> _inc_button;
-    std::shared_ptr<DirectButton> _dec_button;
+    PT(DirectButton) _thumb;
+    PT(DirectButton) _inc_button;
+    PT(DirectButton) _dec_button;
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& _type_handle;
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
 
 inline float DirectScrollBar::get_value(void) const
 {
     return std::dynamic_pointer_cast<Options>(_options)->value;
+}
+
+inline TypeHandle DirectScrollBar::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectScrollBar::init_type(void)
+{
+    DirectFrame::init_type();
+    register_type(type_handle_, "DirectScrollBar", DirectFrame::get_class_type());
+}
+
+inline TypeHandle DirectScrollBar::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectScrollBar::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

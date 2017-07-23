@@ -13,9 +13,11 @@
 
 #include <spdlog/fmt/ostr.h>
 
-#include "rppanda/config_rppanda.hpp"
+#include "rppanda/actor/config_rppanda_actor.hpp"
 
 namespace rppanda {
+
+TypeHandle Actor::type_handle_;
 
 std::string Actor::part_prefix("__Actor_");
 
@@ -198,11 +200,11 @@ void Actor::load_model(NodePath model_path, const std::string& part_name, const 
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
     {
-        rppanda_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
+        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
         return;
     }
 
-    rppanda_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;
+    rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;
 
     NodePath model;
     if (copy)
@@ -218,11 +220,11 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
     {
-        rppanda_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
+        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
         return;
     }
 
-    rppanda_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
+    rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
 
 #if _MSC_VER >= 1900
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](auto){});
@@ -275,7 +277,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
         lod_names.push_back(lod_name);
     }
 
-    if (rppanda_cat.is_on(NotifySeverity::NS_debug))
+    if (rppanda_actor_cat.is_on(NotifySeverity::NS_debug))
     {
         std::stringstream ss;
         ss << "{";
@@ -283,7 +285,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
             ss << key_val.first << ":" << key_val.second << ", ";
         ss << "}";
 
-        rppanda_cat.debug() << fmt::format("in load_anims: {}, part: {}, lod: {}", ss.str(), part_name, lod_name) << std::endl;
+        rppanda_actor_cat.debug() << fmt::format("in load_anims: {}, part: {}, lod: {}", ss.str(), part_name, lod_name) << std::endl;
     }
 
     bool first_load = true;
@@ -381,7 +383,7 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
     }
 
     if (!any_good)
-        rppanda_cat.warning() << "Cannot control joint " << joint_name << std::endl;
+        rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
 
     return node;
 }
@@ -411,7 +413,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 
     if (bundle_np.is_empty())
     {
-        rppanda_cat.warning() << model << " is not a character!" << std::endl;
+        rppanda_actor_cat.warning() << model << " is not a character!" << std::endl;
         model.reparent_to(geom_node_);
     }
     else
@@ -450,7 +452,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 
         // If the model had some animations, store them in the
         // dict so they can be played.
-        rppanda_cat.info() << "Model contains " << num_anims << " animations." << std::endl;
+        rppanda_actor_cat.info() << "Model contains " << num_anims << " animations." << std::endl;
 
         // make sure this lod is in anim control dict
         std::string new_lod_name = lod_name;

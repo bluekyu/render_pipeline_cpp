@@ -11,7 +11,7 @@ namespace rppanda {
 
 size_t SoundInterval::sound_num_ = 1;
 
-TypeHandle SoundInterval::_type_handle;
+TypeHandle SoundInterval::type_handle_;
 
 SoundInterval::SoundInterval(AudioSound* sound, bool loop, double duration,
     const boost::optional<std::string>& name, double volume, double start_time,

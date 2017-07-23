@@ -10,6 +10,8 @@
 
 namespace rppanda {
 
+TypeHandle DirectObject::type_handle_;
+
 bool DirectObject::accept(const std::string& ev_name, EventHandler::EventFunction* func)
 {
     return EventHandler::get_global_event_handler()->add_hook(ev_name, func);

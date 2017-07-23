@@ -33,7 +33,7 @@ public:
     void set_image(const std::vector<std::shared_ptr<ImageInput>>& images);
 
 protected:
-    DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
 
@@ -41,17 +41,41 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
 public:
-    static const std::type_info& get_class_type(void) { return type_handle_; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& type_handle_;
+    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
 inline void DirectFrame::set_image(const std::shared_ptr<ImageInput>& image)
 {
     set_image(std::vector<std::shared_ptr<ImageInput>>({image}));
+}
+
+inline TypeHandle DirectFrame::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectFrame::init_type(void)
+{
+    DirectGuiWidget::init_type();
+    register_type(type_handle_, "DirectFrame", DirectGuiWidget::get_class_type());
+}
+
+inline TypeHandle DirectFrame::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectFrame::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

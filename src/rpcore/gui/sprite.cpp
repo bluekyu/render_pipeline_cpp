@@ -31,14 +31,14 @@ void Sprite::init(Texture* image, int w, int h, NodePath parent, float x, float 
 
     _initial_pos = translate_pos(x, y);
 
-    node = rppanda::OnscreenImage(std::make_shared<rppanda::ImageInput>(image), parent);
-    node.set_pos(_initial_pos);
-    node.set_scale(_width / 2.0f, 1.0f, _height / 2.0f);
+    node_ = new rppanda::OnscreenImage(std::make_shared<rppanda::ImageInput>(image), parent);
+    node_->set_pos(_initial_pos);
+    node_->set_scale(_width / 2.0f, 1.0f, _height / 2.0f);
 
     if (transparent)
-        node.set_transparency(TransparencyAttrib::M_alpha);
+        node_->set_transparency(TransparencyAttrib::M_alpha);
 
-    Texture* tex = node.get_texture();
+    Texture* tex = node_->get_texture();
 
     // Apply a near filter, but only if the parent has no scale, otherwise
     // it will look weird

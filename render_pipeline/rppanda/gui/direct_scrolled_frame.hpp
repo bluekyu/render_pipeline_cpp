@@ -34,8 +34,8 @@ public:
     PGScrollFrame* get_gui_item(void) const;
 
     NodePath get_canvas(void);
-    const std::shared_ptr<DirectScrollBar>& get_vertical_scroll(void) const;
-    const std::shared_ptr<DirectScrollBar>& get_horizontal_scroll(void) const;
+    DirectScrollBar* get_vertical_scroll(void) const;
+    DirectScrollBar* get_horizontal_scroll(void) const;
 
     const LVecBase4f& get_canvas_size(void) const;
     bool get_manage_scroll_bars(void) const;
@@ -46,7 +46,7 @@ public:
     void set_auto_hide_scroll_bars(bool auto_hide_scroll_bars);
 
 protected:
-    DirectScrolledFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectScrolledFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
 
@@ -55,28 +55,32 @@ private:
 
     NodePath _canvas;
 
-    std::shared_ptr<DirectScrollBar> _vertical_scroll;
-    std::shared_ptr<DirectScrollBar> _horizontal_scroll;
+    PT(DirectScrollBar) _vertical_scroll;
+    PT(DirectScrollBar) _horizontal_scroll;
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& _type_handle;
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
 
 inline NodePath DirectScrolledFrame::get_canvas(void)
 {
     return _canvas;
 }
 
-inline const std::shared_ptr<DirectScrollBar>& DirectScrolledFrame::get_vertical_scroll(void) const
+inline DirectScrollBar* DirectScrolledFrame::get_vertical_scroll(void) const
 {
     return _vertical_scroll;
 }
 
-inline const std::shared_ptr<DirectScrollBar>& DirectScrolledFrame::get_horizontal_scroll(void) const
+inline DirectScrollBar* DirectScrolledFrame::get_horizontal_scroll(void) const
 {
     return _horizontal_scroll;
 }
@@ -94,6 +98,28 @@ inline bool DirectScrolledFrame::get_manage_scroll_bars(void) const
 inline bool DirectScrolledFrame::get_auto_hide_scroll_bars(void) const
 {
     return std::dynamic_pointer_cast<Options>(_options)->auto_hide_scroll_bars;
+}
+
+inline TypeHandle DirectScrolledFrame::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectScrolledFrame::init_type(void)
+{
+    DirectFrame::init_type();
+    register_type(type_handle_, "DirectScrolledFrame", DirectFrame::get_class_type());
+}
+
+inline TypeHandle DirectScrolledFrame::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectScrolledFrame::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

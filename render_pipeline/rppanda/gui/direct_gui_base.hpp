@@ -54,11 +54,13 @@ private:
     std::unordered_map<std::string, boost::any> component_info_;
 
 public:
-    static const std::type_info& get_class_type(void) { return type_handle_; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& type_handle_;
+    static TypeHandle type_handle_;
 };
 
 inline bool DirectGuiBase::has_component(const std::string& name) const
@@ -69,6 +71,28 @@ inline bool DirectGuiBase::has_component(const std::string& name) const
 inline const std::string& DirectGuiBase::get_gui_id(void) const
 {
     return gui_id_;
+}
+
+inline TypeHandle DirectGuiBase::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectGuiBase::init_type(void)
+{
+    DirectObject::init_type();
+    register_type(type_handle_, "DirectGuiBase", DirectObject::get_class_type());
+}
+
+inline TypeHandle DirectGuiBase::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectGuiBase::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 // ************************************************************************************************
@@ -163,7 +187,7 @@ public:
     PGItem* get_gui_item(void) const;
 
 protected:
-    DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
     void frame_initialise_func(void);
@@ -184,11 +208,13 @@ private:
     std::vector<PGFrameStyle> _frame_style;
 
 public:
-    static const std::type_info& get_class_type(void) { return _type_handle; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& _type_handle;
+    static TypeHandle type_handle_;
 };
 
 inline const boost::optional<LVecBase4f>& DirectGuiWidget::get_frame_size(void) const
@@ -246,6 +272,28 @@ inline LVecBase2 DirectGuiWidget::get_center(void) const
 inline PGItem* DirectGuiWidget::get_gui_item(void) const
 {
     return _gui_item;
+}
+
+inline TypeHandle DirectGuiWidget::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectGuiWidget::init_type(void)
+{
+    DirectGuiBase::init_type();
+    register_type(type_handle_, "DirectGuiWidget", DirectGuiBase::get_class_type());
+}
+
+inline TypeHandle DirectGuiWidget::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectGuiWidget::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
 }
 
 }

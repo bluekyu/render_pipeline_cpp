@@ -54,21 +54,47 @@ public:
     static void command_func(const Event* ev, void* user_data);
 
 protected:
-    DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const std::type_info& type_handle);
+    DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
 
 private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
-    std::shared_ptr<DirectButton> thumb_;
+    PT(DirectButton) thumb_;
 
 public:
-    static const std::type_info& get_class_type(void) { return type_handle_; }
-    virtual const std::type_info& get_type(void) const { return get_class_type(); }
+    static TypeHandle get_class_type(void);
+    static void init_type(void);
+    virtual TypeHandle get_type(void) const;
+    virtual TypeHandle force_init_type(void);
 
 private:
-    static const std::type_info& type_handle_;
+    static TypeHandle type_handle_;
 };
+
+// ************************************************************************************************
+
+inline TypeHandle DirectSlider::get_class_type(void)
+{
+    return type_handle_;
+}
+
+inline void DirectSlider::init_type(void)
+{
+    DirectFrame::init_type();
+    register_type(type_handle_, "DirectSlider", DirectFrame::get_class_type());
+}
+
+inline TypeHandle DirectSlider::get_type(void) const
+{
+    return get_class_type();
+}
+
+inline TypeHandle DirectSlider::force_init_type(void)
+{
+    init_type();
+    return get_class_type();
+}
 
 }
