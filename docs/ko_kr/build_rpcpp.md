@@ -1,5 +1,5 @@
 # Render Pipeline C++ 빌드
-**Translation**: [English](build_rpcpp)
+**Translation**: [English](build_rpcpp.md)
 
 ## 요구사항
 - Panda3D
@@ -44,7 +44,7 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 ## Integration with Plugin & Samples
 플러그인 프로젝트(https://github.com/bluekyu/rpcpp_plugins) 와
-샘플 프로젝트(https://github.com/bluekyu/rpcpp_samples)가 있습니다.
+샘플 프로젝트(https://github.com/bluekyu/rpcpp_samples) 가 있습니다.
 
 플러그인과 샘플들을 함께 빌드하려면, 다음 방법을 사용하면 됩니다.
 

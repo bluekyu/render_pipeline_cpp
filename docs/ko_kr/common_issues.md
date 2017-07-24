@@ -1,5 +1,5 @@
 # Common Issues
-**Translation**: [English](common_issues)
+**Translation**: [English](common_issues.md)
 
 ## 리소스 혹은 플러그인 로드 실패 (Windows)
 경로가 정확함에도 불구하고 리소스나 플러그인 로드가 실패한다면, 경로의 길이가 너무 긴 경우일 수 있다.

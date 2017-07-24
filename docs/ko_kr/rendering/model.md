@@ -1,5 +1,5 @@
 # 모델
-**Translation**: [English](rendering/model)
+**Translation**: [English](rendering/model.md)
 
 ## 모델 메타 데이터
 Render Pipeline 에서 모델의 속성 및 상태 값들을 오버라이드 할 수 있는 방법을 제공한다.

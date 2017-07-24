@@ -1,10 +1,10 @@
 # Render Pipeline Docs
 
 ## System
-- [Virtual File System](virtual_filesystem)
+- [Virtual File System](virtual_filesystem.md)
 
 ## Rendering
-- [Model](rendering/model)
+- [Model](rendering/model.md)
 
 ## Code Snippets
-- [Render Pipeline Material](snippets/rpmaterial)
+- [Render Pipeline Material](snippets/rpmaterial.md)

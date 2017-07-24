@@ -1,5 +1,5 @@
 # Building Render Pipeline C++
-**Translation**: [한국어](ko_kr/build_rpcpp)
+**Translation**: [한국어](ko_kr/build_rpcpp.md)
 
 ## Requirements
 - Panda3D
@@ -43,7 +43,7 @@ and install this into `share/render_pipeline/rpplugins`.
 
 ## Integration with Plugin & Samples
 There are a plugin project (https://github.com/bluekyu/rpcpp_plugins) and
-a sample project (https://github.com/bluekyu/rpcpp_samples).
+a sample project (https://github.com/bluekyu/rpcpp_samples) .
 
 If you want to build with plugins and samples, you can do it using the following ways.
 
