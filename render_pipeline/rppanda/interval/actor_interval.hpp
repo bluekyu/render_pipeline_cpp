@@ -20,7 +20,7 @@ public:
     );
 
 private:
-    PT(Actor) actor_;
+    WPT(Actor) actor_;
 
 public:
     static TypeHandle get_class_type(void);

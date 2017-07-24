@@ -181,9 +181,9 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     }
 }
 
-Actor::~Actor(void) = default;
-
+#if _MSC_VER >= 1900
 Actor& Actor::operator=(Actor&&) = default;
+#endif
 
 bool Actor::has_LOD(void) const
 {

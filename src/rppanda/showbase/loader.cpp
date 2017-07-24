@@ -65,11 +65,15 @@ Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
 }
 
+#if _MSC_VER >= 1900
 Loader::Loader(Loader&&) = default;
+#endif
 
 Loader::~Loader(void) = default;
 
+#if _MSC_VER >= 1900
 Loader& Loader::operator=(Loader&&) = default;
+#endif
 
 NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
