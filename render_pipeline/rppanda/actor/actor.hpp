@@ -74,6 +74,31 @@ public:
 
     void set_geom_node(NodePath node);
 
+    /**
+     * getAnimControls(self, string, string=None, string=None)
+     *
+     * Returns a list of the AnimControls that represent the given
+     * animation for the given part and the given lod.
+     *
+     * If animName is None or omitted, the currently-playing
+     * animation (or all currently-playing animations) is returned.
+     * If animName is True, all animations are returned.  If animName
+     * is a single string name, that particular animation is
+     * returned.  If animName is a list of string names, all of the
+     * names animations are returned.
+     *
+     * If partName is None or omitted, all parts are returned (or
+     * possibly the one overall Actor part, according to the
+     * subpartsComplete flag).
+     *
+     * If lodName is None or omitted, all LOD's are returned.
+     */
+    std::vector<AnimControl*> get_anim_controls(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
+        const boost::optional<std::string>& lod_name={}, bool allow_async_bind=true);
+
+    std::vector<AnimControl*> get_anim_controls(bool anim_name, const std::vector<std::string>& part_name={},
+        const boost::optional<std::string>& lod_name={}, bool allow_async_bind=true);
+
     void load_model(NodePath model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
         bool copy=true, bool auto_bind_anims=true);
     void load_model(const Filename& model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
@@ -155,6 +180,10 @@ private:
     class AnimDef
     {
     public:
+        AnimDef(const std::string& filename="", AnimBundle* anim_bundle=nullptr);
+
+        AnimDef make_copy(void);
+
         std::string filename;
         PT(AnimControl) anim_control;
         PT(AnimBundle) anim_bundle;
@@ -177,6 +206,16 @@ private:
         PartSubset subset;
     };
 
+    using AnimDictType = std::unordered_map<std::string, AnimDef>;
+    using PartDictType = std::unordered_map<std::string, AnimDictType>;
+    using LODDictType = std::unordered_map<std::string, PartDictType>;
+
+private:
+    void build_lod_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name);
+    void build_anim_dict_items(std::vector<PartDictType::iterator>& anim_dict_items, const std::vector<std::string>& part_name_list, PartDictType& part_dict);
+    bool build_controls_from_anim_name(std::vector<AnimControl*>& controls, const std::vector<std::string>& names, AnimDictType& anim_dict, PartDictType& part_dict, const std::vector<std::string>& part_name_list,
+        const std::string& part_name, const std::string& lod_name);
+
     void do_list_joints(size_t indent_level, const PartGroup* part, bool is_included, const PartSubset& subset) const;
 
     void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
@@ -189,11 +228,22 @@ private:
      */
     void update_sorted_LOD_names(void);
 
+    /**
+     * Binds the named animation to the named part/lod and returns
+     * the associated animControl.  The animation is loaded and bound
+     * in a sub-thread, if allowAsyncBind is True,
+     * self.allowAsyncBind is True, threading is enabled, and the
+     * animation has a preload table generated for it (e.g. via
+     * "egg-optchar -preload").  Even though the animation may or may
+     * not be yet bound at the time this function returns, a usable
+     * animControl is returned, or None if the animation could not be
+     * bound.
+     */
+    AnimControl* bind_anim_to_part(const std::string& anim_name, const std::string& part_name, const std::string& lod_name, bool allow_async_bind=true);
+
     std::unordered_map<std::string, PT(PartBundleHandle)> common_bundle_handles_;
     std::unordered_map<std::string, SubpartDef> subpart_dict_;
-    std::unordered_map<std::string,
-        std::unordered_map<std::string,
-        std::unordered_map<std::string, AnimDef>>> anim_control_dict_;
+    LODDictType anim_control_dict_;
     std::unordered_map<std::string, std::unordered_map<std::string, PartDef>> part_bundle_dict_;
 
     std::vector<std::string> sorted_LOD_names_;
@@ -201,6 +251,8 @@ private:
     bool got_name_;
     NodePath geom_node_;
     NodePath lod_node_;
+
+    bool subparts_complete_;
 
 public:
     static TypeHandle get_class_type(void);

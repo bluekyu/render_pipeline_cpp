@@ -67,6 +67,8 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     else
         allow_async_bind_ = Actor::allow_async_bind.get_value();
 
+    subparts_complete_ = false;
+
     if (!other)
     {
         // act like a normal constructor
@@ -239,12 +241,103 @@ void Actor::set_geom_node(NodePath node)
     geom_node_ = node;
 }
 
+std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
+    const boost::optional<std::string>& lod_name, bool allow_async_bind)
+{
+    std::vector<AnimControl*> controls;
+    LODDictType::iterator iter;
+    LODDictType::iterator iter_end;
+
+    std::vector<std::string> part_name_list = part_name;
+    build_lod_dict_items(part_name_list, iter, iter_end, lod_name);
+
+    for (; iter != iter_end; ++iter)
+    {
+        const std::string& lod_name = iter->first;
+        auto& part_dict = iter->second;
+
+        std::vector<PartDictType::iterator> anim_dict_items;
+
+        build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
+
+        if (anim_name.empty())
+        {
+            // get all playing animations
+            for (const auto& iter: anim_dict_items)
+            {
+                for (const auto& key_anim: iter->second)
+                {
+                    if (key_anim.second.anim_control && key_anim.second.anim_control->is_playing())
+                        controls.push_back(key_anim.second.anim_control);
+                }
+            }
+        }
+        else
+        {
+            // get the named animation(s) only.
+            for (auto& iter: anim_dict_items)
+            {
+                auto& anim_dict = iter->second;
+
+                if (!build_controls_from_anim_name(controls, anim_name, anim_dict, part_dict, part_name_list, iter->first, lod_name))
+                    return {};
+            }
+        }
+    }
+
+    return controls;
+}
+
+std::vector<AnimControl*> Actor::get_anim_controls(bool anim_name, const std::vector<std::string>& part_name,
+    const boost::optional<std::string>& lod_name, bool allow_async_bind)
+{
+    if (!anim_name)
+    {
+        rppanda_actor_cat.error() << "anim_name should be true in Actor::get_anim_controls." << std::endl;
+        return {};
+    }
+
+    std::vector<AnimControl*> controls;
+    LODDictType::iterator iter;
+    LODDictType::iterator iter_end;
+
+    std::vector<std::string> part_name_list = part_name;
+    build_lod_dict_items(part_name_list, iter, iter_end, lod_name);
+
+    for (; iter != iter_end; ++iter)
+    {
+        const std::string& lod_name = iter->first;
+        auto& part_dict = iter->second;
+
+        std::vector<PartDictType::iterator> anim_dict_items;
+
+        build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
+
+        // get the named animation(s) only.
+        for (auto& iter: anim_dict_items)
+        {
+            auto& anim_dict = iter->second;
+
+            // anim_name: True to indicate all anims.
+            std::vector<std::string> names;
+            names.reserve(anim_dict.size());
+            for (auto& key_val: anim_dict)
+                names.push_back(key_val.first);
+
+            if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name))
+                return {};
+        }
+    }
+
+    return controls;
+}
+
 void Actor::load_model(NodePath model_path, const std::string& part_name, const std::string& lod_name,
     bool copy, bool auto_bind_anims)
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
     {
-        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
+        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;
         return;
     }
 
@@ -485,9 +578,169 @@ PartBundle* Actor::PartDef::get_bundle(void) const
     return part_bundle_handle->get_bundle();
 }
 
+Actor::AnimDef::AnimDef(const std::string& filename, AnimBundle* anim_bundle): filename(filename), anim_bundle(anim_bundle)
+{
+}
+
+Actor::AnimDef Actor::AnimDef::make_copy(void)
+{
+    return AnimDef(filename, anim_bundle);
+}
+
 Actor::SubpartDef::SubpartDef(const std::string& true_part_name, const PartSubset& subset):
     true_part_name(true_part_name), subset(subset)
 {
+}
+
+void Actor::build_lod_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name)
+{
+    if (part_name_list.empty() && subparts_complete_)
+    {
+        // If we have the __subpartsComplete flag, and no partName
+        // is specified, it really means to play the animation on
+        // all subparts, not on the overall Actor.
+        part_name_list.reserve(subpart_dict_.size());
+        for (const auto& key_val: subpart_dict_)
+            part_name_list.push_back(key_val.first);
+    }
+
+    // build list of lodNames and corresponding animControlDicts
+    // requested.
+    lod_end = anim_control_dict_.end();
+    if (!lod_name || merge_LOD_bundles_)
+    {
+        // Get all LOD's
+        lod_begin = anim_control_dict_.begin();
+    }
+    else
+    {
+        auto found = anim_control_dict_.find(lod_name.get());
+        if (found == lod_end)
+        {
+            rppanda_actor_cat.warning() << "Couldn't find lod: " << lod_name.get() << std::endl;
+            lod_begin = lod_end;
+        }
+        else
+        {
+            lod_begin = found;
+            lod_end = ++found;
+        }
+    }
+}
+
+void Actor::build_anim_dict_items(std::vector<PartDictType::iterator>& anim_dict_items, const std::vector<std::string>& part_name_list, PartDictType& part_dict)
+{
+    // Now, build the list of partNames and the corresponding
+    // animDicts.
+    if (part_name_list.empty())
+    {
+        // Get all main parts, but not sub-parts.
+        for (auto part_dict_iter=part_dict.begin(), part_dict_iter_end=part_dict.end(); part_dict_iter != part_dict_iter_end; ++part_dict_iter)
+        {
+            if (subpart_dict_.find(part_dict_iter->first) == subpart_dict_.end())
+                anim_dict_items.push_back(part_dict_iter);
+        }
+    }
+    else
+    {
+        bool map_changed = false;
+        // Get exactly the named part or parts.
+        for (const auto& pname: part_name_list)
+        {
+            auto part_dict_iter = part_dict.find(pname);
+            if (part_dict_iter == part_dict.end())
+            {
+                // Maybe it's a subpart that hasn't been bound yet.
+                const auto& subpart_dict_iter = subpart_dict_.find(pname);
+                if (subpart_dict_iter != subpart_dict_.end())
+                {
+                    part_dict.insert({ pname,{} });
+                    part_dict_iter = part_dict.find(pname);
+                    map_changed = true;
+                }
+            }
+
+            if (part_dict_iter == part_dict.end())
+            {
+                // part was not present
+                rppanda_actor_cat.warning() << "Couldn't find part: " << pname << std::endl;
+            }
+            else
+            {
+                anim_dict_items.push_back(part_dict_iter);
+            }
+        }
+
+        if (map_changed)
+        {
+            anim_dict_items.clear();
+            for (const auto& pname: part_name_list)
+            {
+                auto part_dict_iter = part_dict.find(pname);
+                if (part_dict_iter != part_dict.end())
+                    anim_dict_items.push_back(part_dict_iter);
+            }
+        }
+    }
+}
+
+bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, const std::vector<std::string>& names, AnimDictType& anim_dict, PartDictType& part_dict,
+    const std::vector<std::string>& part_name_list, const std::string& part_name, const std::string& lod_name)
+{
+    for (const auto& anim_name: names)
+    {
+        auto found = anim_dict.find(anim_name);
+        if (found == anim_dict.end() && !part_name_list.empty())
+        {
+            for (const auto& pname: part_name_list)
+            {
+                // Maybe it's a subpart that hasn't been bound yet.
+                auto subpart_dict_found = subpart_dict_.find(pname);
+                if (subpart_dict_found != subpart_dict_.end())
+                {
+                    const auto& true_part_name = subpart_dict_found->second.true_part_name;
+                    auto anim_found = part_dict.at(true_part_name).find(anim_name);
+                    if (anim_found != part_dict.at(true_part_name).end())
+                    {
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+                        anim_dict.insert_or_assign(anim_name, anim_found->second.make_copy());
+#else
+                        anim_dict.insert({ anim_name, anim_found->second.make_copy() });
+#endif
+                        found = anim_dict.find(anim_name);
+                    }
+                }
+            }
+        }
+
+        if (found == anim_dict.end())
+        {
+            // anim was not present
+            rppanda_actor_cat.error() << "Couldn't find anim: " << anim_name << std::endl;
+            return false;
+        }
+        else
+        {
+            // bind the animation first if we need to
+            auto& anim = found->second;
+            AnimControl* anim_control = anim.anim_control;
+            if (!anim_control)
+            {
+                anim_control = bind_anim_to_part(anim_name, part_name, lod_name, allow_async_bind);
+            }
+            else if (allow_async_bind)
+            {
+                // Force the animation to load if it's
+                // not already loaded.
+                anim_control->wait_pending();
+            }
+
+            if (anim_control)
+                controls.push_back(anim_control);
+        }
+    }
+
+    return true;
 }
 
 void Actor::do_list_joints(size_t indent_level, const PartGroup* part, bool is_included, const PartSubset& subset) const
@@ -671,6 +924,90 @@ void Actor::update_sorted_LOD_names(void)
         [](const std::string& lhs, const std::string& rhs) {
         return sort_key(rhs) < sort_key(lhs);
     });
+}
+
+AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::string& part_name, const std::string& lod_name, bool allow_async_bind)
+{
+    // make sure this anim is in the dict
+    std::string true_part_name;
+    PartSubset subpart_subset;
+    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
+    if (subpart_dict_iter != subpart_dict_.end())
+    {
+        true_part_name = subpart_dict_iter->second.true_part_name;
+        subpart_subset = subpart_dict_iter->second.subset;
+    }
+    else
+    {
+        true_part_name = part_name;
+    }
+
+    auto& part_dict = anim_control_dict_[lod_name];
+    auto anim_dict_found = part_dict.find(part_name);
+    if (anim_dict_found == part_dict.end())
+    {
+        // It must be a subpart that hasn't been bound yet.
+        part_dict.insert({part_name, {}});
+        anim_dict_found = part_dict.find(part_name);
+    }
+
+    auto anim_found = anim_dict_found->second.find(anim_name);
+    if (anim_found == anim_dict_found->second.end())
+    {
+        // It must be a subpart that hasn't been bound yet.
+        auto& anim = part_dict[true_part_name].at(anim_name);
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+        anim_dict_found->second.insert_or_assign(anim_name, anim.make_copy());
+#else
+        anim_dict_found->second.insert({anim_name, anim.make_copy()});
+#endif
+        anim_found = anim_dict_found->second.find(anim_name);
+    }
+
+    if (anim_found == anim_dict_found->second.end())
+        rppanda_actor_cat.error() << "actor has no animation " << anim_name << std::endl;
+
+    auto& anim = anim_found->second;
+
+    // only bind if not already bound!
+    if (anim.anim_control)
+        return anim.anim_control;
+
+    PartBundle* bundle;
+    if (merge_LOD_bundles_)
+    {
+        bundle = common_bundle_handles_.at(true_part_name)->get_bundle();
+    }
+    else
+    {
+        bundle = part_bundle_dict_.at(lod_name).at(true_part_name).get_bundle();
+    }
+
+    AnimControl* anim_control;
+    if (anim.anim_bundle)
+    {
+        // We already have a bundle; just bind it.
+        anim_control = bundle->bind_anim(anim.anim_bundle, -1, subpart_subset);
+    }
+    else
+    {
+        // Load and bind the anim.This might be an asynchronous
+        // operation that will complete in the background, but if so it
+        // will still return a usable AnimControl.
+        anim_control = bundle->load_bind_anim(loader_, Filename(anim.filename), -1, subpart_subset, allow_async_bind && allow_async_bind_);
+    }
+
+    if (!anim_control)
+    {
+        // Couldn't bind.  (This implies the binding operation was
+        // not attempted asynchronously.)
+        return nullptr;
+    }
+
+    // store the animControl
+    anim.anim_control = anim_control;
+    rppanda_actor_cat.debug() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
+    return anim_control;
 }
 
 }
