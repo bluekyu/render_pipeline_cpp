@@ -65,13 +65,13 @@ Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
 }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 Loader::Loader(Loader&&) = default;
 #endif
 
 Loader::~Loader(void) = default;
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 Loader& Loader::operator=(Loader&&) = default;
 #endif
 

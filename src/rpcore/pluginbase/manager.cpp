@@ -344,7 +344,7 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const Fil
     }
 
     const auto& info_node = config["information"];
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo {
         info_node["category"].as<std::string>("empty_category"),
         info_node["name"].as<std::string>("empty_name"),

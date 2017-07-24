@@ -181,7 +181,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     }
 }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 Actor& Actor::operator=(Actor&&) = default;
 #endif
 
@@ -226,7 +226,7 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 
     rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](auto){});
 #else
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](LoaderOptions*){});
@@ -322,7 +322,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
             auto& part_dict = anim_control_dict_.at(l_name);
             if (first_load)
             {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 part_dict.at(part_name).insert_or_assign(anim_name, AnimDef());
 #else
                 part_dict.at(part_name).insert({anim_name, AnimDef()});
@@ -515,7 +515,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 
             AnimDef anim_def;
             anim_def.anim_control = anim_contorl;
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             anim_control_dict_.at(new_lod_name).at(part_name).insert_or_assign(anim_name, anim_def);
 #else
             anim_control_dict_.at(new_lod_name).at(part_name).insert({ anim_name, anim_def });
@@ -565,7 +565,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
         }
         else
         {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             common_bundle_handles_.insert_or_assign(part_name, bundle_handle);
 #else
             common_bundle_handles_.insert({ part_name, bundle_handle });
@@ -573,7 +573,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
         }
     }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     bundle_dict.insert_or_assign(part_name, PartDef{ bundle_np, bundle_handle, part_model });
 #else
     bundle_dict.insert({ part_name, PartDef{ bundle_np, bundle_handle, part_model } });

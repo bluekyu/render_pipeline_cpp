@@ -237,7 +237,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
     {
         if (pipe_data.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || pipe_data.is_type(StageData::Type::GROUP_INPUT_BLOCK))
         {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             input_blocks_.insert_or_assign(pipe_data.get_name(), std::move(pipe_data));
 #else
             input_blocks_.insert({pipe_data.get_name(), pipe_data});
@@ -245,7 +245,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
             continue;
         }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
         pipes_.insert_or_assign(pipe_data.get_name(), pipe_data.get_shader_input());
 #else
         pipes_[pipe_data.get_name()] = pipe_data.get_shader_input();
@@ -270,7 +270,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
 
         if (input_data.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || input_data.is_type(StageData::Type::GROUP_INPUT_BLOCK))
         {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             input_blocks_.insert_or_assign(input_name, std::move(input_data));
 #else
             input_blocks_.insert({input_name, input_data});
@@ -278,7 +278,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
             continue;
         }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
         inputs_.insert_or_assign(input_name, input_data.get_shader_input());
 #else
         inputs_[input_name] = input_data.get_shader_input();
@@ -358,7 +358,7 @@ const StageManager::DefinesType& StageManager::get_defines(void) const
 
 void StageManager::add_input(const ShaderInput& inp)
 {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->inputs_.insert_or_assign(inp.get_name()->get_name(), inp);
 #else
     impl_->inputs_[inp.get_name()->get_name()] = inp;
@@ -427,7 +427,7 @@ void StageManager::setup(void)
         if (!block.is_type(StageData::Type::SHADER_INPUT))
         {
             const auto& block_name = block.get_name();
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             impl_->input_blocks_.insert_or_assign(block_name, std::move(block));
 #else
             impl_->input_blocks_.insert({block_name, block});

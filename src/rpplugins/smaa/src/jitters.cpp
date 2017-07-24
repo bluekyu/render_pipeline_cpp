@@ -105,7 +105,7 @@ JitterType::JitterType(void)
             LVecBase2 point(halton_seq(2, seq_iter + 1) - 0.5, halton_seq(3, seq_iter + 1) - 0.5);
             sequence.push_back(point);
         }
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
         insert_or_assign(std::string("halton") + std::to_string(seq_num), std::move(sequence));
 #else
         this->operator[](std::string("halton") + std::to_string(seq_num)) = std::move(sequence);

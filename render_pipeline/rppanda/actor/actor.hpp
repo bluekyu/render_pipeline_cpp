@@ -54,14 +54,14 @@ public:
         boost::optional<bool> ok_missing={}
     );
     Actor(const Actor&) = delete;
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Actor(Actor&&) = default;
 #endif
 
     ~Actor(void) = default;
 
     Actor& operator=(const Actor&) = delete;
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Actor& operator=(Actor&&);
 #endif
 

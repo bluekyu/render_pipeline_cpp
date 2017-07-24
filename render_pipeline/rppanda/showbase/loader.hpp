@@ -18,14 +18,14 @@ class RENDER_PIPELINE_DECL Loader: public DirectObject
 public:
     Loader(ShowBase& base);
     Loader(const Loader&) = delete;
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Loader(Loader&&);
 #endif
 
     ~Loader(void);
 
     Loader& operator=(const Loader&) = delete;
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Loader& operator=(Loader&&);
 #endif
 

@@ -439,7 +439,7 @@ ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>())
 
 ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
 {
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
 #else
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});

@@ -35,7 +35,7 @@ GroupedInputBlock::GroupedInputBlock(const std::string& name): RPObject("Grouped
     }
 }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 #define MAKE_PTA(TYPE_NAME) \
     case PTA_ID::TYPE_NAME: \
         _ptas.insert_or_assign(uniform_name, TYPE_NAME::empty_array(array_size)); \

@@ -60,7 +60,7 @@ std::shared_ptr<RenderTarget> RenderStage::create_target(const std::string& name
         return nullptr;
     }
 
-#if _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     return targets_.insert_or_assign(target_name, std::make_shared<RenderTarget>(target_name)).first->second;
 #else
     return targets_[target_name] = std::make_shared<RenderTarget>(target_name);
