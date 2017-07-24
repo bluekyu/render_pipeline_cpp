@@ -65,6 +65,11 @@ public:
     Actor& operator=(Actor&&);
 #endif
 
+    /**
+     * Handy utility function to list the joint hierarchy of the actor.
+     */
+    void list_joints(const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot") const;
+
     bool has_LOD(void) const;
 
     void set_geom_node(NodePath node);
@@ -171,6 +176,8 @@ private:
         std::string true_part_name;
         PartSubset subset;
     };
+
+    void do_list_joints(size_t indent_level, const PartGroup* part, bool is_included, const PartSubset& subset) const;
 
     void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
 

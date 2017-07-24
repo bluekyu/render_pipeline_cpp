@@ -185,6 +185,50 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
 Actor& Actor::operator=(Actor&&) = default;
 #endif
 
+void Actor::list_joints(const std::string& part_name, const std::string& lod_name) const
+{
+    std::string true_name;
+    PartSubset subpart_subset;
+    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
+    if (subpart_dict_iter != subpart_dict_.end())
+    {
+        true_name = subpart_dict_iter->second.true_part_name;
+        subpart_subset = subpart_dict_iter->second.subset;
+    }
+    else
+    {
+        true_name = part_name;
+    }
+
+    PartBundle* part_def = nullptr;
+    try
+    {
+        if (merge_LOD_bundles_)
+        {
+            part_def = common_bundle_handles_.at(true_name)->get_bundle();
+        }
+        else
+        {
+            const auto& part_bundle_dict_iter = part_bundle_dict_.find(lod_name);
+            if (part_bundle_dict_iter == part_bundle_dict_.end())
+            {
+                rppanda_actor_cat.error() << "No lod named: " << lod_name << std::endl;
+            }
+            else
+            {
+                part_def = part_bundle_dict_iter->second.at(true_name).get_bundle();
+            }
+        }
+    }
+    catch (const std::out_of_range&)
+    {
+        rppanda_actor_cat.error() << "No part named: " << part_name << std::endl;
+        return;
+    }
+
+    do_list_joints(0, part_def, subpart_subset.is_include_empty(), subpart_subset);
+}
+
 bool Actor::has_LOD(void) const
 {
     return !lod_node_.is_empty();
@@ -362,7 +406,7 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     const auto& part_bundle_dict_iter = part_bundle_dict_.find(lod_name);
     if (part_bundle_dict_iter == part_bundle_dict_.end())
     {
-        rppanda_actor_cat.warning() << "No lod named: " << lod_name;
+        rppanda_actor_cat.warning() << "No lod named: " << lod_name << std::endl;
         return NodePath();
     }
     const auto& part_bundle_dict = part_bundle_dict_iter->second;
@@ -377,7 +421,7 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     const auto& iter = part_bundle_dict.find(true_name);
     if (iter == part_bundle_dict.end())
     {
-        rppanda_actor_cat.warning() << "No part named: " << part_name;
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
         return NodePath();
     }
     PartBundle* bundle = iter->second.get_bundle();
@@ -397,7 +441,7 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     }
     else
     {
-        rppanda_actor_cat.warning() << "No joint named: " << joint_name;
+        rppanda_actor_cat.warning() << "No joint named: " << joint_name << std::endl;
     }
 
     return node;
@@ -444,6 +488,31 @@ PartBundle* Actor::PartDef::get_bundle(void) const
 Actor::SubpartDef::SubpartDef(const std::string& true_part_name, const PartSubset& subset):
     true_part_name(true_part_name), subset(subset)
 {
+}
+
+void Actor::do_list_joints(size_t indent_level, const PartGroup* part, bool is_included, const PartSubset& subset) const
+{
+    const auto& name = part->get_name();
+    if (subset.matches_include(name))
+        is_included = true;
+    else if (subset.matches_exclude(name))
+        is_included = false;
+
+    if (is_included)
+    {
+        std::string value;
+        if (part->is_of_type(MovingPartBase::get_class_type()))
+        {
+            std::stringstream stream;
+            DCAST(MovingPartBase, part)->output_value(stream);
+            value = stream.str();
+        }
+        std::string indent(indent_level, ' ');
+        std::cout << indent << " " << part->get_name() << " " << value << std::endl;
+    }
+
+    for (int k=0, k_end=part->get_num_children(); k < k_end; ++k)
+        do_list_joints(indent_level+2, part->get_child(k), is_included, subset);
 }
 
 void Actor::post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims)
