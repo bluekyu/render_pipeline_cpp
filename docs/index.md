@@ -1,6 +1,7 @@
 # Render Pipeline Docs
 
 ## System
+- [Render Pipeline Structures](structures.md)
 - [Virtual File System](virtual_filesystem.md)
 
 ## Rendering

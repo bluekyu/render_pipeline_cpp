@@ -49,11 +49,11 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 1. Directory Structure
 ```
-- ROOT_DIR
-  |- build                  # CMake build directory
-  |- render_pipeline_cpp    # Render Pipeline C++ project
-  |- rpcpp_plugins          # Plugin project
-  |- rpcpp_samples          # Sample project
+─ ROOT_DIR
+  ├ build                  # CMake build directory
+  ├ render_pipeline_cpp    # Render Pipeline C++ project
+  ├ rpcpp_plugins          # Plugin project
+  └ rpcpp_samples          # Sample project
 ```
 
 ### 2. CMake
