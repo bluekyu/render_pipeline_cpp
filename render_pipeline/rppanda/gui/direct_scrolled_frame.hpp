@@ -108,7 +108,7 @@ inline TypeHandle DirectScrolledFrame::get_class_type(void)
 inline void DirectScrolledFrame::init_type(void)
 {
     DirectFrame::init_type();
-    register_type(type_handle_, "DirectScrolledFrame", DirectFrame::get_class_type());
+    register_type(type_handle_, "rppanda::DirectScrolledFrame", DirectFrame::get_class_type());
 }
 
 inline TypeHandle DirectScrolledFrame::get_type(void) const

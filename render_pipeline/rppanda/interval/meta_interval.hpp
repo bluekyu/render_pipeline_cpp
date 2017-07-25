@@ -62,7 +62,7 @@ inline TypeHandle MetaInterval::get_class_type(void)
 inline void MetaInterval::init_type(void)
 {
     CMetaInterval::init_type();
-    register_type(type_handle_, "MetaInterval", CMetaInterval::get_class_type());
+    register_type(type_handle_, "rppanda::MetaInterval", CMetaInterval::get_class_type());
 }
 
 inline TypeHandle MetaInterval::get_type(void) const
@@ -109,7 +109,7 @@ inline TypeHandle Sequence::get_class_type(void)
 inline void Sequence::init_type(void)
 {
     MetaInterval::init_type();
-    register_type(type_handle_, "Sequence", MetaInterval::get_class_type());
+    register_type(type_handle_, "rppanda::Sequence", MetaInterval::get_class_type());
 }
 
 inline TypeHandle Sequence::get_type(void) const
@@ -156,7 +156,7 @@ inline TypeHandle Parallel::get_class_type(void)
 inline void Parallel::init_type(void)
 {
     MetaInterval::init_type();
-    register_type(type_handle_, "Parallel", MetaInterval::get_class_type());
+    register_type(type_handle_, "rppanda::Parallel", MetaInterval::get_class_type());
 }
 
 inline TypeHandle Parallel::get_type(void) const
@@ -207,7 +207,7 @@ inline TypeHandle ParallelEndTogether::get_class_type(void)
 inline void ParallelEndTogether::init_type(void)
 {
     MetaInterval::init_type();
-    register_type(type_handle_, "ParallelEndTogether", MetaInterval::get_class_type());
+    register_type(type_handle_, "rppanda::ParallelEndTogether", MetaInterval::get_class_type());
 }
 
 inline TypeHandle ParallelEndTogether::get_type(void) const
@@ -256,7 +256,7 @@ inline TypeHandle Track::get_class_type(void)
 inline void Track::init_type(void)
 {
     MetaInterval::init_type();
-    register_type(type_handle_, "Track", MetaInterval::get_class_type());
+    register_type(type_handle_, "rppanda::Track", MetaInterval::get_class_type());
 }
 
 inline TypeHandle Track::get_type(void) const

@@ -81,7 +81,7 @@ inline TypeHandle DirectGuiBase::get_class_type(void)
 inline void DirectGuiBase::init_type(void)
 {
     DirectObject::init_type();
-    register_type(type_handle_, "DirectGuiBase", DirectObject::get_class_type());
+    register_type(type_handle_, "rppanda::DirectGuiBase", DirectObject::get_class_type());
 }
 
 inline TypeHandle DirectGuiBase::get_type(void) const
@@ -282,7 +282,7 @@ inline TypeHandle DirectGuiWidget::get_class_type(void)
 inline void DirectGuiWidget::init_type(void)
 {
     DirectGuiBase::init_type();
-    register_type(type_handle_, "DirectGuiWidget", DirectGuiBase::get_class_type());
+    register_type(type_handle_, "rppanda::DirectGuiWidget", DirectGuiBase::get_class_type());
 }
 
 inline TypeHandle DirectGuiWidget::get_type(void) const

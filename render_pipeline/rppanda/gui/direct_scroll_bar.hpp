@@ -86,7 +86,7 @@ inline TypeHandle DirectScrollBar::get_class_type(void)
 inline void DirectScrollBar::init_type(void)
 {
     DirectFrame::init_type();
-    register_type(type_handle_, "DirectScrollBar", DirectFrame::get_class_type());
+    register_type(type_handle_, "rppanda::DirectScrollBar", DirectFrame::get_class_type());
 }
 
 inline TypeHandle DirectScrollBar::get_type(void) const

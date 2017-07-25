@@ -80,7 +80,7 @@ inline TypeHandle Loader::get_class_type(void)
 inline void Loader::init_type(void)
 {
     DirectObject::init_type();
-    register_type(type_handle_, "Loader", DirectObject::get_class_type());
+    register_type(type_handle_, "rppanda::Loader", DirectObject::get_class_type());
 }
 
 inline TypeHandle Loader::get_type(void) const

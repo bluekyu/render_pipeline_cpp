@@ -69,7 +69,7 @@ inline TypeHandle SfxPlayer::get_class_type(void)
 inline void SfxPlayer::init_type(void)
 {
     TypedReferenceCount::init_type();
-    register_type(type_handle_, "SfxPlayer", TypedReferenceCount::get_class_type());
+    register_type(type_handle_, "rppanda::SfxPlayer", TypedReferenceCount::get_class_type());
 }
 
 inline TypeHandle SfxPlayer::get_type(void) const

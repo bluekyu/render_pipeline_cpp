@@ -124,7 +124,7 @@ inline TypeHandle SoundInterval::get_class_type(void)
 inline void SoundInterval::init_type(void)
 {
     CInterval::init_type();
-    register_type(type_handle_, "SoundInterval", CInterval::get_class_type());
+    register_type(type_handle_, "rppanda::SoundInterval", CInterval::get_class_type());
 }
 
 inline TypeHandle SoundInterval::get_type(void) const

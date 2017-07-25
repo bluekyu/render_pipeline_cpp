@@ -42,7 +42,7 @@ inline TypeHandle ActorInterval::get_class_type(void)
 inline void ActorInterval::init_type(void)
 {
     CInterval::init_type();
-    register_type(type_handle_, "ActorInterval", CInterval::get_class_type());
+    register_type(type_handle_, "rppanda::ActorInterval", CInterval::get_class_type());
 }
 
 inline TypeHandle ActorInterval::get_type(void) const

@@ -263,7 +263,7 @@ inline TypeHandle ShowBase::get_class_type(void)
 inline void ShowBase::init_type(void)
 {
     DirectObject::init_type();
-    register_type(type_handle_, "ShowBase", DirectObject::get_class_type());
+    register_type(type_handle_, "rppanda::ShowBase", DirectObject::get_class_type());
 }
 
 inline TypeHandle ShowBase::get_type(void) const

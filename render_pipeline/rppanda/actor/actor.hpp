@@ -333,7 +333,7 @@ inline TypeHandle Actor::get_class_type(void)
 inline void Actor::init_type(void)
 {
     DirectObject::init_type();
-    register_type(type_handle_, "Actor", DirectObject::get_class_type());
+    register_type(type_handle_, "rppanda::Actor", DirectObject::get_class_type());
 }
 
 inline TypeHandle Actor::get_type(void) const

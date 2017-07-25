@@ -82,7 +82,7 @@ inline TypeHandle DirectButton::get_class_type(void)
 inline void DirectButton::init_type(void)
 {
     DirectGuiWidget::init_type();
-    register_type(type_handle_, "DirectButton", DirectGuiWidget::get_class_type());
+    register_type(type_handle_, "rppanda::DirectButton", DirectGuiWidget::get_class_type());
 }
 
 inline TypeHandle DirectButton::get_type(void) const

@@ -54,7 +54,7 @@ inline TypeHandle DirectObject::get_class_type(void)
 inline void DirectObject::init_type(void)
 {
     TypedReferenceCount::init_type();
-    register_type(type_handle_, "DirectObject", TypedReferenceCount::get_class_type());
+    register_type(type_handle_, "rppanda::DirectObject", TypedReferenceCount::get_class_type());
 }
 
 inline TypeHandle DirectObject::get_type(void) const

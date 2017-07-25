@@ -83,7 +83,7 @@ inline TypeHandle DirectSlider::get_class_type(void)
 inline void DirectSlider::init_type(void)
 {
     DirectFrame::init_type();
-    register_type(type_handle_, "DirectSlider", DirectFrame::get_class_type());
+    register_type(type_handle_, "rppanda::DirectSlider", DirectFrame::get_class_type());
 }
 
 inline TypeHandle DirectSlider::get_type(void) const

@@ -81,7 +81,7 @@ inline TypeHandle DirectCheckBox::get_class_type(void)
 inline void DirectCheckBox::init_type(void)
 {
     DirectButton::init_type();
-    register_type(type_handle_, "DirectCheckBox", DirectButton::get_class_type());
+    register_type(type_handle_, "rppanda::DirectCheckBox", DirectButton::get_class_type());
 }
 
 inline TypeHandle DirectCheckBox::get_type(void) const

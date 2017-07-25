@@ -64,7 +64,7 @@ inline TypeHandle DirectFrame::get_class_type(void)
 inline void DirectFrame::init_type(void)
 {
     DirectGuiWidget::init_type();
-    register_type(type_handle_, "DirectFrame", DirectGuiWidget::get_class_type());
+    register_type(type_handle_, "rppanda::DirectFrame", DirectGuiWidget::get_class_type());
 }
 
 inline TypeHandle DirectFrame::get_type(void) const

@@ -55,7 +55,7 @@ inline TypeHandle LerpNodePathInterval::get_class_type(void)
 inline void LerpNodePathInterval::init_type(void)
 {
     CLerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpNodePathInterval", CLerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpNodePathInterval", CLerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpNodePathInterval::get_type(void) const
@@ -107,7 +107,7 @@ inline TypeHandle LerpPosInterval::get_class_type(void)
 inline void LerpPosInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpPosInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpPosInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpPosInterval::get_type(void) const
@@ -163,7 +163,7 @@ inline TypeHandle LerpHprInterval::get_class_type(void)
 inline void LerpHprInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpHprInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpHprInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpHprInterval::get_type(void) const
@@ -237,7 +237,7 @@ inline TypeHandle LerpQuatInterval::get_class_type(void)
 inline void LerpQuatInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpQuatInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpQuatInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpQuatInterval::get_type(void) const
@@ -292,7 +292,7 @@ inline TypeHandle LerpScaleInterval::get_class_type(void)
 inline void LerpScaleInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpScaleInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpScaleInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpScaleInterval::get_type(void) const
@@ -348,7 +348,7 @@ inline TypeHandle LerpShearInterval::get_class_type(void)
 inline void LerpShearInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpShearInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpShearInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpShearInterval::get_type(void) const
@@ -413,7 +413,7 @@ inline TypeHandle LerpPosHprInterval::get_class_type(void)
 inline void LerpPosHprInterval::init_type(void)
 {
     LerpNodePathInterval::init_type();
-    register_type(type_handle_, "LerpPosHprInterval", LerpNodePathInterval::get_class_type());
+    register_type(type_handle_, "rppanda::LerpPosHprInterval", LerpNodePathInterval::get_class_type());
 }
 
 inline TypeHandle LerpPosHprInterval::get_type(void) const
