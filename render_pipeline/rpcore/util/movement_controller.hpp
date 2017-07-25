@@ -24,7 +24,14 @@ public:
 
 public:
     MovementController(rppanda::ShowBase* showbase);
+
+    MovementController(const MovementController&) = delete;
+    MovementController(MovementController&&) = delete;
+
     ~MovementController(void);
+
+    MovementController& operator=(const MovementController&) = delete;
+    MovementController& operator=(MovementController&&) = delete;
 
     /** Sets the initial camera position. */
     void set_initial_position(const LVecBase3& pos, const LVecBase3& target);

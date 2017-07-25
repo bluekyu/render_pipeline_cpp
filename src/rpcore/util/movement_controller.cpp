@@ -18,16 +18,14 @@ namespace rpcore {
 class MovementController::Impl
 {
 public:
+    Impl(rppanda::ShowBase* showbase);
+
     /** Internal update method. */
-    static AsyncTask::DoneStatus update(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus update(MovementController* self);
 
-    static AsyncTask::DoneStatus camera_motion_update(GenericAsyncTask* task, void* user_data);
-
-    Impl(MovementController& self, rppanda::ShowBase* showbase);
+    AsyncTask::DoneStatus camera_motion_update(MovementController* self);
 
 public:
-    MovementController& self_;
-
     rppanda::ShowBase* showbase_;
 
     LVecBase3 movement_ = LVecBase3(0);
@@ -56,30 +54,28 @@ public:
     double delta_time_count_;
 };
 
-AsyncTask::DoneStatus MovementController::Impl::update(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus MovementController::Impl::update(MovementController* self)
 {
-    Impl* mc = reinterpret_cast<Impl*>(user_data);
+    double delta = self->get_clock_obj()->get_dt();
 
-    double delta = mc->self_.get_clock_obj()->get_dt();
-
-    NodePath camera = mc->showbase_->get_camera();
+    NodePath camera = showbase_->get_camera();
 
     // Update mouse first
-    if (mc->showbase_->get_mouse_watcher_node()->has_mouse())
+    if (showbase_->get_mouse_watcher_node()->has_mouse())
     {
-        const LVecBase2& mouse_pos = mc->showbase_->get_mouse_watcher_node()->get_mouse();
+        const LVecBase2& mouse_pos = showbase_->get_mouse_watcher_node()->get_mouse();
 
-        mc->current_mouse_pos_ = LVecBase2(
-            mouse_pos[0] * mc->showbase_->get_cam_lens()->get_fov().get_x(),
-            mouse_pos[1] * mc->showbase_->get_cam_lens()->get_fov().get_y()) * mc->mouse_sensivity_;
+        current_mouse_pos_ = LVecBase2(
+            mouse_pos[0] * showbase_->get_cam_lens()->get_fov().get_x(),
+            mouse_pos[1] * showbase_->get_cam_lens()->get_fov().get_y()) * mouse_sensivity_;
 
-        if (mc->mouse_enabled_)
+        if (mouse_enabled_)
         {
-            float diffx = mc->last_mouse_pos_[0] - mc->current_mouse_pos_[0];
-            float diffy = mc->last_mouse_pos_[1] - mc->current_mouse_pos_[1];
+            float diffx = last_mouse_pos_[0] - current_mouse_pos_[0];
+            float diffy = last_mouse_pos_[1] - current_mouse_pos_[1];
 
             // Don't move in the very beginning
-            if (mc->last_mouse_pos_[0] == 0 && mc->last_mouse_pos_[1] == 0)
+            if (last_mouse_pos_[0] == 0 && last_mouse_pos_[1] == 0)
             {
                 diffx = 0;
                 diffy = 0;
@@ -89,41 +85,41 @@ AsyncTask::DoneStatus MovementController::Impl::update(GenericAsyncTask* task, v
             camera.set_p(camera.get_p() - diffy);
         }
 
-        mc->last_mouse_pos_ = mc->current_mouse_pos_;
+        last_mouse_pos_ = current_mouse_pos_;
     }
 
     // Compute movement in render space
-    const LVecBase3& movement_direction = LVecBase3(mc->movement_[1], mc->movement_[0], 0.0f) * mc->speed_ * delta * 100.0f;
+    const LVecBase3& movement_direction = LVecBase3(movement_[1], movement_[0], 0.0f) * speed_ * delta * 100.0f;
 
     // transform by the camera direction
-    const LQuaternionf camera_quaternion(camera.get_quat(mc->showbase_->get_render()));
+    const LQuaternionf camera_quaternion(camera.get_quat(showbase_->get_render()));
     LVecBase3 translated_direction(camera_quaternion.xform(movement_direction));
 
     // z-force is inddpendent of camera direction
-    translated_direction.add_z(mc->movement_[2] * delta * 120.0f * mc->speed_);
+    translated_direction.add_z(movement_[2] * delta * 120.0f * speed_);
 
-    mc->velocity_ += translated_direction * 0.15f;
+    velocity_ += translated_direction * 0.15f;
 
     // apply the new position
-    camera.set_pos(camera.get_pos() + mc->velocity_);
+    camera.set_pos(camera.get_pos() + velocity_);
 
     // transform rotation (keyboard keys)
-    float rotation_speed = mc->keyboard_hpr_speed_ * 100.0f;
+    float rotation_speed = keyboard_hpr_speed_ * 100.0f;
     rotation_speed *= delta;
     camera.set_hpr(camera.get_hpr() +
-        LVecBase3(mc->hpr_movement_[0], mc->hpr_movement_[1], 0.0f) * rotation_speed);
+        LVecBase3(hpr_movement_[0], hpr_movement_[1], 0.0f) * rotation_speed);
 
     // fade out velocity
-    mc->velocity_ = mc->velocity_ * (std::max)(0.0, 1.0f - delta * 60.0f / (std::max)(0.01f, mc->smoothness_));
+    velocity_ = velocity_ * (std::max)(0.0, 1.0f - delta * 60.0f / (std::max)(0.01f, smoothness_));
 
     // bobbing
-    double ftime = mc->self_.get_clock_obj()->get_frame_time();
-    float rotation = rplibs::py_fmod(float(ftime), mc->bobbing_speed_) / mc->bobbing_speed_;
+    double ftime = self->get_clock_obj()->get_frame_time();
+    float rotation = rplibs::py_fmod(float(ftime), bobbing_speed_) / bobbing_speed_;
     rotation = ((std::min)(rotation, 1.0f - rotation) * 2.0f - 0.5f) * 2.0f;
-    if (mc->velocity_.length_squared() > 1e-5 && mc->speed_ > 1e-5)
+    if (velocity_.length_squared() > 1e-5 && speed_ > 1e-5)
     {
-        rotation *= mc->bobbing_amount_;
-        rotation *= (std::min)(1.0f, mc->velocity_.length()) / mc->speed_ * 0.5f;
+        rotation *= bobbing_amount_;
+        rotation *= (std::min)(1.0f, velocity_.length()) / speed_ * 0.5f;
     }
     else
     {
@@ -134,49 +130,50 @@ AsyncTask::DoneStatus MovementController::Impl::update(GenericAsyncTask* task, v
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementController* self)
 {
-    Impl* mc = reinterpret_cast<Impl*>(user_data);
-
-    if (mc->self_.get_clock_obj()->get_frame_time() > mc->curve_time_end_)
+    if (self->get_clock_obj()->get_frame_time() > curve_time_end_)
     {
         std::cout << "Camera motion path finished" << std::endl;
 
         // Print performance stats
-        double avg_ms = mc->delta_time_sum_ / mc->delta_time_count_;
+        double avg_ms = delta_time_sum_ / delta_time_count_;
         std::cout << (boost::format("Average frame time (ms): %4.1f") % (avg_ms * 1000.0)) << std::endl;
         std::cout << (boost::format("Average frame rate: %4.1f") % (1.0 / avg_ms)) << std::endl;
 
-        mc->update_task_ = mc->showbase_->add_task(update, mc, "RP_UpdateMovementController", -50);
-        mc->showbase_->get_render_2d().show();
-        mc->showbase_->get_aspect_2d().show();
+        update_task_ = showbase_->add_task([](GenericAsyncTask* task, void* user_data) {
+            auto self = reinterpret_cast<MovementController*>(user_data);
+            return self->impl_->update(self);
+        }, self, "RP_UpdateMovementController", -50);
+        showbase_->get_render_2d().show();
+        showbase_->get_aspect_2d().show();
 
         return AsyncTask::DS_done;
     }
 
-    double lerp = (mc->self_.get_clock_obj()->get_frame_time() - mc->curve_time_start_) / (mc->curve_time_end_ - mc->curve_time_start_);
-    lerp *= mc->curve_->get_max_t();
+    double lerp = (self->get_clock_obj()->get_frame_time() - curve_time_start_) / (curve_time_end_ - curve_time_start_);
+    lerp *= curve_->get_max_t();
 
     LPoint3 pos(0);
     LVecBase3 hpr(0);
-    mc->curve_->evaluate_xyz(lerp, pos);
-    mc->curve_->evaluate_hpr(lerp, hpr);
+    curve_->evaluate_xyz(lerp, pos);
+    curve_->evaluate_hpr(lerp, hpr);
 
-    mc->showbase_->get_camera().set_pos(pos);
-    mc->showbase_->get_camera().set_hpr(hpr);
+    showbase_->get_camera().set_pos(pos);
+    showbase_->get_camera().set_hpr(hpr);
 
-    mc->delta_time_sum_ += mc->self_.get_clock_obj()->get_dt();
-    mc->delta_time_count_ += 1;
+    delta_time_sum_ += self->get_clock_obj()->get_dt();
+    delta_time_count_ += 1;
 
     return AsyncTask::DS_cont;
 }
 
-MovementController::Impl::Impl(MovementController& self, rppanda::ShowBase* showbase): self_(self), showbase_(showbase)
+MovementController::Impl::Impl(rppanda::ShowBase* showbase): showbase_(showbase)
 {
 }
 
 // ************************************************************************************************
-MovementController::MovementController(rppanda::ShowBase* showbase): impl_(std::make_unique<Impl>(*this, showbase))
+MovementController::MovementController(rppanda::ShowBase* showbase): impl_(std::make_unique<Impl>(showbase))
 {
 }
 
@@ -339,7 +336,10 @@ void MovementController::setup(void)
     showbase->disable_mouse();
 
     // add ourself as an update task which gets executed very early before the rendering
-    impl_->update_task_ = showbase->add_task(&Impl::update, impl_.get(), "RP_UpdateMovementController", -40);
+    impl_->update_task_ = showbase->add_task([](GenericAsyncTask* task, void* user_data) {
+        auto self = reinterpret_cast<MovementController*>(user_data);
+        return self->impl_->update(self);
+    }, this, "RP_UpdateMovementController", -40);
 
     // Hotkeys to connect to pstats and reset the initial position
     showbase->accept("1",
@@ -377,7 +377,10 @@ void MovementController::play_motion_path(const MotionPathType& points, float po
     impl_->curve_time_end_ = get_clock_obj()->get_frame_time() + points.size() * point_duration;
     impl_->delta_time_sum_ = 0;
     impl_->delta_time_count_ = 0;
-    impl_->showbase_->add_task(&Impl::camera_motion_update, impl_.get(), "RP_CameraMotionPath", -50);
+    impl_->showbase_->add_task([](GenericAsyncTask* task, void* user_data) {
+        auto self = reinterpret_cast<MovementController*>(user_data);
+        return self->impl_->camera_motion_update(self);
+    }, this, "RP_CameraMotionPath", -50);
     impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
 }
 
