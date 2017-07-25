@@ -21,14 +21,14 @@ namespace rppanda {
 
 TypeHandle Actor::type_handle_;
 
-std::string Actor::part_prefix("__Actor_");
+std::string Actor::part_prefix_("__Actor_");
 
-LoaderOptions Actor::model_loader_options(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_skeleton);
-LoaderOptions Actor::anim_loader_options(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_anim);
+LoaderOptions Actor::model_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_skeleton);
+LoaderOptions Actor::anim_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_anim);
 
-ConfigVariableBool Actor::validate_subparts("validate-subparts", true);
-ConfigVariableBool Actor::merge_LOD_bundles("merge-lod-bundles", true);
-ConfigVariableBool Actor::allow_async_bind("allow-async-bind", true);
+ConfigVariableBool Actor::validate_subparts_("validate-subparts", true);
+ConfigVariableBool Actor::merge_LOD_bundles_("merge-lod-bundles", true);
+ConfigVariableBool Actor::allow_async_bind_("allow-async-bind", true);
 
 Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models,
     const boost::variant<void*, AnimsType, MultiPartAnimsType>& anims,
@@ -55,9 +55,9 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     // per each LOD name.
 
     if (merge_LOD_bundles)
-        merge_LOD_bundles_ = merge_LOD_bundles.get();
+        this_merge_LOD_bundles_ = merge_LOD_bundles.get();
     else
-        merge_LOD_bundles_ = Actor::merge_LOD_bundles.get_value();
+        this_merge_LOD_bundles_ = Actor::merge_LOD_bundles_.get_value();
 
     // Set the allowAsyncBind flag.  If this is true, it enables
     // asynchronous animation binding.  This requires that you have
@@ -65,9 +65,9 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     // generate the appropriate AnimPreloadTable.
 
     if (allow_async_bind)
-        allow_async_bind_ = allow_async_bind.get();
+        this_allow_async_bind_ = allow_async_bind.get();
     else
-        allow_async_bind_ = Actor::allow_async_bind.get_value();
+        this_allow_async_bind_ = Actor::allow_async_bind_.get_value();
 
     subparts_complete_ = false;
 
@@ -207,7 +207,7 @@ void Actor::list_joints(const std::string& part_name, const std::string& lod_nam
     PartBundle* part_def = nullptr;
     try
     {
-        if (merge_LOD_bundles_)
+        if (this_merge_LOD_bundles_)
         {
             part_def = common_bundle_handles_.at(true_name)->get_bundle();
         }
@@ -240,7 +240,7 @@ Actor::ActorInfoType Actor::get_actor_info(void) const
     for (const auto& lodname_partdict: anim_control_dict_)
     {
         std::string lod_name = lodname_partdict.first;
-        if (merge_LOD_bundles_)
+        if (this_merge_LOD_bundles_)
             lod_name = sorted_LOD_names_[0];
 
         std::vector<PartInfoType> part_info;
@@ -318,11 +318,6 @@ void Actor::pprint(void) const
     }
 }
 
-bool Actor::has_LOD(void) const
-{
-    return !lod_node_.is_empty();
-}
-
 void Actor::set_geom_node(NodePath node)
 {
     geom_node_ = node;
@@ -336,7 +331,7 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
     LODDictType::iterator iter_end;
 
     std::vector<std::string> part_name_list = part_name;
-    build_lod_dict_items(part_name_list, iter, iter_end, lod_name);
+    build_LOD_dict_items(part_name_list, iter, iter_end, lod_name);
 
     for (; iter != iter_end; ++iter)
     {
@@ -366,7 +361,7 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
             {
                 auto& anim_dict = iter->second;
 
-                if (!build_controls_from_anim_name(controls, anim_name, anim_dict, part_dict, part_name_list, iter->first, lod_name))
+                if (!build_controls_from_anim_name(controls, anim_name, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
                     return {};
             }
         }
@@ -389,7 +384,7 @@ std::vector<AnimControl*> Actor::get_anim_controls(bool anim_name, const std::ve
     LODDictType::iterator iter_end;
 
     std::vector<std::string> part_name_list = part_name;
-    build_lod_dict_items(part_name_list, iter, iter_end, lod_name);
+    build_LOD_dict_items(part_name_list, iter, iter_end, lod_name);
 
     for (; iter != iter_end; ++iter)
     {
@@ -411,7 +406,7 @@ std::vector<AnimControl*> Actor::get_anim_controls(bool anim_name, const std::ve
             for (auto& key_val: anim_dict)
                 names.push_back(key_val.first);
 
-            if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name))
+            if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
                 return {};
         }
     }
@@ -451,15 +446,15 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
     rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](auto){});
+    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options_, [](auto){});
 #else
-    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options, [](LoaderOptions*){});
+    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options_, [](LoaderOptions*){});
 #endif
 
     if (!copy)
     {
         // If copy = 0, then we should always hit the disk.
-        loader_options = std::make_shared<LoaderOptions>(Actor::model_loader_options);
+        loader_options = std::make_shared<LoaderOptions>(Actor::model_loader_options_);
         loader_options->set_flags(loader_options->get_flags() & ~LoaderOptions::LF_no_ram_cache);
     }
 
@@ -487,7 +482,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
 {
     bool reload = true;
     std::vector<std::string> lod_names;
-    if (merge_LOD_bundles)
+    if (this_merge_LOD_bundles_)
     {
         lod_names.push_back("common");
     }
@@ -658,6 +653,20 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
     return node;
 }
 
+void Actor::show_all_bounds(void)
+{
+    const auto& geom_nodes = geom_node_.find_all_matches("**/+GeomNode");
+    for (int k=0, k_end=geom_nodes.get_num_paths(); k < k_end; ++k)
+        geom_nodes.get_path(k).show_bounds();
+}
+
+void Actor::hide_all_bounds(void)
+{
+    const auto& geom_nodes = geom_node_.find_all_matches("**/+GeomNode");
+    for (int k=0, k_end=geom_nodes.get_num_paths(); k < k_end; ++k)
+        geom_nodes.get_path(k).hide_bounds();
+}
+
 // ************************************************************************************************
 
 PartBundle* Actor::PartDef::get_bundle(void) const
@@ -679,7 +688,7 @@ Actor::SubpartDef::SubpartDef(const std::string& true_part_name, const PartSubse
 {
 }
 
-void Actor::build_lod_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name)
+void Actor::build_LOD_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name)
 {
     if (part_name_list.empty() && subparts_complete_)
     {
@@ -694,7 +703,7 @@ void Actor::build_lod_dict_items(std::vector<std::string>& part_name_list, LODDi
     // build list of lodNames and corresponding animControlDicts
     // requested.
     lod_end = anim_control_dict_.end();
-    if (!lod_name || merge_LOD_bundles_)
+    if (!lod_name || this_merge_LOD_bundles_)
     {
         // Get all LOD's
         lod_begin = anim_control_dict_.begin();
@@ -772,7 +781,7 @@ void Actor::build_anim_dict_items(std::vector<PartDictType::iterator>& anim_dict
 }
 
 bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, const std::vector<std::string>& names, AnimDictType& anim_dict, PartDictType& part_dict,
-    const std::vector<std::string>& part_name_list, const std::string& part_name, const std::string& lod_name)
+    const std::vector<std::string>& part_name_list, const std::string& part_name, const std::string& lod_name, bool allow_async_bind)
 {
     for (const auto& anim_name: names)
     {
@@ -891,7 +900,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
         if (lod_name != "lodRoot")
         {
             // parent to appropriate node under LOD switch
-            bundle_np.reparent_to(lod_node_.find(lod_name));
+            bundle_np.reparent_to(LOD_node_.find(lod_name));
         }
         else
         {
@@ -900,7 +909,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
         prepare_bundle(bundle_np, model.node(), part_name, lod_name);
 
         // we rename this node to make Actor copying easier
-        bundle_np.node()->set_name(fmt::format("{}{}", Actor::part_prefix, part_name));
+        bundle_np.node()->set_name(fmt::format("{}{}", Actor::part_prefix_, part_name));
 
         if (num_anims == 0)
             return;
@@ -911,7 +920,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 
         // make sure this lod is in anim control dict
         std::string new_lod_name = lod_name;
-        if (merge_LOD_bundles)
+        if (this_merge_LOD_bundles_)
             new_lod_name = "common";
 
         anim_control_dict_.insert({ new_lod_name,{} });
@@ -963,7 +972,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
 
     PT(PartBundleHandle) bundle_handle = node->get_bundle_handle(0);
 
-    if (merge_LOD_bundles_)
+    if (this_merge_LOD_bundles_)
     {
         if (common_bundle_handles_.find(part_name) != common_bundle_handles_.end())
         {
@@ -1061,7 +1070,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
         return anim.anim_control;
 
     PartBundle* bundle;
-    if (merge_LOD_bundles_)
+    if (this_merge_LOD_bundles_)
     {
         bundle = common_bundle_handles_.at(true_part_name)->get_bundle();
     }
@@ -1081,7 +1090,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
         // Load and bind the anim.This might be an asynchronous
         // operation that will complete in the background, but if so it
         // will still return a usable AnimControl.
-        anim_control = bundle->load_bind_anim(loader_, Filename(anim.filename), -1, subpart_subset, allow_async_bind && allow_async_bind_);
+        anim_control = bundle->load_bind_anim(loader_, Filename(anim.filename), -1, subpart_subset, allow_async_bind && this_allow_async_bind_);
     }
 
     if (!anim_control)

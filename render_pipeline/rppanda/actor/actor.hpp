@@ -38,14 +38,14 @@ public:
     using LODInfoType = std::tuple<std::string, std::vector<PartInfoType>>;                 // lod name, PartInfoType
     using ActorInfoType = std::vector<LODInfoType>;
 
-    static std::string part_prefix;
+    static std::string part_prefix_;
 
-    static LoaderOptions model_loader_options;
-    static LoaderOptions anim_loader_options;
+    static LoaderOptions model_loader_options_;
+    static LoaderOptions anim_loader_options_;
 
-    static ConfigVariableBool validate_subparts;
-    static ConfigVariableBool merge_LOD_bundles;
-    static ConfigVariableBool allow_async_bind;
+    static ConfigVariableBool validate_subparts_;
+    static ConfigVariableBool merge_LOD_bundles_;
+    static ConfigVariableBool allow_async_bind_;
 
 public:
     Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models=nullptr,
@@ -86,9 +86,26 @@ public:
     /** Pretty print actor's details. */
     void pprint(void) const;
 
+    /** accessing */
+    ///@{
+
+    /**
+     * Return list of Actor LOD names. If not an LOD actor,
+     * returns 'lodRoot'
+     */
+    const std::vector<std::string>& get_LOD_names(void) const;
+
+    /** Return the node that contains all actor geometry. */
+    NodePath get_geom_node(void) const;
+
+    /** Set the node that contains all actor geometry */
+    void set_geom_node(NodePath node);
+
+    NodePath get_LOD_node(void) const;
+
     bool has_LOD(void) const;
 
-    void set_geom_node(NodePath node);
+    ///@}
 
     /**
      * getAnimControls(self, string, string=None, string=None)
@@ -158,11 +175,17 @@ public:
      */
     NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot");
 
+    /** Show the bounds of all actor geoms. */
+    void show_all_bounds(void);
+
+    /** Hide the bounds of all actor geoms. */
+    void hide_all_bounds(void);
+
 protected:
     Loader* loader_;
 
-    bool merge_LOD_bundles_;
-    bool allow_async_bind_;
+    bool this_merge_LOD_bundles_;
+    bool this_allow_async_bind_;
 
 private:
     /**
@@ -227,10 +250,10 @@ private:
     using LODDictType = std::unordered_map<std::string, PartDictType>;
 
 private:
-    void build_lod_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name);
+    void build_LOD_dict_items(std::vector<std::string>& part_name_list, LODDictType::iterator& lod_begin, LODDictType::iterator& lod_end, const boost::optional<std::string>& lod_name);
     void build_anim_dict_items(std::vector<PartDictType::iterator>& anim_dict_items, const std::vector<std::string>& part_name_list, PartDictType& part_dict);
     bool build_controls_from_anim_name(std::vector<AnimControl*>& controls, const std::vector<std::string>& names, AnimDictType& anim_dict, PartDictType& part_dict, const std::vector<std::string>& part_name_list,
-        const std::string& part_name, const std::string& lod_name);
+        const std::string& part_name, const std::string& lod_name, bool allow_async_bind);
 
     void do_list_joints(size_t indent_level, const PartGroup* part, bool is_included, const PartSubset& subset) const;
 
@@ -266,7 +289,7 @@ private:
 
     bool got_name_;
     NodePath geom_node_;
-    NodePath lod_node_;
+    NodePath LOD_node_;
 
     bool subparts_complete_;
 
@@ -281,6 +304,26 @@ private:
 };
 
 // ************************************************************************************************
+
+inline const std::vector<std::string>& Actor::get_LOD_names(void) const
+{
+    return sorted_LOD_names_;
+}
+
+inline NodePath Actor::get_geom_node(void) const
+{
+    return geom_node_;
+}
+
+inline NodePath Actor::get_LOD_node(void) const
+{
+    return LOD_node_;
+}
+
+inline bool Actor::has_LOD(void) const
+{
+    return !LOD_node_.is_empty();
+}
 
 inline TypeHandle Actor::get_class_type(void)
 {
