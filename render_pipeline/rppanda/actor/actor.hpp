@@ -33,6 +33,11 @@ public:
     using AnimsType = std::unordered_map<std::string, boost::variant<Filename, NodePath>>;  // single part actor || single part actor w/ LOD
     using MultiPartAnimsType = std::unordered_map<std::string, AnimsType>;                  // multi part actor || multi part actor w/ LOD
 
+    using AnimInfoType = std::tuple<std::string, std::string, AnimControl*>;                // anim name, filename, AnimControl*
+    using PartInfoType = std::tuple<std::string, PartBundle*, std::vector<AnimInfoType>>;   // part name, PartBundle*, AnimInfoType
+    using LODInfoType = std::tuple<std::string, std::vector<PartInfoType>>;                 // lod name, PartInfoType
+    using ActorInfoType = std::vector<LODInfoType>;
+
     static std::string part_prefix;
 
     static LoaderOptions model_loader_options;
@@ -69,6 +74,17 @@ public:
      * Handy utility function to list the joint hierarchy of the actor.
      */
     void list_joints(const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot") const;
+
+    /**
+     * Utility function to create a list of information about an actor.
+     * Useful for iterating over details of an actor.
+     */
+    ActorInfoType get_actor_info(void) const;
+
+    std::vector<std::string> get_anim_names(void) const;
+
+    /** Pretty print actor's details. */
+    void pprint(void) const;
 
     bool has_LOD(void) const;
 

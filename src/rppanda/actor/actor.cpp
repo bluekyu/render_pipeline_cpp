@@ -11,6 +11,8 @@
 #include <auto_bind.h>
 #include <animBundleNode.h>
 
+#include <unordered_set>
+
 #include <spdlog/fmt/ostr.h>
 
 #include "rppanda/actor/config_rppanda_actor.hpp"
@@ -229,6 +231,91 @@ void Actor::list_joints(const std::string& part_name, const std::string& lod_nam
     }
 
     do_list_joints(0, part_def, subpart_subset.is_include_empty(), subpart_subset);
+}
+
+Actor::ActorInfoType Actor::get_actor_info(void) const
+{
+    std::vector<LODInfoType> lod_info;
+    lod_info.reserve(anim_control_dict_.size());
+    for (const auto& lodname_partdict: anim_control_dict_)
+    {
+        std::string lod_name = lodname_partdict.first;
+        if (merge_LOD_bundles_)
+            lod_name = sorted_LOD_names_[0];
+
+        std::vector<PartInfoType> part_info;
+        part_info.reserve(lodname_partdict.second.size());
+        for (const auto& partname_animdict: lodname_partdict.second)
+        {
+            const std::string& part_name = partname_animdict.first;
+            
+            std::string true_part_name;
+            const auto& subpart_dict_found = subpart_dict_.find(part_name);
+            if (subpart_dict_found != subpart_dict_.end())
+                true_part_name = subpart_dict_found->second.true_part_name;
+            else
+                true_part_name = part_name;
+
+            const auto& part_bundle_dict = part_bundle_dict_.at(lod_name);
+            const auto& part_def = part_bundle_dict.at(true_part_name);
+            PartBundle* part_bundle = part_def.get_bundle();
+            const auto& anim_dict = partname_animdict.second;
+
+            std::vector<AnimInfoType> anim_info;
+            anim_info.reserve(anim_dict.size());
+            for (const auto& animname_anim: anim_dict)
+            {
+                anim_info.push_back({animname_anim.first,
+                    animname_anim.second.filename,
+                    animname_anim.second.anim_control});
+            }
+            part_info.push_back({part_name, part_bundle, std::move(anim_info)});
+        }
+        lod_info.push_back({lod_name, std::move(part_info)});
+    }
+    return lod_info;
+}
+
+std::vector<std::string> Actor::get_anim_names(void) const
+{
+    std::unordered_set<std::string> anim_names;
+    const auto& actor_info = get_actor_info();
+    for (const auto& lod_info: actor_info)
+    {
+        for (const auto& part_info: std::get<1>(lod_info))
+        {
+            for (const auto& anim_info: std::get<2>(part_info))
+            {
+                anim_names.insert(std::get<0>(anim_info));
+            }
+        }
+    }
+
+    return std::vector<std::string>(anim_names.begin(), anim_names.end());
+}
+
+void Actor::pprint(void) const
+{
+    const auto& actor_info = get_actor_info();
+    for (const auto& lod_info: actor_info)
+    {
+        std::cout << "LOD: " << std::get<0>(lod_info) << std::endl;
+        for (const auto& part_info: std::get<1>(lod_info))
+        {
+            std::cout << "  Part: " << std::get<0>(part_info) << std::endl;
+            std::cout << "  Bundle: " << *std::get<1>(part_info) << std::endl;
+            for (const auto& anim_info: std::get<2>(part_info))
+            {
+                std::cout << "    Anim: " << std::get<0>(anim_info) << std::endl;
+                std::cout << "      File: " << std::get<1>(anim_info) << std::endl;
+                AnimControl* anim_control = std::get<2>(anim_info);
+                if (anim_control)
+                    std::cout << "      NumFrames: " << anim_control->get_num_frames() << " PlayRate: " << anim_control->get_play_rate() << std::endl;
+                else
+                    std::cout << "      (not loaded)" << std::endl;
+            }
+        }
+    }
 }
 
 bool Actor::has_LOD(void) const
