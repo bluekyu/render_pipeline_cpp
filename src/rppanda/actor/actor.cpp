@@ -453,11 +453,11 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
     {
-        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;;
+        rppanda_actor_cat.error() << "Part (" << part_name << ") is already loaded." << std::endl;
         return;
     }
 
-    rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;;
+    rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options_, [](auto){});
@@ -488,6 +488,12 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
     NodePath model;
     if (model_node)
         model = NodePath(model_node);
+
+    if (model.is_empty())
+    {
+        rppanda_actor_cat.error() << "Could not load Actor model from " << model_path << std::endl;
+        return;
+    }
 
     post_load_model(model, part_name, lod_name, auto_bind_anims);
 }
@@ -880,9 +886,6 @@ void Actor::do_list_joints(size_t indent_level, const PartGroup* part, bool is_i
 
 void Actor::post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims)
 {
-    if (model.is_empty())
-        throw std::runtime_error(fmt::format("Could not load Actor model {}", model));
-
     NodePath bundle_np;
     if (model.node()->is_of_type(Character::get_class_type()))
         bundle_np = model;
@@ -959,7 +962,10 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name, const std::string& lod_name)
 {
     if (subpart_dict_.find(part_name) != subpart_dict_.end())
-        throw std::runtime_error("Subpart (" + part_name + ") already exists");
+    {
+        rppanda_actor_cat.error() << "Subpart (" << part_name << ") already exists" << std::endl;
+        return;
+    }
 
     // Rename the node at the top of the hierarchy, if we
     // haven't already, to make it easier to identify this
@@ -982,7 +988,10 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
     Character* node = DCAST(Character, bundle_np.node());
     // A model loaded from disk will always have just one bundle.
     if (node->get_num_bundles() != 1)
-        throw std::runtime_error("The number of bundles is NOT 1");
+    {
+        rppanda_actor_cat.error() << "The number of bundles is NOT 1" << std::endl;
+        return;
+    }
 
     PT(PartBundleHandle) bundle_handle = node->get_bundle_handle(0);
 
