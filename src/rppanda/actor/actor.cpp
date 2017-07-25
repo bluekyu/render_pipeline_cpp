@@ -265,13 +265,27 @@ Actor::ActorInfoType Actor::get_actor_info(void) const
             anim_info.reserve(anim_dict.size());
             for (const auto& animname_anim: anim_dict)
             {
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 anim_info.push_back({animname_anim.first,
                     animname_anim.second.filename,
                     animname_anim.second.anim_control});
+#else
+                anim_info.push_back(AnimInfoType{animname_anim.first,
+                    animname_anim.second.filename,
+                    animname_anim.second.anim_control});
+#endif
             }
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             part_info.push_back({part_name, part_bundle, std::move(anim_info)});
+#else
+            part_info.push_back(PartInfoType{part_name, part_bundle, std::move(anim_info)});
+#endif
         }
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
         lod_info.push_back({lod_name, std::move(part_info)});
+#else
+        lod_info.push_back(LODInfoType{lod_name, std::move(part_info)});
+#endif
     }
     return lod_info;
 }
