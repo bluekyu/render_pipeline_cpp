@@ -353,7 +353,7 @@ inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<st
             if (found != part_bundle_dict.end())
                 bundles.push_back(found->second.get_bundle());
             else
-                rppanda_actor_cat.warning() << "Couldn't find part: " << part_name << std::endl;
+                rppanda_actor_cat.warning() << "Couldn't find part: " << part_name.get() << std::endl;
         }
         else
         {
