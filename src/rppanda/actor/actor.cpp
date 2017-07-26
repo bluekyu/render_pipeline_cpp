@@ -332,9 +332,37 @@ void Actor::pprint(void) const
     }
 }
 
-void Actor::set_geom_node(NodePath node)
+inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<std::string>& part_name) const
 {
-    geom_node_ = node;
+    std::vector<PartBundle*> bundles;
+
+    for (const auto& key_val: part_bundle_dict_)
+    {
+        const std::string& lod_name = key_val.first;
+        const auto& part_bundle_dict = key_val.second;
+
+        if (part_name)
+        {
+            std::string true_part_name;
+            const auto& subpart_dict_iter = subpart_dict_.find(part_name.get());
+            if (subpart_dict_iter != subpart_dict_.end())
+                true_part_name = subpart_dict_iter->second.true_part_name;
+            else
+                true_part_name = part_name.get();
+            auto found = part_bundle_dict.find(true_part_name);
+            if (found != part_bundle_dict.end())
+                bundles.push_back(found->second.get_bundle());
+            else
+                rppanda_actor_cat.warning() << "Couldn't find part: " << part_name << std::endl;
+        }
+        else
+        {
+            for (const auto& part_def: part_bundle_dict)
+                bundles.push_back(part_def.second.get_bundle());
+        }
+    }
+
+    return bundles;
 }
 
 std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,

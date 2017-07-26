@@ -89,6 +89,8 @@ public:
     /** accessing */
     ///@{
 
+    std::vector<PartBundle*> get_part_bundles(const boost::optional<std::string>& part_name={}) const;
+
     /**
      * Return list of Actor LOD names. If not an LOD actor,
      * returns 'lodRoot'
@@ -174,6 +176,85 @@ public:
      * have been loaded and bound, but that is no longer so.
      */
     NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot");
+
+    /** actoins */
+    ///@{
+
+    /**
+     * Stop named animation on the given part of the actor.
+     * If no name specified then stop all animations on the actor.
+     * NOTE: stops all LODs
+     */
+    void stop(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+
+    /**
+     * Play the given animation on the given part of the actor.
+     * If no part is specified, try to play on all parts. NOTE:
+     * plays over ALL LODs
+     */
+    void play(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={},
+        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+
+    /**
+     * Loop the given animation on the given part of the actor,
+     * restarting at zero frame if requested. If no part name
+     * is given then try to loop on all parts. NOTE: loops on
+     * all LOD's
+     */
+    void loop(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
+        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+
+    void pingpong(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
+        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+
+    /**
+     * Pose the actor in position found at given frame in the specified
+     * animation for the specified part. If no part is specified attempt
+     * to apply pose to all parts.
+     */
+    void pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={},
+        const boost::optional<std::string>& lod_name={});
+
+    /**
+     * Changes the way the Actor handles blending of multiple
+     * different animations, and/or interpolation between consecutive
+     * frames.
+     *
+     * The animBlend and frameBlend parameters are boolean flags.
+     * You may set either or both to True or False.  If you do not
+     * specify them, they do not change from the previous value.
+     * 
+     * When animBlend is True, multiple different animations may
+     * simultaneously be playing on the Actor.  This means you may
+     * call play(), loop(), or pose() on multiple animations and have
+     * all of them contribute to the final pose each frame.
+     *
+     * In this mode (that is, when animBlend is True), starting a
+     * particular animation with play(), loop(), or pose() does not
+     * implicitly make the animation visible; you must also call
+     * setControlEffect() for each animation you wish to use to
+     * indicate how much each animation contributes to the final
+     * pose.
+     *
+     * The frameBlend flag is unrelated to playing multiple
+     * animations.  It controls whether the Actor smoothly
+     * interpolates between consecutive frames of its animation (when
+     * the flag is True) or holds each frame until the next one is
+     * ready (when the flag is False).  The default value of
+     * frameBlend is controlled by the interpolate-frames Config.prc
+     * variable.
+     *
+     * In either case, you may also specify blendType, which controls
+     * the precise algorithm used to blend two or more different
+     * matrix values into a final result.  Different skeleton
+     * hierarchies may benefit from different algorithms.  The
+     * default blendType is controlled by the anim-blend-type
+     * Config.prc variable.
+     */
+    void set_blend(boost::optional<bool> anim_blend={}, boost::optional<bool> frame_blend={},
+        boost::optional<PartBundle::BlendType> blend_type={}, const boost::optional<std::string>& part_name={});
+
+    ///@}
 
     /** Show the bounds of all actor geoms. */
     void show_all_bounds(void);
@@ -315,6 +396,11 @@ inline NodePath Actor::get_geom_node(void) const
     return geom_node_;
 }
 
+inline void Actor::set_geom_node(NodePath node)
+{
+    geom_node_ = node;
+}
+
 inline NodePath Actor::get_LOD_node(void) const
 {
     return LOD_node_;
@@ -323,6 +409,97 @@ inline NodePath Actor::get_LOD_node(void) const
 inline bool Actor::has_LOD(void) const
 {
     return !LOD_node_.is_empty();
+}
+
+inline void Actor::stop(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    for (auto control: get_anim_controls(anim_name, part_name))
+        control->stop();
+}
+
+inline void Actor::play(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (from_frame)
+    {
+        if (to_frame)
+        {
+            for (auto control: get_anim_controls(anim_name, part_name))
+                control->play(from_frame.get(), to_frame.get());
+        }
+        else
+        {
+            for (auto control: get_anim_controls(anim_name, part_name))
+                control->play(from_frame.get(), control->get_num_frames()-1);
+        }
+    }
+    else
+    {
+        for (auto control: get_anim_controls(anim_name, part_name))
+            control->play();
+    }
+}
+
+inline void Actor::loop(const std::vector<std::string>& anim_name, bool restart, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (from_frame)
+    {
+        if (to_frame)
+        {
+            for (auto control: get_anim_controls(anim_name, part_name))
+                control->loop(restart, from_frame.get(), to_frame.get());
+        }
+        else
+        {
+            for (auto control: get_anim_controls(anim_name, part_name))
+                control->loop(restart, from_frame.get(), control->get_num_frames()-1);
+        }
+    }
+    else
+    {
+        for (auto control: get_anim_controls(anim_name, part_name))
+            control->loop(restart);
+    }
+}
+
+inline void Actor::pingpong(const std::vector<std::string>& anim_name, bool restart, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (!from_frame)
+        from_frame = 0;
+
+    if (to_frame)
+    {
+        for (auto control: get_anim_controls(anim_name, part_name))
+            control->pingpong(restart, from_frame.get(), to_frame.get());
+    }
+    else
+    {
+        for (auto control: get_anim_controls(anim_name, part_name))
+            control->pingpong(restart, from_frame.get(), control->get_num_frames()-1);
+    }
+}
+
+inline void Actor::pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name,
+    const boost::optional<std::string>& lod_name)
+{
+    for (auto control: get_anim_controls(anim_name, part_name, lod_name))
+        control->pose(frame);
+}
+
+inline void Actor::set_blend(boost::optional<bool> anim_blend, boost::optional<bool> frame_blend,
+    boost::optional<PartBundle::BlendType> blend_type, const boost::optional<std::string>& part_name)
+{
+    for (auto bundle: get_part_bundles(part_name))
+    {
+        if (blend_type)
+            bundle->set_blend_type(blend_type.get());
+        if (anim_blend)
+            bundle->set_anim_blend_flag(anim_blend.get());
+        if (frame_blend)
+            bundle->set_frame_blend_flag(frame_blend.get());
+    }
 }
 
 inline TypeHandle Actor::get_class_type(void)
