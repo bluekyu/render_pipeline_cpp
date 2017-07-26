@@ -11,11 +11,17 @@ And we are developing this project for CR Software Framework (...).
 
 
 
-## Requirements
+## Runtime Requirements
 - Panda3D
 - Boost
 
-### Tested Platforms
+### Optional Third-party
+- YAML-CPP: required when to use YAML node.
+- spdlog: required when to use the internal logger of spdlog.
+
+
+
+## Tested Platforms
 We tested it in the following platforms:
 - Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2015 / VS2017
 
@@ -35,9 +41,9 @@ See `docs/build_rpcpp.md` document.
 
 
 ## Related Projects
-- Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins)
-- Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples)
-- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d)
+- Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
+- Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
+- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d
 
 
 
