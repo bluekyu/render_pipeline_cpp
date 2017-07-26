@@ -23,7 +23,17 @@ public:
     static const OptionType& get_default_options(void);
 
     Effect(void);
+    Effect(const Effect&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    Effect(Effect&&);
+#endif
+
     ~Effect(void);
+
+    Effect& operator=(const Effect&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    Effect& operator=(Effect&&);
+#endif
 
     int get_effect_id(void) const;
 

@@ -41,7 +41,13 @@ public:
 
 public:
     BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id);
+    BasePlugin(const BasePlugin&) = delete;
+    BasePlugin(BasePlugin&&) = delete;
+
     virtual ~BasePlugin(void) {}
+
+    BasePlugin& operator=(const BasePlugin&) = delete;
+    BasePlugin& operator=(BasePlugin&&) = delete;
 
     /** Returns the path to the root directory of the plugin. */
     virtual Filename get_base_path(void) const;

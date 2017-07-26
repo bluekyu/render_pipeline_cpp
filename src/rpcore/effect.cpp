@@ -31,19 +31,19 @@ public:
      * Configuration options which can be set per effect instance.These control
      * which features are available in the effect, and which passes to render.
      */
-    static const OptionType DEFAULT_OPTIONS;
+    static const OptionType default_options_;
 
     /** { Pass ID, Multiview flag } */
     using PassType = std::pair<std::string, bool>;
-    static const std::vector<PassType> PASSES;
+    static const std::vector<PassType> passes_;
 
-    static std::map<std::string, std::shared_ptr<Effect>> GLOBAL_CACHE;
+    static std::map<std::string, std::shared_ptr<Effect>> global_cache_;
 
     /**
      * Global counter to store the amount of generated effects, used to create
      * a unique id used for writing temporary files.
      */
-    static int EFFECT_ID;
+    static int effect_id_;
 
 public:
     /**
@@ -53,28 +53,28 @@ public:
     std::string convert_filename_to_name(std::string filename);
 
     /** Internal method to construct the effect from a yaml object. */
-    void parse_content(Effect* self, YAML::Node& parsed_yaml);
+    void parse_content(Effect& self, YAML::Node& parsed_yaml);
 
     /**
      * Parses a fragment template. This just finds the default template
      * for the shader, and redirects that to construct_shader_from_data.
      */
-    void parse_shader_template(Effect* self, const PassType& pass_id_multiview, const std::string& stage,
+    void parse_shader_template(Effect& self, const PassType& pass_id_multiview, const std::string& stage,
         YAML::Node& data);
 
     /** Constructs a shader from a given dataset. */
-    std::string construct_shader_from_data(Effect* self, const std::string& pass_id, const std::string& stage,
+    std::string construct_shader_from_data(Effect& self, const std::string& pass_id, const std::string& stage,
         const std::string& template_src, YAML::Node& data);
 
     /**
      * Generates a compiled shader object from a given shader
      * source location and code injection definitions.
      */
-    std::string process_shader_template(Effect* self, const std::string& template_src,
+    std::string process_shader_template(Effect& self, const std::string& template_src,
         const std::string& cache_key, InjectionType& injections);
 
 public:
-    int effect_id_ = EFFECT_ID;
+    int this_effect_id_ = effect_id_;
     std::string filename_;
     std::string effect_name_;
     std::string effect_hash_;
@@ -84,7 +84,7 @@ public:
     std::map<std::string, PT(Shader)> shader_objs_;
 };
 
-const Effect::OptionType Effect::Impl::DEFAULT_OPTIONS =
+const Effect::OptionType Effect::Impl::default_options_ =
 {
     {"render_gbuffer", true},
     {"render_shadow", true},
@@ -96,15 +96,15 @@ const Effect::OptionType Effect::Impl::DEFAULT_OPTIONS =
     {"parallax_mapping", false},
 };
 
-const std::vector<Effect::Impl::PassType> Effect::Impl::PASSES = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
+const std::vector<Effect::Impl::PassType> Effect::Impl::passes_ = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
 
-std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::GLOBAL_CACHE;
-int Effect::Impl::EFFECT_ID = 0;
+std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::global_cache_;
+int Effect::Impl::effect_id_ = 0;
 
 std::string Effect::Impl::generate_hash(const std::string& filename, const OptionType& options)
 {
     // Set all options which are not present in the dict to its defaults
-    OptionType opt = DEFAULT_OPTIONS;
+    OptionType opt = default_options_;
     for (const auto& pair: opt)
     {
         if (options.find(pair.first) != options.end())
@@ -141,13 +141,13 @@ std::string Effect::Impl::convert_filename_to_name(std::string filename)
     return filename;
 }
 
-void Effect::Impl::parse_content(Effect* self, YAML::Node& parsed_yaml)
+void Effect::Impl::parse_content(Effect& self, YAML::Node& parsed_yaml)
 {
     YAML::Node& vtx_data = parsed_yaml["vertex"];
     YAML::Node& geom_data = parsed_yaml["geometry"];
     YAML::Node& frag_data = parsed_yaml["fragment"];
 
-    for (const auto& pass_id_multiview: PASSES)
+    for (const auto& pass_id_multiview: passes_)
     {
         parse_shader_template(self, pass_id_multiview, "vertex", vtx_data);
         parse_shader_template(self, pass_id_multiview, "geometry", geom_data);
@@ -155,7 +155,7 @@ void Effect::Impl::parse_content(Effect* self, YAML::Node& parsed_yaml)
     }
 }
 
-void Effect::Impl::parse_shader_template(Effect* self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
+void Effect::Impl::parse_shader_template(Effect& self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
 {
     const std::string& pass_id = pass_id_multiview.first;
     bool stereo_mode = RenderPipeline::get_global_ptr()->get_setting<bool>("pipeline.stereo_mode", false) && pass_id_multiview.second;
@@ -189,7 +189,7 @@ void Effect::Impl::parse_shader_template(Effect* self, const PassType& pass_id_m
     generated_shader_paths_[stage + "-" + pass_id] = shader_path;
 }
 
-std::string Effect::Impl::construct_shader_from_data(Effect* self, const std::string& pass_id, const std::string& stage,
+std::string Effect::Impl::construct_shader_from_data(Effect& self, const std::string& pass_id, const std::string& stage,
     const std::string& template_src, YAML::Node& data)
 {
     InjectionType injects ={{std::string("defines"), {}}};
@@ -224,15 +224,15 @@ std::string Effect::Impl::construct_shader_from_data(Effect* self, const std::st
 
         if (node.second.IsNull())
         {
-            self->warn(std::string("Empty insertion: '") + key + "'");
+            self.warn(std::string("Empty insertion: '") + key + "'");
             continue;
         }
 
         const std::string val(node.second.as<std::string>());
         if (!node.second.IsScalar())
         {
-            self->warn("Invalid syntax, you used a list but you should have used a string:");
-            self->warn(val);
+            self.warn("Invalid syntax, you used a list but you should have used a string:");
+            self.warn(val);
             continue;
         }
 
@@ -245,7 +245,7 @@ std::string Effect::Impl::construct_shader_from_data(Effect* self, const std::st
     return process_shader_template(self, template_src, cache_key, injects);
 }
 
-std::string Effect::Impl::process_shader_template(Effect* self, const std::string& template_src, const std::string& cache_key,
+std::string Effect::Impl::process_shader_template(Effect& self, const std::string& template_src, const std::string& cache_key,
     InjectionType& injections)
 {
     std::vector<std::string> shader_lines;
@@ -264,7 +264,7 @@ std::string Effect::Impl::process_shader_template(Effect* self, const std::strin
     }
     catch (const std::exception& err)
     {
-        self->error(std::string("Error reading shader template: ") + err.what());
+        self.error(std::string("Error reading shader template: ") + err.what());
     }
 
     std::vector<std::string> parsed_lines ={std::string("\n\n")};
@@ -315,7 +315,7 @@ std::string Effect::Impl::process_shader_template(Effect* self, const std::strin
                     {
                         if (line_to_insert.empty())
                         {
-                            self->warn(std::string("Empty insertion a hook '") + hook_name + "'");
+                            self.warn(std::string("Empty insertion a hook '") + hook_name + "'");
                             continue;
                         }
 
@@ -343,7 +343,7 @@ std::string Effect::Impl::process_shader_template(Effect* self, const std::strin
 
     // Warn the user about all unused hooks
     for (const auto& key_val: injections)
-        self->warn(std::string("Hook '") + key_val.first + "' not found in template '" + template_src + "'!");
+        self.warn(std::string("Hook '") + key_val.first + "' not found in template '" + template_src + "'!");
 
     // Write the constructed shader and load it back
     const std::string& temp_path = std::string("/$$rptemp/$$effect-") + cache_key + ".glsl";
@@ -359,7 +359,7 @@ std::string Effect::Impl::process_shader_template(Effect* self, const std::strin
     }
     catch (const std::exception& err)
     {
-        self->error(std::string("Error writing processed shader: ") + err.what());
+        self.error(std::string("Error writing processed shader: ") + err.what());
     }
 
     return temp_path;
@@ -369,8 +369,8 @@ std::string Effect::Impl::process_shader_template(Effect* self, const std::strin
 std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionType& options)
 {
     const std::string& effect_hash = Impl::generate_hash(filename, options);
-    if (Impl::GLOBAL_CACHE.find(effect_hash) != Impl::GLOBAL_CACHE.end())
-        return Impl::GLOBAL_CACHE[effect_hash];
+    if (Impl::global_cache_.find(effect_hash) != Impl::global_cache_.end())
+        return Impl::global_cache_[effect_hash];
 
     auto effect = std::make_shared<Effect>();
     effect->set_options(options);
@@ -385,20 +385,28 @@ std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionTy
 
 const Effect::OptionType& Effect::get_default_options(void)
 {
-    return Impl::DEFAULT_OPTIONS;
+    return Impl::default_options_;
 }
 
 Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>())
 {
-    Impl::EFFECT_ID += 1;
-    impl_->options_ = Impl::DEFAULT_OPTIONS;
+    Impl::effect_id_ += 1;
+    impl_->options_ = Impl::default_options_;
 }
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+Effect::Effect(Effect&&) = default;
+#endif
 
 Effect::~Effect(void) = default;
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+Effect& Effect::operator=(Effect&&) = default;
+#endif
+
 int Effect::get_effect_id(void) const
 {
-    return impl_->effect_id_;
+    return impl_->this_effect_id_;
 }
 
 bool Effect::get_option(const std::string& name) const
@@ -429,10 +437,10 @@ bool Effect::do_load(const std::string& filename)
     YAML::Node parsed_yaml;
     if (!rplibs::load_yaml_file(filename, parsed_yaml))
         return false;
-    impl_->parse_content(this, parsed_yaml);
+    impl_->parse_content(*this, parsed_yaml);
 
     // Construct a shader object for each pass
-    for (const auto& pass_id_multiview: Impl::PASSES)
+    for (const auto& pass_id_multiview: Impl::passes_)
     {
         const std::string& vertex_src = impl_->generated_shader_paths_.at("vertex-" + pass_id_multiview.first);
         const std::string& fragment_src = impl_->generated_shader_paths_.at("fragment-" + pass_id_multiview.first);
