@@ -790,6 +790,11 @@ void Actor::hide_all_bounds(void)
 
 // ************************************************************************************************
 
+Actor::PartDef::PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model):
+    part_bundle_np(part_bundle_np), part_bundle_handle(part_bundle_handle), part_model(part_model)
+{
+}
+
 PartBundle* Actor::PartDef::get_bundle(void) const
 {
     return part_bundle_handle->get_bundle();
@@ -951,6 +956,7 @@ bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, c
                 // not already loaded.
                 anim_control->wait_pending();
             }
+            std::cout << *anim_control << std::endl;
 
             if (anim_control)
                 controls.push_back(anim_control);
@@ -1094,7 +1100,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
         return;
     }
 
-    PT(PartBundleHandle) bundle_handle = node->get_bundle_handle(0);
+    PartBundleHandle* bundle_handle = node->get_bundle_handle(0);
 
     if (this_merge_LOD_bundles_)
     {
@@ -1203,7 +1209,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
         bundle = part_bundle_dict_.at(lod_name).at(true_part_name).get_bundle();
     }
 
-    AnimControl* anim_control;
+    PT(AnimControl) anim_control;
     if (anim.anim_bundle)
     {
         // We already have a bundle; just bind it.
@@ -1226,7 +1232,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
 
     // store the animControl
     anim.anim_control = anim_control;
-    rppanda_actor_cat.debug() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
+    rppanda_actor_cat.error() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
     return anim_control;
 }
 

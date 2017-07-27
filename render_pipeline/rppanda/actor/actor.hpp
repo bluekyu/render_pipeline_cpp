@@ -327,11 +327,13 @@ private:
     class PartDef
     {
     public:
+        PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model);
+
         PartBundle* get_bundle(void) const;
 
         NodePath part_bundle_np;
-        PT(PartBundleHandle) part_bundle_handle;
-        PT(PandaNode) part_model;
+        PartBundleHandle* part_bundle_handle;
+        PandaNode* part_model;
     };
 
     /**
@@ -352,8 +354,8 @@ private:
         AnimDef make_copy(void);
 
         std::string filename;
-        PT(AnimControl) anim_control;
-        PT(AnimBundle) anim_bundle;
+        PT(AnimControl) anim_control = nullptr;
+        AnimBundle* anim_bundle;
     };
 
     /**
@@ -408,7 +410,7 @@ private:
      */
     AnimControl* bind_anim_to_part(const std::string& anim_name, const std::string& part_name, const std::string& lod_name, bool allow_async_bind=true);
 
-    std::unordered_map<std::string, PT(PartBundleHandle)> common_bundle_handles_;
+    std::unordered_map<std::string, PartBundleHandle*> common_bundle_handles_;
     std::unordered_map<std::string, SubpartDef> subpart_dict_;
     LODDictType anim_control_dict_;
     std::unordered_map<std::string, std::unordered_map<std::string, PartDef>> part_bundle_dict_;
