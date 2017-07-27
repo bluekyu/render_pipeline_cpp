@@ -365,6 +365,79 @@ inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<st
     return bundles;
 }
 
+boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+
+    return controls[0]->get_frame_rate();
+}
+
+boost::optional<double> Actor::get_base_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+
+    return controls[0]->get_anim()->get_base_frame_rate();
+}
+
+boost::optional<double> Actor::get_play_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    if (!anim_control_dict_.empty())
+    {
+        // use the first lod
+        const std::string& lod_name = anim_control_dict_.begin()->first;
+        const auto& controls = get_anim_controls(anim_name, part_name);
+        if (!controls.empty())
+            return controls[0]->get_play_rate();
+    }
+    return {};
+}
+
+void Actor::set_play_rate(double rate, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    for (auto control: get_anim_controls(anim_name, part_name))
+        control->set_play_rate(rate);
+}
+
+boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+
+    AnimControl* anim_control = controls[0];
+    if (!from_frame)
+        from_frame = 0;
+    if (!to_frame)
+        to_frame = anim_control->get_num_frames() - 1;
+    return ((to_frame.get() + 1) - from_frame.get()) / anim_control->get_frame_rate();
+}
+
+boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+    return controls[0]->get_num_frames();
+}
+
+boost::optional<double> Actor::get_frame_time(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name)
+{
+    auto num_frames = get_num_frames(anim_name, part_name);
+    auto anim_time = get_duration(anim_name, part_name);
+    if (!num_frames || !anim_time)
+        return {};
+    return anim_time.get() * frame / num_frames.get();
+}
+
 std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
     const boost::optional<std::string>& lod_name, bool allow_async_bind)
 {

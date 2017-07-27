@@ -107,6 +107,53 @@ public:
 
     bool has_LOD(void) const;
 
+    /**
+     * Return actual frame rate of given anim name and given part.
+     * If no anim specified, use the currently playing anim.
+     * If no part specified, return anim durations of first part.
+     * NOTE: returns info only for an arbitrary LOD
+     */
+    boost::optional<double> get_frame_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+
+    /**
+     * Return frame rate of given anim name and given part, unmodified
+     * by any play rate in effect.
+     */
+    boost::optional<double> get_base_frame_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+
+    /**
+     * Return the play rate of given anim for a given part.
+     * If no part is given, assume first part in dictionary.
+     * If no anim is given, find the current anim for the part.
+     * NOTE: Returns info only for an arbitrary LOD
+     */
+    boost::optional<double> get_play_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+
+    /**
+     * Set the play rate of given anim for a given part.
+     * If no part is given, set for all parts in dictionary.
+     *
+     * It used to be legal to let the animName default to the
+     * currently-playing anim, but this was confusing and could lead
+     * to the wrong anim's play rate getting set.  Better to insist
+     * on this parameter.
+     * NOTE: sets play rate on all LODs
+     */
+    void set_play_rate(double rate, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={});
+
+    /**
+     * Return duration of given anim name and given part.
+     * If no anim specified, use the currently playing anim.
+     * If no part specified, return anim duration of first part.
+     * NOTE: returns info for arbitrary LOD
+     */
+    boost::optional<double> get_duration(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
+        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+
+    boost::optional<int> get_num_frames(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+
+    boost::optional<double> get_frame_time(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={});
+
     ///@}
 
     /**

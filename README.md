@@ -2,7 +2,7 @@
 
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
-And we are developing this project for CR Software Framework (...).
+And I am developing this project for CR Software Framework (...).
 
 - @subpage rendering
 - @subpage render_pipeline_plugins
@@ -22,7 +22,7 @@ And we are developing this project for CR Software Framework (...).
 
 
 ## Tested Platforms
-We tested it in the following platforms:
+I tested it in the following platforms:
 - Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2015 / VS2017
 
 
