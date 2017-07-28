@@ -1,3 +1,6 @@
+# Author: Younguk Kim (bluekyu)
+# Date  : 2017-07-28
+
 # render pipeline variable
 set(render_pipeline_DATA_DIR "share/render_pipeline" CACHE INTERNAL
     "Relative path of data directory in Render Pipeline"

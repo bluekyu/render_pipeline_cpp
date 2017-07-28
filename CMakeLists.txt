@@ -172,15 +172,19 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
 )
 
 if(MSVC)
-    install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${${PROJECT_NAME}_DEBUG_POSTFIX}.pdb"
-        DESTINATION "bin"
-        CONFIGURATIONS Debug
-    )
+    foreach(config "Debug" "RelWithDebInfo")
+        string(TOUPPER ${config} config_upper)
 
-    install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}.pdb"
-        DESTINATION "bin"
-        CONFIGURATIONS RelWithDebInfo
-    )
+        get_target_property(PDB_PATH ${PROJECT_NAME} STRIPPED_PDB_PATH_${config_upper})
+        if(NOT PDB_PATH)
+            set(PDB_PATH "${PROJECT_BINARY_DIR}/${config}/${PROJECT_NAME}${${PROJECT_NAME}_${config_upper}_POSTFIX}.pdb")
+        endif()
+        install(FILES "${PDB_PATH}"
+            DESTINATION "bin"
+            CONFIGURATIONS ${config}
+            RENAME "${PROJECT_NAME}${${PROJECT_NAME}_${config_upper}_POSTFIX}.pdb"
+        )
+    endforeach()
 endif()
 
 # documents
