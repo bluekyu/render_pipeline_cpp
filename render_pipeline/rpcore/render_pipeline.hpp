@@ -1,6 +1,7 @@
 /**
  * Render Pipeline C++
  *
+ * Copyright (c) 2014-2016 tobspr <tobias.springer1@gmail.com>
  * Copyright (c) 2016-2017 Center of Human-centered Interaction for Coexistence.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
