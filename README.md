@@ -2,7 +2,7 @@
 
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
-And I am developing this project for CR Software Framework (...).
+And I am developing the project and new features for CR Software Framework (...).
 
 - @subpage rendering
 - @subpage render_pipeline_plugins
@@ -16,14 +16,14 @@ And I am developing this project for CR Software Framework (...).
 - Boost
 
 ### Optional Third-party
-- YAML-CPP: required when to use YAML node.
-- spdlog: required when to use the internal logger of spdlog.
+- YAML-CPP: required when to access YAML node.
+- spdlog: required when to access the internal logger of spdlog.
 
 
 
 ## Tested Platforms
 I tested it in the following platforms:
-- Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2015 / VS2017
+- Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2013 / VS2015 / VS2017
 
 
 

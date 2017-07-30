@@ -50,13 +50,14 @@ If you want to build with plugins and samples, you can do it using the following
 ### 1. Directory Structure
 ```
 ─ ROOT_DIR
-  ├ build                  # CMake build directory
-  ├ render_pipeline_cpp    # Render Pipeline C++ project
-  ├ rpcpp_plugins          # Plugin project
-  └ rpcpp_samples          # Sample project
+  ├ build                   # CMake build directory
+  ├ render_pipeline_cpp     # Render Pipeline C++ project
+  ├ rpcpp_plugins           # Plugin project
+  ├ rpcpp_samples           # Sample project
+  └ CMakeLists.txt          # CMake file (see below)
 ```
 
-### 2. CMake
+### 2. CMakeLists.txt File
 ```
 project(render_pipeline_projects)
 
@@ -68,7 +69,6 @@ set(ENV{FREETYPE_DIR} "......")
 set(FlatBuffers_ROOT "......" CACHE PATH "" FORCE)
 set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
 set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
-set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
 
 add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")

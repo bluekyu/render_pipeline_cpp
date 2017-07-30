@@ -42,22 +42,23 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 
 
-## Integration with Plugin & Samples
+## 플러그인 및 샘플 통합 구성하기
 플러그인 프로젝트(https://github.com/bluekyu/rpcpp_plugins) 와
 샘플 프로젝트(https://github.com/bluekyu/rpcpp_samples) 가 있습니다.
 
 플러그인과 샘플들을 함께 빌드하려면, 다음 방법을 사용하면 됩니다.
 
-### 1. Directory Structure
+### 1. 폴더 구조
 ```
-- ROOT_DIR
-  |- build                  # CMake 빌드 폴더
-  |- render_pipeline_cpp    # Render Pipeline C++ 프로젝트 폴더
-  |- rpcpp_plugins          # 플러그인 프로젝트 폴더
-  |- rpcpp_samples          # 샘플 프로젝트 폴더
+─ ROOT_DIR
+  ├ build                   # CMake 빌드 폴더
+  ├ render_pipeline_cpp     # Render Pipeline C++ 프로젝트 폴더
+  ├ rpcpp_plugins           # 플러그인 프로젝트 폴더
+  ├ rpcpp_samples           # 샘플 프로젝드 폴더
+  └ CMakeLists.txt          # CMake 파일 (아래 참조)
 ```
 
-### 2. CMake
+### 2. CMakeLists.txt 파일
 ```
 project(render_pipeline_projects)
 
@@ -69,7 +70,6 @@ set(ENV{FREETYPE_DIR} "......")
 set(FlatBuffers_ROOT "......" CACHE PATH "" FORCE)
 set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
 set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
-set(render_pipeline_PLUGIN_BUILD_OPENVR true CACHE BOOL "" FORCE)
 
 add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")
