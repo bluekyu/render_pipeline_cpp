@@ -989,7 +989,6 @@ bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, c
                 // not already loaded.
                 anim_control->wait_pending();
             }
-            std::cout << *anim_control << std::endl;
 
             if (anim_control)
                 controls.push_back(anim_control);
