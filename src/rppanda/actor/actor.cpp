@@ -1265,7 +1265,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
 
     // store the animControl
     anim.anim_control = anim_control;
-    rppanda_actor_cat.error() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
+    rppanda_actor_cat.debug() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
     return anim_control;
 }
 
