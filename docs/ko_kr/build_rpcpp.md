@@ -20,16 +20,28 @@ Render Pipeline C++ 에서는 CMake 빌드 시스템을 사용한다.
 CMake 를 사용하여 필요한 라이브러리들을 찾고, 빌드 도구(Unix Makefiles or Visual Studio solutions 등)를 생성한다.
 
 CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는데, 일부 라이브러리 혹은 설치 경로가 다른 라이브러리의 경우
-찾지 못할 수 있다.
-이를 해결하려면, CMake configuration 창 혹은 Advanced 탭에서 라이브러리가 설치된 경로를 힌트로 주면 된다.
+찾지 못할 수 있다. 이를 해결하려면, CMake configuration 창 혹은 Advanced 탭에서 라이브러리가 설치된 경로를 힌트로 주면 된다.
 
-### FreeType2 찾기
+### 외부 라이브러리 가이드
+#### FreeType2
 FreeType2 에 대한 `FindPackage` 함수의 경우 configuration 에 힌트가 존재하지 않는다.
 대신, 시스템 환경 변수에 `FREETYPE_DIR` 이름으로 힌트를 줄 수 있다.
 
-### CMake 설정(configuration)
-Configuration 창에서 `BUILD_SHARED_LIBS` 옵션은 Render Pipeline C++ 을 동적 라이브러리로 빌드할 지 여부를 설정한다.
-`BUILD_ALL_SAMPLES` 옵션을 활성화하면 Render Pipeline C++ 의 모든 예제도 빌드한다.
+따라서, 시스템 환경 변수를 사용하거나 CMake 에 해당 값을 설정하면 된다. (Integration with Plugin & Samples 참고)
+
+#### Boost
+Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다. (자세한 것은, CMake 에서 FindBoost 사용법 참조)
+
+#### YAML-CPP
+라이브러리 저장소를 CMake 로 빌드하고, 설치는 제외한다. CMake 에서 'User Package Registry' 를 사용해서
+자동으로 라이브러리를 찾는다.
+
+#### spdlog
+라이브러리 저장소를 CMake 로 빌드 및 설치한다. 그리고 `spdlog_DIR` 을 설치 폴더로 설정한다.
+
+#### flatbuffers
+라이브러리 저장소를 CMake 로 빌드 및 설치한다. 그리고 `FlatBuffers_ROOT` 를 설치 폴더로 설정한다.
+
 
 
 
@@ -68,6 +80,8 @@ set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
 set(panda3d_ROOT "......" CACHE PATH "" FORCE)
 set(ENV{FREETYPE_DIR} "......")
 set(FlatBuffers_ROOT "......" CACHE PATH "" FORCE)
+
+# 선택사항
 set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
 set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
 
