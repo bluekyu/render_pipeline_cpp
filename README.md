@@ -16,6 +16,8 @@ And I am developing the project and new features for CR Software Framework (...)
 - Boost
 
 ### Optional Third-party
+These are required when you include related headers to access internal data.
+
 - YAML-CPP: required when to access YAML node.
 - spdlog: required when to access the internal logger of spdlog.
 
@@ -49,3 +51,6 @@ See `docs/build_rpcpp.md` document.
 
 ## License
 See `LICENSE.md` file.
+
+### Third-party Licenses
+See `LICENSE-thirdparty.md` file.
