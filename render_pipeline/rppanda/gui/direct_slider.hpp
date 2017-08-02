@@ -63,8 +63,8 @@ public:
         std::string orientation;
 
         // Function to be called repeatedly as slider is moved
-        std::function<void(void*)> command;
-        void* extra_args = nullptr;
+        std::function<void(const std::shared_ptr<void>&)> command;
+        std::shared_ptr<void> extra_args;
 
         std::shared_ptr<DirectButton::Options> thumb_options;
     };

@@ -42,11 +42,11 @@ public:
 private:
     virtual void create_components(void);
 
-    void set_slice(void* extra_args);
+    void set_slice(const std::shared_ptr<void>&);
 
-    void set_mip(void* extra_args);
+    void set_mip(const std::shared_ptr<void>&);
 
-    void set_brightness(void* extra_args);
+    void set_brightness(const std::shared_ptr<void>&);
 
     void set_enable_tonemap(bool arg, void* extra_args);
 

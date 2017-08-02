@@ -48,8 +48,8 @@ public:
         float max_value = 100;
         float value = 50;
         float page_size = 1;
-        std::function<void(void*)> callback;
-        void* extra_args = nullptr;
+        std::function<void(const std::shared_ptr<void>&)> callback;
+        std::shared_ptr<void> extra_args;
     };
 
 public:

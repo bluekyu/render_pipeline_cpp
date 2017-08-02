@@ -213,21 +213,21 @@ void TexturePreview::present(Texture* tex)
     show();
 }
 
-void TexturePreview::set_slice(void* extra_args)
+void TexturePreview::set_slice(const std::shared_ptr<void>&)
 {
     int idx = int(_slice_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("slice", LVecBase4i(idx, 0, 0, 0)));
     _slice_text->set_text(std::string("Z: ") + std::to_string(idx));
 }
 
-void TexturePreview::set_mip(void* extra_args)
+void TexturePreview::set_mip(const std::shared_ptr<void>&)
 {
     int idx = int(_mip_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("mipmap", LVecBase4i(idx, 0, 0, 0)));
     _mip_text->set_text(std::string("MIP: ") + std::to_string(idx));
 }
 
-void TexturePreview::set_brightness(void* extra_args)
+void TexturePreview::set_brightness(const std::shared_ptr<void>&)
 {
     float val = _bright_slider->get_value();
     float scale = std::pow(2.0f, val);
