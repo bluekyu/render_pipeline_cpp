@@ -23,6 +23,9 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 찾지 못할 수 있다. 이를 해결하려면, CMake configuration 창 혹은 Advanced 탭에서 라이브러리가 설치된 경로를 힌트로 주면 된다.
 
 ### 외부 라이브러리 가이드
+#### Panda3D
+Panda3D 라이브러리를 설치 혹은 빌드하고, `panda3d_ROOT` 를 설치 폴더로 설정한다.
+
 #### FreeType2
 FreeType2 에 대한 `FindPackage` 함수의 경우 configuration 에 힌트가 존재하지 않는다.
 대신, 시스템 환경 변수에 `FREETYPE_DIR` 이름으로 힌트를 줄 수 있다.

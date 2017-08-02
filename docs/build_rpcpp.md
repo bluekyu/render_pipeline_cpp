@@ -23,6 +23,9 @@ While configuring CMake, the first configuration may be failed because it cannot
 To solve this problem, you can give hints for the path of the libraries in CMake configuration (or advanced tab).
 
 ### Third-party Guide
+#### Panda3D
+Install or build Panda3D library and set `panda3d_ROOT` to installed directory.
+
 #### FreeType2
 `FindPackage` function for FreeType2 does not have hint in configuration.
 Instead, it uses `FREETYPE_DIR` in System Environment Variable as hint.
