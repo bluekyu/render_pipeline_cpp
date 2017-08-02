@@ -20,9 +20,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/image.hpp>
+#include "render_pipeline/rpcore/image.hpp"
 
-#include <render_pipeline/rpcore/render_target.hpp>
+#include "render_pipeline/rpcore/render_target.hpp"
 
 namespace rpcore {
 

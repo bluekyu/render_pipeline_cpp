@@ -22,13 +22,13 @@
 
 #include "rpcore/gpu_command_queue.hpp"
 
-#include <render_pipeline/rpcore/render_target.hpp>
-#include <render_pipeline/rpcore/loader.hpp>
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/image.hpp>
-#include <render_pipeline/rpcore/native/gpu_command.h>
-#include <render_pipeline/rpcore/native/gpu_command_list.h>
+#include "render_pipeline/rpcore/render_target.hpp"
+#include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
+#include "render_pipeline/rpcore/native/gpu_command.h"
+#include "render_pipeline/rpcore/native/gpu_command_list.h"
 
 namespace rpcore {
 

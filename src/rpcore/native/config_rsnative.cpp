@@ -24,10 +24,10 @@
  *
  */
 
-#include <render_pipeline/rpcore/native/config_rsnative.h>
+#include "render_pipeline/rpcore/native/config_rsnative.h"
 
-#include <render_pipeline/rpcore/native/rp_light.h>
-#include <render_pipeline/rpcore/native/rp_point_light.h>
+#include "render_pipeline/rpcore/native/rp_light.h"
+#include "render_pipeline/rpcore/native/rp_point_light.h"
 
 #include "dconfig.h"
 

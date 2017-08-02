@@ -20,22 +20,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/light_manager.hpp>
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/image.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include "render_pipeline/rpcore/light_manager.hpp"
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/globals.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
-#include <render_pipeline/rpcore/stages/apply_lights_stage.hpp>
-#include <render_pipeline/rpcore/stages/shadow_stage.hpp>
-#include <render_pipeline/rpcore/stages/flag_used_cells_stage.hpp>
-#include <render_pipeline/rpcore/stages/collect_used_cells_stage.hpp>
-#include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
+#include "render_pipeline/rpcore/stages/apply_lights_stage.hpp"
+#include "render_pipeline/rpcore/stages/shadow_stage.hpp"
+#include "render_pipeline/rpcore/stages/flag_used_cells_stage.hpp"
+#include "render_pipeline/rpcore/stages/collect_used_cells_stage.hpp"
+#include "render_pipeline/rpcore/stages/cull_lights_stage.hpp"
 
-#include <render_pipeline/rpcore/native/internal_light_manager.h>
-#include <render_pipeline/rpcore/native/shadow_manager.h>
-#include <render_pipeline/rpcore/native/rp_point_light.h>
+#include "render_pipeline/rpcore/native/internal_light_manager.h"
+#include "render_pipeline/rpcore/native/shadow_manager.h"
+#include "render_pipeline/rpcore/native/rp_point_light.h"
 
 #include "rpcore/gpu_command_queue.hpp"
 

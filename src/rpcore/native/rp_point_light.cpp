@@ -25,7 +25,7 @@
  */
 
 
-#include <render_pipeline/rpcore/native/rp_point_light.h>
+#include "render_pipeline/rpcore/native/rp_point_light.h"
 
 namespace rpcore {
 

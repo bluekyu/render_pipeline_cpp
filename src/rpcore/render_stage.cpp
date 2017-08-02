@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/render_stage.hpp>
+#include "render_pipeline/rpcore/render_stage.hpp"
 
 #include <graphicsWindow.h>
 

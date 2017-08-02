@@ -27,7 +27,7 @@
 // Only include the pssm helper if actually required
 #ifdef RP_REQ_PSSM_HELPER
 
-#include <render_pipeline/rpcore/native/pssm_helper.h>
+#include "render_pipeline/rpcore/native/pssm_helper.h"
 
 #include <Eigen/Dense>
 

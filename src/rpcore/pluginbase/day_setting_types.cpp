@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
+#include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
 
 #include <boost/algorithm/string.hpp>
 

@@ -20,13 +20,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
+#include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 
 #include <regex>
 
 #include <boost/format.hpp>
 
-#include <render_pipeline/rpcore/render_stage.hpp>
+#include "render_pipeline/rpcore/render_stage.hpp"
 
 #include "rpcore/util/post_process_region.hpp"
 

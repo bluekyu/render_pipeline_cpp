@@ -25,7 +25,7 @@
  */
 
 
-#include <render_pipeline/rpcore/native/rp_spot_light.h>
+#include "render_pipeline/rpcore/native/rp_spot_light.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>

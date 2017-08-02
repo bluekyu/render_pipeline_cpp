@@ -25,7 +25,7 @@
  */
 
 
-#include <render_pipeline/rpcore/native/shadow_atlas.h>
+#include "render_pipeline/rpcore/native/shadow_atlas.h"
 #include <string.h>
 
 namespace rpcore {

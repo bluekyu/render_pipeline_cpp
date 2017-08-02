@@ -42,7 +42,7 @@ class RenderPipeline;
 class CommonResources: public RPObject
 {
 public:
-    CommonResources(RenderPipeline* pipeline);
+    CommonResources(RenderPipeline& pipeline);
 
     /** Generates the shader configuration for the common inputs. */
     void write_config(void);
@@ -72,9 +72,9 @@ private:
     /** Loads the skydome. */
     void load_skydome(void);
 
-    RenderPipeline* _pipeline;
-    rppanda::ShowBase* _showbase;
-    std::shared_ptr<GroupedInputBlock> _input_ubo;
+    RenderPipeline& pipeline_;
+    rppanda::ShowBase* showbase_;
+    std::shared_ptr<GroupedInputBlock> input_ubo_;
 };
 
 }

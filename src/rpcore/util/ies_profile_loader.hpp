@@ -42,7 +42,7 @@ public:
     /**< Supported IES Profiles. */
     static const std::vector<std::string> PROFILES;
 
-    IESProfileLoader(RenderPipeline* pipeline);
+    IESProfileLoader(RenderPipeline& pipeline);
 
     /**
      * Loads a profile from a given filename and returns the internal
@@ -54,12 +54,12 @@ private:
     /** Internal method to create the storage for the profile dataset textures. */
     void create_storage(void);
 
-    RenderPipeline* _pipeline;
-    int _max_entries = 32;
-    std::shared_ptr<Image> _storage_tex;
+    RenderPipeline& pipeline_;
+    int max_entries_ = 32;
+    std::shared_ptr<Image> storage_tex_;
 };
 
-inline IESProfileLoader::IESProfileLoader(RenderPipeline* pipeline): RPObject("IESProfileLoader"), _pipeline(pipeline)
+inline IESProfileLoader::IESProfileLoader(RenderPipeline& pipeline): RPObject("IESProfileLoader"), pipeline_(pipeline)
 {
     create_storage();
 }

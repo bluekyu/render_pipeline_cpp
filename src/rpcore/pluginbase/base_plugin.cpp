@@ -20,15 +20,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
+#include "render_pipeline/rpcore/pluginbase/base_plugin.hpp"
 
 #include <filename.h>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/pluginbase/manager.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-#include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/pluginbase/manager.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/render_stage.hpp"
+#include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 
 #include "rplibs/yaml.hpp"
 

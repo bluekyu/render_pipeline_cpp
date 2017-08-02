@@ -24,7 +24,7 @@
  *
  */
 
-#include <render_pipeline/rpcore/native/shadow_source.h>
+#include "render_pipeline/rpcore/native/shadow_source.h"
 
 namespace rpcore {
 

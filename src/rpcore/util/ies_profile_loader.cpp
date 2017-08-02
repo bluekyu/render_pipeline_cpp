@@ -24,8 +24,8 @@
 
 #include <shaderInput.h>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
+#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
 
 namespace rpcore {
 
@@ -47,15 +47,15 @@ size_t IESProfileLoader::load(const std::string& filename)
 
 void IESProfileLoader::create_storage(void)
 {
-    _storage_tex = Image::create_3d("IESDatasets", 512, 512, _max_entries, "R16");
-    _storage_tex->set_minfilter(SamplerState::FT_linear);
-    _storage_tex->set_magfilter(SamplerState::FT_linear);
-    _storage_tex->set_wrap_u(SamplerState::WM_clamp);
-    _storage_tex->set_wrap_v(SamplerState::WM_repeat);
-    _storage_tex->set_wrap_w(SamplerState::WM_clamp);
+    storage_tex_ = Image::create_3d("IESDatasets", 512, 512, max_entries_, "R16");
+    storage_tex_->set_minfilter(SamplerState::FT_linear);
+    storage_tex_->set_magfilter(SamplerState::FT_linear);
+    storage_tex_->set_wrap_u(SamplerState::WM_clamp);
+    storage_tex_->set_wrap_v(SamplerState::WM_repeat);
+    storage_tex_->set_wrap_w(SamplerState::WM_clamp);
 
-    _pipeline->get_stage_mgr()->add_input(ShaderInput("IESDatasetTex", _storage_tex->get_texture()));
-    _pipeline->get_stage_mgr()->get_defines()["MAX_IES_PROFILES"] = std::to_string(_max_entries);
+    pipeline_.get_stage_mgr()->add_input(ShaderInput("IESDatasetTex", storage_tex_->get_texture()));
+    pipeline_.get_stage_mgr()->get_defines()["MAX_IES_PROFILES"] = std::to_string(max_entries_);
 }
 
 }

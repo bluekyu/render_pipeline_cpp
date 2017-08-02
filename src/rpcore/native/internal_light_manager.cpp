@@ -25,7 +25,7 @@
  */
 
 
-#include <render_pipeline/rpcore/native/internal_light_manager.h>
+#include "render_pipeline/rpcore/native/internal_light_manager.h"
 
 #include <algorithm>
 

@@ -24,7 +24,7 @@
  *
  */
 
-#include <render_pipeline/rpcore/native/gpu_command.h>
+#include "render_pipeline/rpcore/native/gpu_command.h"
 
 #include <iostream>
 #include <iomanip>

@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <render_pipeline/rpcore/util/task_scheduler.hpp>
+#include "render_pipeline/rpcore/util/task_scheduler.hpp"
 
 // XXX: fix compile error for std::vector<std::string>
 #include <vector_string.h>
@@ -30,9 +30,9 @@
 
 namespace rpcore {
 
-TaskScheduler::TaskScheduler(RenderPipeline* pipeline): RPObject("TaskScheduler"), _pipeline(pipeline)
+TaskScheduler::TaskScheduler(RenderPipeline& pipeline): RPObject("TaskScheduler"), pipeline_(pipeline)
 {
-    _frame_index = 0;
+    frame_index_ = 0;
 
     load_config();
 }
@@ -40,20 +40,19 @@ TaskScheduler::TaskScheduler(RenderPipeline* pipeline): RPObject("TaskScheduler"
 bool TaskScheduler::is_scheduled(const std::string& task_name) const
 {
     check_missing_schedule(task_name);
-    return std::find(_tasks[_frame_index].begin(), _tasks[_frame_index].end(), task_name) != _tasks[_frame_index].end();
+    return std::find(tasks_[frame_index_].begin(), tasks_[frame_index_].end(), task_name) != tasks_[frame_index_].end();
 }
 
 void TaskScheduler::step(void)
 {
-    _frame_index = (_frame_index + 1) % _tasks.size();
+    frame_index_ = (frame_index_ + 1) % tasks_.size();
 }
 
 size_t TaskScheduler::get_num_tasks(void) const
 {
-    return std::accumulate(_tasks.begin(), _tasks.end(), size_t(0), [](const size_t& sum, const std::vector<std::string>& tasks) {
+    return std::accumulate(tasks_.begin(), tasks_.end(), size_t(0), [](const size_t& sum, const std::vector<std::string>& tasks) {
         return sum + tasks.size();
     });
-    return 0;
 }
 
 void TaskScheduler::load_config(void)
@@ -65,13 +64,13 @@ void TaskScheduler::load_config(void)
     for (const auto& frame_node: config_node["frame_cycles"])
     {
         // add frame
-        _tasks.push_back({});
+        tasks_.push_back({});
 
         // XXX: omap of yaml-cpp is list.
         for (const auto& frame_name_tasks: frame_node)
         {
             for (const auto& task_name: frame_name_tasks.second)
-                _tasks.back().push_back(task_name.as<std::string>());
+                tasks_.back().push_back(task_name.as<std::string>());
         }
     }
 }
@@ -79,7 +78,7 @@ void TaskScheduler::load_config(void)
 void TaskScheduler::check_missing_schedule(const std::string& task_name) const
 {
     bool found = false;
-    for (const auto& tasks: _tasks)
+    for (const auto& tasks: tasks_)
     {
         if (std::find(tasks.begin(), tasks.end(), task_name) != tasks.end())
         {
