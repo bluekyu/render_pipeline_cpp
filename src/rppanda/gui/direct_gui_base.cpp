@@ -35,8 +35,7 @@
  * This is C++ porting codes of direct/src/gui/DirectGuiBase.py
  */
 
-#include <render_pipeline/rppanda/gui/direct_gui_base.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include "render_pipeline/rppanda/gui/direct_gui_base.hpp"
 
 #include <pgItem.h>
 #include <dconfig.h>
@@ -47,6 +46,7 @@
 #include <spdlog/fmt/fmt.h>
 
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include "rppanda/gui/config_rppanda_gui.hpp"
 

@@ -35,9 +35,10 @@
  * This is C++ porting codes of direct/src/gui/OnscreeText.py
  */
 
-#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
-#include <render_pipeline/rppanda/showbase/showbase.hpp>
-#include <render_pipeline/rppanda/gui/direct_gui_globals.hpp>
+#include "render_pipeline/rppanda/gui/onscreen_text.hpp"
+
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 namespace rppanda {
 
