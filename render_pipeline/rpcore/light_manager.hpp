@@ -46,14 +46,20 @@ class RENDER_PIPELINE_DECL LightManager: public RPObject
 {
 public:
     // Maximum amount of lights, has to match the definitions in the native code
-    static const int MAX_LIGHTS = 65535;
+    static const int max_lights_ = 65535;
 
     // Maximum amount of shadow sources
-    static const int MAX_SOURCES = 2048;
+    static const int max_sources_ = 2048;
 
 public:
     LightManager(RenderPipeline& pipeline);
+    LightManager(const LightManager&) = delete;
+    LightManager(LightManager&&) = delete;
+
     ~LightManager(void);
+
+    LightManager& operator=(const LightManager&) = delete;
+    LightManager& operator=(LightManager&&) = delete;
 
     /** Returns the total amount of tiles. */
     int get_total_tiles(void) const;
@@ -109,29 +115,29 @@ public:
 
 private:
     RenderPipeline& pipeline_;
-    LVecBase2i tile_size;
-    LVecBase2i num_tiles;
-    InternalLightManager* internal_mgr = nullptr;
-    ShadowManager* shadow_manager = nullptr;
-    GPUCommandQueue* cmd_queue = nullptr;
+    LVecBase2i tile_size_;
+    LVecBase2i num_tiles_;
+    InternalLightManager* internal_mgr_ = nullptr;
+    ShadowManager* shadow_manager_ = nullptr;
+    GPUCommandQueue* cmd_queue_ = nullptr;
 
-    std::shared_ptr<Image> img_light_data = nullptr;
-    std::shared_ptr<Image> img_source_data = nullptr;
+    std::shared_ptr<Image> img_light_data_ = nullptr;
+    std::shared_ptr<Image> img_source_data_ = nullptr;
 
-    PTA_int pta_max_light_index;
+    PTA_int pta_max_light_index_;
 
-    std::shared_ptr<ShadowStage> shadow_stage = nullptr;
+    std::shared_ptr<ShadowStage> shadow_stage_ = nullptr;
 };
 
 // ************************************************************************************************
 inline const LVecBase2i& LightManager::get_num_tiles(void) const
 {
-    return num_tiles;
+    return num_tiles_;
 }
 
 inline GPUCommandQueue* LightManager::get_cmd_queue(void) const
 {
-    return cmd_queue;
+    return cmd_queue_;
 }
 
 }
