@@ -32,7 +32,7 @@
 
 namespace rpcore {
 
-GPUCommandQueue::GPUCommandQueue(RenderPipeline* pipeline): RPObject("GPUCommandQueue"), _pipeline(pipeline)
+GPUCommandQueue::GPUCommandQueue(RenderPipeline& pipeline): RPObject("GPUCommandQueue"), pipeline_(pipeline)
 {
     _command_list = new GPUCommandList;
     _pta_num_commands = PTA_int::empty_array(1);
@@ -75,7 +75,7 @@ void GPUCommandQueue::register_defines(void)
 {
     static_assert(GPUCommand::CommandType::CMD_type_count == 5, "GPUCommand::CommandType count is not the same with defined value");
 
-    auto& defines = _pipeline->get_stage_mgr()->get_defines();
+    auto& defines = pipeline_.get_stage_mgr()->get_defines();
     defines["CMD_invalid"] = std::to_string(GPUCommand::CommandType::CMD_invalid);
     defines["CMD_store_light"] = std::to_string(GPUCommand::CommandType::CMD_store_light);
     defines["CMD_remove_light"] = std::to_string(GPUCommand::CommandType::CMD_remove_light);

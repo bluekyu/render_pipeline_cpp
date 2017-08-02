@@ -41,7 +41,7 @@
 
 namespace rpcore {
 
-LightManager::LightManager(RenderPipeline* pipeline): RPObject("LightManager"), pipeline(pipeline)
+LightManager::LightManager(RenderPipeline& pipeline): RPObject("LightManager"), pipeline_(pipeline)
 {
     compute_tile_size();
     init_internal_manager();
@@ -59,7 +59,7 @@ LightManager::~LightManager(void)
 
 int LightManager::get_total_tiles(void) const
 {
-    return num_tiles.get_x() * num_tiles.get_y() * pipeline->get_setting<int>("lighting.culling_grid_slices");
+    return num_tiles.get_x() * num_tiles.get_y() * pipeline_.get_setting<int>("lighting.culling_grid_slices");
 }
 
 size_t LightManager::get_num_lights(void) const
@@ -105,8 +105,8 @@ void LightManager::reload_shaders(void)
 void LightManager::compute_tile_size(void)
 {
     tile_size = LVecBase2i(
-        pipeline->get_setting<int>("lighting.culling_grid_size_x"),
-        pipeline->get_setting<int>("lighting.culling_grid_size_y"));
+        pipeline_.get_setting<int>("lighting.culling_grid_size_x"),
+        pipeline_.get_setting<int>("lighting.culling_grid_size_y"));
 
     int num_tiles_x = int(std::ceil(Globals::resolution.get_x() / float(tile_size.get_x())));
     int num_tiles_y = int(std::ceil(Globals::resolution.get_y() / float(tile_size.get_y())));
@@ -117,7 +117,7 @@ void LightManager::compute_tile_size(void)
 
 void LightManager::init_command_queue(void)
 {
-    cmd_queue = new GPUCommandQueue(pipeline);
+    cmd_queue = new GPUCommandQueue(pipeline_);
     cmd_queue->register_input("LightData", img_light_data->get_texture());
     cmd_queue->register_input("SourceData", img_source_data->get_texture());
     internal_mgr->set_command_list(cmd_queue->get_command_list());
@@ -126,10 +126,10 @@ void LightManager::init_command_queue(void)
 void LightManager::initshadow_manager(void)
 {
     shadow_manager = new ShadowManager;
-    shadow_manager->set_max_updates(pipeline->get_setting<size_t>("shadows.max_updates"));
+    shadow_manager->set_max_updates(pipeline_.get_setting<size_t>("shadows.max_updates"));
     shadow_manager->set_scene(Globals::base->get_render());
-    shadow_manager->set_tag_state_manager(pipeline->get_tag_mgr());
-    shadow_manager->set_atlas_size(pipeline->get_setting<size_t>("shadows.atlas_size"));
+    shadow_manager->set_tag_state_manager(pipeline_.get_tag_mgr());
+    shadow_manager->set_atlas_size(pipeline_.get_setting<size_t>("shadows.atlas_size"));
     internal_mgr->set_shadow_manager(shadow_manager);
 }
 
@@ -142,7 +142,7 @@ void LightManager::init_shadows(void)
 void LightManager::init_internal_manager(void)
 {
     internal_mgr = new InternalLightManager;
-    internal_mgr->set_shadow_update_distance(pipeline->get_setting<float>("shadows.max_update_distance"));
+    internal_mgr->set_shadow_update_distance(pipeline_.get_setting<float>("shadows.max_update_distance"));
     
     // Storage for the Lights
     const int per_light_vec4s = 4;
@@ -163,35 +163,35 @@ void LightManager::init_internal_manager(void)
     img_source_data->clear_image();
     
     // Register the buffer
-    pipeline->get_stage_mgr()->add_input(ShaderInput("AllLightsData", img_light_data->get_texture()));
-    pipeline->get_stage_mgr()->add_input(ShaderInput("ShadowSourceData", img_source_data->get_texture()));
-    pipeline->get_stage_mgr()->add_input(ShaderInput("maxLightIndex", pta_max_light_index));
+    pipeline_.get_stage_mgr()->add_input(ShaderInput("AllLightsData", img_light_data->get_texture()));
+    pipeline_.get_stage_mgr()->add_input(ShaderInput("ShadowSourceData", img_source_data->get_texture()));
+    pipeline_.get_stage_mgr()->add_input(ShaderInput("maxLightIndex", pta_max_light_index));
 }
 
 void LightManager::init_stages(void)
 {
-    StageManager* stage_mgr = pipeline->get_stage_mgr();
+    StageManager* stage_mgr = pipeline_.get_stage_mgr();
     
-    stage_mgr->add_stage(std::make_shared<FlagUsedCellsStage>(*pipeline));
-    stage_mgr->add_stage(std::make_shared<CollectUsedCellsStage>(*pipeline));
-    stage_mgr->add_stage(std::make_shared<CullLightsStage>(*pipeline));
-    stage_mgr->add_stage(std::make_shared<ApplyLightsStage>(*pipeline));
+    stage_mgr->add_stage(std::make_shared<FlagUsedCellsStage>(pipeline_));
+    stage_mgr->add_stage(std::make_shared<CollectUsedCellsStage>(pipeline_));
+    stage_mgr->add_stage(std::make_shared<CullLightsStage>(pipeline_));
+    stage_mgr->add_stage(std::make_shared<ApplyLightsStage>(pipeline_));
     
-    shadow_stage = std::make_shared<ShadowStage>(*pipeline);
+    shadow_stage = std::make_shared<ShadowStage>(pipeline_);
     shadow_stage->set_size(shadow_manager->get_atlas_size());
     stage_mgr->add_stage(shadow_stage);
 }
 
 void LightManager::init_defines(void)
 {
-    auto& defines = pipeline->get_stage_mgr()->get_defines();
+    auto& defines = pipeline_.get_stage_mgr()->get_defines();
     defines["LC_TILE_SIZE_X"] = std::to_string(tile_size.get_x());
     defines["LC_TILE_SIZE_Y"] = std::to_string(tile_size.get_y());
-    defines["LC_TILE_SLICES"] = std::to_string(pipeline->get_setting<unsigned int>("lighting.culling_grid_slices"));
-    defines["LC_MAX_DISTANCE"] = std::to_string(pipeline->get_setting<float>("lighting.culling_max_distance"));
-    defines["LC_CULLING_SLICE_WIDTH"] = std::to_string(pipeline->get_setting<unsigned int>("lighting.culling_slice_width"));
-    defines["LC_MAX_LIGHTS_PER_CELL"] = std::to_string(pipeline->get_setting<unsigned int>("lighting.max_lights_per_cell"));
-    defines["SHADOW_ATLAS_SIZE"] = std::to_string(pipeline->get_setting<unsigned int>("shadows.atlas_size"));
+    defines["LC_TILE_SLICES"] = std::to_string(pipeline_.get_setting<unsigned int>("lighting.culling_grid_slices"));
+    defines["LC_MAX_DISTANCE"] = std::to_string(pipeline_.get_setting<float>("lighting.culling_max_distance"));
+    defines["LC_CULLING_SLICE_WIDTH"] = std::to_string(pipeline_.get_setting<unsigned int>("lighting.culling_slice_width"));
+    defines["LC_MAX_LIGHTS_PER_CELL"] = std::to_string(pipeline_.get_setting<unsigned int>("lighting.max_lights_per_cell"));
+    defines["SHADOW_ATLAS_SIZE"] = std::to_string(pipeline_.get_setting<unsigned int>("shadows.atlas_size"));
 
     // Register all light types as defines
     static_assert(RPPointLight::LightType::LT_type_count == 3, "LightType count is not the same with defined value");

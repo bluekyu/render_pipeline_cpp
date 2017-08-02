@@ -52,7 +52,7 @@ public:
     static const int MAX_SOURCES = 2048;
 
 public:
-    LightManager(RenderPipeline* pipeline);
+    LightManager(RenderPipeline& pipeline);
     ~LightManager(void);
 
     /** Returns the total amount of tiles. */
@@ -108,7 +108,7 @@ public:
     GPUCommandQueue* get_cmd_queue(void) const;
 
 private:
-    RenderPipeline* pipeline;
+    RenderPipeline& pipeline_;
     LVecBase2i tile_size;
     LVecBase2i num_tiles;
     InternalLightManager* internal_mgr = nullptr;

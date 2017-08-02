@@ -40,7 +40,7 @@ class RenderTarget;
 class GPUCommandQueue: public RPObject
 {
 public:
-    GPUCommandQueue(RenderPipeline* pipeline);
+    GPUCommandQueue(RenderPipeline& pipeline);
     ~GPUCommandQueue(void);
 
     GPUCommandList* get_command_list(void) const;
@@ -71,7 +71,7 @@ private:
     /** Creates the target which processes the commands. */
     void create_command_target(void);
 
-    RenderPipeline* _pipeline;
+    RenderPipeline& pipeline_;
     int _commands_per_frame = 1024;
     GPUCommandList* _command_list;
     PTA_int _pta_num_commands;

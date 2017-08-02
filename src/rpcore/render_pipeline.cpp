@@ -548,7 +548,7 @@ void RenderPipeline::Impl::create_managers(void)
     tag_mgr_ = new TagStateManager(Globals::base->get_cam());
     plugin_mgr_ = new PluginManager(self_);
     stage_mgr_ = new StageManager(self_);
-    light_mgr_ = new LightManager(&self_);
+    light_mgr_ = new LightManager(self_);
     daytime_mgr_ = new DayTimeManager(self_);
     ies_loader_ = new IESProfileLoader(&self_);
     common_resources = new CommonResources(&self_);
