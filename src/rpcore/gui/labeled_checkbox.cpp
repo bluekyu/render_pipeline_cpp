@@ -22,56 +22,62 @@
 
 #include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
 
+#include "render_pipeline/rpcore/gui/checkbox.hpp"
 #include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
 namespace rpcore {
 
-LabeledCheckbox::LabeledCheckbox(const Parameters& params): RPObject("LabeledCheckbox")
+LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::function<void(bool, void*)>& chb_callback,
+    void* chb_args, bool chb_checked, const std::string& text, float text_size,
+    bool radio, const boost::optional<LVecBase3>& text_color, int expand_width, bool enabled): RPObject("LabeledCheckbox")
 {
-    if (params.enabled)
-        _text_color = params.text_color;
+    if (!text_color)
+        text_color_ = LVecBase3(1);
     else
-        _text_color = LVecBase3f(1.0f, 0.0f, 0.28f);
+        text_color_ = text_color.get();
 
-    _checkbox = new Checkbox(params);
+    if (!enabled)
+        text_color_ = LVecBase3(1.0f, 0.0f, 0.28f);
+
+    checkbox_ = new Checkbox(parent, x, y, chb_callback, chb_args, radio, expand_width, chb_checked, enabled);
 
     Text::Parameters text_params;
-    text_params.text = params.text;
-    text_params.parent = params.parent;
-    text_params.x = params.x + 26;
-    text_params.y = params.y + 9;
-    text_params.size = params.text_size;
+    text_params.text = text;
+    text_params.parent = parent;
+    text_params.x = x + 26;
+    text_params.y = y + 9;
+    text_params.size = text_size;
     text_params.align = "left";
-    text_params.color = _text_color;
+    text_params.color = text_color_;
     text_params.may_change = true;
-    _text = new Text(text_params);
+    text_ = new Text(text_params);
 
-    if (params.enabled)
+    if (enabled)
     {
-        _checkbox->get_node()->bind(rppanda::WITHIN, on_node_enter, this);
-        _checkbox->get_node()->bind(rppanda::WITHOUT, on_node_leave, this);
+        checkbox_->get_node()->bind(rppanda::WITHIN, on_node_enter, this);
+        checkbox_->get_node()->bind(rppanda::WITHOUT, on_node_leave, this);
     }
 }
 
 LabeledCheckbox::~LabeledCheckbox(void)
 {
-    delete _text;
-    delete _checkbox;
+    delete text_;
+    delete checkbox_;
 }
 
 void LabeledCheckbox::on_node_enter(const Event* ev, void* user_data)
 {
     LabeledCheckbox* lc = reinterpret_cast<LabeledCheckbox*>(user_data);
-    lc->_text->get_node().set_fg(LColorf(lc->_text_color[0] + 0.1f, lc->_text_color[1] + 0.1f,
-        lc->_text_color[2] + 0.1f, 1.0f));
+    lc->text_->get_node().set_fg(LColorf(lc->text_color_[0] + 0.1f, lc->text_color_[1] + 0.1f,
+        lc->text_color_[2] + 0.1f, 1.0f));
 }
 
 void LabeledCheckbox::on_node_leave(const Event* ev, void* user_data)
 {
     LabeledCheckbox* lc = reinterpret_cast<LabeledCheckbox*>(user_data);
-    lc->_text->get_node().set_fg(LColorf(lc->_text_color[0], lc->_text_color[1], lc->_text_color[2], 1.0f));
+    lc->text_->get_node().set_fg(LColorf(lc->text_color_[0], lc->text_color_[1], lc->text_color_[2], 1.0f));
 }
 
 }

@@ -194,19 +194,9 @@ void TexturePreview::present(Texture* tex)
     x_pos += 100 + 30;
 
     // Slider to enable reinhard tonemapping
-    {
-        LabeledCheckbox::Parameters params;
-        params.parent = _content_node;
-        params.x = x_pos;
-        params.y = 60;
-        params.text = "Tonemap";
-        params.text_color = LVecBase3(1.0f, 0.4f, 0.4f);
-        params.checked = false;
-        params.callback = std::bind(&TexturePreview::set_enable_tonemap, this, std::placeholders::_1, std::placeholders::_2);
-        params.text_size = 18;
-        params.expand_width = 90;
-        _tonemap_box = std::make_shared<LabeledCheckbox>(params);
-    }
+    _tonemap_box = std::make_shared<LabeledCheckbox>(_content_node, x_pos, 60,
+        std::bind(&TexturePreview::set_enable_tonemap, this, std::placeholders::_1, std::placeholders::_2),
+        nullptr, false, "Tonemap", 18, false, LVecBase3(1.0f, 0.4f, 0.4f), 90);
     x_pos += 90 + 30;
 
     auto image_np = image->get_node();

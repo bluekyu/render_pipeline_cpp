@@ -140,16 +140,9 @@ void BufferViewer::create_components(void)
     _content_node.set_scale(1, 1, -1);
     _content_node.set_z(_scroll_height);
 
-    LabeledCheckbox::Parameters labeled_checkbox_params;
-    labeled_checkbox_params.parent = _node;
-    labeled_checkbox_params.x = 10;
-    labeled_checkbox_params.y = 43;
-    labeled_checkbox_params.callback = std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1, std::placeholders::_2);
-    labeled_checkbox_params.checked = false;
-    labeled_checkbox_params.text = "Display image resources";
-    labeled_checkbox_params.text_color = LVecBase3f(0.4f);
-    labeled_checkbox_params.expand_width = 330;
-    _chb_show_images = std::make_shared<LabeledCheckbox>(labeled_checkbox_params);
+    _chb_show_images = std::make_shared<LabeledCheckbox>(_node, 10, 43,
+        std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1, std::placeholders::_2),
+        nullptr, false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
 }
 
 void BufferViewer::set_show_images(bool arg, void* extra_args)

@@ -24,11 +24,14 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/gui/checkbox.hpp>
+#include <boost/optional.hpp>
+
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
 
 class Text;
+class Checkbox;
 
 /**
  * This is a checkbox, combined with a label. The arguments are
@@ -37,15 +40,13 @@ class Text;
 class RENDER_PIPELINE_DECL LabeledCheckbox: public RPObject
 {
 public:
-    struct Parameters: public Checkbox::Parameters
-    {
-        std::string text = "";
-        float text_size = 16;
-        LVecBase3f text_color = LVecBase3f(1);
-    };
-
-public:
-    LabeledCheckbox(const Parameters& params=Parameters());
+    /**
+     * Constructs a new checkbox, forwarding most of the elements to the
+     * underlying Checkbox and Text.
+     */
+    LabeledCheckbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, void*)>& chb_callback={},
+        void* chb_args=nullptr, bool chb_checked=false, const std::string& text="", float text_size=16,
+        bool radio=false, const boost::optional<LVecBase3>& text_color={}, int expand_width=100, bool enabled=true);
     ~LabeledCheckbox(void);
 
     /** Returns a handle to the checkbox. */
@@ -54,6 +55,8 @@ public:
     /** Returns a handle to the label. */
     Text* get_label(void) const;
 
+    const LVecBase3& get_text_color(void) const;
+
 private:
     /** Internal callback when the node gets hovered. */
     static void on_node_enter(const Event* ev, void* user_data);
@@ -61,19 +64,24 @@ private:
     /** Internal callback when the node gets no longer hovered. */
     static void on_node_leave(const Event* ev, void* user_data);
 
-    Checkbox* _checkbox;
-    Text* _text;
-    LVecBase3f _text_color;
+    Checkbox* checkbox_;
+    Text* text_;
+    LVecBase3 text_color_;
 };
 
 inline Checkbox* LabeledCheckbox::get_checkbox(void) const
 {
-    return _checkbox;
+    return checkbox_;
 }
 
 inline Text* LabeledCheckbox::get_label(void) const
 {
-    return _text;
+    return text_;
+}
+
+inline const LVecBase3& LabeledCheckbox::get_text_color(void) const
+{
+    return text_color_;
 }
 
 }

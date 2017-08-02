@@ -28,13 +28,14 @@
 
 namespace rpcore {
 
-Checkbox::Checkbox(const Parameters& params): RPObject("Checkbox")
+Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(bool, void*)>& callback,
+    void* extra_args, bool radio, int expand_width, bool checked, bool enabled): RPObject("Checkbox")
 {
-    const std::string prefix = params.radio ? "radiobox" : "checkbox";
+    const std::string prefix = radio ? "radiobox" : "checkbox";
 
     Texture* checked_img;
     Texture* unchecked_img;
-    if (params.enabled)
+    if (enabled)
     {
         checked_img = RPLoader::load_texture(std::string("/$$rp/data/gui/") + prefix + "_checked.png");
         unchecked_img = RPLoader::load_texture(std::string("/$$rp/data/gui/") + prefix + "_default.png");
@@ -57,7 +58,7 @@ Checkbox::Checkbox(const Parameters& params): RPObject("Checkbox")
 
     // TODO: implement
     auto node_options = std::make_shared<rppanda::DirectCheckBox::Options>();
-    node_options->pos = LVecBase3f(params.x+11, 1, -params.y-8);
+    node_options->pos = LVecBase3f(x+11, 1, -y-8);
     node_options->scale = LVecBase3f(10 / 2.0f, 1.0f, 10 / 2.0f);
     node_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     node_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
@@ -67,45 +68,45 @@ Checkbox::Checkbox(const Parameters& params): RPObject("Checkbox")
     node_options->relief = rppanda::FLAT;
     node_options->command = std::bind(&Checkbox::update_status, this, std::placeholders::_1);
 
-    _node = new rppanda::DirectCheckBox(params.parent, node_options);
-    _node->set_frame_color(LColorf(0));
-    _node->set_frame_size(LVecBase4f(-2.6f, 2.0f + params.expand_width / 7.5f, -2.35f, 2.5f));
-    _node->set_transparency(TransparencyAttrib::M_alpha);
+    node_ = new rppanda::DirectCheckBox(parent, node_options);
+    node_->set_frame_color(LColorf(0));
+    node_->set_frame_size(LVecBase4f(-2.6f, 2.0f + expand_width / 7.5f, -2.35f, 2.5f));
+    node_->set_transparency(TransparencyAttrib::M_alpha);
 
-    _callback = params.callback;
-    _extra_args = params.extra_args;
+    callback_ = callback;
+    extra_args_ = extra_args;
 
-    if (params.checked)
+    if (checked)
         set_checked(true, false);
 }
 
 bool Checkbox::is_checked(void) const
 {
-    return _node->is_checked();
+    return node_->is_checked();
 }
 
 void Checkbox::update_status(void* args)
 {
-    const bool status = _node->is_checked();
+    const bool status = node_->is_checked();
 
     // TODO: implement
     //if (!status)
 
-    if (_callback)
-        _callback(status, _extra_args);
+    if (callback_)
+        callback_(status, extra_args_);
 }
 
 void Checkbox::set_checked(bool val, bool do_callback)
 {
-    _node->set_checked(val);
+    node_->set_checked(val);
 
     if (val)
-        _node->set_image(_node->get_checked_image());
+        node_->set_image(node_->get_checked_image());
     else
-        _node->set_image(_node->get_unchecked_image());
+        node_->set_image(node_->get_unchecked_image());
 
-    if (do_callback && _callback)
-        _callback(val, _extra_args);
+    if (do_callback && callback_)
+        callback_(val, extra_args_);
 }
 
 }
