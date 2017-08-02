@@ -85,7 +85,7 @@ bool Checkbox::is_checked(void) const
     return node_->is_checked();
 }
 
-void Checkbox::update_status(void* args)
+void Checkbox::update_status(const std::shared_ptr<void>&)
 {
     const bool status = node_->is_checked();
 

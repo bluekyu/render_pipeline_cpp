@@ -87,7 +87,11 @@ void DirectCheckBox::command_func(const Event* ev, void* user_data)
     if (options->command)
     {
         // Pass any extra args to command
-        options->command(user_data);
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+        options->command(std::shared_ptr<void>(user_data, [](auto){}));
+#else
+        options->command(std::shared_ptr<void>(user_data, [](void*) {}));
+#endif
     }
 }
 

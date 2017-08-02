@@ -51,7 +51,7 @@ public:
     rppanda::DirectCheckBox* get_node(void) const;
 
     /** Internal method when another checkbox in the same radio group changed it's value. */
-    void update_status(void* args);
+    void update_status(const std::shared_ptr<void>&);
 
     /** Internal method to check/uncheck the checkbox. */
     void set_checked(bool val, bool do_callback=true);
