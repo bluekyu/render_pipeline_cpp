@@ -49,20 +49,20 @@ public:
     };
 
 public:
-    StageData(const ShaderInput& inp): shader_input_(inp), _type(Type::SHADER_INPUT) {}
-    StageData(const std::shared_ptr<SimpleInputBlock>& sib): _data(sib), _type(Type::SIMPLE_INPUT_BLOCK) {}
-    StageData(const std::shared_ptr<GroupedInputBlock>& gib): _data(gib), _type(Type::GROUP_INPUT_BLOCK) {}
+    StageData(const ShaderInput& inp): shader_input_(inp), type_(Type::SHADER_INPUT) {}
+    StageData(const std::shared_ptr<SimpleInputBlock>& sib): data_(sib), type_(Type::SIMPLE_INPUT_BLOCK) {}
+    StageData(const std::shared_ptr<GroupedInputBlock>& gib): data_(gib), type_(Type::GROUP_INPUT_BLOCK) {}
 
-    bool is_type(Type type) const { return _type == type; }
-    Type get_type(void) const { return _type; }
+    bool is_type(Type type) const { return type_ == type; }
+    Type get_type(void) const { return type_; }
 
     const ShaderInput& get_shader_input(void) const { return shader_input_; }
-    std::shared_ptr<SimpleInputBlock> get_simple_input_block(void) const { return std::static_pointer_cast<SimpleInputBlock>(_data); }
-    std::shared_ptr<GroupedInputBlock> get_group_input_block(void) const { return std::static_pointer_cast<GroupedInputBlock>(_data); }
+    std::shared_ptr<SimpleInputBlock> get_simple_input_block(void) const { return std::static_pointer_cast<SimpleInputBlock>(data_); }
+    std::shared_ptr<GroupedInputBlock> get_group_input_block(void) const { return std::static_pointer_cast<GroupedInputBlock>(data_); }
 
     std::string get_name(void) const
     {
-        switch (_type)
+        switch (type_)
         {
         case Type::SHADER_INPUT:
             return shader_input_.get_name()->get_name();
@@ -77,8 +77,8 @@ public:
 
 private:
     ShaderInput shader_input_;
-    std::shared_ptr<void> _data;
-    Type _type;
+    std::shared_ptr<void> data_;
+    Type type_;
 };
 
 /**
