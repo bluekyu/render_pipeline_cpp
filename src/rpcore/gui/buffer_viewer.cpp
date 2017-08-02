@@ -145,7 +145,7 @@ void BufferViewer::create_components(void)
         nullptr, false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
 }
 
-void BufferViewer::set_show_images(bool arg, void* extra_args)
+void BufferViewer::set_show_images(bool arg, const std::shared_ptr<void>&)
 {
     _display_images = arg;
     perform_update();

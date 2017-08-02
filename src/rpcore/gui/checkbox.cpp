@@ -28,8 +28,8 @@
 
 namespace rpcore {
 
-Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(bool, void*)>& callback,
-    void* extra_args, bool radio, int expand_width, bool checked, bool enabled): RPObject("Checkbox")
+Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(bool, const std::shared_ptr<void>&)>& callback,
+    const std::shared_ptr<void>& extra_args, bool radio, int expand_width, bool checked, bool enabled): RPObject("Checkbox")
 {
     const std::string prefix = radio ? "radiobox" : "checkbox";
 

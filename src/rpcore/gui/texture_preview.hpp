@@ -48,7 +48,7 @@ private:
 
     void set_brightness(const std::shared_ptr<void>&);
 
-    void set_enable_tonemap(bool arg, void* extra_args);
+    void set_enable_tonemap(bool arg, const std::shared_ptr<void>&);
 
     RenderPipeline* _pipeline;
     NodePath _content_node;

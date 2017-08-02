@@ -41,8 +41,8 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Checkbox: public RPObject
 {
 public:
-    Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, void*)>& callback={},
-        void* extra_args=nullptr, bool radio=false, int expand_width=100, bool checked=false, bool enabled=true);
+    Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& callback={},
+        const std::shared_ptr<void>& extra_args={}, bool radio=false, int expand_width=100, bool checked=false, bool enabled=true);
 
     /** Returns whether the node is currently checked. */
     bool is_checked(void) const;
@@ -59,8 +59,8 @@ public:
 private:
     PT(rppanda::DirectCheckBox) node_;
 
-    std::function<void(bool, void*)> callback_;
-    void* extra_args_ = nullptr;
+    std::function<void(bool, const std::shared_ptr<void>&)> callback_;
+    std::shared_ptr<void> extra_args_;
 };
 
 inline rppanda::DirectCheckBox* Checkbox::get_node(void) const

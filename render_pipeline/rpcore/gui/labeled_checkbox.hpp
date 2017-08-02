@@ -44,8 +44,8 @@ public:
      * Constructs a new checkbox, forwarding most of the elements to the
      * underlying Checkbox and Text.
      */
-    LabeledCheckbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, void*)>& chb_callback={},
-        void* chb_args=nullptr, bool chb_checked=false, const std::string& text="", float text_size=16,
+    LabeledCheckbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback={},
+        const std::shared_ptr<void>& chb_args={}, bool chb_checked=false, const std::string& text="", float text_size=16,
         bool radio=false, const boost::optional<LVecBase3>& text_color={}, int expand_width=100, bool enabled=true);
     ~LabeledCheckbox(void);
 

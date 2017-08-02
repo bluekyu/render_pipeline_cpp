@@ -235,7 +235,7 @@ void TexturePreview::set_brightness(const std::shared_ptr<void>&)
     _preview_image->set_shader_input(ShaderInput("brightness", LVecBase4(scale, 0, 0, 0)));
 }
 
-void TexturePreview::set_enable_tonemap(bool arg, void* extra_args)
+void TexturePreview::set_enable_tonemap(bool arg, const std::shared_ptr<void>&)
 {
     _preview_image->set_shader_input(ShaderInput("tonemap", LVecBase4i(arg, 0, 0, 0)));
 }

@@ -62,7 +62,7 @@ private:
     virtual void create_components(void);
 
     /** Sets whether images and textures will be shown. */
-    void set_show_images(bool arg, void* extra_args);
+    void set_show_images(bool arg, const std::shared_ptr<void>&);
 
     /** Sets the maximum scroll height in the content frame */
     void set_scroll_height(int height);
