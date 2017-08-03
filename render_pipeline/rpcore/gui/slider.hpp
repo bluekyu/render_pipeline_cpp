@@ -38,22 +38,9 @@ namespace rpcore {
 class Slider: public RPObject
 {
 public:
-    struct Parameters
-    {
-        NodePath parent = NodePath();
-        float x = 0;
-        float y = 0;
-        float size = 100;
-        float min_value = 0;
-        float max_value = 100;
-        float value = 50;
-        float page_size = 1;
-        std::function<void(const std::shared_ptr<void>&)> callback;
-        std::shared_ptr<void> extra_args;
-    };
-
-public:
-    Slider(const Parameters& params=Parameters());
+    Slider(float x=0, float y=0, NodePath parent={}, float size=100, float min_value=0, float max_value=100,
+        float value=50, float page_size=1, const std::function<void(const std::shared_ptr<void>&)>& callback={},
+        const std::shared_ptr<void>& extra_args={});
 
     /** Returns the currently assigned value. */
     float get_value(void) const;

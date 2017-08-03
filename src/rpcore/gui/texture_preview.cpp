@@ -109,16 +109,9 @@ void TexturePreview::present(Texture* tex)
     // Slider for viewing different mipmaps
     if (tex->uses_mipmaps())
     {
-        Slider::Parameters _mip_slider_params;
-        _mip_slider_params.parent = _content_node;
-        _mip_slider_params.size = 140;
-        _mip_slider_params.min_value = 0;
-        _mip_slider_params.max_value = tex->get_expected_num_mipmap_levels() - 1;
-        _mip_slider_params.callback = std::bind(&TexturePreview::set_mip, this, std::placeholders::_1);
-        _mip_slider_params.x = x_pos;
-        _mip_slider_params.y = 65;
-        _mip_slider_params.value = 0;
-        _mip_slider = std::make_shared<Slider>(_mip_slider_params);
+        _mip_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, 0,
+            tex->get_expected_num_mipmap_levels()-1, 0, 1,
+            std::bind(&TexturePreview::set_mip, this, std::placeholders::_1));
 
         x_pos += 140 + 5;
 
@@ -138,16 +131,8 @@ void TexturePreview::present(Texture* tex)
     // Slider for viewing different Z-layers
     if (tex->get_z_size() > 1)
     {
-        Slider::Parameters _slice_slider_params;
-        _slice_slider_params.parent = _content_node;
-        _slice_slider_params.size = 250;
-        _slice_slider_params.min_value = 0;
-        _slice_slider_params.max_value = tex->get_z_size() - 1;
-        _slice_slider_params.callback = std::bind(&TexturePreview::set_slice, this, std::placeholders::_1);
-        _slice_slider_params.x = x_pos;
-        _slice_slider_params.y = 65;
-        _slice_slider_params.value = 0;
-        _slice_slider = std::make_shared<Slider>(_slice_slider_params);
+        _slice_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 250, 0,
+            tex->get_z_size() - 1, 0, 1, std::bind(&TexturePreview::set_slice, this, std::placeholders::_1));
 
         x_pos += 250 + 5;
 
@@ -164,19 +149,9 @@ void TexturePreview::present(Texture* tex)
         x_pos += 50 + 30;
     }
 
-    {
-        // Slider to adjust brightness
-        Slider::Parameters _bright_slider_params;
-        _bright_slider_params.parent = _content_node;
-        _bright_slider_params.size = 140;
-        _bright_slider_params.min_value = -14;
-        _bright_slider_params.max_value = 14;
-        _bright_slider_params.callback = std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1);
-        _bright_slider_params.x = x_pos;
-        _bright_slider_params.y = 65;
-        _bright_slider_params.value = 0;
-        _bright_slider = std::make_shared<Slider>(_bright_slider_params);
-    }
+    // Slider to adjust brightness
+    _bright_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, -14, 14,
+        0, 1, std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1));
 
     x_pos += 140 + 5;
     {
