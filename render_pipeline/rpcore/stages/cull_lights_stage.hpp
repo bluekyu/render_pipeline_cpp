@@ -60,16 +60,16 @@ private:
     int cull_threads_;
     int num_light_classes_;
 
-    std::shared_ptr<Image> _frustum_lights_ctr;
-    std::shared_ptr<Image> _frustum_lights;
-    std::shared_ptr<Image> _per_cell_lights;
-    std::shared_ptr<Image> _per_cell_light_counts;
-    std::shared_ptr<Image> _grouped_cell_lights;
-    std::shared_ptr<Image> _grouped_cell_lights_counts;
+    std::shared_ptr<Image> frustum_lights_ctr_;
+    std::shared_ptr<Image> frustum_lights_;
+    std::shared_ptr<Image> per_cell_lights_;
+    std::shared_ptr<Image> per_cell_light_counts_;
+    std::shared_ptr<Image> grouped_cell_lights_;
+    std::shared_ptr<Image> grouped_cell_lights_counts_;
 
-    std::shared_ptr<RenderTarget> _target_visible;
-    std::shared_ptr<RenderTarget> _target_cull;
-    std::shared_ptr<RenderTarget> _target_group;
+    std::shared_ptr<RenderTarget> target_visible_;
+    std::shared_ptr<RenderTarget> target_cull_;
+    std::shared_ptr<RenderTarget> target_group_;
 };
 
 }
