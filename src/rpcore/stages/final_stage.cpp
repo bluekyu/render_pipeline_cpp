@@ -29,13 +29,13 @@
 
 namespace rpcore {
 
-FinalStage::RequireType FinalStage::required_inputs;
-FinalStage::RequireType FinalStage::required_pipes = { "ShadedScene" };
+FinalStage::RequireType FinalStage::required_inputs_;
+FinalStage::RequireType FinalStage::required_pipes_ = { "ShadedScene" };
 
 FinalStage::ProduceType FinalStage::get_produced_pipes(void) const
 {
     return {
-        ShaderInput("ShadedScene", _target->get_color_tex()),
+        ShaderInput("ShadedScene", target_->get_color_tex()),
     };
 }
 
@@ -43,11 +43,11 @@ void FinalStage::create(void)
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
-    _target = create_target("FinalStage");
-    _target->add_color_attachment(16);
+    target_ = create_target("FinalStage");
+    target_->add_color_attachment(16);
     if (stereo_mode_)
-        _target->set_layers(2);
-    _target->prepare_buffer();
+        target_->set_layers(2);
+    target_->prepare_buffer();
 
     // XXX: We cannot simply assign the final shader to the window display
     // region.This is because of a bug that the last FBO always only gets
@@ -58,15 +58,15 @@ void FinalStage::create(void)
     // also has the nice side effect that when taking screenshots(or using
     // the pixel inspector), we get the srgb corrected data, so its not too
     // much of a disadvantage.
-    _present_target = create_target("FinalPresentStage");
-    _present_target->present_on_screen();
-    _present_target->set_shader_input(ShaderInput("SourceTex", _target->get_color_tex()));
+    present_target_ = create_target("FinalPresentStage");
+    present_target_->present_on_screen();
+    present_target_->set_shader_input(ShaderInput("SourceTex", target_->get_color_tex()));
 }
 
 void FinalStage::reload_shaders(void)
 {
-    _target->set_shader(load_shader({ "final_stage.frag.glsl" }, stereo_mode_));
-    _present_target->set_shader(load_shader({ "final_present_stage.frag.glsl" }));
+    target_->set_shader(load_shader({ "final_stage.frag.glsl" }, stereo_mode_));
+    present_target_->set_shader(load_shader({ "final_present_stage.frag.glsl" }));
 }
 
 std::string FinalStage::get_plugin_id(void) const

@@ -37,11 +37,11 @@ class RENDER_PIPELINE_DECL GBufferStage: public RenderStage
 public:
     GBufferStage(RenderPipeline& pipeline): RenderStage(pipeline, "GBufferStage") {}
 
-    static RequireType& get_global_required_inputs(void) { return required_inputs; }
-    static RequireType& get_global_required_pipes(void) { return required_pipes; }
+    static RequireType& get_global_required_inputs(void) { return required_inputs_; }
+    static RequireType& get_global_required_pipes(void) { return required_pipes_; }
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs(void) const final { return required_inputs_; }
+    RequireType& get_required_pipes(void) const final { return required_pipes_; }
     ProduceType get_produced_pipes(void) const final;
 
     std::shared_ptr<SimpleInputBlock> make_gbuffer_ubo(void) const;
@@ -52,10 +52,10 @@ public:
 private:
     std::string get_plugin_id(void) const final;
 
-    static RequireType required_inputs;
-    static RequireType required_pipes;
+    static RequireType required_inputs_;
+    static RequireType required_pipes_;
 
-    std::shared_ptr<RenderTarget> target = nullptr;
+    std::shared_ptr<RenderTarget> target_;
 };
 
 }

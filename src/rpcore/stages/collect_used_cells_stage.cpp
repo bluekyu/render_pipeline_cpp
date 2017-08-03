@@ -34,33 +34,33 @@ CollectUsedCellsStage::RequireType CollectUsedCellsStage::required_pipes = { "Fl
 CollectUsedCellsStage::ProduceType CollectUsedCellsStage::get_produced_pipes(void) const
 {
     return {
-        ShaderInput("CellListBuffer", _cell_list_buffer->get_texture()),
-        ShaderInput("CellIndices", _cell_index_buffer->get_texture()),
+        ShaderInput("CellListBuffer", cell_list_buffer_->get_texture()),
+        ShaderInput("CellIndices", cell_index_buffer_->get_texture()),
     };
 }
 
 void CollectUsedCellsStage::create(void)
 {
-    _target = create_target("CollectUsedCells");
-    _target->set_size(0);
-    _target->prepare_buffer();
+    target_ = create_target("CollectUsedCells");
+    target_->set_size(0);
+    target_->prepare_buffer();
 
-    _cell_list_buffer = Image::create_buffer("CellList", 0, "R32I");
-    _cell_index_buffer = Image::create_2d_array("CellIndices", 0, 0, 0, "R32I");
+    cell_list_buffer_ = Image::create_buffer("CellList", 0, "R32I");
+    cell_index_buffer_ = Image::create_2d_array("CellIndices", 0, 0, 0, "R32I");
 
-    _target->set_shader_input(ShaderInput("CellListBuffer", _cell_list_buffer->get_texture()));
-    _target->set_shader_input(ShaderInput("CellListIndices", _cell_index_buffer->get_texture()));
+    target_->set_shader_input(ShaderInput("CellListBuffer", cell_list_buffer_->get_texture()));
+    target_->set_shader_input(ShaderInput("CellListIndices", cell_index_buffer_->get_texture()));
 }
 
 void CollectUsedCellsStage::reload_shaders(void)
 {
-    _target->set_shader(load_shader({ "collect_used_cells.frag.glsl" }));
+    target_->set_shader(load_shader({ "collect_used_cells.frag.glsl" }));
 }
 
 void CollectUsedCellsStage::update(void)
 {
-    _cell_list_buffer->clear_image();
-    _cell_index_buffer->clear_image();
+    cell_list_buffer_->clear_image();
+    cell_index_buffer_->clear_image();
 }
 
 void CollectUsedCellsStage::set_dimensions(void)
@@ -69,17 +69,17 @@ void CollectUsedCellsStage::set_dimensions(void)
     int num_slices = pipeline_.get_setting<int>("lighting.culling_grid_slices");
     int max_cells = tile_amount.get_x() * tile_amount.get_y() * num_slices;
 
-    _cell_list_buffer->set_x_size(1 + max_cells);
-    _cell_index_buffer->set_x_size(tile_amount.get_x());
-    _cell_index_buffer->set_y_size(tile_amount.get_y());
+    cell_list_buffer_->set_x_size(1 + max_cells);
+    cell_index_buffer_->set_x_size(tile_amount.get_x());
+    cell_index_buffer_->set_y_size(tile_amount.get_y());
 
     // in stereo mode, set double slices.
-    _cell_index_buffer->set_z_size(num_slices);
+    cell_index_buffer_->set_z_size(num_slices);
 
-    _cell_list_buffer->clear_image();
-    _cell_index_buffer->clear_image();
+    cell_list_buffer_->clear_image();
+    cell_index_buffer_->clear_image();
 
-    _target->set_size(tile_amount);
+    target_->set_size(tile_amount);
 }
 
 std::string CollectUsedCellsStage::get_plugin_id(void) const

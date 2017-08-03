@@ -32,6 +32,11 @@ namespace rpcore {
 ShadowStage::RequireType ShadowStage::required_inputs_;
 ShadowStage::RequireType ShadowStage::required_pipes_;
 
+ShadowStage::ShadowStage(RenderPipeline& pipeline): RenderStage(pipeline, "ShadowStage")
+{
+    size_ = 4096;
+}
+
 ShadowStage::ProduceType ShadowStage::get_produced_pipes(void) const
 {
     return {

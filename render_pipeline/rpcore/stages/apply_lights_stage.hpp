@@ -48,7 +48,7 @@ private:
     static RequireType required_pipes_;
 
     bool stereo_mode_ = false;
-    std::shared_ptr<RenderTarget> target_ = nullptr;
+    std::shared_ptr<RenderTarget> target_;
 };
 
 }

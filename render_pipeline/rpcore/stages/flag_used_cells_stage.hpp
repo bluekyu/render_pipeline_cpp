@@ -36,8 +36,8 @@ class FlagUsedCellsStage: public RenderStage
 public:
     FlagUsedCellsStage(RenderPipeline& pipeline): RenderStage(pipeline, "FlagUsedCellsStage") {}
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs(void) const final { return required_inputs_; }
+    RequireType& get_required_pipes(void) const final { return required_pipes_; }
     ProduceType get_produced_pipes(void) const final;
 
     void create(void) final;
@@ -49,12 +49,12 @@ public:
 private:
     std::string get_plugin_id(void) const final;
 
-    static RequireType required_inputs;
-    static RequireType required_pipes;
+    static RequireType required_inputs_;
+    static RequireType required_pipes_;
 
-    std::shared_ptr<Image> _cell_grid_flags;
+    std::shared_ptr<Image> cell_grid_flags_;
 
-    std::shared_ptr<RenderTarget> _target = nullptr;
+    std::shared_ptr<RenderTarget> target_;
 };
 
 }

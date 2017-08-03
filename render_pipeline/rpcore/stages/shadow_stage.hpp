@@ -34,7 +34,7 @@ namespace rpcore {
 class ShadowStage: public RenderStage
 {
 public:
-    ShadowStage(RenderPipeline& pipeline): RenderStage(pipeline, "ShadowStage") {}
+    ShadowStage(RenderPipeline& pipeline);
 
     RequireType& get_required_inputs(void) const final { return required_inputs_; }
     RequireType& get_required_pipes(void) const final { return required_pipes_; }
@@ -55,8 +55,8 @@ private:
     static RequireType required_inputs_;
     static RequireType required_pipes_;
 
-    size_t size_ = 4096;
-    std::shared_ptr<RenderTarget> target_ = nullptr;
+    size_t size_;
+    std::shared_ptr<RenderTarget> target_;
 };
 
 // ************************************************************************************************

@@ -54,10 +54,10 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<Image> _cell_list_buffer;
-    std::shared_ptr<Image> _cell_index_buffer;
+    std::shared_ptr<Image> cell_list_buffer_;
+    std::shared_ptr<Image> cell_index_buffer_;
 
-    std::shared_ptr<RenderTarget> _target = nullptr;
+    std::shared_ptr<RenderTarget> target_;
 };
 
 }

@@ -74,14 +74,14 @@ public:
 private:
     std::string get_plugin_id(void) const final;
 
-    std::shared_ptr<RenderTarget> _target = nullptr;
-    std::vector<std::pair<Texture*, Texture*>> _transfers;
+    std::shared_ptr<RenderTarget> target_;
+    std::vector<std::pair<Texture*, Texture*>> transfers_;
 };
 
 // ************************************************************************************************
 inline void UpdatePreviousPipesStage::add_transfer(Texture* from_tex, Texture* to_tex)
 {
-    _transfers.push_back({ from_tex, to_tex });
+    transfers_.push_back({ from_tex, to_tex });
 }
 
 }

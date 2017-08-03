@@ -44,21 +44,21 @@ UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_pi
 void UpdatePreviousPipesStage::create(void)
 {
     debug("Creating previous pipes stage ..");
-    _target = create_target("StorePreviousPipes");
-    _target->prepare_buffer();
+    target_ = create_target("StorePreviousPipes");
+    target_->prepare_buffer();
 
     // Set inputs
-    for (size_t i=0, i_end=_transfers.size(); i < i_end; ++i)
+    for (size_t i=0, i_end=transfers_.size(); i < i_end; ++i)
     {
         const std::string string_i(std::to_string(i));
-        _target->set_shader_input(ShaderInput(std::string("SrcTex") + string_i, _transfers[i].first));
-        _target->set_shader_input(ShaderInput(std::string("DestTex") + string_i, _transfers[i].second));
+        target_->set_shader_input(ShaderInput(std::string("SrcTex") + string_i, transfers_[i].first));
+        target_->set_shader_input(ShaderInput(std::string("DestTex") + string_i, transfers_[i].second));
     }
 }
 
 void UpdatePreviousPipesStage::set_dimensions(void)
 {
-    for (auto& from_to: _transfers)
+    for (auto& from_to: transfers_)
     {
         from_to.second->set_x_size(Globals::resolution.get_x());
         from_to.second->set_y_size(Globals::resolution.get_y());
@@ -74,25 +74,25 @@ void UpdatePreviousPipesStage::reload_shaders(void)
     std::vector<std::string> lines;
 
     // Collect all samplers and generate the required uniforms and copy code
-    for (size_t i=0, i_end=_transfers.size(); i < i_end; ++i)
+    for (size_t i=0, i_end=transfers_.size(); i < i_end; ++i)
     {
         std::string index(std::to_string(i));
-        uniforms.push_back(get_sampler_type(_transfers[i].first) + " " + "SrcTex" + index);
-        uniforms.push_back(get_sampler_type(_transfers[i].second, true) + " " + "DestTex" + index);
+        uniforms.push_back(get_sampler_type(transfers_[i].first) + " " + "SrcTex" + index);
+        uniforms.push_back(get_sampler_type(transfers_[i].second, true) + " " + "DestTex" + index);
 
-        lines.push_back(std::string("\n  // Copying ") + _transfers[i].first->get_name() + " to " + _transfers[i].second->get_name());
+        lines.push_back(std::string("\n  // Copying ") + transfers_[i].first->get_name() + " to " + transfers_[i].second->get_name());
 
-        if (_transfers[i].first->get_texture_type() == Texture::TextureType::TT_2d_texture_array)
+        if (transfers_[i].first->get_texture_type() == Texture::TextureType::TT_2d_texture_array)
         {
             lines.push_back(std::string("for (int z = 0, z_end=textureSize(SrcTex") + index + ", 0).z; z < z_end; ++z) {");
-            lines.push_back(get_sampler_lookup(_transfers[i].first, "data" + index, "SrcTex" + index, "ivec3(coord_2d_int, z)"));
-            lines.push_back(get_store_code(_transfers[i].second, "DestTex" + index, "ivec3(coord_2d_int, z)", "data" + index));
+            lines.push_back(get_sampler_lookup(transfers_[i].first, "data" + index, "SrcTex" + index, "ivec3(coord_2d_int, z)"));
+            lines.push_back(get_store_code(transfers_[i].second, "DestTex" + index, "ivec3(coord_2d_int, z)", "data" + index));
             lines.push_back("}\n");
         }
         else
         {
-            lines.push_back(get_sampler_lookup(_transfers[i].first, "data" + index, "SrcTex" + index, "coord_2d_int"));
-            lines.push_back(get_store_code(_transfers[i].second, "DestTex" + index, "coord_2d_int", "data" + index));
+            lines.push_back(get_sampler_lookup(transfers_[i].first, "data" + index, "SrcTex" + index, "coord_2d_int"));
+            lines.push_back(get_store_code(transfers_[i].second, "DestTex" + index, "coord_2d_int", "data" + index));
         }
 
         lines.push_back("\n");
@@ -130,7 +130,7 @@ void UpdatePreviousPipesStage::reload_shaders(void)
     }
 
     // Load it back again
-    _target->set_shader(load_shader({ shader_dest }));
+    target_->set_shader(load_shader({ shader_dest }));
 }
 
 std::string UpdatePreviousPipesStage::get_sampler_type(Texture* tex, bool can_write)

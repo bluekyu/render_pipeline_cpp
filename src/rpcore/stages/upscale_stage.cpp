@@ -28,8 +28,8 @@
 
 namespace rpcore {
 
-UpscaleStage::RequireType UpscaleStage::required_inputs;
-UpscaleStage::RequireType UpscaleStage::required_pipes = { "ShadedScene" };
+UpscaleStage::RequireType UpscaleStage::required_inputs_;
+UpscaleStage::RequireType UpscaleStage::required_pipes_ = { "ShadedScene" };
 
 UpscaleStage::ProduceType UpscaleStage::get_produced_pipes(void) const
 {

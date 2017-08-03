@@ -28,20 +28,21 @@
 
 namespace rpcore {
 
-CullLightsStage::RequireType CullLightsStage::required_inputs = { "AllLightsData", "maxLightIndex" };
-CullLightsStage::RequireType CullLightsStage::required_pipes = { "CellListBuffer" };
+CullLightsStage::RequireType CullLightsStage::required_inputs_ = { "AllLightsData", "maxLightIndex" };
+CullLightsStage::RequireType CullLightsStage::required_pipes_ = { "CellListBuffer" };
 
 CullLightsStage::CullLightsStage(RenderPipeline& pipeline): RenderStage(pipeline, "CullLightsStage")
 {
-    _max_lights_per_cell = pipeline_.get_setting<int>("lighting.max_lights_per_cell");
+    max_lights_per_cell_ = pipeline_.get_setting<int>("lighting.max_lights_per_cell");
 
-    if (_max_lights_per_cell > (1<<16))
+    if (max_lights_per_cell_ > (1<<16))
         fatal(std::string("lighting.max_lights_per_cell must be <=") + std::to_string(1<<16) + "!");
 
-    _slice_width = pipeline_.get_setting<int>("lighting.culling_slice_width");
+    slice_width_ = pipeline_.get_setting<int>("lighting.culling_slice_width");
+    cull_threads_ = 32;
 
     // Amount of light classes.Has to match the ones in LightClassification.inc.glsl
-    _num_light_classes = 4;
+    num_light_classes_ = 4;
 }
 
 CullLightsStage::ProduceType CullLightsStage::get_produced_pipes(void) const
@@ -55,9 +56,9 @@ CullLightsStage::ProduceType CullLightsStage::get_produced_pipes(void) const
 CullLightsStage::DefinesType CullLightsStage::get_produced_defines(void) const
 {
     return {
-        { "LC_SLICE_WIDTH", std::to_string(_slice_width) },
-        { "LC_CULL_THREADS", std::to_string(_cull_threads) },
-        { "LC_LIGHT_CLASS_COUNT", std::to_string(_num_light_classes) },
+        { "LC_SLICE_WIDTH", std::to_string(slice_width_) },
+        { "LC_CULL_THREADS", std::to_string(cull_threads_) },
+        { "LC_LIGHT_CLASS_COUNT", std::to_string(num_light_classes_) },
     };
 }
 
@@ -94,7 +95,7 @@ void CullLightsStage::create(void)
     _target_group->set_shader_input(ShaderInput("GroupedCellLightsBuffer", _grouped_cell_lights->get_texture()));
     _target_group->set_shader_input(ShaderInput("GroupedPerCellLightsCountBuffer", _grouped_cell_lights_counts->get_texture()));
 
-    _target_cull->set_shader_input(ShaderInput("threadCount", LVecBase4i(_cull_threads, 0, 0, 0)));
+    _target_cull->set_shader_input(ShaderInput("threadCount", LVecBase4i(cull_threads_, 0, 0, 0)));
     _target_group->set_shader_input(ShaderInput("threadCount", LVecBase4i(1, 0, 0, 0)));
 }
 
@@ -113,14 +114,14 @@ void CullLightsStage::update(void)
 void CullLightsStage::set_dimensions(void)
 {
     int max_cells = pipeline_.get_light_mgr()->get_total_tiles();
-    int num_rows_threaded = int(std::ceil((max_cells * _cull_threads) / float(_slice_width)));
-    int num_rows = int(std::ceil(max_cells / float(_slice_width)));
-    _per_cell_lights->set_x_size(max_cells * _max_lights_per_cell);
+    int num_rows_threaded = int(std::ceil((max_cells * cull_threads_) / float(slice_width_)));
+    int num_rows = int(std::ceil(max_cells / float(slice_width_)));
+    _per_cell_lights->set_x_size(max_cells * max_lights_per_cell_);
     _per_cell_light_counts->set_x_size(max_cells);
-    _grouped_cell_lights->set_x_size(max_cells * (_max_lights_per_cell + _num_light_classes));
-    _target_cull->set_size(_slice_width, num_rows_threaded);
-    _target_group->set_size(_slice_width, num_rows);
-    _grouped_cell_lights_counts->set_x_size(max_cells * (1 + _num_light_classes));
+    _grouped_cell_lights->set_x_size(max_cells * (max_lights_per_cell_ + num_light_classes_));
+    _target_cull->set_size(slice_width_, num_rows_threaded);
+    _target_group->set_size(slice_width_, num_rows);
+    _grouped_cell_lights_counts->set_x_size(max_cells * (1 + num_light_classes_));
 }
 
 std::string CullLightsStage::get_plugin_id(void) const

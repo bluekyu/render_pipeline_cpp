@@ -35,11 +35,11 @@ class RENDER_PIPELINE_DECL CullLightsStage: public RenderStage
 public:
     CullLightsStage(RenderPipeline& pipeline);
 
-    static RequireType& get_global_required_inputs(void) { return required_inputs; }
-    static RequireType& get_global_required_pipes(void) { return required_pipes; }
+    static RequireType& get_global_required_inputs(void) { return required_inputs_; }
+    static RequireType& get_global_required_pipes(void) { return required_pipes_; }
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs(void) const final { return required_inputs_; }
+    RequireType& get_required_pipes(void) const final { return required_pipes_; }
     ProduceType get_produced_pipes(void) const final;
     DefinesType get_produced_defines(void) const final;
 
@@ -52,13 +52,13 @@ public:
 private:
     std::string get_plugin_id(void) const final;
 
-    static RequireType required_inputs;
-    static RequireType required_pipes;
+    static RequireType required_inputs_;
+    static RequireType required_pipes_;
 
-    int _max_lights_per_cell;
-    int _slice_width;
-    int _cull_threads = 32;
-    int _num_light_classes;
+    int max_lights_per_cell_;
+    int slice_width_;
+    int cull_threads_;
+    int num_light_classes_;
 
     std::shared_ptr<Image> _frustum_lights_ctr;
     std::shared_ptr<Image> _frustum_lights;
@@ -67,9 +67,9 @@ private:
     std::shared_ptr<Image> _grouped_cell_lights;
     std::shared_ptr<Image> _grouped_cell_lights_counts;
 
-    std::shared_ptr<RenderTarget> _target_visible = nullptr;
-    std::shared_ptr<RenderTarget> _target_cull = nullptr;
-    std::shared_ptr<RenderTarget> _target_group = nullptr;
+    std::shared_ptr<RenderTarget> _target_visible;
+    std::shared_ptr<RenderTarget> _target_cull;
+    std::shared_ptr<RenderTarget> _target_group;
 };
 
 }
