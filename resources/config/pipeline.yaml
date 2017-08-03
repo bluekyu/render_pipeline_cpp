@@ -29,8 +29,8 @@ pipeline:
     # If resolution_scale is 0, fixed resolution is used to render
     # at a higher or lower resolution than the window size.
     resolution_scale: 1.0
-    resolution_width: 1920
-    resolution_height: 1080
+    resolution_width: 1512      # OpenVR
+    resolution_height: 1680
 
     # whether to crop a screen when the screen size is NOT same as the window size.
     # This is only enabled when upscale stage is enabled.
