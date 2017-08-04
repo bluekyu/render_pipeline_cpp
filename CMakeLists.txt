@@ -31,6 +31,7 @@ message("Render Pipeline building version: ${render_pipeline_VERSION}")
 
 # configure project package
 include(FindPackages)
+include(strip-debug-symbol)
 
 # === project specific packages ===
 # find spdlog
@@ -86,7 +87,8 @@ include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 render_pipeline_generate_schema_headers(${PROJECT_NAME})
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_final PRIVATE cxx_auto_type)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
+    PRIVATE cxx_auto_type)
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251)
 else()
@@ -124,6 +126,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
+
+configure_debugging_information(${PROJECT_NAME})
 
 # configure package
 set(PACKAGE_NAME "${PROJECT_NAME}")
@@ -172,21 +176,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "share/${PROJECT_NAME}/"
 )
 
-if(MSVC)
-    foreach(config "Debug" "RelWithDebInfo")
-        string(TOUPPER ${config} config_upper)
-
-        get_target_property(PDB_PATH ${PROJECT_NAME} STRIPPED_PDB_PATH_${config_upper})
-        if(NOT PDB_PATH)
-            set(PDB_PATH "${PROJECT_BINARY_DIR}/${config}/${PROJECT_NAME}${${PROJECT_NAME}_${config_upper}_POSTFIX}.pdb")
-        endif()
-        install(FILES "${PDB_PATH}"
-            DESTINATION "bin"
-            CONFIGURATIONS ${config}
-            RENAME "${PROJECT_NAME}${${PROJECT_NAME}_${config_upper}_POSTFIX}.pdb"
-        )
-    endforeach()
-endif()
+install_debugging_information(${PROJECT_NAME})
 
 # documents
 if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
