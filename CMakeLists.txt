@@ -29,9 +29,10 @@ set(PROJECT_VERSION "${render_pipeline_VERSION}")
 
 message("Render Pipeline building version: ${render_pipeline_VERSION}")
 
+include(debugging-information)
+
 # configure project package
 include(FindPackages)
-include(strip-debug-symbol)
 
 # === project specific packages ===
 # find spdlog
