@@ -32,6 +32,7 @@
 #include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/util/generic.hpp"
+#include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 
 #include "rpcore/util/display_shader_builder.hpp"
 
@@ -130,10 +131,19 @@ void PipeViewer::populate_content(void)
             Text stage_text(params);
         }
 
-        for (const auto& key_val: stage->get_produced_pipes())
+        for (const auto& pipe_tex: stage->get_produced_pipes())
         {
-            const std::string output_pipe(key_val.get_name());
-            const auto& pipe_tex = key_val;
+            const ShaderInput* shader_input_data = nullptr;
+            const std::shared_ptr<SimpleInputBlock>* simple_input_data = nullptr;
+            const std::shared_ptr<GroupedInputBlock>* group_input_data = nullptr;
+
+            std::string output_pipe;
+            if (shader_input_data = boost::get<ShaderInput>(&pipe_tex))
+                output_pipe = shader_input_data->get_name()->get_name();
+            else if (simple_input_data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_tex))
+                output_pipe = (*simple_input_data)->get_name();
+            else if (group_input_data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_tex))
+                output_pipe = (*group_input_data)->get_name();
 
             long long pipe_idx = 0;
             const LVecBase3f& rgb = rgb_from_string(output_pipe);
@@ -167,10 +177,10 @@ void PipeViewer::populate_content(void)
 
             std::string icon_file = "";
             Texture* pipe_texture = nullptr;
-            if (pipe_tex.is_type(StageData::Type::SHADER_INPUT))
-                pipe_texture = pipe_tex.get_shader_input().get_texture();
+            if (shader_input_data)
+                pipe_texture = shader_input_data->get_texture();
 
-            if (pipe_tex.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || pipe_tex.is_type(StageData::Type::GROUP_INPUT_BLOCK))
+            if (simple_input_data || group_input_data)
             {
                 icon_file = "/$$rp/data/gui/icon_ubo.png";
             }
@@ -201,7 +211,7 @@ void PipeViewer::populate_content(void)
                 Sprite(icon_file, 48, 48, node, 55, 65 + pipe_idx * pipe_height, true, false);
 
                 std::string tex_desc;
-                if (pipe_tex.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || pipe_tex.is_type(StageData::Type::GROUP_INPUT_BLOCK))
+                if (simple_input_data || group_input_data)
                 {
                     tex_desc = "UBO";
                 }

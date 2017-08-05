@@ -86,9 +86,13 @@ public:
     std::unordered_map<std::string, ShaderInput> pipes_;
 
     /** { id, std::shared_ptr<[SimpleInputBlock | GroupedInputBlock]> } */
-    std::unordered_map<std::string, StageData> input_blocks_;
+    std::unordered_map<std::string, boost::variant<
+        std::shared_ptr<SimpleInputBlock>,
+        std::shared_ptr<GroupedInputBlock>>> input_blocks_;
 
-    std::vector<StageData> input_block_list_;
+    std::vector<boost::variant<
+        std::shared_ptr<SimpleInputBlock>,
+        std::shared_ptr<GroupedInputBlock>>> input_block_list_;
     std::unordered_map<std::string, std::shared_ptr<Image>> previous_pipes_;
 
     std::vector<std::pair<std::string, std::shared_ptr<RenderStage>>> future_bindings_;
@@ -130,7 +134,7 @@ void StageManager::Impl::prepare_stages(void)
     std::vector<std::shared_ptr<RenderStage>> enabled_stages;
     for (auto& stage: stages_)
     {
-        if (!stage->disabled)
+        if (!stage->disabled_)
             enabled_stages.push_back(stage);
     }
 
@@ -149,12 +153,7 @@ bool StageManager::Impl::bind_pipes_to_stage(const std::shared_ptr<RenderStage>&
         // Check if there is an input block named like the pipe
         if (input_blocks_.find(pipe) != input_blocks_.end())
         {
-            if (input_blocks_.at(pipe).is_type(StageData::Type::SIMPLE_INPUT_BLOCK))
-                input_blocks_.at(pipe).get_simple_input_block()->bind_to(stage);
-            else if (input_blocks_.at(pipe).is_type(StageData::Type::GROUP_INPUT_BLOCK))
-                input_blocks_.at(pipe).get_group_input_block()->bind_to(stage);
-            else
-                self_.error(fmt::format("Invalid type cast: {}", input_blocks_.at(pipe).get_name()));
+            boost::apply_visitor([&](const auto& block) { block->bind_to(stage); }, input_blocks_.at(pipe));
             continue;
         }
 
@@ -234,12 +233,7 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
         }
         else if (input_blocks_.find(input_binding) != input_blocks_.end())
         {
-            if (input_blocks_.at(input_binding).is_type(StageData::Type::SIMPLE_INPUT_BLOCK))
-                input_blocks_.at(input_binding).get_simple_input_block()->bind_to(stage);
-            else if (input_blocks_.at(input_binding).is_type(StageData::Type::GROUP_INPUT_BLOCK))
-                input_blocks_.at(input_binding).get_group_input_block()->bind_to(stage);
-            else
-                self_.error(fmt::format("Invalid type cast: {}", input_blocks_.at(input_binding).get_name()));
+            boost::apply_visitor([&](const auto& block){ block->bind_to(stage); }, input_blocks_.at(input_binding));
         }
         else
         {
@@ -254,57 +248,40 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
 {
     self_.trace(fmt::format("Registring the result of stage ({}).", stage->get_debug_name()));
 
-    const auto& produced_pipes = stage->get_produced_pipes();
-    for (const auto& pipe_data: produced_pipes)
+    for (auto& pipe_data: stage->get_produced_pipes())
     {
-        if (pipe_data.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || pipe_data.is_type(StageData::Type::GROUP_INPUT_BLOCK))
-        {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-            input_blocks_.insert_or_assign(pipe_data.get_name(), std::move(pipe_data));
-#else
-            input_blocks_.insert({pipe_data.get_name(), pipe_data});
-#endif
-            continue;
-        }
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-        pipes_.insert_or_assign(pipe_data.get_name(), pipe_data.get_shader_input());
-#else
-        pipes_[pipe_data.get_name()] = pipe_data.get_shader_input();
-#endif
+        if (auto data = boost::get<ShaderInput>(&pipe_data))
+            pipes_.insert_or_assign(data->get_name()->get_name(), *data);
+        else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_data))
+            input_blocks_.insert_or_assign((*data)->get_name(), *data);
+        else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_data))
+            input_blocks_.insert_or_assign((*data)->get_name(), *data);
     }
 
-    const auto& produced_defines = stage->get_produced_defines();
-    for (const auto& define: produced_defines)
+    for (const auto& define: stage->get_produced_defines())
     {
         if (defines_.find(define.first) != defines_.end())
             self_.warn(fmt::format("Stage {} overrides define {}", stage->get_debug_name(), define.first));
         defines_[define.first] = define.second;
     }
 
-    const auto& produced_inputs = stage->get_produced_inputs();
-    for (const auto& input_data: produced_inputs)
+    for (const auto& input_data: stage->get_produced_inputs())
     {
-        const auto& input_name = input_data.get_name();
-
-        if (inputs_.find(input_name) != inputs_.end())
-            self_.warn(fmt::format("Stage {} overrides input {}", stage->get_debug_name(), input_name));
-
-        if (input_data.is_type(StageData::Type::SIMPLE_INPUT_BLOCK) || input_data.is_type(StageData::Type::GROUP_INPUT_BLOCK))
+        if (auto data = boost::get<ShaderInput>(&input_data))
         {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-            input_blocks_.insert_or_assign(input_name, std::move(input_data));
-#else
-            input_blocks_.insert({input_name, input_data});
-#endif
-            continue;
+            const auto& input_name = data->get_name()->get_name();
+            if (inputs_.find(input_name) != inputs_.end())
+                self_.warn(fmt::format("Stage {} overrides input {}", stage->get_debug_name(), input_name));
+            inputs_.insert_or_assign(input_name, *data);
         }
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-        inputs_.insert_or_assign(input_name, input_data.get_shader_input());
-#else
-        inputs_[input_name] = input_data.get_shader_input();
-#endif
+        else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&input_data))
+        {
+            input_blocks_.insert_or_assign((*data)->get_name(), *data);
+        }
+        else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&input_data))
+        {
+            input_blocks_.insert_or_assign((*data)->get_name(), *data);
+        }
     }
 }
 
@@ -446,19 +423,14 @@ void StageManager::setup(void)
     // Convert input blocks so we can access them in a better way
     for (const auto& block: impl_->input_block_list_)
     {
-        if (!block.is_type(StageData::Type::SHADER_INPUT))
-        {
-            const auto& block_name = block.get_name();
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+        boost::apply_visitor([this](const auto& block) {
+            std::string block_name = block->get_name();
             impl_->input_blocks_.insert_or_assign(block_name, std::move(block));
+        }, block);
 #else
-            impl_->input_blocks_.insert({block_name, block});
+        impl_->input_blocks_.insert({block_name, block});
 #endif
-        }
-        else
-        {
-            error(fmt::format("Invalid type cast: {}", block.get_name()));
-        }
     }
     impl_->input_block_list_.clear();
 

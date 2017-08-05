@@ -45,7 +45,7 @@ See `docs/build_rpcpp.md` document.
 ## Related Projects
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
 - Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
-- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d
+- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d/tree/crsf
 
 
 

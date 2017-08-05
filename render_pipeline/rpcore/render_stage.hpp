@@ -29,57 +29,17 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/variant.hpp>
+
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/util/shader_input_blocks.hpp>
-#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {
 
 class RenderPipeline;
 class RenderTarget;
-
-class StageData
-{
-public:
-    enum class Type: int
-    {
-        SHADER_INPUT = 0,
-        SIMPLE_INPUT_BLOCK,
-        GROUP_INPUT_BLOCK
-    };
-
-public:
-    StageData(const ShaderInput& inp): shader_input_(inp), type_(Type::SHADER_INPUT) {}
-    StageData(const std::shared_ptr<SimpleInputBlock>& sib): data_(sib), type_(Type::SIMPLE_INPUT_BLOCK) {}
-    StageData(const std::shared_ptr<GroupedInputBlock>& gib): data_(gib), type_(Type::GROUP_INPUT_BLOCK) {}
-
-    bool is_type(Type type) const { return type_ == type; }
-    Type get_type(void) const { return type_; }
-
-    const ShaderInput& get_shader_input(void) const { return shader_input_; }
-    std::shared_ptr<SimpleInputBlock> get_simple_input_block(void) const { return std::static_pointer_cast<SimpleInputBlock>(data_); }
-    std::shared_ptr<GroupedInputBlock> get_group_input_block(void) const { return std::static_pointer_cast<GroupedInputBlock>(data_); }
-
-    std::string get_name(void) const
-    {
-        switch (type_)
-        {
-        case Type::SHADER_INPUT:
-            return shader_input_.get_name()->get_name();
-        case Type::SIMPLE_INPUT_BLOCK:
-            return get_simple_input_block()->get_name();
-        case Type::GROUP_INPUT_BLOCK:
-            return get_group_input_block()->get_name();
-        default:
-            return "";
-        }
-    }
-
-private:
-    ShaderInput shader_input_;
-    std::shared_ptr<void> data_;
-    Type type_;
-};
+class SimpleInputBlock;
+class GroupedInputBlock;
+class Image;
 
 /**
  * This class is the abstract class for all stages used in the pipeline.
@@ -95,12 +55,13 @@ class RENDER_PIPELINE_DECL RenderStage: public RPObject
 {
 public:
     using RequireType = std::vector<std::string>;
-    using ProduceType = std::vector<StageData>;
+    using ProduceType = std::vector<boost::variant<
+        ShaderInput,
+        std::shared_ptr<SimpleInputBlock>,
+        std::shared_ptr<GroupedInputBlock>>>;
     using DefinesType = std::unordered_map<std::string, std::string>;
 
-    static const size_t STEREO_VIEW_COUNT = 2;
-
-    static bool disabled;
+    static bool disabled_;
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
 

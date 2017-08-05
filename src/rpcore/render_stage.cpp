@@ -31,11 +31,13 @@
 #include "render_pipeline/rpcore/pluginbase/base_plugin.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
+#include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 namespace rpcore {
 
-bool RenderStage::disabled = false;
+bool RenderStage::disabled_ = false;
 
 RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id): RPObject(stage_id), pipeline_(pipeline), stage_id_(stage_id)
 {
