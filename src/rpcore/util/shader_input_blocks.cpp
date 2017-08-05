@@ -32,9 +32,9 @@
 
 namespace rpcore {
 
-void SimpleInputBlock::bind_to(const std::shared_ptr<RenderStage>& target)
+void SimpleInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) const
 {
-    for (const auto& key_val: inputs)
+    for (const auto& key_val: inputs_)
         target->set_shader_input(key_val.second);
 }
 
@@ -42,25 +42,25 @@ int GroupedInputBlock::UBO_BINDING_INDEX = 0;
 
 const std::vector<std::string> GroupedInputBlock::PTA_MAPPINGS = { "int", "float", "vec2", "ivec2", "vec3", "vec4", "mat3", "mat4", };
 
-GroupedInputBlock::GroupedInputBlock(const std::string& name): RPObject("GroupedInputBlock"), _name(name)
+GroupedInputBlock::GroupedInputBlock(const std::string& name): RPObject("GroupedInputBlock"), name_(name)
 {
-    _use_ubo = bool(TypeRegistry::ptr()->find_type("GLUniformBufferContext"));
+    use_ubo_ = bool(TypeRegistry::ptr()->find_type("GLUniformBufferContext"));
 
     // Acquire a unique index for each UBO to store its binding
-    _bind_id = GroupedInputBlock::UBO_BINDING_INDEX;
+    bind_id_ = GroupedInputBlock::UBO_BINDING_INDEX;
     GroupedInputBlock::UBO_BINDING_INDEX += 1;
 
-    if (_bind_id == 0)
+    if (bind_id_ == 0)
     {
         // Only output the bind support debug output once(for the first ubo)
-        debug(std::string("Native UBO support = ") + (_use_ubo ? "true" : "false"));
+        debug(std::string("Native UBO support = ") + (use_ubo_ ? "true" : "false"));
     }
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #define MAKE_PTA(TYPE_NAME) \
     case PTA_ID::TYPE_NAME: \
-        _ptas.insert_or_assign(uniform_name, TYPE_NAME::empty_array(array_size)); \
+        ptas_.insert_or_assign(uniform_name, TYPE_NAME::empty_array(array_size)); \
         break;
 #else
 #define MAKE_PTA(TYPE_NAME) \
@@ -142,81 +142,55 @@ GroupedInputBlock::PTA_ID GroupedInputBlock::glsl_type_to_pta(const std::string&
     return PTA_ID::INVALID;
 }
 
-#define SET_SHADER_INPUT(WHICH, TYPE_NAME) \
-    case WHICH: \
-        target->set_shader_input(ShaderInput(_name + ubo_suffix + pta_name_handle.first, boost::get<TYPE_NAME>(pta_name_handle.second))); \
-        break;
-
-void GroupedInputBlock::bind_to(const std::shared_ptr<RenderStage>& target)
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#else
+class BindToVisitor: boost::static_visitor<>
 {
-    try
+public:
+    BindToVisitor(const std::string& name_prefix, const std::shared_ptr<RenderStage>& target): name_prefix(name_prefix), target(target)
     {
-        std::string ubo_suffix = ".";
-        if (_use_ubo)
-            ubo_suffix = "_UBO.";
-
-        for (const auto& pta_name_handle: _ptas)
-        {
-            switch (pta_name_handle.second.which())
-            {
-            SET_SHADER_INPUT(0, PTA_int)
-            SET_SHADER_INPUT(1, PTA_float)
-            SET_SHADER_INPUT(2, PTA_LVecBase2)
-            SET_SHADER_INPUT(3, PTA_LVecBase2i)
-            SET_SHADER_INPUT(4, PTA_LVecBase3)
-            SET_SHADER_INPUT(5, PTA_LVecBase4)
-            SET_SHADER_INPUT(6, PTA_LMatrix3)
-            SET_SHADER_INPUT(7, PTA_LMatrix4)
-
-            default:
-                throw std::out_of_range("Invalid type");
-            }
-        }
     }
-    catch (const std::out_of_range&)
+
+    template <class T>
+    void operator()(const T& pta_handle)
     {
-        nout << "Invalid Panda3D type for shader input." << std::endl;
+        target->set_shader_input(ShaderInput(name_prefix + pta_name, pta_handle));
     }
-}
 
-void GroupedInputBlock::update_input(const std::string& name, int value, size_t index)
-{
-    boost::get<PTA_int&>(_ptas.at(name))[index] = value;
-}
+    std::string pta_name;
 
-void GroupedInputBlock::update_input(const std::string& name, float value, size_t index)
-{
-    boost::get<PTA_float&>(_ptas.at(name))[index] = value;
-}
+private:
+    const std::string& name_prefix;
+    const std::shared_ptr<RenderStage>& target;
+};
+#endif
 
-void GroupedInputBlock::update_input(const std::string& name, const LVecBase2f& value, size_t index)
+void GroupedInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) const
 {
-    boost::get<PTA_LVecBase2f&>(_ptas.at(name))[index] = value;
-}
+    std::string name_prefix = name_;
+    if (use_ubo_)
+        name_prefix += "_UBO.";
+    else
+        name_prefix += ".";
 
-void GroupedInputBlock::update_input(const std::string& name, const LVecBase2i& value, size_t index)
-{
-    boost::get<PTA_LVecBase2i&>(_ptas.at(name))[index] = value;
-}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#else
+    BindToVisitor btv(name_prefix, target);
+#endif
 
-void GroupedInputBlock::update_input(const std::string& name, const LVecBase3f& value, size_t index)
-{
-    boost::get<PTA_LVecBase3f&>(_ptas.at(name))[index] = value;
-}
+    for (const auto& pta_name_handle: ptas_)
+    {
+        const std::string& input_name = name_prefix + pta_name_handle.first;
 
-void GroupedInputBlock::update_input(const std::string& name, const LVecBase4f& value, size_t index)
-{
-    boost::get<PTA_LVecBase4f&>(_ptas.at(name))[index] = value;
-}
-
-void GroupedInputBlock::update_input(const std::string& name, const LMatrix3f& value, size_t index)
-{
-    boost::get<PTA_LMatrix3f&>(_ptas.at(name))[index] = value;
-}
-
-void GroupedInputBlock::update_input(const std::string& name, const LMatrix4f& value, size_t index)
-{
-    boost::get<PTA_LMatrix4f&>(_ptas.at(name))[index] = value;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+        boost::apply_visitor([&](const auto& pta_handle) {
+            target->set_shader_input(ShaderInput(input_name, pta_handle));
+        }, pta_name_handle.second);
+#else
+        btv.pta_name = pta_name;
+        boost::apply_visitor(btv, pta_name_handle.second);
+#endif
+    }
 }
 
 std::string GroupedInputBlock::generate_shader_code(void) const
@@ -228,7 +202,7 @@ std::string GroupedInputBlock::generate_shader_code(void) const
     std::unordered_map<std::string, std::vector<std::string>> structs;
     std::vector<std::string> inputs;
 
-    for (const auto& key_val: _ptas)
+    for (const auto& key_val: ptas_)
     {
         const std::string& input_name = key_val.first;
         const auto& handle = key_val.second;
@@ -312,24 +286,24 @@ std::string GroupedInputBlock::generate_shader_code(void) const
     // Add actual inputs
     if (inputs.size() < 1)
     {
-        debug(std::string("No UBO inputs present for ") + _name);
+        debug(std::string("No UBO inputs present for ") + name_);
     }
     else
     {
-        if (_use_ubo)
+        if (use_ubo_)
         {
             content += (boost::format("layout(shared, binding=%1%) uniform %2%_UBO {\n") %
-                _bind_id % _name).str();
+                bind_id_ % name_).str();
             for (const auto& ipt: inputs)
                 content += std::string(4, ' ') + ipt + "\n";
-            content += std::string("} ") + _name + ";\n";
+            content += std::string("} ") + name_ + ";\n";
         }
         else
         {
             content += "uniform struct {\n";
             for (const auto& ipt: inputs)
                 content += std::string(4, ' ') + ipt + "\n";
-            content += std::string("} ") + _name + ";\n";
+            content += std::string("} ") + name_ + ";\n";
         }
     }
 

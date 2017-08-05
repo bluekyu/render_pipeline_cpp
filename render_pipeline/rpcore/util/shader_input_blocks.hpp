@@ -46,7 +46,7 @@ public:
     using InputsType = std::unordered_map<std::string, ShaderInput>;
 
     /** Creates the ubo with the given name. */
-    SimpleInputBlock(const std::string& name): RPObject("SimpleInputBlock"), name(name) {}
+    SimpleInputBlock(const std::string& name): RPObject("SimpleInputBlock"), name_(name) {}
 
     /** Adds a new input to the UBO. */
     void add_input(const std::string& id, Texture *tex);
@@ -58,51 +58,51 @@ public:
     template <class T>
     void add_input(const std::string& id, const T& np);
 
-    void bind_to(const std::shared_ptr<RenderStage>& target);
+    void bind_to(const std::shared_ptr<RenderStage>& target) const;
 
     const std::string& get_name(void) const;
 
 private:
-    InputsType inputs;
-    const std::string name;
+    InputsType inputs_;
+    const std::string name_;
 };
 
 // ************************************************************************************************
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex)
 {
-    inputs[id] = ShaderInput(name + "." + id, tex);
+    inputs_[id] = ShaderInput(name_ + "." + id, tex);
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex, const SamplerState &sampler)
 {
-    inputs[id] = ShaderInput(name + "." + id, tex, sampler);
+    inputs_[id] = ShaderInput(name_ + "." + id, tex, sampler);
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex, bool read, bool write, int z, int n)
 {
-    inputs[id] = ShaderInput(name + "." + id, tex, read, write, z, n);
+    inputs_[id] = ShaderInput(name_ + "." + id, tex, read, write, z, n);
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, int n1, int n2, int n3, int n4)
 {
-    inputs[id] = ShaderInput(name + "." + id, LVecBase4i(n1, n2, n3, n4));
+    inputs_[id] = ShaderInput(name_ + "." + id, LVecBase4i(n1, n2, n3, n4));
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, PN_stdfloat n1, PN_stdfloat n2, PN_stdfloat n3, PN_stdfloat n4)
 {
-    inputs[id] = ShaderInput(name + "." + id, LVecBase4(n1, n2, n3, n4));
+    inputs_[id] = ShaderInput(name_ + "." + id, LVecBase4(n1, n2, n3, n4));
 }
 
 template <class T>
 inline void SimpleInputBlock::add_input(const std::string& id, const T& np)
 {
     // XXX: force to set priority.
-    inputs[id] = ShaderInput(name + "." + id, np, 0);
+    inputs_[id] = ShaderInput(name_ + "." + id, np, 0);
 }
 
 inline const std::string& SimpleInputBlock::get_name(void) const
 {
-    return name;
+    return name_;
 }
 
 
@@ -115,6 +115,16 @@ inline const std::string& SimpleInputBlock::get_name(void) const
 class GroupedInputBlock: public RPObject
 {
 public:
+    using PTA_Types = boost::variant<
+        PTA_int,
+        PTA_float,
+        PTA_LVecBase2f,
+        PTA_LVecBase2i,
+        PTA_LVecBase3f,
+        PTA_LVecBase4f,
+        PTA_LMatrix3f,
+        PTA_LMatrix4f>;
+
     enum class PTA_ID: int
     {
         INVALID = -1,
@@ -127,17 +137,6 @@ public:
         PTA_LMatrix3f,
         PTA_LMatrix4f
     };
-
-private:
-    std::unordered_map<std::string, boost::variant<
-        PTA_int,
-        PTA_float,
-        PTA_LVecBase2f,
-        PTA_LVecBase2i,
-        PTA_LVecBase3f,
-        PTA_LVecBase4f,
-        PTA_LMatrix3f,
-        PTA_LMatrix4f>> _ptas;
 
 public:
     // Keeps track of the global allocated input blocks to be able to assign
@@ -162,7 +161,7 @@ public:
      * Binds all inputs of this UBO to the given target, which may be
      * either a RenderTarget or a NodePath.
      */
-    void bind_to(const std::shared_ptr<RenderStage>& target);
+    void bind_to(const std::shared_ptr<RenderStage>& target) const;
 
     /** Updates an existing input. */
     void update_input(const std::string& name, int value, size_t index=0);
@@ -175,7 +174,7 @@ public:
     void update_input(const std::string& name, const LMatrix4f& value, size_t index=0);
 
     /** Returns the value of an existing input. */
-    const decltype(_ptas)::mapped_type& get_input(const std::string& name) const;
+    const PTA_Types& get_input(const std::string& name) const;
 
     /** Generates the GLSL shader code to use the UBO. */
     std::string generate_shader_code(void) const;
@@ -183,20 +182,62 @@ public:
     const std::string& get_name(void) const;
 
 private:
-    const std::string _name;
-    bool _use_ubo;
-    int _bind_id;
+    const std::string name_;
+
+    std::unordered_map<std::string, PTA_Types> ptas_;
+    bool use_ubo_;
+    int bind_id_;
 };
 
 // ************************************************************************************************
-inline const std::string& GroupedInputBlock::get_name(void) const
+inline void GroupedInputBlock::update_input(const std::string& name, int value, size_t index)
 {
-    return _name;
+    boost::get<PTA_int&>(ptas_.at(name))[index] = value;
 }
 
-inline const decltype(GroupedInputBlock::_ptas)::mapped_type& GroupedInputBlock::get_input(const std::string& name) const
+inline void GroupedInputBlock::update_input(const std::string& name, float value, size_t index)
 {
-    return _ptas.at(name);
+    boost::get<PTA_float&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LVecBase2f& value, size_t index)
+{
+    boost::get<PTA_LVecBase2f&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LVecBase2i& value, size_t index)
+{
+    boost::get<PTA_LVecBase2i&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LVecBase3f& value, size_t index)
+{
+    boost::get<PTA_LVecBase3f&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LVecBase4f& value, size_t index)
+{
+    boost::get<PTA_LVecBase4f&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LMatrix3f& value, size_t index)
+{
+    boost::get<PTA_LMatrix3f&>(ptas_.at(name))[index] = value;
+}
+
+inline void GroupedInputBlock::update_input(const std::string& name, const LMatrix4f& value, size_t index)
+{
+    boost::get<PTA_LMatrix4f&>(ptas_.at(name))[index] = value;
+}
+
+inline const std::string& GroupedInputBlock::get_name(void) const
+{
+    return name_;
+}
+
+inline const GroupedInputBlock::PTA_Types& GroupedInputBlock::get_input(const std::string& name) const
+{
+    return ptas_.at(name);
 }
 
 }
