@@ -13,6 +13,7 @@
 - [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
 
 ## Code Snippets
+- [Panda3D Math](snippets/math.md)
 - [Panda3D Event](snippets/event.md)
 - [Model](snippets/model.md)
 - [Render Pipeline Material](snippets/rpmaterial.md)

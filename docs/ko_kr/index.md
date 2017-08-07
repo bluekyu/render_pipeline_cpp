@@ -13,7 +13,8 @@
 - [스테레오 및 가상현실](rendering/stereo-and-vr.md)
 
 ## 코드 스니펫
-- [Panda3D Event](../snippets/event.md)
-- [Model](../snippets/model.md)
+- [Panda3D 수학](../snippets/math.md)
+- [Panda3D 이벤트](../snippets/event.md)
+- [모델](../snippets/model.md)
 - [Render Pipeline Material](../snippets/rpmaterial.md)
-- [Texture](../snippets/texture.md)
+- [텍스처](../snippets/texture.md)
