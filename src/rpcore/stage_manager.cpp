@@ -128,7 +128,7 @@ struct VisitorInsertToInputBlocks: public boost::static_visitor<>
     void operator()(const T& block)
     {
         std::string block_name = block->get_name();
-        input_blocks_.insert({block_name, std::move(block)});
+        input_blocks_.insert({block_name, block});
     }
 
 private:
@@ -303,7 +303,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
 {
     self_.trace(fmt::format("Registring the result of stage ({}).", stage->get_debug_name()));
 
-    for (auto& pipe_data: stage->get_produced_pipes())
+    for (const auto& pipe_data: stage->get_produced_pipes())
     {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
         if (auto data = boost::get<ShaderInput>(&pipe_data))
@@ -314,7 +314,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
             input_blocks_.insert_or_assign((*data)->get_name(), *data);
 #else
         if (auto data = boost::get<ShaderInput>(&pipe_data))
-            pipes_.insert({data->get_name()->get_name(), *data});
+            pipes_[data->get_name()->get_name()] = *data;
         else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_data))
             input_blocks_.insert({(*data)->get_name(), *data});
         else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_data))
@@ -353,7 +353,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
             const auto& input_name = data->get_name()->get_name();
             if (inputs_.find(input_name) != inputs_.end())
                 self_.warn(fmt::format("Stage {} overrides input {}", stage->get_debug_name(), input_name));
-            inputs_.insert({input_name, *data});
+            inputs_[input_name] = *data;
         }
         else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&input_data))
         {
