@@ -1,4 +1,4 @@
-# Stereo and Virtual Reality
+# 스테레오 및 가상현실
 **Translation**: [English](../../rendering/stereo-and-vr.md)
 
 ## 스테레오 렌더링
@@ -14,8 +14,8 @@ Panda3D 에서도 자체적으로 스테레오 렌더링을 지원한다. 그러
 
 
 
-## 가상 현실 및 HMD 렌더링
-Render Pipeline 에서 가상 현실을 위한 Head Mount Display (HMD) 렌더링을 지원한다.
+## 가상현실 및 HMD 렌더링
+Render Pipeline 에서 가상현실을 위한 Head Mount Display (HMD) 렌더링을 지원한다.
 렌더링 자체는 위에서 언급된 스테레오 렌더링을 사용하여 수행되며, HMD 장치에 디스플레이 하는 것은 플러그인을 통해서 지원한다.
 
 현재 지원하고 있는 플러그인은 OpenVR 플러그인으로, 아래 주소에서 사용이 가능한다.
