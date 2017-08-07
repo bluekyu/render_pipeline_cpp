@@ -65,7 +65,7 @@ GroupedInputBlock::GroupedInputBlock(const std::string& name): RPObject("Grouped
 #else
 #define MAKE_PTA(TYPE_NAME) \
     case PTA_ID::TYPE_NAME: \
-        _ptas.insert({uniform_name, TYPE_NAME::empty_array(array_size)}); \
+        ptas_.insert({uniform_name, TYPE_NAME::empty_array(array_size)}); \
         break;
 #endif
 
@@ -144,23 +144,22 @@ GroupedInputBlock::PTA_ID GroupedInputBlock::glsl_type_to_pta(const std::string&
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
-class BindToVisitor: boost::static_visitor<>
+struct BindToVisitor: public boost::static_visitor<>
 {
 public:
-    BindToVisitor(const std::string& name_prefix, const std::shared_ptr<RenderStage>& target): name_prefix(name_prefix), target(target)
+    BindToVisitor(const std::shared_ptr<RenderStage>& target): target(target)
     {
     }
 
     template <class T>
     void operator()(const T& pta_handle)
     {
-        target->set_shader_input(ShaderInput(name_prefix + pta_name, pta_handle));
+        target->set_shader_input(ShaderInput(input_name, pta_handle));
     }
 
-    std::string pta_name;
+    std::string input_name;
 
 private:
-    const std::string& name_prefix;
     const std::shared_ptr<RenderStage>& target;
 };
 #endif
@@ -175,7 +174,7 @@ void GroupedInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) cons
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
-    BindToVisitor btv(name_prefix, target);
+    BindToVisitor btv(target);
 #endif
 
     for (const auto& pta_name_handle: ptas_)
@@ -187,7 +186,7 @@ void GroupedInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) cons
             target->set_shader_input(ShaderInput(input_name, pta_handle));
         }, pta_name_handle.second);
 #else
-        btv.pta_name = pta_name;
+        btv.input_name = input_name;
         boost::apply_visitor(btv, pta_name_handle.second);
 #endif
     }
