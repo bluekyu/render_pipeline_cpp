@@ -4,14 +4,13 @@ This project is C++ ported version of [Render Pipeline](https://github.com/tobsp
 
 And I am developing the project and new features for CR Software Framework (...).
 
-- @subpage rendering
-- @subpage render_pipeline_plugins
-- @subpage render_pipeline_architecture
-- @subpage document_translations
+
+## Documents
+- See `docs/index.md` document.
 
 
 
-## Runtime Requirements
+## Library Requirements
 - Panda3D
 - Boost
 
