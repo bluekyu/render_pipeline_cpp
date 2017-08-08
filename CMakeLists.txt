@@ -187,8 +187,8 @@ install_debugging_information(${PROJECT_NAME})
 
 # documents
 if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
-    set(DOCUMENTS_TARGET "documents")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/documents/Doxyfile.in"
+    set(DOCUMENTS_TARGET "doxygen")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Doxyfile.in"
         "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
         @ONLY
     )
