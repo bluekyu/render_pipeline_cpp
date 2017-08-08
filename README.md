@@ -32,7 +32,7 @@ I tested it in the following platforms:
 See `docs/build_rpcpp.md` document.
 
 ### Current Third-party Version
-- Panda3D: e715f0a2c96d336f5e2c25db47b967b46a88aaa9 (https://github.com/bluekyu/panda3d)
+- Panda3D: https://github.com/bluekyu/panda3d/tree/crsf
 - FreeType2: 2.5.2 (in Panda3D)
 - Boost: 1.64.0
 - YAML-CPP: 0.5.3
