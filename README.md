@@ -32,7 +32,7 @@ I tested it in the following platforms:
 See `docs/build_rpcpp.md` document.
 
 ### Current Third-party Version
-- Panda3D: https://github.com/bluekyu/panda3d/tree/crsf
+- Panda3D: https://github.com/bluekyu/panda3d/tree/develop
 - FreeType2: 2.5.2 (in Panda3D)
 - Boost: 1.64.0
 - YAML-CPP: 0.5.3
@@ -44,7 +44,6 @@ See `docs/build_rpcpp.md` document.
 ## Related Projects
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
 - Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
-- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d/tree/crsf
 
 
 
