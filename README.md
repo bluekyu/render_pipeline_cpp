@@ -2,7 +2,7 @@
 
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
-And I am developing the project and new features for CR Software Framework (......).
+And I am developing the project and new features for CR Software Framework (...).
 
 
 ## Documents

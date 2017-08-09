@@ -1,5 +1,5 @@
 # Virtual File System
-**Translation**: [English](../virtual_filesystem)
+**Translation**: [English](../virtual_filesystem.md)
 
 ## Panda3D 파일 시스템
 

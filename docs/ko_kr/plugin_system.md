@@ -1,5 +1,5 @@
 # 플러그인 시스템
-**Translation**: [English](../plugin_system)
+**Translation**: [English](../plugin_system.md)
 
 ## 개요
 Render Pipeline C++ 플러그인들은 `etc/render_pipeline/rpplugins` 경로에 설치되고,
