@@ -1,0 +1,11 @@
+clone_folder: c:\projects\render_pipeline_cpp
+
+environment:
+  matrix:
+    - CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+
+build_script:
+  - cmake --version
+  - cd c:\projects\render_pipeline_cpp
+  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INSTALL_PREFIX=%CD:\=/%/install -DCMAKE_BUILD_TYPE=Release .
+  - cmake --build . --config Release --target install
