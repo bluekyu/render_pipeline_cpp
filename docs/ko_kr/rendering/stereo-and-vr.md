@@ -1,5 +1,5 @@
 # 스테레오 및 가상현실
-**Translation**: [English](../../rendering/stereo-and-vr.md)
+**Translation**: [English](../../rendering/stereo-and-vr)
 
 ## 스테레오 렌더링
 Render Pipeline 에서 스테레오 렌더링을 사용하려면 stereo 옵션을 활성화 해야 한다.

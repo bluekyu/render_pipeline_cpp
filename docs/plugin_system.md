@@ -1,5 +1,5 @@
 # Plugin System
-**Translation**: [한국어](ko_kr/plugin_system.md)
+**Translation**: [한국어](ko_kr/plugin_system)
 
 ## Overview
 Plugins of Render Pipeline are installed in `etc/render_pipeline/rpplugins` and

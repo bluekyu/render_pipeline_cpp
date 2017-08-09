@@ -1,20 +1,20 @@
 # Render Pipeline Docs
-**Translation**: [한국어](ko_kr/index.md)
+**Translation**: [한국어](ko_kr/index)
 
 ## Getting Started
-- [Build Render Pipeline C++](build_rpcpp.md)
+- [Build Render Pipeline C++](build_rpcpp)
 
 ## System
-- [Render Pipeline Structures](structures.md)
-- [Virtual File System](virtual_filesystem.md)
+- [Render Pipeline Structures](structures)
+- [Virtual File System](virtual_filesystem)
 
 ## Rendering
-- [Model](rendering/model.md)
-- [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
+- [Model](rendering/model)
+- [Stereo and Virtual Reality](rendering/stereo-and-vr)
 
 ## Code Snippets
-- [Panda3D Math](snippets/math.md)
-- [Panda3D Event](snippets/event.md)
-- [Model](snippets/model.md)
-- [Render Pipeline Material](snippets/rpmaterial.md)
-- [Texture](snippets/texture.md)
+- [Panda3D Math](snippets/math)
+- [Panda3D Event](snippets/event)
+- [Model](snippets/model)
+- [Render Pipeline Material](snippets/rpmaterial)
+- [Texture](snippets/texture)

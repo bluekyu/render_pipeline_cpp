@@ -1,5 +1,5 @@
 # Building Render Pipeline C++
-**Translation**: [한국어](ko_kr/build_rpcpp.md)
+**Translation**: [한국어](ko_kr/build_rpcpp)
 
 ## Requirements
 - Panda3D
