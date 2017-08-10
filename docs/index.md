@@ -9,7 +9,8 @@
 - [Virtual File System](virtual_filesystem.md)
 
 ## Rendering
-- [Model](rendering/model.md)
+- [Panda3D Model](rendering/model.md)
+- [Physically Based Shading Model](rendering/pbs-model.md)
 - [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
 
 ## Code Snippets
