@@ -125,9 +125,15 @@ PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& pos
     impl_->initialize(name, positions, radius, buffer_hint);
 }
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 PointsNode::PointsNode(PointsNode&&) = default;
+#endif
+
 PointsNode::~PointsNode(void) = default;
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 PointsNode& PointsNode::operator=(PointsNode&& other) = default;
+#endif
 
 NodePath PointsNode::get_nodepath(void) const
 {
