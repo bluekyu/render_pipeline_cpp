@@ -51,4 +51,4 @@ See `docs/build_rpcpp.md` document.
 See `LICENSE.md` file.
 
 ### Third-party Licenses
-See `LICENSE-thirdparty.md` file.
+See `thridparty-licenses.md` file.
