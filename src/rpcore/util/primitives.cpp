@@ -32,6 +32,8 @@
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 #include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 
+#include "render_pipeline/rpcore/logger.hpp"
+
 namespace rpcore {
 
 static NodePath create_geom_node(const std::string& name, Geom* geom)
@@ -47,30 +49,57 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
     return np;
 }
 
+void modify_points(GeomVertexData* vdata, GeomPrimitive* prim, const std::vector<LPoint3f>& positions)
+{
+    const int count = static_cast<int>(positions.size());
+
+    vdata->unclean_set_num_rows(count);
+    vdata->modify_array(0)->modify_handle()->copy_data_from(
+        reinterpret_cast<const unsigned char*>(positions.data()),
+        count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
+
+    prim->clear_vertices();
+    prim->add_consecutive_vertices(0, count);
+    prim->close_primitive();
+}
+
 NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, GeomEnums::UsageHint buffer_hint)
 {
-    const size_t count = positions.size();
+    if (positions.size() > (std::numeric_limits<int>::max)())
+    {
+        RPLogger::get_instance().get_internal_logger()->error(
+            "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
+        return {};
+    }
 
-    // create vertices
+    const int count = static_cast<int>(positions.size());
+
     PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
-    vdata->unclean_set_num_rows(count);
-
-    GeomVertexWriter vertex(vdata, InternalName::get_vertex());
-
-    for (int k = 0; k < count; ++k)
-        vertex.add_data3f(positions[k]);
-
-    // create indices
     PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
-    prim->reserve_num_vertices(count);
-    for (int k = 0; k < count; ++k)
-        prim->add_vertex(k);
-    prim->close_primitive();
+    modify_points(vdata, prim, positions);
 
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
     return create_geom_node(name, geom);
+}
+
+bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions, int geom_index, int primitive_index)
+{
+    if (positions.size() > (std::numeric_limits<int>::max)())
+    {
+        RPLogger::get_instance().get_internal_logger()->error(
+            "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
+        return false;
+    }
+
+    auto geom = geom_node->modify_geom(geom_index);
+    if (!geom)
+        return false;
+
+    modify_points(geom->modify_vertex_data(), geom->modify_primitive(primitive_index), positions);
+
+    return true;
 }
 
 NodePath create_plane(const std::string& name)

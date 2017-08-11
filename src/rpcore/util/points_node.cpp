@@ -19,7 +19,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "render_pipeline/rpcore/util/circular_points_node.hpp"
+#include "render_pipeline/rpcore/util/points_node.hpp"
 
 #include <shaderAttrib.h>
 #include <geomNode.h>
@@ -34,11 +34,13 @@ namespace rpcore {
 static_assert(std::is_standard_layout<LMatrix4f>::value, "std::is_standard_layout<LMatrix4f>::value");
 static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeof(float)*16");
 
-class CircularPointsNode::Impl
+class PointsNode::Impl
 {
 public:
-    void initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius, const std::string& effect_path,
+    void initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
         GeomEnums::UsageHint buffer_hint);
+
+    int get_active_point_count(void) const;
 
     void set_position(const LPoint3f& position, int point_index);
     void set_positions(const std::vector<LPoint3f>& positions);
@@ -55,49 +57,42 @@ public:
     std::vector<LPoint3f> positions_;
 };
 
-void CircularPointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
-    const std::string& effect_path, GeomEnums::UsageHint buffer_hint)
+void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+    GeomEnums::UsageHint buffer_hint)
 {
-    points_np_ = create_points(name, positions);
-    positions_ = positions;
-
-    // Load the effect
-    std::string epath = effect_path;
-    if (epath.empty())
-        epath = "effects/circular_points.yaml";
-
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(points_np_, epath);
+    points_np_ = create_points(name, positions_ = positions);
 
     set_radius(radius);
     points_np_.set_attrib(DCAST(ShaderAttrib, points_np_.get_attrib(ShaderAttrib::get_class_type()))->set_flag(ShaderAttrib::F_shader_point_size, true));
 }
 
-void CircularPointsNode::Impl::set_position(const LPoint3f& position, int point_index)
+int PointsNode::Impl::get_active_point_count(void) const
+{
+    return DCAST(GeomNode, points_np_.node())->get_geom(0)->get_primitive(0)->get_num_vertices();
+}
+
+void PointsNode::Impl::set_position(const LPoint3f& position, int point_index)
 {
     dirty_ = true;
     positions_[point_index] = position;
 }
 
-void CircularPointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
+void PointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
 {
     if (positions.size() == positions_.size())
-    {
-        dirty_ = true;
         positions_ = positions;
-    }
     else
-    {
-        RPObject::global_error("CircularPointsNode",
-            fmt::format("The size of positions ({}) is NOT same as current size ({}).", positions.size(), positions_.size()));
-    }
+        modify_points(DCAST(GeomNode, points_np_.node()), positions_ = positions);
+
+    dirty_ = true;
 }
 
-void CircularPointsNode::Impl::set_radius(float radius)
+void PointsNode::Impl::set_radius(float radius)
 {
     points_np_.set_shader_input("point_radius", radius);
 }
 
-void CircularPointsNode::Impl::upload_positions(void)
+void PointsNode::Impl::upload_positions(void)
 {
     if (!dirty_)
         return;
@@ -111,11 +106,11 @@ void CircularPointsNode::Impl::upload_positions(void)
     dirty_ = false;
 }
 
-void CircularPointsNode::Impl::set_active_point_count(int count)
+void PointsNode::Impl::set_active_point_count(int count)
 {
     if (count > positions_.size())
     {
-        RPObject::global_warn("CircularPointsNode",
+        RPObject::global_warn("PointsNode",
             fmt::format("Given count ({}) is bigger than the count of stored points ({}).", count, positions_.size()));
         return;
     }
@@ -124,67 +119,84 @@ void CircularPointsNode::Impl::set_active_point_count(int count)
 }
 
 // ************************************************************************************************
-CircularPointsNode::CircularPointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
-    const std::string& effect_path, GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>())
+PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+    GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>())
 {
-    impl_->initialize(name, positions, radius, effect_path, buffer_hint);
+    impl_->initialize(name, positions, radius, buffer_hint);
 }
 
-CircularPointsNode::~CircularPointsNode(void) = default;
+PointsNode::PointsNode(PointsNode&&) = default;
+PointsNode::~PointsNode(void) = default;
+PointsNode& PointsNode::operator=(PointsNode&& other) = default;
 
-NodePath CircularPointsNode::get_nodepath(void) const
+NodePath PointsNode::get_nodepath(void) const
 {
     return impl_->points_np_;
 }
 
-int CircularPointsNode::get_point_count(void) const
+int PointsNode::get_point_count(void) const
 {
     return static_cast<int>(impl_->positions_.size());
 }
 
-const LPoint3f& CircularPointsNode::get_position(int point_index) const
+int PointsNode::get_active_point_count(void) const
+{
+    return impl_->get_active_point_count();
+}
+
+float PointsNode::get_radius(void) const
+{
+    return impl_->points_np_.get_shader_input("point_radius").get_vector().get_x();
+}
+
+void PointsNode::set_circular_point(void) const
+{
+    rpcore::RenderPipeline::get_global_ptr()->set_effect(impl_->points_np_, "effects/circular_points.yaml");
+}
+
+const LPoint3f& PointsNode::get_position(int point_index) const
 {
     return impl_->positions_[point_index];
 }
 
-const std::vector<LPoint3f>& CircularPointsNode::get_positions(void) const
+const std::vector<LPoint3f>& PointsNode::get_positions(void) const
 {
     return impl_->positions_;
 }
 
-LPoint3f* CircularPointsNode::modify_positions(void)
+std::vector<LPoint3f>& PointsNode::modify_positions(void)
 {
     impl_->dirty_ = true;
-    return impl_->positions_.data();
+    return impl_->positions_;
 }
 
-void CircularPointsNode::set_position(const LPoint3f& position, int point_index)
+void PointsNode::set_position(const LPoint3f& position, int point_index)
 {
     if (point_index >= static_cast<int>(impl_->positions_.size()))
     {
-        RPObject::global_error("CircularPointsNode", "Out of range of positions of CircularPointsNode.");
+        RPObject::global_error("PointsNode", "Out of range of positions of PointsNode.");
         return;
     }
 
     impl_->set_position(position, point_index);
 }
 
-void CircularPointsNode::set_positions(const std::vector<LPoint3f>& positions)
+void PointsNode::set_positions(const std::vector<LPoint3f>& positions)
 {
     impl_->set_positions(positions);
 }
 
-void CircularPointsNode::upload_positions(void)
+void PointsNode::upload_positions(void)
 {
     impl_->upload_positions();
 }
 
-void CircularPointsNode::set_radius(float radius)
+void PointsNode::set_radius(float radius)
 {
     impl_->set_radius(radius);
 }
 
-void CircularPointsNode::set_active_point_count(int count)
+void PointsNode::set_active_point_count(int count)
 {
     impl_->set_active_point_count(count);
 }

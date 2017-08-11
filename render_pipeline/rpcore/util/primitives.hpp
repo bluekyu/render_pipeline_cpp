@@ -27,8 +27,14 @@
 
 namespace rpcore {
 
+/**
+ * Create points primitive.
+ */
 RENDER_PIPELINE_DECL NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions,
     GeomEnums::UsageHint buffer_hint=Geom::UsageHint::UH_static);
+
+RENDER_PIPELINE_DECL bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions,
+    int geom_index=0, int primitive_index=0);
 
 /**
  * Create 2D plane primitive.

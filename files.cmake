@@ -116,11 +116,11 @@ set(header_rpcore_stages
 )
 
 set(header_rpcore_util
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/circular_points_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/instancing_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/points_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/primitives.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpgeomnode.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rpmaterial.hpp"
@@ -296,7 +296,6 @@ set(source_rpcore_stages
 )
 
 set(source_rpcore_util
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/circular_points_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/cubemap_filter.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.hpp"
@@ -305,6 +304,7 @@ set(source_rpcore_util
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/instancing_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/movement_controller.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/points_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/post_process_region.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/primitives.cpp"
