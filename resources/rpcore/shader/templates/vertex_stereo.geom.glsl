@@ -31,8 +31,13 @@
 #pragma include "render_pipeline_base.inc.glsl"
 #pragma include "includes/vertex_output.struct.glsl"
 
+#if defined(USE_POINTS_LAYOUT)
+layout(points) in;
+layout(points, max_vertices=2) out;
+#else
 layout(triangles) in;
 layout(triangle_strip, max_vertices=6) out;
+#endif
 
 in VertexOutput vInput[];
 out VertexOutput vOutput;
@@ -51,6 +56,9 @@ void main()
         {
             gl_Position = MainSceneData.stereo_ViewProjectionMatrix[layer] * gl_in[i].gl_Position;
             vOutput = vInput[i];
+
+            %post_transform%
+
             EmitVertex();
         }
         EndPrimitive();

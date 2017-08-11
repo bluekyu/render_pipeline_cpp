@@ -168,6 +168,10 @@ void CommonResources::update(void)
             view_mat[1] * stereo_proj_mat[1]
         };
 
+        input_ubo_->update_input("stereo_ViewMatrix", view_mat[0], 0);
+        input_ubo_->update_input("stereo_ViewMatrix", view_mat[1], 1);
+        input_ubo_->update_input("stereo_ProjectionMatrix", stereo_proj_mat[0], 0);
+        input_ubo_->update_input("stereo_ProjectionMatrix", stereo_proj_mat[1], 1);
         input_ubo_->update_input("stereo_ViewProjectionMatrix", stereo_view_proj_mat[0], 0);
         input_ubo_->update_input("stereo_ViewProjectionMatrix", stereo_view_proj_mat[1], 1);
 
@@ -366,6 +370,8 @@ void CommonResources::setup_inputs(void)
         input_ubo_->register_pta("stereo_inv_proj_mat[2]", "mat4");
         input_ubo_->register_pta("stereo_view_mat_billboard[2]", "mat4");
 
+        input_ubo_->register_pta("stereo_ViewMatrix[2]", "mat4");
+        input_ubo_->register_pta("stereo_ProjectionMatrix[2]", "mat4");
         input_ubo_->register_pta("stereo_ViewProjectionMatrix[2]", "mat4");
         input_ubo_->register_pta("stereo_ViewProjectionMatrixInverse[2]", "mat4");
     }
