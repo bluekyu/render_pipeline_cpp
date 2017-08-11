@@ -344,6 +344,7 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
     if (iter == iter_end)
         return;
 
+    // override options
     auto options = Effect::get_default_options();
     options.insert(std::get<2>(*iter).begin(), std::get<2>(*iter).end());
 
@@ -621,7 +622,7 @@ void RenderPipeline::Impl::init_globals(void)
 
 void RenderPipeline::Impl::set_default_effect(void)
 {
-    self_.set_effect(Globals::render, "effects/default.yaml", {}, -10);
+    self_.set_effect(Globals::render, "/$$rp/effects/default.yaml", {}, -10);
 }
 
 void RenderPipeline::Impl::adjust_camera_settings(void)
@@ -772,7 +773,7 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
     skybox.reparent_to(Globals::render);
     skybox.set_bin("unsorted", 10000);
 
-    self_.set_effect(skybox, "effects/skybox.yaml", {
+    self_.set_effect(skybox, "/$$rp/effects/skybox.yaml", {
         { "render_shadow", false },
         { "render_envmap", false },
         { "render_voxelize", false },
@@ -1092,7 +1093,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                     "problematic mesh is: {}", geom_np.get_name()));
                 continue;
             }
-            set_effect(geom_np, "effects/default.yaml",
+            set_effect(geom_np, "/$$rp/effects/default.yaml",
                 {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
         }
     }

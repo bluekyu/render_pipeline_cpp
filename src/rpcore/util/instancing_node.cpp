@@ -61,7 +61,7 @@ void InstancingNode::Impl::initilize(NodePath np, const std::string& effect_path
     // Load the effect
     std::string epath = effect_path;
     if (epath.empty())
-        epath = "effects/basic_instancing.yaml";
+        epath = "/$$rp/effects/basic_instancing.yaml";
 
     rpcore::RenderPipeline::get_global_ptr()->set_effect(instanced_np_, epath, {});
 

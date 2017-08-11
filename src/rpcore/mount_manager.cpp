@@ -128,7 +128,6 @@ void MountManager::Impl::mount(MountManager& self)
     // Mount directory structure
     vfs->mount(convert_path(base_path_), "/$$rp", 0);
     vfs->mount(convert_path(rppanda::join(base_path_, "rpcore/shader")), "/$$rp/shader", 0);
-    vfs->mount(convert_path(rppanda::join(base_path_, "effects")), "effects", 0);
 
     // Mount the pipeline temp path:
     // If no write path is specified, use a virtual ramdisk

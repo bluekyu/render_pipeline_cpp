@@ -72,7 +72,7 @@ public:
      * Constructs an effect name from a filename, this is used for writing
      * out temporary files.
      */
-    std::string convert_filename_to_name(std::string filename);
+    std::string convert_filename_to_name(const std::string& filepath);
 
     /** Internal method to construct the effect from a yaml object. */
     void parse_content(Effect& self, YAML::Node& parsed_yaml);
@@ -152,14 +152,12 @@ std::string Effect::Impl::generate_hash(const std::string& filename, const Optio
     return file_hash + "-" + options_hash;
 }
 
-std::string Effect::Impl::convert_filename_to_name(std::string filename)
+std::string Effect::Impl::convert_filename_to_name(const std::string& filepath)
 {
-    boost::erase_all(filename, ".yaml");
-    boost::erase_all(filename, "effects/");
+    std::string filename = Filename(filepath).get_basename_wo_extension();
     boost::replace_all(filename, "/", "_");
     boost::replace_all(filename, "\\", "_");
     boost::replace_all(filename, ".", "_");
-
     return filename;
 }
 
