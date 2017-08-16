@@ -19,15 +19,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+// NOMINMAX
+#include <flatbuffers/idl.h>
+#include <flatbuffers/util.h>
+
 #include "render_pipeline/rpcore/util/rpmodel.hpp"
 
 #include <virtualFileSystem.h>
 #include <modelRoot.h>
 
 #include <spdlog/fmt/ostr.h>
-
-#include <flatbuffers/idl.h>
-#include <flatbuffers/util.h>
 
 #include "render_pipeline/rpcore/mount_manager.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
