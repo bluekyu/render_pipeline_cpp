@@ -37,9 +37,9 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-Plugin::~Plugin(void) = default;
+Plugin::~Plugin() = default;
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     stage_ = std::make_shared<AOStage>(pipeline_);
     add_stage(stage_);

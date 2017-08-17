@@ -25,4 +25,4 @@
 
 NotifyCategoryDecl(rppanda_actor, EXPORT_CLASS, EXPORT_TEMPL);
 
-extern void init_librppanda_actor(void);
+extern void init_librppanda_actor();

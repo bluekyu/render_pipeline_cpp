@@ -45,32 +45,32 @@ public:
     CommonResources(RenderPipeline& pipeline);
 
     /** Generates the shader configuration for the common inputs. */
-    void write_config(void);
+    void write_config();
 
-    NodePath load_default_skybox(void);
+    NodePath load_default_skybox();
 
     /** Updates the commonly used resources, mostly the shader inputs. */
-    void update(void);
+    void update();
 
 private:
     /** Loads the default font used for rendering and assigns it to Globals.font for further usage. */
-    void load_fonts(void);
+    void load_fonts();
 
-    void load_textures(void);
+    void load_textures();
 
-    void load_environment_cubemap(void);
+    void load_environment_cubemap();
 
     /** Loads the prefiltered brdf. */
-    void load_prefilter_brdf(void);
+    void load_prefilter_brdf();
 
     /**
      * Creates commonly used shader inputs such as the current mvp and
      * registers them to the stage manager so they can be used for rendering.
      */
-    void setup_inputs(void);
+    void setup_inputs();
 
     /** Loads the skydome. */
-    void load_skydome(void);
+    void load_skydome();
 
     RenderPipeline& pipeline_;
     rppanda::ShowBase* showbase_;

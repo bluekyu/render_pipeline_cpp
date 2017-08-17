@@ -31,13 +31,13 @@ class EnvProbesPlugin: public rpcore::BasePlugin
 public:
     EnvProbesPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
+    void on_stage_setup() final;
     void on_prepare_scene(NodePath scene) final;
-    void on_pre_render_update(void) final;
+    void on_pre_render_update() final;
 
-    virtual std::shared_ptr<rpcore::RenderStage> get_capture_stage(void);
+    virtual std::shared_ptr<rpcore::RenderStage> get_capture_stage();
 
 private:
     class Impl;

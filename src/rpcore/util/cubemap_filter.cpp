@@ -33,13 +33,13 @@ CubemapFilter::CubemapFilter(RenderStage* stage, const std::string& name, int si
     make_maps();
 }
 
-void CubemapFilter::create(void)
+void CubemapFilter::create()
 {
     make_specular_targets();
     make_diffuse_target();
 }
 
-void CubemapFilter::reload_shaders(void)
+void CubemapFilter::reload_shaders()
 {
     // Set diffuse filter shaders
     _diffuse_target->set_shader(_stage->load_shader({"ibl/cubemap_diffuse.frag.glsl"}));
@@ -62,7 +62,7 @@ void CubemapFilter::reload_shaders(void)
     _targets_spec_filter[0]->set_shader(_stage->load_shader({"ibl/cubemap_specular_filter_first.frag.glsl"}));
 }
 
-void CubemapFilter::make_maps(void)
+void CubemapFilter::make_maps()
 {
     // Create the cubemaps for the diffuse and specular components
     _prefilter_map = Image::create_cube(_name + "IBLPrefDiff", CubemapFilter::PREFILTER_CUBEMAP_SIZE, "R11G11B10");
@@ -84,7 +84,7 @@ void CubemapFilter::make_maps(void)
     _specular_map->set_minfilter(SamplerState::FT_linear_mipmap_linear);
 }
 
-void CubemapFilter::make_specular_targets(void)
+void CubemapFilter::make_specular_targets()
 {
     _targets_spec.clear();
     _targets_spec_filter.clear();
@@ -124,7 +124,7 @@ void CubemapFilter::make_specular_targets(void)
     }
 }
 
-void CubemapFilter::make_diffuse_target(void)
+void CubemapFilter::make_diffuse_target()
 {
     // Create the target which integrates the lambert brdf
     _diffuse_target = _stage->create_target("CF:DiffuseIBL");

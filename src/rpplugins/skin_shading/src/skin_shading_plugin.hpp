@@ -31,9 +31,9 @@ class SkinShadingPlugin: public rpcore::BasePlugin
 public:
     SkinShadingPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
+    void on_stage_setup() final;
 
 private:
     class Impl;

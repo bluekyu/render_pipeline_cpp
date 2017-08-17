@@ -62,9 +62,9 @@ DayTimeManager::DayTimeManager(RenderPipeline& pipeline): RPObject("DayTimeManag
 {
 }
 
-DayTimeManager::~DayTimeManager(void) = default;
+DayTimeManager::~DayTimeManager() = default;
 
-float DayTimeManager::get_time(void) const
+float DayTimeManager::get_time() const
 {
     return impl_->time_;
 }
@@ -87,7 +87,7 @@ void DayTimeManager::set_time(const std::string& time)
     impl_->time_ = (std::stoi(parsed_val[0]) * 60.0f + std::stoi(parsed_val[1])) / (24.0f * 60.0f);
 }
 
-std::string DayTimeManager::get_formatted_time(void) const
+std::string DayTimeManager::get_formatted_time() const
 {
     static boost::format time_format("%02d:%02d");
 
@@ -95,7 +95,7 @@ std::string DayTimeManager::get_formatted_time(void) const
     return (time_format % (int(total_minutes) / 60) % (int(total_minutes) % 60)).str();
 }
 
-void DayTimeManager::load_settings(void)
+void DayTimeManager::load_settings()
 {
     const auto& day_settings = impl_->pipeline_.get_plugin_mgr()->get_day_settings();
     for (const auto& id_settings: day_settings)
@@ -126,7 +126,7 @@ void DayTimeManager::load_settings(void)
     }
 }
 
-void DayTimeManager::update(void)
+void DayTimeManager::update()
 {
     for (const auto& id_handle: impl_->setting_handles_)
     {

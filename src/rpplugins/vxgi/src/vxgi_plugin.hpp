@@ -31,11 +31,11 @@ class VXGIPlugin: public rpcore::BasePlugin
 public:
     VXGIPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
-    void on_pipeline_created(void) final;
-    void on_pre_render_update(void) final;
+    void on_stage_setup() final;
+    void on_pipeline_created() final;
+    void on_pre_render_update() final;
 
 private:
     class Impl;

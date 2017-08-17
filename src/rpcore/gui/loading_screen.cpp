@@ -36,12 +36,12 @@ LoadingScreen::LoadingScreen(RenderPipeline* pipeline, const std::string& image_
 
 }
 
-LoadingScreen::~LoadingScreen(void)
+LoadingScreen::~LoadingScreen()
 {
     delete fullscreen_bg;
 }
 
-void LoadingScreen::create(void)
+void LoadingScreen::create()
 {
     trace("Creating loading screen ...");
 
@@ -64,7 +64,7 @@ void LoadingScreen::create(void)
     graphics_engine->render_frame();
 }
 
-void LoadingScreen::remove(void)
+void LoadingScreen::remove()
 {
     fullscreen_bg->get_node()->get_texture()->release_all();
     fullscreen_node.remove_node();

@@ -24,13 +24,13 @@
 
 namespace rpplugins {
 
-EnvironmentProbe::EnvironmentProbe(void): RPObject("EnvironmentProbe")
+EnvironmentProbe::EnvironmentProbe(): RPObject("EnvironmentProbe")
 {
     _transform = TransformState::make_identity();
     _bounds = new BoundingSphere(LPoint3f(0), 1.0f);
 }
 
-void EnvironmentProbe::update_bounds(void)
+void EnvironmentProbe::update_bounds()
 {
     const auto& mat = _transform->get_mat();
     const LVecBase3f& mid_point = mat.xform_point(LVecBase3f(0, 0, 0));

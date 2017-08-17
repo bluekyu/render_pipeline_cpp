@@ -30,14 +30,14 @@ namespace rpcore {
 CombineVelocityStage::RequireType CombineVelocityStage::required_inputs_;
 CombineVelocityStage::RequireType CombineVelocityStage::required_pipes_ = { "GBuffer" };
 
-CombineVelocityStage::ProduceType CombineVelocityStage::get_produced_pipes(void) const
+CombineVelocityStage::ProduceType CombineVelocityStage::get_produced_pipes() const
 {
     return {
         ShaderInput("CombinedVelocity", target_->get_color_tex()),
     };
 }
 
-void CombineVelocityStage::create(void)
+void CombineVelocityStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -48,12 +48,12 @@ void CombineVelocityStage::create(void)
     target_->prepare_buffer();
 }
 
-void CombineVelocityStage::reload_shaders(void)
+void CombineVelocityStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "combine_velocity.frag.glsl" }, stereo_mode_));
 }
 
-std::string CombineVelocityStage::get_plugin_id(void) const
+std::string CombineVelocityStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

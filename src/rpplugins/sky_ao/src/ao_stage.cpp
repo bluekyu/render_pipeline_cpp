@@ -30,14 +30,14 @@ namespace rpplugins {
 SkyAOStage::RequireType SkyAOStage::required_inputs = { "SkyAOCapturePosition" };
 SkyAOStage::RequireType SkyAOStage::required_pipes = { "SkyAOHeight", "GBuffer" };
 
-SkyAOStage::ProduceType SkyAOStage::get_produced_pipes(void) const
+SkyAOStage::ProduceType SkyAOStage::get_produced_pipes() const
 {
     return {
         ShaderInput("SkyAO", target_upscale_->get_color_tex()),
     };
 }
 
-void SkyAOStage::create(void)
+void SkyAOStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -58,7 +58,7 @@ void SkyAOStage::create(void)
     target_upscale_->set_shader_input(ShaderInput("upscaleWeights", LVecBase2f(0.001f, 0.001f)));
 }
 
-void SkyAOStage::reload_shaders(void)
+void SkyAOStage::reload_shaders()
 {
     target_->set_shader(load_plugin_shader({"compute_sky_ao.frag.glsl"}, stereo_mode_));
 
@@ -68,7 +68,7 @@ void SkyAOStage::reload_shaders(void)
         target_upscale_->set_shader(load_plugin_shader({ "/$$rp/shader/bilateral_upscale.frag.glsl" }));
 }
 
-std::string SkyAOStage::get_plugin_id(void) const
+std::string SkyAOStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

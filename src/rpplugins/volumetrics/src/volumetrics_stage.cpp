@@ -31,8 +31,8 @@ class VolumetricsStage::Impl
 public:
     Impl(VolumetricsStage& self);
 
-    void create(void);
-    void reload_shaders(void);
+    void create();
+    void reload_shaders();
 
 public:
     static RequireType required_inputs;
@@ -54,7 +54,7 @@ VolumetricsStage::Impl::Impl(VolumetricsStage& self): self_(self)
 {
 }
 
-void VolumetricsStage::Impl::create(void)
+void VolumetricsStage::Impl::create()
 {
     if (enable_volumetric_shadows_)
     {
@@ -79,7 +79,7 @@ void VolumetricsStage::Impl::create(void)
         target_combine_->set_shader_input(ShaderInput("VolumetricsTex", target_upscale_->get_color_tex()));
 }
 
-void VolumetricsStage::Impl::reload_shaders(void)
+void VolumetricsStage::Impl::reload_shaders()
 {
     if (enable_volumetric_shadows_)
     {
@@ -96,36 +96,36 @@ VolumetricsStage::VolumetricsStage(rpcore::RenderPipeline& pipeline): RenderStag
 {
 }
 
-VolumetricsStage::~VolumetricsStage(void) = default;
+VolumetricsStage::~VolumetricsStage() = default;
 
-VolumetricsStage::RequireType& VolumetricsStage::get_required_inputs(void) const
+VolumetricsStage::RequireType& VolumetricsStage::get_required_inputs() const
 {
     return impl_->required_inputs;
 }
 
-VolumetricsStage::RequireType& VolumetricsStage::get_required_pipes(void) const
+VolumetricsStage::RequireType& VolumetricsStage::get_required_pipes() const
 {
     return impl_->required_pipes;
 }
 
-VolumetricsStage::ProduceType VolumetricsStage::get_produced_pipes(void) const
+VolumetricsStage::ProduceType VolumetricsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", impl_->target_combine_->get_color_tex()),
     };
 }
 
-void VolumetricsStage::create(void)
+void VolumetricsStage::create()
 {
     impl_->create();
 }
 
-void VolumetricsStage::reload_shaders(void)
+void VolumetricsStage::reload_shaders()
 {
     impl_->reload_shaders();
 }
 
-std::string VolumetricsStage::get_plugin_id(void) const
+std::string VolumetricsStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

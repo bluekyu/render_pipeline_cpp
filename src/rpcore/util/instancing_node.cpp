@@ -40,7 +40,7 @@ public:
     void set_transform(const LMatrix4f& transform, int instance_index);
     void set_transforms(const std::vector<LMatrix4f>& transforms);
 
-    void upload_transforms(void);
+    void upload_transforms();
 
 public:
     bool dirty_ = true;
@@ -91,7 +91,7 @@ void InstancingNode::Impl::set_transforms(const std::vector<LMatrix4f>& transfor
     transforms_ = transforms;
 }
 
-void InstancingNode::Impl::upload_transforms(void)
+void InstancingNode::Impl::upload_transforms()
 {
     if (!dirty_)
         return;
@@ -126,14 +126,14 @@ InstancingNode::InstancingNode(NodePath np, const std::vector<LMatrix4f>& transf
     set_transforms(transforms);
 }
 
-InstancingNode::~InstancingNode(void) = default;
+InstancingNode::~InstancingNode() = default;
 
-NodePath InstancingNode::get_instanced_node(void) const
+NodePath InstancingNode::get_instanced_node() const
 {
     return impl_->instanced_np_;
 }
 
-int InstancingNode::get_instance_count(void) const
+int InstancingNode::get_instance_count() const
 {
     return static_cast<int>(impl_->transforms_.size());
 }
@@ -172,12 +172,12 @@ const LMatrix4f& InstancingNode::get_transform(int instance_index) const
     return impl_->transforms_[instance_index];
 }
 
-const std::vector<LMatrix4f>& InstancingNode::get_transforms(void) const
+const std::vector<LMatrix4f>& InstancingNode::get_transforms() const
 {
     return impl_->transforms_;
 }
 
-std::vector<LMatrix4f>& InstancingNode::modify_transforms(void)
+std::vector<LMatrix4f>& InstancingNode::modify_transforms()
 {
     impl_->dirty_ = true;
     return impl_->transforms_;
@@ -199,7 +199,7 @@ void InstancingNode::set_transforms(const std::vector<LMatrix4f>& transforms)
     impl_->set_transforms(transforms);
 }
 
-void InstancingNode::upload_transforms(void)
+void InstancingNode::upload_transforms()
 {
     impl_->upload_transforms();
 }

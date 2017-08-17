@@ -29,19 +29,19 @@
 
 namespace rpcore {
 
-UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_inputs(void) const
+UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_inputs() const
 {
     static RequireType required_inputs;
     return required_inputs;
 }
 
-UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_pipes(void) const
+UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_pipes() const
 {
     static RequireType required_pipes;
     return required_pipes;
 }
 
-void UpdatePreviousPipesStage::create(void)
+void UpdatePreviousPipesStage::create()
 {
     debug("Creating previous pipes stage ..");
     target_ = create_target("StorePreviousPipes");
@@ -56,7 +56,7 @@ void UpdatePreviousPipesStage::create(void)
     }
 }
 
-void UpdatePreviousPipesStage::set_dimensions(void)
+void UpdatePreviousPipesStage::set_dimensions()
 {
     for (auto& from_to: transfers_)
     {
@@ -68,7 +68,7 @@ void UpdatePreviousPipesStage::set_dimensions(void)
     }
 }
 
-void UpdatePreviousPipesStage::reload_shaders(void)
+void UpdatePreviousPipesStage::reload_shaders()
 {
     std::vector<std::string> uniforms;
     std::vector<std::string> lines;
@@ -163,7 +163,7 @@ std::string UpdatePreviousPipesStage::get_store_code(Texture* tex, const std::st
     return std::string("imageStore(") + sampler_name + ", " + coord_var + ", vec4(" + data_var + "));";
 }
 
-std::string UpdatePreviousPipesStage::get_plugin_id(void) const
+std::string UpdatePreviousPipesStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

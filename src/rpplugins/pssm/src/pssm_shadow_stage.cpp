@@ -32,7 +32,7 @@ namespace rpplugins {
 PSSMShadowStage::RequireType PSSMShadowStage::required_inputs;
 PSSMShadowStage::RequireType PSSMShadowStage::required_pipes;
 
-PSSMShadowStage::ProduceType PSSMShadowStage::get_produced_pipes(void) const
+PSSMShadowStage::ProduceType PSSMShadowStage::get_produced_pipes() const
 {
     return {
         ShaderInput("PSSMShadowAtlas", _target->get_depth_tex()),
@@ -40,7 +40,7 @@ PSSMShadowStage::ProduceType PSSMShadowStage::get_produced_pipes(void) const
     };
 }
 
-SamplerState PSSMShadowStage::make_pcf_state(void) const
+SamplerState PSSMShadowStage::make_pcf_state() const
 {
     SamplerState state;
     state.set_minfilter(SamplerState::FT_shadow);
@@ -48,12 +48,12 @@ SamplerState PSSMShadowStage::make_pcf_state(void) const
     return state;
 }
 
-Texture* PSSMShadowStage::get_shadow_tex(void) const
+Texture* PSSMShadowStage::get_shadow_tex() const
 {
     return _target->get_depth_tex();
 }
 
-void PSSMShadowStage::create(void)
+void PSSMShadowStage::create()
 {
     _target = create_target("ShadowMap");
     _target->set_size(_split_resolution * _num_splits, _split_resolution);
@@ -88,7 +88,7 @@ void PSSMShadowStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string PSSMShadowStage::get_plugin_id(void) const
+std::string PSSMShadowStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -31,14 +31,14 @@ namespace rpcore {
 UpscaleStage::RequireType UpscaleStage::required_inputs_;
 UpscaleStage::RequireType UpscaleStage::required_pipes_ = { "ShadedScene" };
 
-UpscaleStage::ProduceType UpscaleStage::get_produced_pipes(void) const
+UpscaleStage::ProduceType UpscaleStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_->get_color_tex()),
     };
 }
 
-void UpscaleStage::create(void)
+void UpscaleStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -52,12 +52,12 @@ void UpscaleStage::create(void)
     set_cropping(pipeline_.get_setting<bool>("pipeline.screen_cropping", false));
 }
 
-void UpscaleStage::set_dimensions(void)
+void UpscaleStage::set_dimensions()
 {
     target_->set_size(Globals::native_resolution);
 }
 
-void UpscaleStage::reload_shaders(void)
+void UpscaleStage::reload_shaders()
 {
     target_->set_shader(load_shader({"upscale_stage.frag.glsl"}, stereo_mode_));
 }
@@ -67,7 +67,7 @@ void UpscaleStage::set_cropping(bool enable)
     target_->set_shader_input(ShaderInput("use_cropping", LVecBase4i(enable ? 1 : 0)));
 }
 
-std::string UpscaleStage::get_plugin_id(void) const
+std::string UpscaleStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

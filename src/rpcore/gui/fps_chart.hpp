@@ -42,11 +42,11 @@ class FPSChart: public RPObject
 {
 public:
     FPSChart(RenderPipeline* pipeline, NodePath parent);
-    ~FPSChart(void);
+    ~FPSChart();
 
 private:
     /** Internal method to init the widgets components. */
-    void create_components(void);
+    void create_components();
 
     /**
      * Gets called after the pipeline initialized, this extracts the

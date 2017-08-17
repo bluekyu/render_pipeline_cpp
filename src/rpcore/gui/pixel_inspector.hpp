@@ -40,17 +40,17 @@ public:
     PixelInspector(RenderPipeline* pipeline);
 
     /** Shows the inspector. */
-    void show(void);
+    void show();
 
     /** Shows the inspector. */
-    void hide(void);
+    void hide();
 
     /** Updates the pixel preview. */
-    void update(void);
+    void update();
 
 private:
     /** Internal method to init the widgets components. */
-    void create_components(void);
+    void create_components();
 
     /**
      * Gets called after the pipeline initialized, this extracts the
@@ -64,7 +64,7 @@ private:
     NodePath _zoomer;
 };
 
-inline void PixelInspector::hide(void)
+inline void PixelInspector::hide()
 {
     _node.hide();
 }

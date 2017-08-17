@@ -61,7 +61,7 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
     }
 }
 
-LabeledCheckbox::~LabeledCheckbox(void)
+LabeledCheckbox::~LabeledCheckbox()
 {
     delete text_;
     delete checkbox_;

@@ -46,7 +46,7 @@ namespace rppanda {
 
 TypeHandle DirectButton::type_handle_;
 
-DirectButton::Options::Options(void)
+DirectButton::Options::Options()
 {
     num_states = 4;
     state = NORMAL;
@@ -94,12 +94,12 @@ DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_
     }
 }
 
-PGButton* DirectButton::get_gui_item(void) const
+PGButton* DirectButton::get_gui_item() const
 {
     return DCAST(PGButton, _gui_item);
 }
 
-void DirectButton::set_command_buttons(void)
+void DirectButton::set_command_buttons()
 {
     // Attach command function to specified buttons
     const auto& command_buttons = std::dynamic_pointer_cast<Options>(_options)->command_buttons;
@@ -149,12 +149,12 @@ void DirectButton::command_func(const Event* ev, void* user_data)
         options->command(options->extra_args);
 }
 
-void DirectButton::set_click_sound(void)
+void DirectButton::set_click_sound()
 {
     // TODO: implement
 }
 
-void DirectButton::set_rollover_sound(void)
+void DirectButton::set_rollover_sound()
 {
     // TODO: implement
 }

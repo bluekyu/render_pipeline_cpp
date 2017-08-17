@@ -32,14 +32,14 @@ AOStage::RequireType AOStage::required_pipes = {
     "GBuffer", "DownscaledDepth", "PreviousFrame::AmbientOcclusion",
     "CombinedVelocity", "PreviousFrame::SceneDepth"};
 
-AOStage::ProduceType AOStage::get_produced_pipes(void) const
+AOStage::ProduceType AOStage::get_produced_pipes() const
 {
     return {
         ShaderInput("AmbientOcclusion", target_resolve_->get_color_tex()),
     };
 }
 
-void AOStage::create(void)
+void AOStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -128,7 +128,7 @@ void AOStage::create(void)
     target_resolve_->set_shader_input(ShaderInput("CurrentTex", current_tex));
 }
 
-void AOStage::reload_shaders(void)
+void AOStage::reload_shaders()
 {
     target_->set_shader(load_plugin_shader({"ao_sample.frag.glsl"}, stereo_mode_));
 
@@ -148,7 +148,7 @@ void AOStage::reload_shaders(void)
     target_resolve_->set_shader(load_plugin_shader({"resolve_ao.frag.glsl"}, stereo_mode_));
 }
 
-std::string AOStage::get_plugin_id(void) const
+std::string AOStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

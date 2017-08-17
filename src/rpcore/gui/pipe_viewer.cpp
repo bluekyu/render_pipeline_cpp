@@ -44,7 +44,7 @@ PipeViewer::PipeViewer(RenderPipeline* pipeline, NodePath parent): DraggableWind
     hide();
 }
 
-void PipeViewer::toggle(void)
+void PipeViewer::toggle()
 {
     if (_visible)
     {
@@ -69,7 +69,7 @@ AsyncTask::DoneStatus PipeViewer::update_task(GenericAsyncTask* task, void* user
     return AsyncTask::DS_cont;
 }
 
-void PipeViewer::create_components(void)
+void PipeViewer::create_components()
 {
     DraggableWindow::create_components();
 
@@ -89,7 +89,7 @@ void PipeViewer::create_components(void)
     _content_node.set_z(_scroll_height);
 }
 
-void PipeViewer::populate_content(void)
+void PipeViewer::populate_content()
 {
     _created = true;
     _pipe_node = _content_node.attach_new_node("pipes");

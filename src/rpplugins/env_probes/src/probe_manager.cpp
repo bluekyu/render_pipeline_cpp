@@ -31,11 +31,11 @@
 
 namespace rpplugins {
 
-ProbeManager::ProbeManager(void): RPObject("ProbeManager")
+ProbeManager::ProbeManager(): RPObject("ProbeManager")
 {
 }
 
-void ProbeManager::init(void)
+void ProbeManager::init()
 {
     // Storage for the specular components (with mipmaps)
     _cubemap_storage = rpcore::Image::create_cube_array("EnvmapStorage", _resolution, _max_probes, "RGBA16");
@@ -70,7 +70,7 @@ bool ProbeManager::add_probe(const std::shared_ptr<EnvironmentProbe>& probe)
     return true;
 }
 
-void ProbeManager::update(void)
+void ProbeManager::update()
 {
     PTA_uchar& buffer_ptr = _dataset_storage->get_texture()->modify_ram_image();
     for (auto& probe: _probes)
@@ -80,7 +80,7 @@ void ProbeManager::update(void)
     }
 }
 
-std::shared_ptr<EnvironmentProbe> ProbeManager::find_probe_to_update(void) const
+std::shared_ptr<EnvironmentProbe> ProbeManager::find_probe_to_update() const
 {
     if (_probes.empty())
         return nullptr;

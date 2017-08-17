@@ -33,14 +33,14 @@ SSRStage::RequireType SSRStage::required_pipes = {
     "DownscaledDepth", "PreviousFrame::PostAmbientScene",
     "PreviousFrame::SSRSpecular", "PreviousFrame::SceneDepth" };
 
-SSRStage::ProduceType SSRStage::get_produced_pipes(void) const
+SSRStage::ProduceType SSRStage::get_produced_pipes() const
 {
     return {
         ShaderInput("SSRSpecular", _target_resolve->get_color_tex()),
     };
 }
 
-void SSRStage::create(void)
+void SSRStage::create()
 {
     _target = create_target("ComputeSSR");
     _target->set_size(-2);
@@ -74,7 +74,7 @@ void SSRStage::create(void)
     rpcore::AmbientStage::get_global_required_pipes().push_back("SSRSpecular");
 }
 
-void SSRStage::reload_shaders(void)
+void SSRStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({ "ssr_trace.frag.glsl" }));
     _target_velocity->set_shader(load_plugin_shader({ "reflection_velocity.frag.glsl" }));
@@ -83,7 +83,7 @@ void SSRStage::reload_shaders(void)
     _target_resolve->set_shader(load_plugin_shader({ "resolve_ssr.frag.glsl" }));
 }
 
-std::string SSRStage::get_plugin_id(void) const
+std::string SSRStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

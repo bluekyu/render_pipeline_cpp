@@ -32,25 +32,25 @@ class PSSMShadowStage: public rpcore::RenderStage
 public:
     PSSMShadowStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "PSSMShadowStage") {}
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
-    ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs() const final { return required_inputs; }
+    RequireType& get_required_pipes() const final { return required_pipes; }
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
+    void create() final;
 
     void set_shader_input(const ShaderInput& inp) final;
 
-    SamplerState make_pcf_state(void) const;
+    SamplerState make_pcf_state() const;
 
-    Texture* get_shadow_tex(void) const;
+    Texture* get_shadow_tex() const;
 
     void set_num_splits(int num_splits);
     void set_split_resolution(int split_resolution);
 
-    const std::vector<PT(DisplayRegion)>& get_split_regions(void) const;
+    const std::vector<PT(DisplayRegion)>& get_split_regions() const;
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     static RequireType required_inputs;
     static RequireType required_pipes;
@@ -72,7 +72,7 @@ inline void PSSMShadowStage::set_split_resolution(int split_resolution)
     _split_resolution = split_resolution;
 }
 
-inline const std::vector<PT(DisplayRegion)>& PSSMShadowStage::get_split_regions(void) const
+inline const std::vector<PT(DisplayRegion)>& PSSMShadowStage::get_split_regions() const
 {
     return _split_regions;
 }

@@ -32,7 +32,7 @@ namespace rpplugins {
 AutoExposureStage::RequireType AutoExposureStage::required_inputs;
 AutoExposureStage::RequireType AutoExposureStage::required_pipes = { "ShadedScene" };
 
-AutoExposureStage::ProduceType AutoExposureStage::get_produced_pipes(void) const
+AutoExposureStage::ProduceType AutoExposureStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target_apply->get_color_tex()),
@@ -40,7 +40,7 @@ AutoExposureStage::ProduceType AutoExposureStage::get_produced_pipes(void) const
     };
 }
 
-void AutoExposureStage::create(void)
+void AutoExposureStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -81,7 +81,7 @@ void AutoExposureStage::create(void)
     _target_apply->set_shader_input(ShaderInput("Exposure", _tex_exposure->get_texture()));
 }
 
-void AutoExposureStage::set_dimensions(void)
+void AutoExposureStage::set_dimensions()
 {
     for (auto& old_target: _mip_targets)
         remove_target(old_target);
@@ -119,7 +119,7 @@ void AutoExposureStage::set_dimensions(void)
     }
 }
 
-void AutoExposureStage::reload_shaders(void)
+void AutoExposureStage::reload_shaders()
 {
     _target_lum->set_shader(load_plugin_shader({"generate_luminance.frag.glsl"}, stereo_mode_));
     _target_analyze->set_shader(load_plugin_shader({"analyze_brightness.frag.glsl"}));
@@ -131,7 +131,7 @@ void AutoExposureStage::reload_shaders(void)
         target->set_shader(_mip_shader);
 }
 
-std::string AutoExposureStage::get_plugin_id(void) const
+std::string AutoExposureStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

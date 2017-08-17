@@ -36,21 +36,21 @@ CullProbesStage::CullProbesStage(rpcore::RenderPipeline& pipeline): RenderStage(
     _slice_width = pipeline_.get_setting<int>("lighting.culling_slice_width");
 }
 
-CullProbesStage::ProduceType CullProbesStage::get_produced_pipes(void) const
+CullProbesStage::ProduceType CullProbesStage::get_produced_pipes() const
 {
     return {
         ShaderInput("PerCellProbes", _per_cell_probes->get_texture()),
     };
 }
 
-CullProbesStage::DefinesType CullProbesStage::get_produced_defines(void) const
+CullProbesStage::DefinesType CullProbesStage::get_produced_defines() const
 {
     return {
         { "MAX_PROBES_PER_CELL", std::to_string(_max_probes_per_cell) }
     };
 }
 
-void CullProbesStage::create(void)
+void CullProbesStage::create()
 {
     _target = create_target("CullProbes");
     _target->set_size(0);
@@ -62,7 +62,7 @@ void CullProbesStage::create(void)
     _target->set_shader_input(ShaderInput("threadCount", LVecBase4i(1, 0, 0, 0)));
 }
 
-void CullProbesStage::set_dimensions(void)
+void CullProbesStage::set_dimensions()
 {
     int max_cells = pipeline_.get_light_mgr()->get_total_tiles();
     int num_rows = int(std::ceil(max_cells / float(_slice_width)));
@@ -70,12 +70,12 @@ void CullProbesStage::set_dimensions(void)
     _target->set_size(_slice_width, num_rows);
 }
 
-void CullProbesStage::reload_shaders(void)
+void CullProbesStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({"/$$rp/shader/tiled_culling.vert.glsl", "cull_probes.frag.glsl"}));
 }
 
-std::string CullProbesStage::get_plugin_id(void) const
+std::string CullProbesStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

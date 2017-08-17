@@ -106,7 +106,7 @@ Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 Loader::Loader(Loader&&) = default;
 #endif
 
-Loader::~Loader(void) = default;
+Loader::~Loader() = default;
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 Loader& Loader::operator=(Loader&&) = default;

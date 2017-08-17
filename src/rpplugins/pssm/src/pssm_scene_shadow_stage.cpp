@@ -35,14 +35,14 @@ namespace rpplugins {
 PSSMSceneShadowStage::RequireType PSSMSceneShadowStage::required_inputs;
 PSSMSceneShadowStage::RequireType PSSMSceneShadowStage::required_pipes;
 
-PSSMSceneShadowStage::ProduceType PSSMSceneShadowStage::get_produced_inputs(void) const
+PSSMSceneShadowStage::ProduceType PSSMSceneShadowStage::get_produced_inputs() const
 {
     return {
         ShaderInput("PSSMSceneSunShadowMVP", _pta_mvp),
     };
 }
 
-PSSMSceneShadowStage::ProduceType PSSMSceneShadowStage::get_produced_pipes(void) const
+PSSMSceneShadowStage::ProduceType PSSMSceneShadowStage::get_produced_pipes() const
 {
     return {
         ShaderInput("PSSMSceneSunShadowMapPCF", _target->get_depth_tex(), make_pcf_state()),
@@ -59,7 +59,7 @@ PSSMSceneShadowStage::PSSMSceneShadowStage(rpcore::RenderPipeline& pipeline): Re
     _last_focus.reset();
 }
 
-SamplerState PSSMSceneShadowStage::make_pcf_state(void) const
+SamplerState PSSMSceneShadowStage::make_pcf_state() const
 {
     SamplerState state;
     state.set_minfilter(SamplerState::FT_shadow);
@@ -73,12 +73,12 @@ void PSSMSceneShadowStage::request_focus(const LVecBase3f& focus_point, float fo
     _last_focus = _focus;
 }
 
-LMatrix4f PSSMSceneShadowStage::get_mvp(void) const
+LMatrix4f PSSMSceneShadowStage::get_mvp() const
 {
     return rpcore::Globals::base->get_render().get_transform(_cam_node)->get_mat() * _cam_lens->get_projection_mat();
 }
 
-void PSSMSceneShadowStage::create(void)
+void PSSMSceneShadowStage::create()
 {
     _camera = new Camera("PSSMSceneSunShadowCam");
     _cam_lens = new OrthographicLens;
@@ -96,7 +96,7 @@ void PSSMSceneShadowStage::create(void)
     pipeline_.get_tag_mgr()->register_camera("shadow", _camera);
 }
 
-void PSSMSceneShadowStage::update(void)
+void PSSMSceneShadowStage::update()
 {
     if (pipeline_.get_task_scheduler()->is_scheduled("pssm_scene_shadows"))
     {
@@ -135,7 +135,7 @@ void PSSMSceneShadowStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string PSSMSceneShadowStage::get_plugin_id(void) const
+std::string PSSMSceneShadowStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

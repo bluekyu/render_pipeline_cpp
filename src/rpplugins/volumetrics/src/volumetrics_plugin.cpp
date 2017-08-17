@@ -45,12 +45,12 @@ VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore
 {
 }
 
-VolumentricsPlugin::RequrieType& VolumentricsPlugin::get_required_plugins(void) const 
+VolumentricsPlugin::RequrieType& VolumentricsPlugin::get_required_plugins() const 
 {
     return impl_->require_plugins_;
 }
 
-void VolumentricsPlugin::on_stage_setup(void)
+void VolumentricsPlugin::on_stage_setup()
 {
     impl_->stage_ = std::make_shared<VolumetricsStage>(pipeline_);
     add_stage(impl_->stage_);
@@ -63,7 +63,7 @@ void VolumentricsPlugin::on_stage_setup(void)
         impl_->stage_->get_required_pipes().push_back("PSSMShadowAtlas");
 }
 
-const std::shared_ptr<VolumetricsStage>& VolumentricsPlugin::get_stage(void) const
+const std::shared_ptr<VolumetricsStage>& VolumentricsPlugin::get_stage() const
 {
     return impl_->stage_;
 }

@@ -29,14 +29,14 @@ namespace rpplugins {
 MotionBlurStage::RequireType MotionBlurStage::required_inputs;
 MotionBlurStage::RequireType MotionBlurStage::required_pipes = { "ShadedScene", "GBuffer", "DownscaledDepth", "CombinedVelocity" };
 
-MotionBlurStage::ProduceType MotionBlurStage::get_produced_pipes(void) const
+MotionBlurStage::ProduceType MotionBlurStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target_cam_blur->get_color_tex()),
     };
 }
 
-void MotionBlurStage::create(void)
+void MotionBlurStage::create()
 {
     if (per_object_blur_)
     {
@@ -79,7 +79,7 @@ void MotionBlurStage::create(void)
         _target_cam_blur->set_shader_input(ShaderInput("SourceTex", _target->get_color_tex()));
 }
 
-void MotionBlurStage::reload_shaders(void)
+void MotionBlurStage::reload_shaders()
 {
     if (per_object_blur_)
     {
@@ -92,7 +92,7 @@ void MotionBlurStage::reload_shaders(void)
     _target_cam_blur->set_shader(load_plugin_shader({"camera_motion_blur.frag.glsl"}));
 }
 
-std::string MotionBlurStage::get_plugin_id(void) const
+std::string MotionBlurStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -47,7 +47,7 @@ namespace rppanda {
 
 TypeHandle DirectFrame::type_handle_;
 
-DirectFrame::Options::Options(void)
+DirectFrame::Options::Options()
 {
     num_states = 1;
     state = inactive_init_state;

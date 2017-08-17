@@ -75,14 +75,14 @@ TextNode::TextNode(const Parameters& params): RPObject("TextNode"), impl_(std::m
     impl_->node_ = node;
 }
 
-TextNode::~TextNode(void) = default;
+TextNode::~TextNode() = default;
 
-NodePath TextNode::get_np(void) const
+NodePath TextNode::get_np() const
 {
     return impl_->nodepath_;
 }
 
-std::string TextNode::get_text(void) const
+std::string TextNode::get_text() const
 {
     return impl_->node_->get_text();
 }
@@ -92,7 +92,7 @@ void TextNode::set_text(const std::string& text)
     return impl_->node_->set_text(text);
 }
 
-LColor TextNode::get_color(void) const
+LColor TextNode::get_color() const
 {
     return impl_->node_->get_text_color();
 }

@@ -403,12 +403,12 @@ std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionTy
     return effect;
 }
 
-const Effect::OptionType& Effect::get_default_options(void)
+const Effect::OptionType& Effect::get_default_options()
 {
     return Impl::default_options_;
 }
 
-Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>())
+Effect::Effect(): RPObject("Effect"), impl_(std::make_unique<Impl>())
 {
     Impl::effect_id_ += 1;
     impl_->options_ = Impl::default_options_;
@@ -418,13 +418,13 @@ Effect::Effect(void): RPObject("Effect"), impl_(std::make_unique<Impl>())
 Effect::Effect(Effect&&) = default;
 #endif
 
-Effect::~Effect(void) = default;
+Effect::~Effect() = default;
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 Effect& Effect::operator=(Effect&&) = default;
 #endif
 
-int Effect::get_effect_id(void) const
+int Effect::get_effect_id() const
 {
     return impl_->this_effect_id_;
 }

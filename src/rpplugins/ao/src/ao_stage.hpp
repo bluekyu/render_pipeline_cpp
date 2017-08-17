@@ -31,17 +31,17 @@ class AOStage: public rpcore::RenderStage
 public:
     AOStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "AOStage") {}
 
-    RequireType& get_required_inputs(void) const final;
-    RequireType& get_required_pipes(void) const final;
-    ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs() const final;
+    RequireType& get_required_pipes() const final;
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
-    void reload_shaders(void) final;
+    void create() final;
+    void reload_shaders() final;
 
     void set_quality(const std::string& quality);
 
 private:
-    virtual std::string get_plugin_id(void) const;
+    virtual std::string get_plugin_id() const;
 
     static RequireType required_inputs;
     static RequireType required_pipes;
@@ -58,12 +58,12 @@ private:
     std::shared_ptr<rpcore::RenderTarget> target_resolve_ = nullptr;
 };
 
-inline AOStage::RequireType& AOStage::get_required_inputs(void) const
+inline AOStage::RequireType& AOStage::get_required_inputs() const
 {
     return required_inputs;
 }
 
-inline AOStage::RequireType& AOStage::get_required_pipes(void) const
+inline AOStage::RequireType& AOStage::get_required_pipes() const
 {
     return required_pipes;
 }

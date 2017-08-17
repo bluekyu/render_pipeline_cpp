@@ -70,7 +70,7 @@ const std::string B3RELEASE = PGButton::get_release_prefix() + MouseButton::thre
 
 const std::string ADJUST = PGSliderBar::get_adjust_prefix();
 
-TextFont* get_default_font(void)
+TextFont* get_default_font()
 {
     return TextNode::get_default_font();
 }

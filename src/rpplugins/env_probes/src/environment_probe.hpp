@@ -33,17 +33,17 @@ namespace rpplugins {
 class EnvironmentProbe: public rpcore::RPObject
 {
 public:
-    EnvironmentProbe(void);
+    EnvironmentProbe();
 
-    int get_index(void) const { return _index; }
+    int get_index() const { return _index; }
     void set_index(int index) { _index = index; }
 
-    int get_last_update(void) const { return _last_update; }
+    int get_last_update() const { return _last_update; }
     void set_last_update(int update) { _last_update = update; }
 
-    BoundingSphere* get_bounds(void) const;
+    BoundingSphere* get_bounds() const;
 
-    bool is_modified(void) const { return _modified; }
+    bool is_modified() const { return _modified; }
 
     void set_mat(const LMatrix4f& matrix);
 
@@ -51,10 +51,10 @@ public:
     void set_border_smoothness(float border_smoothness);
 
     /** Updates the spheres bounds. */
-    void update_bounds(void);
+    void update_bounds();
 
     /** Returns the matrix of the probe. */
-    const LMatrix4f& get_matrix(void) const;
+    const LMatrix4f& get_matrix() const;
 
     /** Writes the probe to a given byte buffer. */
     void write_to_buffer(PTA_uchar& buffer_ptr);
@@ -75,12 +75,12 @@ inline void EnvironmentProbe::set_mat(const LMatrix4f& matrix)
     update_bounds();
 }
 
-inline const LMatrix4f& EnvironmentProbe::get_matrix(void) const
+inline const LMatrix4f& EnvironmentProbe::get_matrix() const
 {
     return _transform->get_mat();
 }
 
-inline BoundingSphere* EnvironmentProbe::get_bounds(void) const
+inline BoundingSphere* EnvironmentProbe::get_bounds() const
 {
     return _bounds;
 }

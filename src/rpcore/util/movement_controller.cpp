@@ -199,12 +199,12 @@ MovementController::MovementController(rppanda::ShowBase* showbase): impl_(std::
 {
 }
 
-MovementController::~MovementController(void)
+MovementController::~MovementController()
 {
     impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
 }
 
-void MovementController::reset_to_initial(void)
+void MovementController::reset_to_initial()
 {
     NodePath camera = impl_->showbase_->get_camera();
     camera.set_pos(impl_->initial_position_);
@@ -219,12 +219,12 @@ void MovementController::reset_to_initial(void)
     }
 }
 
-ClockObject* MovementController::get_clock_obj(void)
+ClockObject* MovementController::get_clock_obj()
 {
     return impl_->showbase_->get_task_mgr()->get_clock();
 }
 
-void MovementController::setup(void)
+void MovementController::setup()
 {
     auto showbase = impl_->showbase_;
 
@@ -374,7 +374,7 @@ void MovementController::setup(void)
     }, this);
 }
 
-void MovementController::print_position(void)
+void MovementController::print_position()
 {
     const LVecBase3f& pos = impl_->showbase_->get_cam().get_pos(impl_->showbase_->get_render());
     const LVecBase3f& hpr = impl_->showbase_->get_cam().get_hpr(impl_->showbase_->get_render());
@@ -422,7 +422,7 @@ void MovementController::set_initial_position_hpr(const LVecBase3& pos, const LV
     reset_to_initial();
 }
 
-float MovementController::get_speed(void) const
+float MovementController::get_speed() const
 {
     return impl_->speed_;
 }
@@ -442,12 +442,12 @@ void MovementController::set_mouse_enabled(bool enabled)
     impl_->mouse_enabled_ = enabled;
 }
 
-void MovementController::increase_speed(void)
+void MovementController::increase_speed()
 {
     impl_->speed_ *= 1.4f;
 }
 
-void MovementController::decrease_speed(void)
+void MovementController::decrease_speed()
 {
     impl_->speed_ *= 0.6f;
 }
@@ -457,22 +457,22 @@ void MovementController::set_speed(float speed)
     impl_->speed_ = speed;
 }
 
-void MovementController::increase_bobbing_amount(void)
+void MovementController::increase_bobbing_amount()
 {
     impl_->bobbing_amount_ *= 1.4f;
 }
 
-void MovementController::decrease_bobbing_amount(void)
+void MovementController::decrease_bobbing_amount()
 {
     impl_->bobbing_amount_ *= 0.6f;
 }
 
-void MovementController::increase_bobbing_speed(void)
+void MovementController::increase_bobbing_speed()
 {
     impl_->bobbing_speed_ *= 1.4f;
 }
 
-void MovementController::decrease_bobbing_speed(void)
+void MovementController::decrease_bobbing_speed()
 {
     impl_->bobbing_speed_ *= 0.6f;
 }

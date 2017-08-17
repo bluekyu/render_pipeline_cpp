@@ -28,7 +28,7 @@
 
 namespace rpcore {
 
-SmoothConnectedCurve::SmoothConnectedCurve(void)
+SmoothConnectedCurve::SmoothConnectedCurve()
 {
     _cv_points = std::vector<LVecBase2f>(
         { LVecBase2f(0, 0), LVecBase2f(0.5, 0), LVecBase2f(1.0, 0) }
@@ -36,7 +36,7 @@ SmoothConnectedCurve::SmoothConnectedCurve(void)
     build_curve();
 }
 
-void SmoothConnectedCurve::build_curve(void)
+void SmoothConnectedCurve::build_curve()
 {
     auto sorted_points = _cv_points;
     std::sort(sorted_points.begin(), sorted_points.end(), [](const LVecBase2f& lhs, const LVecBase2f& rhs){
@@ -79,7 +79,7 @@ void SmoothConnectedCurve::build_curve(void)
     _curve = fitter.make_hermite();
 }
 
-std::string SmoothConnectedCurve::serialize(void) const
+std::string SmoothConnectedCurve::serialize() const
 {
     boost::format point_formats("[{%5.10f},{%5.10f}]");
 

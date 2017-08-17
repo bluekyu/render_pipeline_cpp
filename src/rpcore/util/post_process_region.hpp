@@ -47,7 +47,7 @@ public:
     /** DisplayRegion functions with PostProcessRegion::region. */
     ///@{
     std::function<void(int)>    set_sort;
-    std::function<void(void)>    disable_clears;
+    std::function<void()>    disable_clears;
     std::function<void(bool)>    set_active;
     std::function<void(bool)>    set_clear_depth_active;
     std::function<void(PN_stdfloat)>    set_clear_depth;
@@ -65,13 +65,13 @@ public:
     std::function<void(const RenderAttrib*,int)> set_attrib;
     ///@}
 
-    DisplayRegion* get_region(void) { return region; }
-    NodePath get_node(void) const { return node; }
+    DisplayRegion* get_region() { return region; }
+    NodePath get_node() const { return node; }
 
 private:
-    void init_function_pointers(void);
-    void make_fullscreen_tri(void);
-    void make_fullscreen_cam(void);
+    void init_function_pointers();
+    void make_fullscreen_tri();
+    void make_fullscreen_cam();
 
     PT(GraphicsOutput) _buffer;
     PT(DisplayRegion) region;

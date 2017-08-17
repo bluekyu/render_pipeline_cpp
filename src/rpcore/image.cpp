@@ -59,7 +59,7 @@ std::shared_ptr<Image> Image::create_counter(const std::string& name)
     return Image::create_buffer(name, 1, "R32I");
 }
 
-void Image::setup_counter(void)
+void Image::setup_counter()
 {
     Image::setup_buffer(1, "R32I");
 }
@@ -225,12 +225,12 @@ Image::Image(const std::string& name): RPObject(name), texture_(new Texture(name
     sort_ = RenderTarget::CURRENT_SORT;
 }
 
-Image::~Image(void)
+Image::~Image()
 {
     Image::REGISTERED_IMAGES.erase(std::find(Image::REGISTERED_IMAGES.begin(), Image::REGISTERED_IMAGES.end(), this));
 }
 
-std::string Image::get_texture_format(void) const
+std::string Image::get_texture_format() const
 {
     return convert_texture_format(ComponentFormatType{ texture_->get_component_type(), texture_->get_format() });
 }

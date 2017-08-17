@@ -80,7 +80,7 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
         set_checked(true, false);
 }
 
-bool Checkbox::is_checked(void) const
+bool Checkbox::is_checked() const
 {
     return node_->is_checked();
 }

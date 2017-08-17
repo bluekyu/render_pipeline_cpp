@@ -47,9 +47,9 @@ public:
     Impl(StageManager& self, RenderPipeline& pipeline);
 
     /** Loads the order of all stages from the stages.yaml configuration file. */
-    void load_stage_order(void);
+    void load_stage_order();
 
-    void prepare_stages(void);
+    void prepare_stages();
 
     /** Sets all required pipes on a stage. */
     bool bind_pipes_to_stage(const std::shared_ptr<RenderStage>& stage);
@@ -67,13 +67,13 @@ public:
      * Creates a target for each last-frame's pipe, any pipe starting
      * with the prefix 'Previous::' has to be stored and copied each frame.
      */
-    bool create_previous_pipes(void);
+    bool create_previous_pipes();
 
     /**
      * Applies all future bindings. At this point all pipes and
      * inputs should be present.
      */
-    void apply_future_bindings(void);
+    void apply_future_bindings();
 
 public:
     StageManager& self_;
@@ -142,7 +142,7 @@ StageManager::Impl::Impl(StageManager& self, RenderPipeline& pipeline): self_(se
 {
 }
 
-void StageManager::Impl::load_stage_order(void)
+void StageManager::Impl::load_stage_order()
 {
     YAML::Node orders;
     if (!rplibs::load_yaml_file("/$$rpconfig/stages.yaml", orders))
@@ -161,7 +161,7 @@ void StageManager::Impl::load_stage_order(void)
         stage_order_.push_back(stage_id.as<std::string>());
 }
 
-void StageManager::Impl::prepare_stages(void)
+void StageManager::Impl::prepare_stages()
 {
     self_.debug("Preparing stages ..");
 
@@ -367,7 +367,7 @@ void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage
     }
 }
 
-bool StageManager::Impl::create_previous_pipes(void)
+bool StageManager::Impl::create_previous_pipes()
 {
     if (!previous_pipes_.empty())
     {
@@ -404,7 +404,7 @@ bool StageManager::Impl::create_previous_pipes(void)
     return true;
 }
 
-void StageManager::Impl::apply_future_bindings(void)
+void StageManager::Impl::apply_future_bindings()
 {
     for (const auto& pipe_stage: future_bindings_)
     {
@@ -425,14 +425,14 @@ StageManager::StageManager(RenderPipeline& pipeline): RPObject("StageManager"), 
     impl_->load_stage_order();
 }
 
-StageManager::~StageManager(void) = default;
+StageManager::~StageManager() = default;
 
-StageManager::DefinesType& StageManager::get_defines(void)
+StageManager::DefinesType& StageManager::get_defines()
 {
     return impl_->defines_;
 }
 
-const StageManager::DefinesType& StageManager::get_defines(void) const
+const StageManager::DefinesType& StageManager::get_defines() const
 {
     return impl_->defines_;
 }
@@ -464,7 +464,7 @@ void StageManager::add_input_blocks(const std::shared_ptr<GroupedInputBlock>& in
     impl_->input_block_list_.push_back(input_block);
 }
 
-const std::vector<std::shared_ptr<RenderStage>>& StageManager::get_stages(void) const
+const std::vector<std::shared_ptr<RenderStage>>& StageManager::get_stages() const
 {
     return impl_->stages_;
 }
@@ -497,7 +497,7 @@ std::shared_ptr<RenderStage> StageManager::get_stage(const std::string& stage_id
     return std::shared_ptr<RenderStage>(nullptr);
 }
 
-void StageManager::setup(void)
+void StageManager::setup()
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
@@ -544,14 +544,14 @@ void StageManager::setup(void)
     impl_->apply_future_bindings();
 }
 
-void StageManager::reload_shaders(void)
+void StageManager::reload_shaders()
 {
     write_autoconfig();
     for (auto& stage: impl_->stages_)
         stage->reload_shaders();
 }
 
-void StageManager::update(void)
+void StageManager::update()
 {
     for (auto& stage: impl_->stages_)
     {
@@ -560,13 +560,13 @@ void StageManager::update(void)
     }
 }
 
-void StageManager::handle_window_resize(void)
+void StageManager::handle_window_resize()
 {
     for (auto& stage: impl_->stages_)
         stage->handle_window_resize();
 }
 
-void StageManager::write_autoconfig(void)
+void StageManager::write_autoconfig()
 {
     debug("Writing shader config");
 

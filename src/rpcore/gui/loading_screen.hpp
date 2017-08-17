@@ -39,13 +39,13 @@ public:
      * this is the pipeline loading screen, but it can be overridden.
      */
     LoadingScreen(RenderPipeline* pipeline, const std::string& image_source="/$$rp/data/gui/loading_screen_bg.txo");
-    ~LoadingScreen(void);
+    ~LoadingScreen();
 
     /** Creates the gui components. */
-    void create(void);
+    void create();
 
     /** Removes the loading screen/ */
-    void remove(void);
+    void remove();
 
 private:
     RenderPipeline* pipeline;

@@ -61,7 +61,7 @@ PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVec
     init_function_pointers();
 }
 
-void PostProcessRegion::init_function_pointers(void)
+void PostProcessRegion::init_function_pointers()
 {
     using namespace std::placeholders;
     
@@ -80,7 +80,7 @@ void PostProcessRegion::init_function_pointers(void)
     set_attrib = std::bind(&NodePath::set_attrib, tri, _1, _2);
 }
 
-void PostProcessRegion::make_fullscreen_tri(void)
+void PostProcessRegion::make_fullscreen_tri()
 {
     const GeomVertexFormat* vformat =  GeomVertexFormat::get_v3();
     PT(GeomVertexData) vdata = new GeomVertexData("vertices", vformat, Geom::UH_static);
@@ -108,7 +108,7 @@ void PostProcessRegion::make_fullscreen_tri(void)
     this->tri = tri;
 }
 
-void PostProcessRegion::make_fullscreen_cam(void)
+void PostProcessRegion::make_fullscreen_cam()
 {
     PT(Camera) buffer_cam = new Camera("BufferCamera");
     PT(OrthographicLens) lens = new OrthographicLens;

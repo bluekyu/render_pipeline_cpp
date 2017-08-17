@@ -41,19 +41,19 @@ class GPUCommandQueue: public RPObject
 {
 public:
     GPUCommandQueue(RenderPipeline& pipeline);
-    ~GPUCommandQueue(void);
+    ~GPUCommandQueue();
 
-    GPUCommandList* get_command_list(void) const;
+    GPUCommandList* get_command_list() const;
 
-    size_t get_num_queued_commands(void) const;
+    size_t get_num_queued_commands() const;
 
-    int get_num_processed_commands(void) const;
+    int get_num_processed_commands() const;
 
     /** Processes the n first commands of the queue. */
-    void process_queue(void);
+    void process_queue();
 
     /** Reloads the command shader. */
-    void reload_shaders(void);
+    void reload_shaders();
 
     /** Registers an new shader input to the command target. */
     void register_input(CPT_InternalName key, Texture* val);
@@ -63,13 +63,13 @@ private:
      * Registers all the command types as defines so they can be used
      * in a shader later on.
      */
-    void register_defines(void);
+    void register_defines();
 
     /** Creates the buffer used to transfer commands. */
-    void create_data_storage(void);
+    void create_data_storage();
 
     /** Creates the target which processes the commands. */
-    void create_command_target(void);
+    void create_command_target();
 
     RenderPipeline& pipeline_;
     int _commands_per_frame = 1024;
@@ -80,12 +80,12 @@ private:
 };
 
 // ************************************************************************************************
-inline GPUCommandList* GPUCommandQueue::get_command_list(void) const
+inline GPUCommandList* GPUCommandQueue::get_command_list() const
 {
     return _command_list;
 }
 
-inline int GPUCommandQueue::get_num_processed_commands(void) const
+inline int GPUCommandQueue::get_num_processed_commands() const
 {
     return _pta_num_commands[0];
 }

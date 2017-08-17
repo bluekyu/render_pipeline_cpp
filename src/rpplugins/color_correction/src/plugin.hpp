@@ -37,21 +37,21 @@ class Plugin: public rpcore::BasePlugin
 public:
     Plugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final { return require_plugins; }
+    RequrieType& get_required_plugins() const final { return require_plugins; }
 
-    void on_pipeline_created(void) final;
-    void on_stage_setup(void) final;
+    void on_pipeline_created() final;
+    void on_stage_setup() final;
 
 private:
     static RequrieType require_plugins;
 
     /** Loads the color correction lookup table (LUT). */
-    void load_lut(void);
+    void load_lut();
 
     /** Loads the precomputed film grain. */
-    void load_grain(void);
+    void load_grain();
 
-    void update_color_lut(void);
+    void update_color_lut();
 
     std::shared_ptr<ColorCorrectionStage> _stage;
     std::shared_ptr<TonemappingStage> _tonemapping_stage;

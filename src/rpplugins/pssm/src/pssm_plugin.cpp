@@ -54,7 +54,7 @@ public:
 
     Impl(PSSMPlugin& self);
 
-    void on_pre_render_update(void);
+    void on_pre_render_update();
 
 public:
     static RequrieType require_plugins_;
@@ -87,7 +87,7 @@ void PSSMPlugin::Impl::toggle_update_enabled(const Event* ev, void* user_data)
     plugin->debug(std::string("Update enabled: ") + (plugin->impl_->update_enabled_ ? "True" : "False"));
 }
 
-void PSSMPlugin::Impl::on_pre_render_update(void)
+void PSSMPlugin::Impl::on_pre_render_update()
 {
     const LVecBase3f& sun_vector = std::dynamic_pointer_cast<rpplugins::ScatteringPlugin>(self_.get_plugin_instance("scattering"))->get_sun_vector();
 
@@ -138,12 +138,12 @@ PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, R
 {
 }
 
-PSSMPlugin::RequrieType& PSSMPlugin::get_required_plugins(void) const
+PSSMPlugin::RequrieType& PSSMPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void PSSMPlugin::on_stage_setup(void)
+void PSSMPlugin::on_stage_setup()
 {
     impl_->update_enabled_ = true;
     impl_->pta_sun_vector_ = PTA_LVecBase3f::empty_array(1);
@@ -177,7 +177,7 @@ void PSSMPlugin::on_stage_setup(void)
     }
 }
 
-void PSSMPlugin::on_pipeline_created(void)
+void PSSMPlugin::on_pipeline_created()
 {
     debug("Initializing pssm ..");
 
@@ -230,7 +230,7 @@ void PSSMPlugin::on_pipeline_created(void)
     }
 }
 
-void PSSMPlugin::on_pre_render_update(void)
+void PSSMPlugin::on_pre_render_update()
 {
     impl_->on_pre_render_update();
 }

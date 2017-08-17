@@ -43,7 +43,7 @@ EnvironmentCaptureStage::EnvironmentCaptureStage(rpcore::RenderPipeline& pipelin
     _pta_index = PTA_int::empty_array(1);
 }
 
-void EnvironmentCaptureStage::create(void)
+void EnvironmentCaptureStage::create()
 {
     _target = create_target("CaptureScene");
     _target->set_size(_resolution * 6, _resolution);
@@ -62,7 +62,7 @@ void EnvironmentCaptureStage::create(void)
     create_filter_targets();
 }
 
-void EnvironmentCaptureStage::setup_camera_rig(void)
+void EnvironmentCaptureStage::setup_camera_rig()
 {
     const LVecBase3f directions[6] = {
         LVecBase3f(1, 0, 0), LVecBase3f(-1, 0, 0), LVecBase3f(0, 1, 0),
@@ -104,7 +104,7 @@ void EnvironmentCaptureStage::setup_camera_rig(void)
         pipeline_.get_tag_mgr()->register_camera("envmap", DCAST(Camera, camera_np.node()));
 }
 
-void EnvironmentCaptureStage::create_store_targets(void)
+void EnvironmentCaptureStage::create_store_targets()
 {
     _target_store = create_target("StoreCubemap");
     _target_store->set_size(_resolution * 6, _resolution);
@@ -122,7 +122,7 @@ void EnvironmentCaptureStage::create_store_targets(void)
     _target_store_diff->set_shader_input(ShaderInput("currentIndex", _pta_index));
 }
 
-void EnvironmentCaptureStage::create_filter_targets(void)
+void EnvironmentCaptureStage::create_filter_targets()
 {
     int mip = 0;
     int size = _resolution;
@@ -150,7 +150,7 @@ void EnvironmentCaptureStage::create_filter_targets(void)
     _filter_diffuse_target->set_shader_input(ShaderInput("currentIndex", _pta_index));
 }
 
-void EnvironmentCaptureStage::update(void)
+void EnvironmentCaptureStage::update()
 {
     // First, disable all targets
     for (auto& id_target: targets_)
@@ -184,7 +184,7 @@ void EnvironmentCaptureStage::set_probe(const std::shared_ptr<EnvironmentProbe>&
     _pta_index[0] = probe->get_index();
 }
 
-void EnvironmentCaptureStage::reload_shaders(void)
+void EnvironmentCaptureStage::reload_shaders()
 {
     _target_store->set_shader(load_plugin_shader({"store_cubemap.frag.glsl"}));
     _target_store_diff->set_shader(load_plugin_shader({"store_cubemap_diffuse.frag.glsl"}));
@@ -194,7 +194,7 @@ void EnvironmentCaptureStage::reload_shaders(void)
         _filter_targets[i]->set_shader(load_plugin_shader({std::string("mips/") + std::to_string(i) + ".autogen.glsl"}));
 }
 
-std::string EnvironmentCaptureStage::get_plugin_id(void) const
+std::string EnvironmentCaptureStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

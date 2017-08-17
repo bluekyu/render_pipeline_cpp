@@ -31,14 +31,14 @@ namespace rpplugins {
 PSSMStage::RequireType PSSMStage::required_inputs;
 PSSMStage::RequireType PSSMStage::required_pipes = { "ShadedScene", "PSSMShadowAtlas", "GBuffer", "PSSMShadowAtlasPCF" };
 
-PSSMStage::ProduceType PSSMStage::get_produced_pipes(void) const
+PSSMStage::ProduceType PSSMStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target->get_color_tex()),
     };
 }
 
-void PSSMStage::create(void)
+void PSSMStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -69,13 +69,13 @@ void PSSMStage::set_render_shadows(bool enabled)
     }
 }
 
-void PSSMStage::reload_shaders(void)
+void PSSMStage::reload_shaders()
 {
     _target_shadows->set_shader(load_plugin_shader({"filter_pssm_shadows.frag.glsl"}, stereo_mode_));
     _target->set_shader(load_plugin_shader({"apply_sun_shading.frag.glsl"}, stereo_mode_));
 }
 
-std::string PSSMStage::get_plugin_id(void) const
+std::string PSSMStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

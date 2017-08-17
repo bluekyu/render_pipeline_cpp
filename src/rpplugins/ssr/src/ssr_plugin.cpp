@@ -48,12 +48,12 @@ SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipel
 {
 }
 
-SSRPlugin::RequrieType& SSRPlugin::get_required_plugins(void) const
+SSRPlugin::RequrieType& SSRPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void SSRPlugin::on_stage_setup(void)
+void SSRPlugin::on_stage_setup()
 {
     impl_->ssr_stage_ = std::make_shared<SSRStage>(pipeline_);
     add_stage(impl_->ssr_stage_);

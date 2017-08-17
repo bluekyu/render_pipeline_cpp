@@ -39,21 +39,21 @@ class BaseType: public RPObject
 {
 public:
     BaseType(YAML::Node& data);
-    virtual ~BaseType(void) {}
+    virtual ~BaseType() {}
 
-    virtual std::string get_value_as_string(void) const = 0;
-    const boost::any& get_value(void) const { return _value; }
+    virtual std::string get_value_as_string() const = 0;
+    const boost::any& get_value() const { return _value; }
 
     virtual void set_value(const YAML::Node& value) = 0;
 
     virtual void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const;
 
-    const std::string& get_type(void) const { return _type; }
-    const std::string& get_label(void) const { return _label; }
-    const std::string& get_description(void) const { return _description; }
-    bool is_runtime(void) const { return _runtime; }
-    bool is_shader_runtime(void) const { return _shader_runtime; }
+    const std::string& get_type() const { return _type; }
+    const std::string& get_label() const { return _label; }
+    const std::string& get_description() const { return _description; }
+    bool is_runtime() const { return _runtime; }
+    bool is_shader_runtime() const { return _shader_runtime; }
 
 protected:
     boost::any _value;
@@ -76,7 +76,7 @@ class TemplatedType: public BaseType
 public:
     TemplatedType(YAML::Node& data);
 
-    std::string get_value_as_string(void) const override;
+    std::string get_value_as_string() const override;
     void set_value(const YAML::Node& value) override;
     virtual void set_value(T value);
 
@@ -101,7 +101,7 @@ TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data), _template_typ
 }
 
 template <class T>
-std::string TemplatedType<T>::get_value_as_string(void) const
+std::string TemplatedType<T>::get_value_as_string() const
 {
     return std::to_string(boost::any_cast<T>(_value));
 }
@@ -165,7 +165,7 @@ class BoolType: public BaseType
 public:
     BoolType(YAML::Node& data);
 
-    std::string get_value_as_string(void) const final;
+    std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
     void set_value(bool value) { _value = value; }
 
@@ -180,7 +180,7 @@ class EnumType: public BaseType
 public:
     EnumType(YAML::Node& data);
 
-    std::string get_value_as_string(void) const final;
+    std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
     void set_value(const std::string& value);
     void add_defines(const std::string& plugin_id,
@@ -202,18 +202,18 @@ public:
 
     SampleSequenceType(YAML::Node& data);
 
-    std::string get_value_as_string(void) const final;
+    std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
     void set_value(const std::string& value);
 
-    std::vector<std::string> get_sequences(void) const;
+    std::vector<std::string> get_sequences() const;
 
 private:
     int dimension_;
     std::string default_;
 };
 
-inline std::string SampleSequenceType::get_value_as_string(void) const
+inline std::string SampleSequenceType::get_value_as_string() const
 {
     return boost::any_cast<const std::string&>(_value);
 }
@@ -236,7 +236,7 @@ class PathType: public BaseType
 public:
     PathType(YAML::Node& data);
 
-    std::string get_value_as_string(void) const final;
+    std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
     void set_value(const std::string& value);
     void add_defines(const std::string& plugin_id,
@@ -248,7 +248,7 @@ private:
     std::string _base_path;
 };
 
-inline std::string PathType::get_value_as_string(void) const
+inline std::string PathType::get_value_as_string() const
 {
     return boost::any_cast<const std::string&>(_value);
 }

@@ -266,7 +266,7 @@ void Actor::list_joints(const std::string& part_name, const std::string& lod_nam
     do_list_joints(0, part_def, subpart_subset.is_include_empty(), subpart_subset);
 }
 
-Actor::ActorInfoType Actor::get_actor_info(void) const
+Actor::ActorInfoType Actor::get_actor_info() const
 {
     std::vector<LODInfoType> lod_info;
     lod_info.reserve(anim_control_dict_.size());
@@ -323,7 +323,7 @@ Actor::ActorInfoType Actor::get_actor_info(void) const
     return lod_info;
 }
 
-std::vector<std::string> Actor::get_anim_names(void) const
+std::vector<std::string> Actor::get_anim_names() const
 {
     std::unordered_set<std::string> anim_names;
     const auto& actor_info = get_actor_info();
@@ -341,7 +341,7 @@ std::vector<std::string> Actor::get_anim_names(void) const
     return std::vector<std::string>(anim_names.begin(), anim_names.end());
 }
 
-void Actor::pprint(void) const
+void Actor::pprint() const
 {
     const auto& actor_info = get_actor_info();
     for (const auto& lod_info: actor_info)
@@ -807,14 +807,14 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
     return node;
 }
 
-void Actor::show_all_bounds(void)
+void Actor::show_all_bounds()
 {
     const auto& geom_nodes = geom_node_.find_all_matches("**/+GeomNode");
     for (int k=0, k_end=geom_nodes.get_num_paths(); k < k_end; ++k)
         geom_nodes.get_path(k).show_bounds();
 }
 
-void Actor::hide_all_bounds(void)
+void Actor::hide_all_bounds()
 {
     const auto& geom_nodes = geom_node_.find_all_matches("**/+GeomNode");
     for (int k=0, k_end=geom_nodes.get_num_paths(); k < k_end; ++k)
@@ -828,7 +828,7 @@ Actor::PartDef::PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_h
 {
 }
 
-PartBundle* Actor::PartDef::get_bundle(void) const
+PartBundle* Actor::PartDef::get_bundle() const
 {
     return part_bundle_handle->get_bundle();
 }
@@ -837,7 +837,7 @@ Actor::AnimDef::AnimDef(const std::string& filename, AnimBundle* anim_bundle): f
 {
 }
 
-Actor::AnimDef Actor::AnimDef::make_copy(void)
+Actor::AnimDef Actor::AnimDef::make_copy()
 {
     return AnimDef(filename, anim_bundle);
 }
@@ -1160,7 +1160,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
 #endif
 }
 
-void Actor::update_sorted_LOD_names(void)
+void Actor::update_sorted_LOD_names()
 {
     static auto sort_key = [](const std::string& x) {
         static const std::unordered_map<char, int> smap ={

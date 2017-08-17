@@ -33,11 +33,11 @@ class VolumentricsPlugin: public rpcore::BasePlugin
 public:
     VolumentricsPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
+    void on_stage_setup() final;
 
-    virtual const std::shared_ptr<VolumetricsStage>& get_stage(void) const;
+    virtual const std::shared_ptr<VolumetricsStage>& get_stage() const;
 
 private:
     class Impl;

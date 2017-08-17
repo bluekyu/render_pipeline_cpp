@@ -95,7 +95,7 @@ void SoundInterval::loop(double start_t, double end_t, double play_rate, bool st
         set_t(double(std::rand()) / double(RAND_MAX) * get_duration());
 }
 
-void SoundInterval::finish(void)
+void SoundInterval::finish()
 {
     in_finish_ = true;
     CInterval::finish();
@@ -122,7 +122,7 @@ void SoundInterval::priv_initialize(double t)
     _curr_t = t;
 }
 
-void SoundInterval::priv_instant(void)
+void SoundInterval::priv_instant()
 {
     return;
 }
@@ -151,7 +151,7 @@ void SoundInterval::priv_step(double t)
     _curr_t = t;
 }
 
-void SoundInterval::priv_finalize(void)
+void SoundInterval::priv_finalize()
 {
     // if we're just coming to the end of a seamlessloop, leave the sound alone,
     // let the audio subsystem loop it
@@ -176,18 +176,18 @@ void SoundInterval::priv_reverse_initialize(double t)
     reverse_ = true;
 }
 
-void SoundInterval::priv_reverse_instant(void)
+void SoundInterval::priv_reverse_instant()
 {
     _state = State::S_initial;
 }
 
-void SoundInterval::priv_reverse_finalize(void)
+void SoundInterval::priv_reverse_finalize()
 {
     reverse_ = false;
     _state = State::S_initial;
 }
 
-void SoundInterval::priv_interrupt(void)
+void SoundInterval::priv_interrupt()
 {
     if (sound_)
     {

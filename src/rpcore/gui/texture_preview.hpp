@@ -40,7 +40,7 @@ public:
     void present(Texture* tex);
 
 private:
-    virtual void create_components(void);
+    virtual void create_components();
 
     void set_slice(const std::shared_ptr<void>&);
 

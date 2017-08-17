@@ -31,11 +31,11 @@ class PSSMPlugin: public rpcore::BasePlugin
 public:
     PSSMPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
-    void on_pipeline_created(void) final;
-    void on_pre_render_update(void) final;
+    void on_stage_setup() final;
+    void on_pipeline_created() final;
+    void on_pre_render_update() final;
 
     virtual void request_focus(const LVecBase3f& focus_point, float focus_size);
     virtual bool get_last_focus(LVecBase3f& focus_point, float& focus_size) const;

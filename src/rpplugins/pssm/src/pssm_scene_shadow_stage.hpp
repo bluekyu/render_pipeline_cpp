@@ -41,30 +41,30 @@ class PSSMSceneShadowStage: public rpcore::RenderStage
 public:
     PSSMSceneShadowStage(rpcore::RenderPipeline& pipeline);
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
-    ProduceType get_produced_inputs(void) const final;
-    ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs() const final { return required_inputs; }
+    RequireType& get_required_pipes() const final { return required_pipes; }
+    ProduceType get_produced_inputs() const final;
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
-    void update(void) final;
+    void create() final;
+    void update() final;
 
     void set_shader_input(const ShaderInput& inp) final;
 
-    SamplerState make_pcf_state(void) const;
+    SamplerState make_pcf_state() const;
 
     void request_focus(const LVecBase3f& focus_point, float focus_size);
 
-    LMatrix4f get_mvp(void) const;
+    LMatrix4f get_mvp() const;
 
     void set_resolution(int resolution);
     void set_sun_vector(const LVecBase3f& sun_vector);
     void set_sun_distance(float sun_distance);
 
-    const boost::optional<std::pair<LVecBase3f, float>>& get_last_focus(void) const;
+    const boost::optional<std::pair<LVecBase3f, float>>& get_last_focus() const;
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     static RequireType required_inputs;
     static RequireType required_pipes;
@@ -98,7 +98,7 @@ inline void PSSMSceneShadowStage::set_sun_distance(float sun_distance)
     _sun_distance = sun_distance;
 }
 
-inline const boost::optional<std::pair<LVecBase3f, float>>& PSSMSceneShadowStage::get_last_focus(void) const
+inline const boost::optional<std::pair<LVecBase3f, float>>& PSSMSceneShadowStage::get_last_focus() const
 {
     return _last_focus;
 }

@@ -33,7 +33,7 @@ VXGIStage::RequireType VXGIStage::required_pipes = {
     "ScatteringIBLDiffuse", "PreviousFrame::VXGIPostSample",
     "CombinedVelocity", "PreviousFrame::SceneDepth" };
 
-VXGIStage::ProduceType VXGIStage::get_produced_pipes(void) const
+VXGIStage::ProduceType VXGIStage::get_produced_pipes() const
 {
     return {
         //ShaderInput("VXGISpecular", _target_spec->get_color_tex()),
@@ -42,7 +42,7 @@ VXGIStage::ProduceType VXGIStage::get_produced_pipes(void) const
     };
 }
 
-void VXGIStage::create(void)
+void VXGIStage::create()
 {
     // Create a target for the specular GI
     // _target_spec = create_target("SpecularGI");
@@ -88,7 +88,7 @@ void VXGIStage::create(void)
     rpcore::AmbientStage::get_global_required_pipes().push_back("VXGIDiffuse");
 }
 
-void VXGIStage::reload_shaders(void)
+void VXGIStage::reload_shaders()
 {
     //_target_spec->set_shader(load_plugin_shader({ "vxgi_specular.frag.glsl" }));
     _target_diff->set_shader(load_plugin_shader({"vxgi_diffuse.frag.glsl"}));
@@ -100,7 +100,7 @@ void VXGIStage::reload_shaders(void)
     _target_resolve->set_shader(load_plugin_shader({"resolve_vxgi.frag.glsl"}));
 }
 
-std::string VXGIStage::get_plugin_id(void) const
+std::string VXGIStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

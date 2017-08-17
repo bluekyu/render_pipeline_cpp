@@ -45,7 +45,7 @@ namespace rppanda {
 
 TypeHandle DirectSlider::type_handle_;
 
-DirectSlider::Options::Options(void)
+DirectSlider::Options::Options()
 {
     state = NORMAL;
     frame_color = LColor(0.6, 0.6, 0.6, 1);
@@ -88,7 +88,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     }
 }
 
-PGSliderBar* DirectSlider::get_gui_item(void) const
+PGSliderBar* DirectSlider::get_gui_item() const
 {
     return DCAST(PGSliderBar, _gui_item);
 }
@@ -110,12 +110,12 @@ void DirectSlider::set_value(float value)
     get_gui_item()->set_value(std::dynamic_pointer_cast<Options>(_options)->value=value);
 }
 
-float DirectSlider::get_value(void) const
+float DirectSlider::get_value() const
 {
     return get_gui_item()->get_value();
 }
 
-float DirectSlider::get_ratio(void) const
+float DirectSlider::get_ratio() const
 {
     return get_gui_item()->get_ratio();
 }

@@ -36,13 +36,13 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _apply_stage = std::make_shared<ApplyCloudsStage>(pipeline_);
     add_stage(_apply_stage);
 }
 
-void Plugin::on_pipeline_created(void)
+void Plugin::on_pipeline_created()
 {
     // High-res noise
     PT(Texture) noise1 = rpcore::RPLoader::load_texture(get_resource("noise1-data.txo"));

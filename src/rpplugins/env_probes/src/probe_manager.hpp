@@ -37,33 +37,33 @@ class EnvironmentProbe;
 class ProbeManager: public rpcore::RPObject
 {
 public:
-    ProbeManager(void);
+    ProbeManager();
 
     void set_max_probes(int max_probes) { _max_probes = max_probes; }
     void set_resolution(int resolution) { _resolution = resolution; }
     void set_diffuse_resolution(int diffuse_resolution) { _diffuse_resolution = diffuse_resolution; }
 
-    int get_max_probes(void) const;
-    int get_resolution(void) const;
-    int get_diffuse_resolution(void) const;
+    int get_max_probes() const;
+    int get_resolution() const;
+    int get_diffuse_resolution() const;
 
-    std::shared_ptr<rpcore::Image> get_cubemap_storage(void) const;
-    std::shared_ptr<rpcore::Image> get_diffuse_storage(void) const;
-    std::shared_ptr<rpcore::Image> get_dataset_storage(void) const;
+    std::shared_ptr<rpcore::Image> get_cubemap_storage() const;
+    std::shared_ptr<rpcore::Image> get_diffuse_storage() const;
+    std::shared_ptr<rpcore::Image> get_dataset_storage() const;
 
     /** Creates the cubemap storage. */
-    void init(void);
+    void init();
 
     /** Adds a new probe. */
     bool add_probe(const std::shared_ptr<EnvironmentProbe>& probe);
 
     /** Updates the manager, updating all probes. */
-    void update(void);
+    void update();
 
-    size_t get_num_probes(void) const;
+    size_t get_num_probes() const;
 
     /** Finds the next probe which requires an update, or returns None. */
-    std::shared_ptr<EnvironmentProbe> find_probe_to_update(void) const;
+    std::shared_ptr<EnvironmentProbe> find_probe_to_update() const;
 
 private:
     std::vector<std::shared_ptr<EnvironmentProbe>> _probes;
@@ -76,37 +76,37 @@ private:
     std::shared_ptr<rpcore::Image> _dataset_storage;
 };
 
-inline int ProbeManager::get_max_probes(void) const
+inline int ProbeManager::get_max_probes() const
 {
     return _max_probes;
 }
 
-inline int ProbeManager::get_resolution(void) const
+inline int ProbeManager::get_resolution() const
 {
     return _resolution;
 }
 
-inline int ProbeManager::get_diffuse_resolution(void) const
+inline int ProbeManager::get_diffuse_resolution() const
 {
     return _diffuse_resolution;
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_cubemap_storage(void) const
+inline std::shared_ptr<rpcore::Image> ProbeManager::get_cubemap_storage() const
 {
     return _cubemap_storage;
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_diffuse_storage(void) const
+inline std::shared_ptr<rpcore::Image> ProbeManager::get_diffuse_storage() const
 {
     return _diffuse_storage;
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_dataset_storage(void) const
+inline std::shared_ptr<rpcore::Image> ProbeManager::get_dataset_storage() const
 {
     return _dataset_storage;
 }
 
-inline size_t ProbeManager::get_num_probes(void) const
+inline size_t ProbeManager::get_num_probes() const
 {
     return _probes.size();
 }

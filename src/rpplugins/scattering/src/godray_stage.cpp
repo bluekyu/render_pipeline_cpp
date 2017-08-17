@@ -33,26 +33,26 @@ GodrayStage::GodrayStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline
 {
 }
 
-GodrayStage::ProduceType GodrayStage::get_produced_pipes(void) const
+GodrayStage::ProduceType GodrayStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target->get_color_tex()),
     };
 }
 
-void GodrayStage::create(void)
+void GodrayStage::create()
 {
     _target = create_target("ComputeGodrays");
     _target->add_color_attachment(16);
     _target->prepare_buffer();
 }
 
-void GodrayStage::reload_shaders(void)
+void GodrayStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({"compute_godrays.frag.glsl"}));
 }
 
-std::string GodrayStage::get_plugin_id(void) const
+std::string GodrayStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

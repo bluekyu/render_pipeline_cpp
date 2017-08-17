@@ -37,13 +37,13 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-void Plugin::on_pipeline_created(void)
+void Plugin::on_pipeline_created()
 {
     load_lut();
     load_grain();
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _stage = std::make_shared<ColorCorrectionStage>(pipeline_);
     add_stage(_stage);
@@ -70,7 +70,7 @@ void Plugin::on_stage_setup(void)
     }
 }
 
-void Plugin::load_lut(void)
+void Plugin::load_lut()
 {
     std::string lut_path = get_resource(boost::any_cast<const std::string&>(get_setting("color_lut")));
     PT(Texture) lut = rpcore::RPLoader::load_sliced_3d_texture(lut_path, 64);
@@ -83,7 +83,7 @@ void Plugin::load_lut(void)
     _tonemapping_stage->set_shader_input(ShaderInput("ColorLUT", lut));
 }
 
-void Plugin::load_grain(void)
+void Plugin::load_grain()
 {
     PT(Texture) grain_tex = rpcore::RPLoader::load_texture("/$$rp/data/film_grain/grain.txo");
     grain_tex->set_minfilter(SamplerState::FT_linear);
@@ -94,7 +94,7 @@ void Plugin::load_grain(void)
     _stage->set_shader_input(ShaderInput("PrecomputedGrain", grain_tex));
 }
 
-void Plugin::update_color_lut(void)
+void Plugin::update_color_lut()
 {
     debug("Updating color lut ..");
     load_lut();

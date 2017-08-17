@@ -45,7 +45,7 @@ namespace rppanda {
 
 TypeHandle DirectScrollBar::type_handle_;
 
-DirectScrollBar::Options::Options(void)
+DirectScrollBar::Options::Options()
 {
     state = NORMAL;
     frame_color = LColor(0.6, 0.6, 0.6, 1.0);
@@ -109,7 +109,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     }
 }
 
-PGSliderBar* DirectScrollBar::get_gui_item(void) const
+PGSliderBar* DirectScrollBar::get_gui_item() const
 {
     return DCAST(PGSliderBar, _gui_item);
 }

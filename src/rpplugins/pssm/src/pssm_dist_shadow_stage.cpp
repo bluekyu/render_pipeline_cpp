@@ -35,14 +35,14 @@ namespace rpplugins {
 PSSMDistShadowStage::RequireType PSSMDistShadowStage::required_inputs;
 PSSMDistShadowStage::RequireType PSSMDistShadowStage::required_pipes;
 
-PSSMDistShadowStage::ProduceType PSSMDistShadowStage::get_produced_inputs(void) const
+PSSMDistShadowStage::ProduceType PSSMDistShadowStage::get_produced_inputs() const
 {
     return {
         ShaderInput("PSSMDistSunShadowMapMVP", _pta_mvp),
     };
 }
 
-PSSMDistShadowStage::ProduceType PSSMDistShadowStage::get_produced_pipes(void) const
+PSSMDistShadowStage::ProduceType PSSMDistShadowStage::get_produced_pipes() const
 {
     return {
         ShaderInput("PSSMDistSunShadowMap", _target_blur_h->get_color_tex()),
@@ -54,12 +54,12 @@ PSSMDistShadowStage::PSSMDistShadowStage(rpcore::RenderPipeline& pipeline): Rend
     _pta_mvp = PTA_LMatrix4f::empty_array(1);
 }
 
-LMatrix4f PSSMDistShadowStage::get_mvp(void) const
+LMatrix4f PSSMDistShadowStage::get_mvp() const
 {
     return rpcore::Globals::base->get_render().get_transform(_cam_node)->get_mat() * _cam_lens->get_projection_mat();
 }
 
-void PSSMDistShadowStage::create(void)
+void PSSMDistShadowStage::create()
 {
     _camera = new Camera("PSSMDistShadowsESM");
     _cam_lens = new OrthographicLens;
@@ -97,7 +97,7 @@ void PSSMDistShadowStage::create(void)
     pipeline_.get_tag_mgr()->register_camera("shadow", _camera);
 }
 
-void PSSMDistShadowStage::update(void)
+void PSSMDistShadowStage::update()
 {
     _target->set_active(false);
     _target_convert->set_active(false);
@@ -135,7 +135,7 @@ void PSSMDistShadowStage::update(void)
     }
 }
 
-void PSSMDistShadowStage::reload_shaders(void)
+void PSSMDistShadowStage::reload_shaders()
 {
     _target_convert->set_shader(load_plugin_shader({"convert_to_esm.frag.glsl"}));
     _target_blur_v->set_shader(load_plugin_shader({"blur_esm.frag.glsl"}));
@@ -147,7 +147,7 @@ void PSSMDistShadowStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string PSSMDistShadowStage::get_plugin_id(void) const
+std::string PSSMDistShadowStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

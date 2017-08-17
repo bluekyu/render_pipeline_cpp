@@ -39,12 +39,12 @@ DraggableWindow::DraggableWindow(int width, int height, const std::string& title
     _parent = parent.is_empty() ? Globals::base->get_pixel_2d() : parent;
 }
 
-DraggableWindow::~DraggableWindow(void)
+DraggableWindow::~DraggableWindow()
 {
     delete _window_title;
 }
 
-void DraggableWindow::center_on_screen(void)
+void DraggableWindow::center_on_screen()
 {
     _context_scale = 1.0f / _parent.get_sx();
     _context_width = Globals::native_resolution.get_x() * _context_scale;
@@ -58,7 +58,7 @@ void DraggableWindow::set_title(const std::string& title)
     _window_title->set_text(title);
 }
 
-void DraggableWindow::create_components(void)
+void DraggableWindow::create_components()
 {
     _node = _parent.attach_new_node("Window");
     _node.set_pos(_pos.get_x(), 1, -_pos.get_y());
@@ -147,7 +147,7 @@ void DraggableWindow::stop_drag(const Event* ev, void* user_data)
     reinterpret_cast<DraggableWindow*>(user_data)->_dragging = false;
 }
 
-LVecBase2 DraggableWindow::get_mouse_pos(void) const
+LVecBase2 DraggableWindow::get_mouse_pos() const
 {
     float mouse_x = (float)Globals::base->get_win()->get_pointer(0).get_x();
     float mouse_y = (float)Globals::base->get_win()->get_pointer(0).get_y();

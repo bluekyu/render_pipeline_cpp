@@ -46,23 +46,23 @@ class PluginManager::Impl
 public:
     Impl(PluginManager& self, RenderPipeline& pipeline);
 
-    void unload(void);
+    void unload();
 
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
     void load_setting_overrides(const std::string& override_path);
 
-    void on_load(void);
-    void on_stage_setup(void);
-    void on_post_stage_setup(void);
-    void on_pipeline_created(void);
+    void on_load();
+    void on_stage_setup();
+    void on_post_stage_setup();
+    void on_pipeline_created();
     void on_prepare_scene(NodePath scene);
-    void on_pre_render_update(void);
-    void on_post_render_update(void);
-    void on_shader_reload(void);
-    void on_window_resized(void);
-    void on_unload(void);
+    void on_pre_render_update();
+    void on_post_render_update();
+    void on_shader_reload();
+    void on_window_resized();
+    void on_unload();
 
 public:
     PluginManager& self_;
@@ -91,7 +91,7 @@ PluginManager::Impl::Impl(PluginManager& self, RenderPipeline& pipeline): self_(
     requires_daytime_settings_ = true;
 }
 
-void PluginManager::Impl::unload(void)
+void PluginManager::Impl::unload()
 {
     self_.debug("Unloading all plugins");
 
@@ -197,7 +197,7 @@ void PluginManager::Impl::load_setting_overrides(const std::string& override_pat
     }
 }
 
-void PluginManager::Impl::on_load(void)
+void PluginManager::Impl::on_load()
 {
     for (const auto& plugin_id: enabled_plugins_)
     {
@@ -206,7 +206,7 @@ void PluginManager::Impl::on_load(void)
     }
 }
 
-void PluginManager::Impl::on_stage_setup(void)
+void PluginManager::Impl::on_stage_setup()
 {
     for (const auto& plugin_id: enabled_plugins_)
     {
@@ -215,7 +215,7 @@ void PluginManager::Impl::on_stage_setup(void)
     }
 }
 
-void PluginManager::Impl::on_post_stage_setup(void)
+void PluginManager::Impl::on_post_stage_setup()
 {
     for (const auto& plugin_id: enabled_plugins_)
     {
@@ -224,7 +224,7 @@ void PluginManager::Impl::on_post_stage_setup(void)
     }
 }
 
-void PluginManager::Impl::on_pipeline_created(void)
+void PluginManager::Impl::on_pipeline_created()
 {
     for (const auto& plugin_id: enabled_plugins_)
     {
@@ -242,31 +242,31 @@ void PluginManager::Impl::on_prepare_scene(NodePath scene)
     }
 }
 
-void PluginManager::Impl::on_pre_render_update(void)
+void PluginManager::Impl::on_pre_render_update()
 {
     for (const auto& plugin_id: enabled_plugins_)
         instances_.at(plugin_id)->on_pre_render_update();
 }
 
-void PluginManager::Impl::on_post_render_update(void)
+void PluginManager::Impl::on_post_render_update()
 {
     for (const auto& plugin_id: enabled_plugins_)
         instances_.at(plugin_id)->on_post_render_update();
 }
 
-void PluginManager::Impl::on_shader_reload(void)
+void PluginManager::Impl::on_shader_reload()
 {
     for (const auto& plugin_id: enabled_plugins_)
         instances_.at(plugin_id)->on_shader_reload();
 }
 
-void PluginManager::Impl::on_window_resized(void)
+void PluginManager::Impl::on_window_resized()
 {
     for (const auto& plugin_id: enabled_plugins_)
         instances_.at(plugin_id)->on_window_resized();
 }
 
-void PluginManager::Impl::on_unload(void)
+void PluginManager::Impl::on_unload()
 {
     for (const auto& plugin_id: enabled_plugins_)
     {
@@ -281,12 +281,12 @@ PluginManager::PluginManager(RenderPipeline& pipeline): RPObject("PluginManager"
 {
 }
 
-PluginManager::~PluginManager(void)
+PluginManager::~PluginManager()
 {
     unload();
 }
 
-void PluginManager::load(void)
+void PluginManager::load()
 {
     debug("Loading plugin settings");
     load_base_settings("/$$rp/rpplugins");
@@ -458,7 +458,7 @@ bool PluginManager::is_plugin_enabled(const std::string& plugin_id) const
     return impl_->enabled_plugins_.find(plugin_id) != impl_->enabled_plugins_.end();
 }
 
-void PluginManager::init_defines(void)
+void PluginManager::init_defines()
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
     {
@@ -482,7 +482,7 @@ const std::shared_ptr<BasePlugin>& PluginManager::get_instance(const std::string
     return impl_->instances_.at(plugin_id);
 }
 
-size_t PluginManager::get_enabled_plugins_count(void) const NOEXCEPT
+size_t PluginManager::get_enabled_plugins_count() const NOEXCEPT
 {
     return impl_->enabled_plugins_.size();
 }
@@ -506,22 +506,22 @@ const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& 
     }
 }
 
-const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& PluginManager::get_day_settings(void) const
+const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& PluginManager::get_day_settings() const
 {
     return impl_->day_settings_;
 }
 
-void PluginManager::unload(void) { impl_->unload(); }
+void PluginManager::unload() { impl_->unload(); }
 void PluginManager::load_setting_overrides(const std::string& override_path) { impl_->load_setting_overrides(override_path); }
-void PluginManager::on_load(void) { impl_->on_load(); }
-void PluginManager::on_stage_setup(void) { impl_->on_stage_setup(); }
-void PluginManager::on_post_stage_setup(void) { impl_->on_post_stage_setup(); }
-void PluginManager::on_pipeline_created(void) { impl_->on_pipeline_created(); }
+void PluginManager::on_load() { impl_->on_load(); }
+void PluginManager::on_stage_setup() { impl_->on_stage_setup(); }
+void PluginManager::on_post_stage_setup() { impl_->on_post_stage_setup(); }
+void PluginManager::on_pipeline_created() { impl_->on_pipeline_created(); }
 void PluginManager::on_prepare_scene(NodePath scene) { impl_->on_prepare_scene(scene); }
-void PluginManager::on_pre_render_update(void) { impl_->on_pre_render_update(); }
-void PluginManager::on_post_render_update(void) { impl_->on_post_render_update(); }
-void PluginManager::on_shader_reload(void) { impl_->on_shader_reload(); }
-void PluginManager::on_window_resized(void) { impl_->on_window_resized(); }
-void PluginManager::on_unload(void) { impl_->on_unload(); }
+void PluginManager::on_pre_render_update() { impl_->on_pre_render_update(); }
+void PluginManager::on_post_render_update() { impl_->on_post_render_update(); }
+void PluginManager::on_shader_reload() { impl_->on_shader_reload(); }
+void PluginManager::on_window_resized() { impl_->on_window_resized(); }
+void PluginManager::on_unload() { impl_->on_unload(); }
 
 }

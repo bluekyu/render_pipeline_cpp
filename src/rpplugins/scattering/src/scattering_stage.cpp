@@ -34,14 +34,14 @@ ScatteringStage::ScatteringStage(rpcore::RenderPipeline& pipeline): RenderStage(
 {
 }
 
-ScatteringStage::ProduceType ScatteringStage::get_produced_pipes(void) const
+ScatteringStage::ProduceType ScatteringStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target->get_color_tex()),
     };
 }
 
-void ScatteringStage::create(void)
+void ScatteringStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -52,12 +52,12 @@ void ScatteringStage::create(void)
     _target->prepare_buffer();
 }
 
-void ScatteringStage::reload_shaders(void)
+void ScatteringStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({"apply_scattering.frag.glsl"}, stereo_mode_));
 }
 
-std::string ScatteringStage::get_plugin_id(void) const
+std::string ScatteringStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

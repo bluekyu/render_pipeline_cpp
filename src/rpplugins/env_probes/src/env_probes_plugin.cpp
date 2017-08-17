@@ -49,15 +49,15 @@ class EnvProbesPlugin::Impl
 {
 public:
     Impl(EnvProbesPlugin& self);
-    ~Impl(void);
+    ~Impl();
 
-    void on_stage_setup(void);
+    void on_stage_setup();
 
     /** Setups all stages. */
-    void setup_stages(void);
+    void setup_stages();
 
     /** Sets all required inputs. */
-    void setup_inputs(void);
+    void setup_inputs();
 
 public:
     static RequrieType require_plugins_;
@@ -78,7 +78,7 @@ EnvProbesPlugin::Impl::Impl(EnvProbesPlugin& self): self_(self)
 {
 }
 
-EnvProbesPlugin::Impl::~Impl(void)
+EnvProbesPlugin::Impl::~Impl()
 {
     delete probe_mgr_;
 }
@@ -87,12 +87,12 @@ EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(p
 {
 }
 
-EnvProbesPlugin::RequrieType& EnvProbesPlugin::get_required_plugins(void) const
+EnvProbesPlugin::RequrieType& EnvProbesPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void EnvProbesPlugin::Impl::on_stage_setup(void)
+void EnvProbesPlugin::Impl::on_stage_setup()
 {
     probe_mgr_ = new ProbeManager;
     probe_mgr_->set_resolution(boost::any_cast<int>(self_.get_setting("probe_resolution")));
@@ -103,7 +103,7 @@ void EnvProbesPlugin::Impl::on_stage_setup(void)
     setup_stages();
 }
 
-void EnvProbesPlugin::Impl::setup_stages(void)
+void EnvProbesPlugin::Impl::setup_stages()
 {
     // Create the stage to generate and update the cubemaps
     capture_stage_ = std::make_shared<EnvironmentCaptureStage>(self_.pipeline_);
@@ -136,7 +136,7 @@ void EnvProbesPlugin::Impl::setup_stages(void)
     setup_inputs();
 }
 
-void EnvProbesPlugin::Impl::setup_inputs(void)
+void EnvProbesPlugin::Impl::setup_inputs()
 {
     pta_probes_ = PTA_int::empty_array(1);
 
@@ -154,7 +154,7 @@ void EnvProbesPlugin::Impl::setup_inputs(void)
 
 // ************************************************************************************************
 
-void EnvProbesPlugin::on_stage_setup(void)
+void EnvProbesPlugin::on_stage_setup()
 {
     impl_->on_stage_setup();
 }
@@ -177,7 +177,7 @@ void EnvProbesPlugin::on_prepare_scene(NodePath scene)
     }
 }
 
-void EnvProbesPlugin::on_pre_render_update(void)
+void EnvProbesPlugin::on_pre_render_update()
 {
     if (pipeline_.get_task_scheduler()->is_scheduled("envprobes_select_and_cull"))
     {
@@ -203,7 +203,7 @@ void EnvProbesPlugin::on_pre_render_update(void)
     }
 }
 
-std::shared_ptr<rpcore::RenderStage> EnvProbesPlugin::get_capture_stage(void)
+std::shared_ptr<rpcore::RenderStage> EnvProbesPlugin::get_capture_stage()
 {
     return impl_->capture_stage_;
 }

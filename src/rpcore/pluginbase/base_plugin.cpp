@@ -42,7 +42,7 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id): 
     //self._set_debug_color("magenta", "bright")
 }
 
-Filename BasePlugin::get_base_path(void) const
+Filename BasePlugin::get_base_path() const
 {
     return Filename("/$$rp/rpplugins") / plugin_id_;
 }
@@ -84,13 +84,13 @@ bool BasePlugin::is_plugin_enabled(const std::string& plugin_id) const
     return pipeline_.get_plugin_mgr()->is_plugin_enabled(plugin_id);
 }
 
-void BasePlugin::reload_shaders(void)
+void BasePlugin::reload_shaders()
 {
     for (const auto& stage: assigned_stages_)
         stage->reload_shaders();
 }
 
-const BasePlugin::PluginInfo& BasePlugin::get_plugin_info(void) const
+const BasePlugin::PluginInfo& BasePlugin::get_plugin_info() const
 {
     return pipeline_.get_plugin_mgr()->get_plugin_info(plugin_id_);
 }

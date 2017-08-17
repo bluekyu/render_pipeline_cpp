@@ -44,13 +44,13 @@ ExposureWidget::ExposureWidget(RenderPipeline* pipeline, NodePath parent): RPObj
     create_components();
 }
 
-ExposureWidget::~ExposureWidget(void)
+ExposureWidget::~ExposureWidget()
 {
     delete _display_img;
     delete _display_txt;
 }
 
-void ExposureWidget::create_components(void)
+void ExposureWidget::create_components()
 {
     _node.hide();
 

@@ -34,16 +34,16 @@ namespace rpcore {
 class SmoothConnectedCurve
 {
 public:
-    SmoothConnectedCurve(void);
+    SmoothConnectedCurve();
 
     /** Returns a list of all controll points. */
-    const std::vector<LVecBase2f>& get_control_points(void) const;
+    const std::vector<LVecBase2f>& get_control_points() const;
 
     /** Sets the cv points to the given list of points. */
     void set_control_points(const std::vector<LVecBase2f>& points);
 
     /** Returns the display color of the curve. */
-    const LVecBase3f& get_color(void) const;
+    const LVecBase3f& get_color() const;
 
     /** Sets the display color of the curve. */
     void set_color(const LVecBase3f& rgb);
@@ -61,7 +61,7 @@ public:
     void remove_cv(size_t index);
 
     /** Rebuilds the curve based on the controll point values. */
-    void build_curve(void);
+    void build_curve();
 
     /** Updates the cv point at the given index. */
     void set_cv_value(size_t index, float x_value, float y_value);
@@ -74,7 +74,7 @@ public:
     float get_value(float offset) const;
 
     /** Returns the value of the curve as yaml list. */
-    std::string serialize(void) const;
+    std::string serialize() const;
 
 private:
     bool _modified = false;
@@ -85,7 +85,7 @@ private:
 };
 
 // ************************************************************************************************
-inline const std::vector<LVecBase2f>& SmoothConnectedCurve::get_control_points(void) const
+inline const std::vector<LVecBase2f>& SmoothConnectedCurve::get_control_points() const
 {
     return _cv_points;
 }
@@ -97,7 +97,7 @@ inline void SmoothConnectedCurve::set_control_points(const std::vector<LVecBase2
     build_curve();
 }
 
-inline const LVecBase3f& SmoothConnectedCurve::get_color(void) const
+inline const LVecBase3f& SmoothConnectedCurve::get_color() const
 {
     return _color;
 }

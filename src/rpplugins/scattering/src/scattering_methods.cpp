@@ -35,7 +35,7 @@
 
 namespace rpplugins {
 
-void ScatteringMethodEricBruneton::load(void)
+void ScatteringMethodEricBruneton::load()
 {
     _use_32_bit = false;
 
@@ -72,7 +72,7 @@ void ScatteringMethodEricBruneton::exec_compute_shader(const Shader* shader_obj,
     rpcore::Globals::base->get_graphics_engine()->dispatch_compute(LVecBase3i(ntx, nty, ntz), attr, rpcore::Globals::base->get_win()->get_gsg());
 }
 
-void ScatteringMethodEricBruneton::compute(void)
+void ScatteringMethodEricBruneton::compute()
 {
     debug("Precomputing ...");
 
@@ -162,7 +162,7 @@ void ScatteringMethodEricBruneton::compute(void)
     }
 }
 
-void ScatteringMethodEricBruneton::create_textures(void)
+void ScatteringMethodEricBruneton::create_textures()
 {
     const std::string tex_format = _use_32_bit ? "RGBA32" : "RGBA16";
 
@@ -186,7 +186,7 @@ void ScatteringMethodEricBruneton::create_textures(void)
     }
 }
 
-void ScatteringMethodEricBruneton::create_shaders(void)
+void ScatteringMethodEricBruneton::create_shaders()
 {
     _shaders.clear();
 

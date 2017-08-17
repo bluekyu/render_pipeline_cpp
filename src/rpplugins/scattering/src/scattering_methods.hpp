@@ -39,10 +39,10 @@ class ScatteringMethod: public rpcore::RPObject
 public:
     ScatteringMethod(ScatteringPlugin& plugin, const std::string& name="ScatteringMethod"): RPObject(name), handle_(plugin) {}
 
-    ScatteringPlugin& get_handle(void) const { return handle_; }
+    ScatteringPlugin& get_handle() const { return handle_; }
 
-    virtual void load(void) = 0;
-    virtual void compute(void) = 0;
+    virtual void load() = 0;
+    virtual void compute() = 0;
 
 protected:
     ScatteringPlugin& handle_;
@@ -56,7 +56,7 @@ public:
     ScatteringMethodEricBruneton(ScatteringPlugin& plugin): ScatteringMethod(plugin, "ScatteringMethodEricBruneton") {}
 
     /** Inits parameters, those should match with the ones specified in common.glsl. */
-    void load(void) final;
+    void load() final;
 
     /**
      * Executes a compute shader. The shader object should be a shader
@@ -69,13 +69,13 @@ public:
         const LVecBase3i& exec_size, const LVecBase3i& workgroup_size=LVecBase3i(16, 16, 1));
 
     /** Precomputes the scattering. */
-    void compute(void) final;
+    void compute() final;
 
     /** Creates all textures required for the scattering. */
-    void create_textures(void);
+    void create_textures();
 
     /** Creates all the shaders used for precomputing. */
-    void create_shaders(void);
+    void create_shaders();
 
 private:
     bool _use_32_bit;

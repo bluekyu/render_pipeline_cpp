@@ -47,44 +47,44 @@ class Debugger: public RPObject
 {
 public:
     Debugger(RenderPipeline* pipeline);
-    ~Debugger(void);
+    ~Debugger();
 
-    bool use_advanced_info(void) const;
+    bool use_advanced_info() const;
 
     /** Creates the gui components. */
-    void create_components(void);
+    void create_components();
 
     /** Updates the gui. */
-    void update(void);
+    void update();
 
     /** Analyzes the scene graph to provide useful information. */
     AsyncTask::DoneStatus collect_scene_data(GenericAsyncTask* task, void* user_data);
 
     /** Creates the stats overlay. */
-    void create_stats(void);
+    void create_stats();
 
     /** Creates the hints like keybindings and when reloading shaders. */
-    void create_hints(void);
+    void create_hints();
 
     /** Sets whether the shader reload hint is visible. */
     void set_reload_hint_visible(bool flag);
 
     /** Handles the window resize, repositions the GUI elements to fit on screen. */
-    void handle_window_resize(void);
+    void handle_window_resize();
 
     /** Inits the debugger keybindings. */
-    void init_keybindings(void);
+    void init_keybindings();
 
     /** Shows / Hides the gui. */
-    void toggle_gui_visible(void);
+    void toggle_gui_visible();
 
     /** Shows / Hides the keybindings gui. */
-    void toggle_keybindings_visible(void);
+    void toggle_keybindings_visible();
 
     /** Updates the stats overlay. */
     static AsyncTask::DoneStatus update_stats(GenericAsyncTask* task, void* user_data);
 
-    ErrorMessageDisplay* get_error_msg_handler(void) const;
+    ErrorMessageDisplay* get_error_msg_handler() const;
 
 private:
     RenderPipeline* pipeline;
@@ -112,7 +112,7 @@ private:
     std::vector<rpcore::TextNode*> debug_lines;
 };
 
-inline ErrorMessageDisplay* Debugger::get_error_msg_handler(void) const
+inline ErrorMessageDisplay* Debugger::get_error_msg_handler() const
 {
     return _error_msg_handler;
 }

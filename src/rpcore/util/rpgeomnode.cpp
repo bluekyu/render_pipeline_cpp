@@ -42,7 +42,7 @@ RPGeomNode::RPGeomNode(NodePath nodepath)
     nodepath_ = nodepath;
 }
 
-int RPGeomNode::get_num_geoms(void) const
+int RPGeomNode::get_num_geoms() const
 {
     return DCAST(GeomNode, nodepath_.node())->get_num_geoms();
 }

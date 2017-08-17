@@ -80,7 +80,7 @@ public:
     static const char* stages[];
 
     Impl(RenderPipeline& self);
-    ~Impl(void);
+    ~Impl();
 
     /**
      * Task which repeatedly clears the state cache to avoid storing
@@ -121,29 +121,29 @@ public:
      */
     static void handle_window_event(const Event* ev, void* user_data);
 
-    void reload_shaders(void);
+    void reload_shaders();
 
-    bool create(void);
+    bool create();
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
      * removed when the shaders are reloaded.
      */
-    void apply_custom_shaders(void);
+    void apply_custom_shaders();
 
     /**
      * Internal method to create all managers and instances. This also
      * initializes the commonly used render stages, which are always required,
      * independently of which plugins are enabled.
      */
-    void create_managers(void);
+    void create_managers();
 
     /**
      * Prints information about the system used, including information
      * about the used Panda3D build. Also checks if the Panda3D build is out
      * of date.
      */
-    void analyze_system(void);
+    void analyze_system();
 
     /**
      * Internal method to initialize all managers, after they have been
@@ -151,21 +151,21 @@ public:
      * is seperated due to the fact that plugins and various other subprocesses
      * have to get initialized inbetween.
      */
-    void initialize_managers(void);
+    void initialize_managers();
 
     /**
      * Internal method to initialize the GUI-based debugger. In case debugging
      * is disabled, this constructs a dummy debugger, which does nothing.
      * The debugger itself handles the various onscreen components.
      */
-    void init_debugger(void);
+    void init_debugger();
 
     /**
      * Inits all global bindings. This includes references to the global
      * ShowBase instance, as well as the render resolution, the GUI font,
      * and various global logging and output methods.
      */
-    void init_globals(void);
+    void init_globals();
 
     /**
      * Sets the default effect used for all objects if not overridden, this
@@ -173,22 +173,22 @@ public:
      * This uses a very low sort, to make sure that overriding the default
      * effect does not require a custom sort parameter to be passed.
      */
-    void set_default_effect(void);
+    void set_default_effect();
 
     /**
      * Sets the default camera settings, this includes the cameras
      * near and far plane, as well as FoV. The reason for this is, that pandas
      * default field of view is very small, and thus we increase it.
      */
-    void adjust_camera_settings(void);
+    void adjust_camera_settings();
 
-    void adjust_lens_setting(void);
+    void adjust_lens_setting();
 
     /**
      * Initialize the internally used render resolution. This might differ
      * from the window dimensions in case a resolution scale is set.
      */
-    void compute_render_resolution(void);
+    void compute_render_resolution();
 
     /**
      * Inits the the given showbase object. This is part of an alternative
@@ -197,22 +197,22 @@ public:
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    bool init_showbase(void);
+    bool init_showbase();
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
      * the tasks to be run on a per-frame basis.
      */
-    void init_bindings(void);
+    void init_bindings();
 
     /** Creates commonly used defines for the shader configuration. */
-    void create_common_defines(void);
+    void create_common_defines();
 
     /**
      * Inits the commonly used stages, which don't belong to any plugin,
      * but yet are necessary and widely used.
      */
-    void init_common_stages(void);
+    void init_common_stages();
 
     /**
      * Returns the default skybox, with a scale of <size>, and all
@@ -226,7 +226,7 @@ public:
 
     void clear_effect(NodePath& nodepath);
 
-    void handle_window_resize(void);
+    void handle_window_resize();
 
     template <class T>
     T get_setting(const std::string& setting_path) const;
@@ -267,7 +267,7 @@ RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 {
 }
 
-RenderPipeline::Impl::~Impl(void)
+RenderPipeline::Impl::~Impl()
 {
     self_.debug("Destructing RenderPipeline.");
 
@@ -462,7 +462,7 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
     }, rp_impl.get(), "RP_HandleWindowResize", -100);
 }
 
-void RenderPipeline::Impl::reload_shaders(void)
+void RenderPipeline::Impl::reload_shaders()
 {
     if (debugger)
     {
@@ -487,7 +487,7 @@ void RenderPipeline::Impl::reload_shaders(void)
     apply_custom_shaders();
 }
 
-bool RenderPipeline::Impl::create(void)
+bool RenderPipeline::Impl::create()
 {
     const auto& start_time = std::chrono::system_clock::now();
     if (!init_showbase())
@@ -534,14 +534,14 @@ bool RenderPipeline::Impl::create(void)
     return true;
 }
 
-void RenderPipeline::Impl::apply_custom_shaders(void)
+void RenderPipeline::Impl::apply_custom_shaders()
 {
     self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects.size()));
     for (auto& args: applied_effects)
         internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
 }
 
-void RenderPipeline::Impl::create_managers(void)
+void RenderPipeline::Impl::create_managers()
 {
     self_.trace("Creating managers ...");
 
@@ -556,7 +556,7 @@ void RenderPipeline::Impl::create_managers(void)
     init_common_stages();
 }
 
-void RenderPipeline::Impl::analyze_system(void)
+void RenderPipeline::Impl::analyze_system()
 {
     self_.debug(fmt::format("Using C++ with architecture {}", PandaSystem::get_platform()));
     self_.debug(fmt::format("Using Panda3D {} built on {}", PandaSystem::get_version_string(), PandaSystem::get_build_date()));
@@ -574,7 +574,7 @@ void RenderPipeline::Impl::analyze_system(void)
     //}
 }
 
-void RenderPipeline::Impl::initialize_managers(void)
+void RenderPipeline::Impl::initialize_managers()
 {
     self_.trace("Initializing managers ...");
 
@@ -585,7 +585,7 @@ void RenderPipeline::Impl::initialize_managers(void)
     light_mgr_->init_shadows();
 }
 
-void RenderPipeline::Impl::init_debugger(void)
+void RenderPipeline::Impl::init_debugger()
 {
     if (self_.get_setting<bool>("pipeline.display_debugger"))
     {
@@ -597,7 +597,7 @@ void RenderPipeline::Impl::init_debugger(void)
     }
 }
 
-void RenderPipeline::Impl::init_globals(void)
+void RenderPipeline::Impl::init_globals()
 {
     self_.trace("Initailizing global parameters.");
 
@@ -620,12 +620,12 @@ void RenderPipeline::Impl::init_globals(void)
     }
 }
 
-void RenderPipeline::Impl::set_default_effect(void)
+void RenderPipeline::Impl::set_default_effect()
 {
     self_.set_effect(Globals::render, "/$$rp/effects/default.yaml", {}, -10);
 }
 
-void RenderPipeline::Impl::adjust_camera_settings(void)
+void RenderPipeline::Impl::adjust_camera_settings()
 {
     adjust_lens_setting();
 
@@ -641,7 +641,7 @@ void RenderPipeline::Impl::adjust_camera_settings(void)
     }
 }
 
-void RenderPipeline::Impl::adjust_lens_setting(void)
+void RenderPipeline::Impl::adjust_lens_setting()
 {
     Lens* lens = showbase_->get_cam_lens();
     lens->set_near_far(0.1f, 70000.0f);
@@ -649,7 +649,7 @@ void RenderPipeline::Impl::adjust_lens_setting(void)
     lens->set_film_size(Globals::resolution.get_x(), Globals::resolution.get_y());
 }
 
-void RenderPipeline::Impl::compute_render_resolution(void)
+void RenderPipeline::Impl::compute_render_resolution()
 {
     const float scale_factor = self_.get_setting<float>("pipeline.resolution_scale", 1.0f);
     int resolution_width;
@@ -673,7 +673,7 @@ void RenderPipeline::Impl::compute_render_resolution(void)
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-bool RenderPipeline::Impl::init_showbase(void)
+bool RenderPipeline::Impl::init_showbase()
 {
     // C++ Panda3D has no ShowBase.
     //if (!base)
@@ -703,7 +703,7 @@ bool RenderPipeline::Impl::init_showbase(void)
     return true;
 }
 
-void RenderPipeline::Impl::init_bindings(void)
+void RenderPipeline::Impl::init_bindings()
 {
     showbase_->add_task(&Impl::manager_update_task, &self_, "RP_UpdateManagers", 10);
     showbase_->add_task(&Impl::plugin_pre_render_update, &self_, "RP_Plugin_BeforeRender", 12);
@@ -715,7 +715,7 @@ void RenderPipeline::Impl::init_bindings(void)
     showbase_->accept("window-event", &Impl::handle_window_event, &self_);
 }
 
-void RenderPipeline::Impl::create_common_defines(void)
+void RenderPipeline::Impl::create_common_defines()
 {
     static const double round_ratio = std::pow(10.0, 10.0);
 
@@ -751,7 +751,7 @@ void RenderPipeline::Impl::create_common_defines(void)
     plugin_mgr_->init_defines();
 }
 
-void RenderPipeline::Impl::init_common_stages(void)
+void RenderPipeline::Impl::init_common_stages()
 {
     self_.trace("Initailizing common stages ...");
 
@@ -785,7 +785,7 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
     return skybox;
 }
 
-void RenderPipeline::Impl::handle_window_resize(void)
+void RenderPipeline::Impl::handle_window_resize()
 {
     adjust_lens_setting();
 
@@ -813,7 +813,7 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
 
 // ************************************************************************************************
 
-RenderPipeline* RenderPipeline::get_global_ptr(void)
+RenderPipeline* RenderPipeline::get_global_ptr()
 {
     return global_ptr_;
 }
@@ -865,9 +865,9 @@ RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipel
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
 
-RenderPipeline::~RenderPipeline(void) = default;
+RenderPipeline::~RenderPipeline() = default;
 
-void RenderPipeline::run(void)
+void RenderPipeline::run()
 {
     if (impl_->showbase_)
     {
@@ -916,12 +916,12 @@ bool RenderPipeline::load_settings(const std::string& path)
     return true;
 }
 
-void RenderPipeline::reload_shaders(void)
+void RenderPipeline::reload_shaders()
 {
     impl_->reload_shaders();
 }
 
-bool RenderPipeline::pre_showbase_init(void)
+bool RenderPipeline::pre_showbase_init()
 {
     if (!impl_->mount_mgr_->is_mounted())
     {
@@ -946,7 +946,7 @@ bool RenderPipeline::pre_showbase_init(void)
     return true;
 }
 
-bool RenderPipeline::create(void)
+bool RenderPipeline::create()
 {
     return impl_->create();
 }
@@ -1216,47 +1216,47 @@ std::string RenderPipeline::get_setting(const std::string& setting_path, const s
     return impl_->get_setting<std::string>(setting_path, fallback);
 }
 
-PandaFramework* RenderPipeline::get_panda_framework(void) const
+PandaFramework* RenderPipeline::get_panda_framework() const
 {
     return impl_->panda_framework_.get();
 }
 
-rppanda::ShowBase* RenderPipeline::get_showbase(void) const
+rppanda::ShowBase* RenderPipeline::get_showbase() const
 {
     return impl_->showbase_;
 }
 
-MountManager* RenderPipeline::get_mount_mgr(void) const
+MountManager* RenderPipeline::get_mount_mgr() const
 {
     return impl_->mount_mgr_;
 }
 
-StageManager* RenderPipeline::get_stage_mgr(void) const
+StageManager* RenderPipeline::get_stage_mgr() const
 {
     return impl_->stage_mgr_;
 }
 
-TagStateManager* RenderPipeline::get_tag_mgr(void) const
+TagStateManager* RenderPipeline::get_tag_mgr() const
 {
     return impl_->tag_mgr_;
 }
 
-LightManager* RenderPipeline::get_light_mgr(void) const
+LightManager* RenderPipeline::get_light_mgr() const
 {
     return impl_->light_mgr_;
 }
 
-PluginManager* RenderPipeline::get_plugin_mgr(void) const
+PluginManager* RenderPipeline::get_plugin_mgr() const
 {
     return impl_->plugin_mgr_;
 }
 
-TaskScheduler* RenderPipeline::get_task_scheduler(void) const
+TaskScheduler* RenderPipeline::get_task_scheduler() const
 {
     return impl_->task_scheduler_;
 }
 
-DayTimeManager* RenderPipeline::get_daytime_mgr(void) const
+DayTimeManager* RenderPipeline::get_daytime_mgr() const
 {
     return impl_->daytime_mgr_;
 }

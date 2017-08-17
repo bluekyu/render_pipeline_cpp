@@ -37,13 +37,13 @@ class EnvironmentCaptureStage: public rpcore::RenderStage
 public:
     EnvironmentCaptureStage(rpcore::RenderPipeline& pipeline);
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs() const final { return required_inputs; }
+    RequireType& get_required_pipes() const final { return required_pipes; }
 
-    void create(void) final;
-    void reload_shaders(void) final;
+    void create() final;
+    void reload_shaders() final;
 
-    void update(void) final;
+    void update() final;
 
     void set_shader_input(const ShaderInput& inp) final;
 
@@ -56,16 +56,16 @@ public:
     void set_storage_tex_diffuse(Texture* storage_tex_diffuse);
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     /** Setups the cameras to render a cubemap. */
-    void setup_camera_rig(void);
+    void setup_camera_rig();
 
     /** Creates the targets which copy the result texture into the actual storage. */
-    void create_store_targets(void);
+    void create_store_targets();
 
     /** Generates the targets which filter the specular cubemap. */
-    void create_filter_targets(void);
+    void create_filter_targets();
 
     static RequireType required_inputs;
     static RequireType required_pipes;

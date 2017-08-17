@@ -60,18 +60,18 @@ ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin
 {
 }
 
-ScatteringPlugin::RequrieType& ScatteringPlugin::get_required_plugins(void) const
+ScatteringPlugin::RequrieType& ScatteringPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void ScatteringPlugin::on_pipeline_created(void)
+void ScatteringPlugin::on_pipeline_created()
 {
     impl_->scattering_model_->load();
     impl_->scattering_model_->compute();
 }
 
-void ScatteringPlugin::on_stage_setup(void)
+void ScatteringPlugin::on_stage_setup()
 {
     impl_->display_stage_ = std::make_shared<ScatteringStage>(pipeline_);
     add_stage(impl_->display_stage_);
@@ -103,17 +103,17 @@ void ScatteringPlugin::on_stage_setup(void)
     }
 }
 
-void ScatteringPlugin::on_pre_render_update(void)
+void ScatteringPlugin::on_pre_render_update()
 {
     impl_->envmap_stage_->set_active(pipeline_.get_task_scheduler()->is_scheduled("scattering_update_envmap"));
 }
 
-void ScatteringPlugin::on_shader_reload(void)
+void ScatteringPlugin::on_shader_reload()
 {
     impl_->scattering_model_->compute();
 }
 
-LVecBase3f ScatteringPlugin::get_sun_vector(void)
+LVecBase3f ScatteringPlugin::get_sun_vector()
 {
     float sun_altitude = get_daytime_setting("sun_altitude").first[0];
     float sun_azimuth = get_daytime_setting("sun_azimuth").first[0];
@@ -128,12 +128,12 @@ LVecBase3f ScatteringPlugin::get_sun_vector(void)
         std::cos(theta));
 }
 
-const std::shared_ptr<ScatteringStage>& ScatteringPlugin::get_display_stage(void) const
+const std::shared_ptr<ScatteringStage>& ScatteringPlugin::get_display_stage() const
 {
     return impl_->display_stage_;
 }
 
-const std::shared_ptr<ScatteringEnvmapStage>& ScatteringPlugin::get_envmap_stage(void) const
+const std::shared_ptr<ScatteringEnvmapStage>& ScatteringPlugin::get_envmap_stage() const
 {
     return impl_->envmap_stage_;
 }

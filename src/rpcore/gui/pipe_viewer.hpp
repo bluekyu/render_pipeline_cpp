@@ -43,7 +43,7 @@ class PipeViewer: public DraggableWindow
 public:
     PipeViewer(RenderPipeline* pipeline, NodePath parent);
 
-    void toggle(void);
+    void toggle();
 
 private:
     static AsyncTask::DoneStatus update_task(GenericAsyncTask* task, void* user_data);
@@ -52,10 +52,10 @@ private:
      * Reads the pipes and stages from the stage manager and renders those
      * into the window.
      */
-    void populate_content(void);
+    void populate_content();
 
     /** Internal method to create the window components. */
-    virtual void create_components(void);
+    virtual void create_components();
 
     RenderPipeline* _pipeline;
     int _scroll_width = 8000;

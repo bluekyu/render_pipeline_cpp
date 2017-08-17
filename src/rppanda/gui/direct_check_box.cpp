@@ -46,7 +46,7 @@ namespace rppanda {
 
 TypeHandle DirectCheckBox::type_handle_;
 
-DirectCheckBox::Options::Options(void)
+DirectCheckBox::Options::Options()
 {
     num_states = 4;
     state = NORMAL;

@@ -102,7 +102,7 @@ DayBaseType::DayBaseType(YAML::Node& data, const std::string& id): RPObject(id)
     set_debug_name("dsetting:" + _label);
 }
 
-DayBaseType::~DayBaseType(void)
+DayBaseType::~DayBaseType()
 {
     for (auto& c: _curves)
         delete c;
@@ -132,7 +132,7 @@ void DayBaseType::set_control_points(const std::vector<std::vector<LVecBase2f>>&
         _curves[index]->set_control_points(control_points[index]);
 }
 
-std::string DayBaseType::serialize(void) const
+std::string DayBaseType::serialize() const
 {
     std::string result = "[";
     for (const auto& curve: _curves)

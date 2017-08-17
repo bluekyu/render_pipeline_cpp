@@ -41,14 +41,14 @@ PixelInspector::PixelInspector(RenderPipeline* pipeline): RPObject("PixelInspect
     hide();
 }
 
-void PixelInspector::show(void)
+void PixelInspector::show()
 {
     _node.show();
     if (Globals::base->get_render_2d().is_hidden())
         Globals::base->get_render_2d().show();
 }
 
-void PixelInspector::update(void)
+void PixelInspector::update()
 {
     if (Globals::base->get_win()->is_of_type(GraphicsWindow::get_class_type()))
     {
@@ -63,7 +63,7 @@ void PixelInspector::update(void)
     }
 }
 
-void PixelInspector::create_components(void)
+void PixelInspector::create_components()
 {
     CardMaker card_maker("PixelInspector");
     card_maker.set_frame(-200, 200, -150, 150);

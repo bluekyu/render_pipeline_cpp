@@ -45,7 +45,7 @@ CullLightsStage::CullLightsStage(RenderPipeline& pipeline): RenderStage(pipeline
     num_light_classes_ = 4;
 }
 
-CullLightsStage::ProduceType CullLightsStage::get_produced_pipes(void) const
+CullLightsStage::ProduceType CullLightsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("PerCellLights", grouped_cell_lights_->get_texture()),
@@ -53,7 +53,7 @@ CullLightsStage::ProduceType CullLightsStage::get_produced_pipes(void) const
     };
 }
 
-CullLightsStage::DefinesType CullLightsStage::get_produced_defines(void) const
+CullLightsStage::DefinesType CullLightsStage::get_produced_defines() const
 {
     return {
         { "LC_SLICE_WIDTH", std::to_string(slice_width_) },
@@ -62,7 +62,7 @@ CullLightsStage::DefinesType CullLightsStage::get_produced_defines(void) const
     };
 }
 
-void CullLightsStage::create(void)
+void CullLightsStage::create()
 {
     target_visible_ = create_target("GetVisibleLights");
     target_visible_->set_size(16);
@@ -99,19 +99,19 @@ void CullLightsStage::create(void)
     target_group_->set_shader_input(ShaderInput("threadCount", LVecBase4i(1, 0, 0, 0)));
 }
 
-void CullLightsStage::reload_shaders(void)
+void CullLightsStage::reload_shaders()
 {
     target_cull_->set_shader(load_shader({ "tiled_culling.vert.glsl", "cull_lights.frag.glsl" }));
     target_group_->set_shader(load_shader({ "tiled_culling.vert.glsl", "group_lights.frag.glsl" }));
     target_visible_->set_shader(load_shader({ "view_frustum_cull.frag.glsl" }));
 }
 
-void CullLightsStage::update(void)
+void CullLightsStage::update()
 {
     frustum_lights_ctr_->clear_image();
 }
 
-void CullLightsStage::set_dimensions(void)
+void CullLightsStage::set_dimensions()
 {
     int max_cells = pipeline_.get_light_mgr()->get_total_tiles();
     int num_rows_threaded = int(std::ceil((max_cells * cull_threads_) / float(slice_width_)));
@@ -124,7 +124,7 @@ void CullLightsStage::set_dimensions(void)
     grouped_cell_lights_counts_->set_x_size(max_cells * (1 + num_light_classes_));
 }
 
-std::string CullLightsStage::get_plugin_id(void) const
+std::string CullLightsStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

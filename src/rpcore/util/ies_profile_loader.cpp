@@ -45,7 +45,7 @@ size_t IESProfileLoader::load(const std::string& filename)
     return 0;
 }
 
-void IESProfileLoader::create_storage(void)
+void IESProfileLoader::create_storage()
 {
     storage_tex_ = Image::create_3d("IESDatasets", 512, 512, max_entries_, "R16");
     storage_tex_->set_minfilter(SamplerState::FT_linear);

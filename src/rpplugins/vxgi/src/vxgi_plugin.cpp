@@ -43,22 +43,22 @@ class VXGIPlugin::Impl
 public:
     Impl(VXGIPlugin& self);
 
-    void on_pipeline_created(void);
+    void on_pipeline_created();
 
     /** Finds the new voxel grid position. */
-    void set_grid_pos(void);
+    void set_grid_pos();
 
     /** Voxelizes the scene from the x axis. */
-    void voxelize_x(void);
+    void voxelize_x();
 
     /** Voxelizes the scene from the y axis. */
-    void voxelize_y(void);
+    void voxelize_y();
 
     /** Voxelizes the scene from the z axis. */
-    void voxelize_z(void);
+    void voxelize_z();
 
     /** Generates the mipmaps for the voxel grid. */
-    void generate_mipmaps(void);
+    void generate_mipmaps();
 
 public:
     static RequrieType require_plugins_;
@@ -68,7 +68,7 @@ public:
     std::shared_ptr<VoxelizationStage> voxel_stage_;
     std::shared_ptr<VXGIStage> vxgi_stage_;
 
-    std::deque<std::function<void(void)>> queue_;
+    std::deque<std::function<void()>> queue_;
 };
 
 VXGIPlugin::RequrieType VXGIPlugin::Impl::require_plugins_ = { "pssm" };
@@ -77,7 +77,7 @@ VXGIPlugin::Impl::Impl(VXGIPlugin& self): self_(self)
 {
 }
 
-void VXGIPlugin::Impl::on_pipeline_created(void)
+void VXGIPlugin::Impl::on_pipeline_created()
 {
     queue_.push_back(std::bind(&Impl::voxelize_x, this));
     queue_.push_back(std::bind(&Impl::voxelize_y, this));
@@ -85,7 +85,7 @@ void VXGIPlugin::Impl::on_pipeline_created(void)
     queue_.push_back(std::bind(&Impl::generate_mipmaps, this));
 }
 
-void VXGIPlugin::Impl::set_grid_pos(void)
+void VXGIPlugin::Impl::set_grid_pos()
 {
     LPoint3 grid_pos = rpcore::Globals::base->get_cam().get_pos(rpcore::Globals::base->get_render());
 
@@ -102,23 +102,23 @@ void VXGIPlugin::Impl::set_grid_pos(void)
     voxel_stage_->set_grid_position(grid_pos);
 }
 
-void VXGIPlugin::Impl::voxelize_x(void)
+void VXGIPlugin::Impl::voxelize_x()
 {
     set_grid_pos();
     voxel_stage_->set_state(VoxelizationStage::StateType::S_voxelize_x);
 }
 
-void VXGIPlugin::Impl::voxelize_y(void)
+void VXGIPlugin::Impl::voxelize_y()
 {
     voxel_stage_->set_state(VoxelizationStage::StateType::S_voxelize_y);
 }
 
-void VXGIPlugin::Impl::voxelize_z(void)
+void VXGIPlugin::Impl::voxelize_z()
 {
     voxel_stage_->set_state(VoxelizationStage::StateType::S_voxelize_z);
 }
 
-void VXGIPlugin::Impl::generate_mipmaps(void)
+void VXGIPlugin::Impl::generate_mipmaps()
 {
     voxel_stage_->set_state(VoxelizationStage::StateType::S_gen_mipmaps);
 }
@@ -129,12 +129,12 @@ VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pip
 {
 }
 
-VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins(void) const
+VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void VXGIPlugin::on_stage_setup(void)
+void VXGIPlugin::on_stage_setup()
 {
     impl_->voxel_stage_ = std::make_shared<VoxelizationStage>(pipeline_);
     add_stage(impl_->voxel_stage_);
@@ -153,7 +153,7 @@ void VXGIPlugin::on_stage_setup(void)
     }
 }
 
-void VXGIPlugin::on_pre_render_update(void)
+void VXGIPlugin::on_pre_render_update()
 {
     auto task = impl_->queue_.front();
     impl_->queue_.pop_front();
@@ -161,7 +161,7 @@ void VXGIPlugin::on_pre_render_update(void)
     task();
 }
 
-void VXGIPlugin::on_pipeline_created(void)
+void VXGIPlugin::on_pipeline_created()
 {
     impl_->on_pipeline_created();
 }

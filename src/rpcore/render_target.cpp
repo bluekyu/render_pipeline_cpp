@@ -51,19 +51,19 @@ class RenderTarget::Impl
 public:
     Impl(RenderTarget& self);
 
-    void initilize(void);
+    void initilize();
 
     void set_active(bool flag);
     void prepare_render(const NodePath& camera_np);
-    void remove(void);
+    void remove();
 
     int percent_to_number(const std::string& v) const NOEXCEPT;
 
-    void create_buffer(void);
-    void compute_size_from_constraint(void);
-    void setup_textures(void);
+    void create_buffer();
+    void compute_size_from_constraint();
+    void setup_textures();
     void make_properties(WindowProperties& window_props, FrameBufferProperties& buffer_props);
-    bool create(void);
+    bool create();
 
 public:
     RenderTarget& self_;
@@ -95,7 +95,7 @@ RenderTarget::Impl::Impl(RenderTarget& self): self_(self)
 {
 }
 
-void RenderTarget::Impl::initilize(void)
+void RenderTarget::Impl::initilize()
 {
     source_window_ = Globals::base->get_win();
 
@@ -169,7 +169,7 @@ void RenderTarget::Impl::prepare_render(const NodePath& camera_np)
     active_ = true;
 }
 
-void RenderTarget::Impl::remove(void)
+void RenderTarget::Impl::remove()
 {
     if (internal_buffer_)
     {
@@ -210,7 +210,7 @@ int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
     }
 }
 
-void RenderTarget::Impl::create_buffer(void)
+void RenderTarget::Impl::create_buffer()
 {
     compute_size_from_constraint();
     if (!create())
@@ -229,7 +229,7 @@ void RenderTarget::Impl::create_buffer(void)
     }
 }
 
-void RenderTarget::Impl::compute_size_from_constraint(void)
+void RenderTarget::Impl::compute_size_from_constraint()
 {
     const int w = rpcore::Globals::resolution.get_x();
     const int h = rpcore::Globals::resolution.get_y();
@@ -243,7 +243,7 @@ void RenderTarget::Impl::compute_size_from_constraint(void)
         size_.set_y((h - size_constraint_y - 1) / (-size_constraint_y));
 }
 
-void RenderTarget::Impl::setup_textures(void)
+void RenderTarget::Impl::setup_textures()
 {
     for (int k = 0; k < aux_count_; k++)
     {
@@ -325,7 +325,7 @@ void RenderTarget::Impl::make_properties(WindowProperties& window_props, FrameBu
         self_.error("Invalid aux bits");
 }
 
-bool RenderTarget::Impl::create(void)
+bool RenderTarget::Impl::create()
 {
     setup_textures();
     WindowProperties window_props;
@@ -402,13 +402,13 @@ RenderTarget::RenderTarget(const std::string& name): RPObject(name), impl_(std::
     impl_->initilize();
 }
 
-RenderTarget::~RenderTarget(void)
+RenderTarget::~RenderTarget()
 {
     remove();
 }
 
 void RenderTarget::set_active(bool flag) { impl_->set_active(flag); }
-void RenderTarget::remove(void) { impl_->remove(); }
+void RenderTarget::remove() { impl_->remove(); }
 void RenderTarget::prepare_render(const NodePath& camera_np) { impl_->prepare_render(camera_np); }
 
 void RenderTarget::add_color_attachment(const LVecBase4i& bits)
@@ -469,17 +469,17 @@ void RenderTarget::set_size(const LVecBase2i& size) NOEXCEPT
     impl_->size_constraint_ = size;
 }
 
-const decltype(RenderTarget::Impl::targets_)& RenderTarget::get_targets(void) const
+const decltype(RenderTarget::Impl::targets_)& RenderTarget::get_targets() const
 {
     return impl_->targets_;
 }
 
-Texture* RenderTarget::get_color_tex(void) const
+Texture* RenderTarget::get_color_tex() const
 {
     return impl_->targets_.at("color");
 }
 
-Texture* RenderTarget::get_depth_tex(void) const
+Texture* RenderTarget::get_depth_tex() const
 {
     return impl_->targets_.at("depth");
 }
@@ -489,7 +489,7 @@ Texture* RenderTarget::get_aux_tex(size_t index) const
     return impl_->targets_.at(std::string("aux_") + std::to_string(index));
 }
 
-const boost::optional<int>& RenderTarget::get_sort(void) const NOEXCEPT
+const boost::optional<int>& RenderTarget::get_sort() const NOEXCEPT
 {
     return impl_->sort_;
 }
@@ -504,13 +504,13 @@ void RenderTarget::set_size(const std::string& width, const std::string& height)
     impl_->size_constraint_ = LVecBase2i(impl_->percent_to_number(width), impl_->percent_to_number(height));
 }
 
-void RenderTarget::prepare_buffer(void)
+void RenderTarget::prepare_buffer()
 {
     impl_->create_buffer();
     impl_->active_ = true;
 }
 
-void RenderTarget::present_on_screen(void)
+void RenderTarget::present_on_screen()
 {
     impl_->source_postprocess_region_ = PostProcessRegion::make(impl_->source_window_);
     impl_->source_postprocess_region_->set_sort(5);
@@ -527,7 +527,7 @@ void RenderTarget::set_instance_count(int count)
     impl_->source_postprocess_region_->set_instance_count(count);
 }
 
-bool RenderTarget::get_active(void) const
+bool RenderTarget::get_active() const
 {
     return impl_->active_;
 }
@@ -548,22 +548,22 @@ void RenderTarget::set_shader(const Shader* sha)
     impl_->source_postprocess_region_->set_shader(sha, 0);
 }
 
-GraphicsBuffer* RenderTarget::get_internal_buffer(void) const
+GraphicsBuffer* RenderTarget::get_internal_buffer() const
 {
     return impl_->internal_buffer_;
 }
 
-DisplayRegion* RenderTarget::get_display_region(void) const
+DisplayRegion* RenderTarget::get_display_region() const
 {
     return impl_->source_display_region_;
 }
 
-PostProcessRegion* RenderTarget::get_postprocess_region(void) const
+PostProcessRegion* RenderTarget::get_postprocess_region() const
 {
     return impl_->source_postprocess_region_;
 }
 
-void RenderTarget::consider_resize(void)
+void RenderTarget::consider_resize()
 {
     const LVecBase2i current_size = impl_->size_;
     impl_->compute_size_from_constraint();
@@ -574,12 +574,12 @@ void RenderTarget::consider_resize(void)
     }
 }
 
-bool RenderTarget::get_support_transparency(void) const
+bool RenderTarget::get_support_transparency() const
 {
     return impl_->support_transparency_;
 }
 
-bool RenderTarget::get_create_default_region(void) const
+bool RenderTarget::get_create_default_region() const
 {
     return impl_->create_default_region_;
 }

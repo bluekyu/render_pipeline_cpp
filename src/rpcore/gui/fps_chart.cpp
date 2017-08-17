@@ -41,14 +41,14 @@ FPSChart::FPSChart(RenderPipeline* pipeline, NodePath parent): RPObject("FPSChar
     create_components();
 }
 
-FPSChart::~FPSChart(void)
+FPSChart::~FPSChart()
 {
     delete _display_img;
     delete _display_txt;
     delete _display_txt_bottom;
 }
 
-void FPSChart::create_components(void)
+void FPSChart::create_components()
 {
     // Create the buffer which stores the last FPS values
     _storage_buffer = Image::create_buffer("FPSValues", 250, "R16");

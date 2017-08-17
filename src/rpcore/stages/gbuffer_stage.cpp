@@ -33,7 +33,7 @@ namespace rpcore {
 GBufferStage::RequireType GBufferStage::required_inputs_ = { "DefaultEnvmap" };
 GBufferStage::RequireType GBufferStage::required_pipes_;
 
-GBufferStage::ProduceType GBufferStage::get_produced_pipes(void) const
+GBufferStage::ProduceType GBufferStage::get_produced_pipes() const
 {
     return {
         make_gbuffer_ubo(),
@@ -41,7 +41,7 @@ GBufferStage::ProduceType GBufferStage::get_produced_pipes(void) const
     };
 }
 
-std::shared_ptr<SimpleInputBlock> GBufferStage::make_gbuffer_ubo(void) const
+std::shared_ptr<SimpleInputBlock> GBufferStage::make_gbuffer_ubo() const
 {
     std::shared_ptr<SimpleInputBlock> ubo(new SimpleInputBlock("GBuffer"));
     ubo->add_input("Depth", target_->get_depth_tex());
@@ -52,7 +52,7 @@ std::shared_ptr<SimpleInputBlock> GBufferStage::make_gbuffer_ubo(void) const
     return ubo;
 }
 
-void GBufferStage::create(void)
+void GBufferStage::create()
 {
     const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -70,7 +70,7 @@ void GBufferStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string GBufferStage::get_plugin_id(void) const
+std::string GBufferStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

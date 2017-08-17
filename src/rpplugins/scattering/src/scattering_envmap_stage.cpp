@@ -39,7 +39,7 @@ ScatteringEnvmapStage::ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline): 
 {
 }
 
-ScatteringEnvmapStage::ProduceType ScatteringEnvmapStage::get_produced_pipes(void) const
+ScatteringEnvmapStage::ProduceType ScatteringEnvmapStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ScatteringIBLDiffuse", _cubemap_filter->get_diffuse_cubemap()->get_texture()),
@@ -47,7 +47,7 @@ ScatteringEnvmapStage::ProduceType ScatteringEnvmapStage::get_produced_pipes(voi
     };
 }
 
-void ScatteringEnvmapStage::create(void)
+void ScatteringEnvmapStage::create()
 {
     _cubemap_filter = new rpcore::CubemapFilter(this, "ScatEnvCub");
 
@@ -65,13 +65,13 @@ void ScatteringEnvmapStage::create(void)
     rpcore::GBufferStage::get_global_required_pipes().push_back("ScatteringIBLSpecular");
 }
 
-void ScatteringEnvmapStage::reload_shaders(void)
+void ScatteringEnvmapStage::reload_shaders()
 {
     _target_cube->set_shader(load_plugin_shader({"scattering_envmap.frag.glsl"}));
     _cubemap_filter->reload_shaders();
 }
 
-std::string ScatteringEnvmapStage::get_plugin_id(void) const
+std::string ScatteringEnvmapStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -53,7 +53,7 @@ BufferViewer::BufferViewer(RenderPipeline* pipeline, NodePath parent): Draggable
     hide();
 }
 
-void BufferViewer::toggle(void)
+void BufferViewer::toggle()
 {
     if (_visible)
     {
@@ -67,7 +67,7 @@ void BufferViewer::toggle(void)
     }
 }
 
-std::vector<BufferViewer::EntryType> BufferViewer::get_entries(void) const
+std::vector<BufferViewer::EntryType> BufferViewer::get_entries() const
 {
     std::vector<BufferViewer::EntryType> entries;
 
@@ -80,7 +80,7 @@ std::vector<BufferViewer::EntryType> BufferViewer::get_entries(void) const
     return entries;
 }
 
-std::pair<size_t, int> BufferViewer::get_stage_information(void) const
+std::pair<size_t, int> BufferViewer::get_stage_information() const
 {
     int count = 0;
     size_t memory = 0;
@@ -110,7 +110,7 @@ std::pair<size_t, int> BufferViewer::get_stage_information(void) const
     return {memory, count};
 }
 
-void BufferViewer::create_components(void)
+void BufferViewer::create_components()
 {
     DraggableWindow::create_components();
 
@@ -158,7 +158,7 @@ void BufferViewer::set_scroll_height(int height)
     _content_node.set_z(_scroll_height);
 }
 
-void BufferViewer::remove_components(void)
+void BufferViewer::remove_components()
 {
     frame_hovers_.clear();
 
@@ -169,7 +169,7 @@ void BufferViewer::remove_components(void)
     _tex_preview->hide();
 }
 
-void BufferViewer::perform_update(void)
+void BufferViewer::perform_update()
 {
     // Collect texture stages
     _stages.clear();
@@ -226,7 +226,7 @@ void BufferViewer::on_texture_clicked(const Event* func, void* data)
     self_tex->self->_tex_preview->present(self_tex->tex);
 }
 
-void BufferViewer::render_stages(void)
+void BufferViewer::render_stages()
 {
     remove_components();
     const int entries_per_row = 6;

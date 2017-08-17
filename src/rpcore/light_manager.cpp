@@ -50,29 +50,29 @@ LightManager::LightManager(RenderPipeline& pipeline): RPObject("LightManager"), 
     init_stages();
 }
 
-LightManager::~LightManager(void)
+LightManager::~LightManager()
 {
     delete cmd_queue_;
     delete shadow_manager_;
     delete internal_mgr_;
 }
 
-int LightManager::get_total_tiles(void) const
+int LightManager::get_total_tiles() const
 {
     return num_tiles_.get_x() * num_tiles_.get_y() * pipeline_.get_setting<int>("lighting.culling_grid_slices");
 }
 
-size_t LightManager::get_num_lights(void) const
+size_t LightManager::get_num_lights() const
 {
     return internal_mgr_->get_num_lights();
 }
 
-size_t LightManager::get_num_shadow_sources(void) const
+size_t LightManager::get_num_shadow_sources() const
 {
     return internal_mgr_->get_num_shadow_sources();
 }
 
-float LightManager::get_shadow_atlas_coverage(void) const
+float LightManager::get_shadow_atlas_coverage() const
 {
     return internal_mgr_->get_shadow_manager()->get_atlas()->get_coverage() * 100.0f;
 }
@@ -89,7 +89,7 @@ void LightManager::remove_light(RPLight* light)
     pta_max_light_index_[0] = internal_mgr_->get_max_light_index();
 }
 
-void LightManager::update(void)
+void LightManager::update()
 {
     internal_mgr_->set_camera_pos(Globals::base->get_cam().get_pos(Globals::base->get_render()));
     internal_mgr_->update();
@@ -97,12 +97,12 @@ void LightManager::update(void)
     cmd_queue_->process_queue();
 }
 
-void LightManager::reload_shaders(void)
+void LightManager::reload_shaders()
 {
     cmd_queue_->reload_shaders();
 }
 
-void LightManager::compute_tile_size(void)
+void LightManager::compute_tile_size()
 {
     tile_size_ = LVecBase2i(
         pipeline_.get_setting<int>("lighting.culling_grid_size_x"),
@@ -115,7 +115,7 @@ void LightManager::compute_tile_size(void)
     num_tiles_ = LVecBase2i(num_tiles_x, num_tiles_y);
 }
 
-void LightManager::init_command_queue(void)
+void LightManager::init_command_queue()
 {
     cmd_queue_ = new GPUCommandQueue(pipeline_);
     cmd_queue_->register_input("LightData", img_light_data_->get_texture());
@@ -123,7 +123,7 @@ void LightManager::init_command_queue(void)
     internal_mgr_->set_command_list(cmd_queue_->get_command_list());
 }
 
-void LightManager::initshadow_manager(void)
+void LightManager::initshadow_manager()
 {
     shadow_manager_ = new ShadowManager;
     shadow_manager_->set_max_updates(pipeline_.get_setting<size_t>("shadows.max_updates"));
@@ -133,13 +133,13 @@ void LightManager::initshadow_manager(void)
     internal_mgr_->set_shadow_manager(shadow_manager_);
 }
 
-void LightManager::init_shadows(void)
+void LightManager::init_shadows()
 {
     shadow_manager_->set_atlas_graphics_output(shadow_stage_->get_atlas_buffer());
     shadow_manager_->init();
 }
 
-void LightManager::init_internal_manager(void)
+void LightManager::init_internal_manager()
 {
     internal_mgr_ = new InternalLightManager;
     internal_mgr_->set_shadow_update_distance(pipeline_.get_setting<float>("shadows.max_update_distance"));
@@ -168,7 +168,7 @@ void LightManager::init_internal_manager(void)
     pipeline_.get_stage_mgr()->add_input(ShaderInput("maxLightIndex", pta_max_light_index_));
 }
 
-void LightManager::init_stages(void)
+void LightManager::init_stages()
 {
     StageManager* stage_mgr = pipeline_.get_stage_mgr();
     
@@ -182,7 +182,7 @@ void LightManager::init_stages(void)
     stage_mgr->add_stage(shadow_stage_);
 }
 
-void LightManager::init_defines(void)
+void LightManager::init_defines()
 {
     auto& defines = pipeline_.get_stage_mgr()->get_defines();
     defines["LC_TILE_SIZE_X"] = std::to_string(tile_size_.get_x());

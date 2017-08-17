@@ -48,7 +48,7 @@ CommonResources::CommonResources(RenderPipeline& pipeline): RPObject("CommonReso
     setup_inputs();
 }
 
-void CommonResources::write_config(void)
+void CommonResources::write_config()
 {
     const std::string& content = input_ubo_->generate_shader_code();
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
@@ -65,7 +65,7 @@ void CommonResources::write_config(void)
     }
 }
 
-void CommonResources::load_skydome(void)
+void CommonResources::load_skydome()
 {
     Texture* skydome = RPLoader::load_texture("/$$rp/data/builtin_models/skybox/skybox.txo");
     skydome->set_wrap_u(SamplerState::WM_clamp);
@@ -73,12 +73,12 @@ void CommonResources::load_skydome(void)
     pipeline_.get_stage_mgr()->add_input(ShaderInput("DefaultSkydome", skydome));
 }
 
-NodePath CommonResources::load_default_skybox(void)
+NodePath CommonResources::load_default_skybox()
 {
     return RPLoader::load_model("/$$rp/data/builtin_models/skybox/skybox.bam");
 }
 
-void CommonResources::update(void)
+void CommonResources::update()
 {
     const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
     const Lens* cam_lens = showbase_->get_cam_lens();
@@ -281,7 +281,7 @@ void CommonResources::update(void)
     input_ubo_->update_input("lc_tile_count", pipeline_.get_light_mgr()->get_num_tiles());
 }
 
-void CommonResources::load_fonts(void)
+void CommonResources::load_fonts()
 {
     Globals::font = RPLoader::load_font("/$$rp/data/font/Roboto-Medium.ttf");
     DynamicTextFont* dfont = DCAST(DynamicTextFont, Globals::font);
@@ -292,14 +292,14 @@ void CommonResources::load_fonts(void)
     dfont->set_fg(LColor(1, 1, 1, 1));
 }
 
-void CommonResources::load_textures(void)
+void CommonResources::load_textures()
 {
     load_environment_cubemap();
     load_prefilter_brdf();
     load_skydome();
 }
 
-void CommonResources::load_environment_cubemap(void)
+void CommonResources::load_environment_cubemap()
 {
     Texture* envmap = RPLoader::load_cube_map("/$$rp/data/default_cubemap/cubemap.txo", true);
     envmap->set_minfilter(SamplerState::FT_linear_mipmap_linear);
@@ -311,7 +311,7 @@ void CommonResources::load_environment_cubemap(void)
     pipeline_.get_stage_mgr()->add_input(ShaderInput("DefaultEnvmap", envmap));
 }
 
-void CommonResources::load_prefilter_brdf(void)
+void CommonResources::load_prefilter_brdf()
 {
     static const std::unordered_map<std::string, std::string> luts ={
         { "PrefilteredBRDF", "slices/env_brdf_#.png" },
@@ -341,7 +341,7 @@ void CommonResources::load_prefilter_brdf(void)
     }
 }
 
-void CommonResources::setup_inputs(void)
+void CommonResources::setup_inputs()
 {
     const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 

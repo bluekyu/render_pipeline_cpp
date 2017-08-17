@@ -56,18 +56,18 @@ public:
         enter();
     }
 
-    ~TimedLoadingOperation(void)
+    ~TimedLoadingOperation()
     {
         exit();
     }
 
 private:
-    void enter(void)
+    void enter()
     {
         start_time_ = std::chrono::system_clock::now();
     }
 
-    void exit(void)
+    void exit()
     {
         float duration = (std::chrono::duration<float>(std::chrono::system_clock::now() - start_time_)).count();
         if (duration > 80.0f && WARNING_COUNT < 5)

@@ -43,17 +43,17 @@ RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id):
 {
 }
 
-RenderStage::ProduceType RenderStage::get_produced_inputs(void) const
+RenderStage::ProduceType RenderStage::get_produced_inputs() const
 {
     return {};
 }
 
-RenderStage::ProduceType RenderStage::get_produced_pipes(void) const
+RenderStage::ProduceType RenderStage::get_produced_pipes() const
 {
     return {};
 }
 
-RenderStage::DefinesType RenderStage::get_produced_defines(void) const
+RenderStage::DefinesType RenderStage::get_produced_defines() const
 {
     return {};
 }
@@ -115,7 +115,7 @@ PT(Shader) RenderStage::load_plugin_shader(const std::vector<Filename>& args, bo
     return get_shader_handle(shader_path, args, stereo_post, use_post_gs);
 }
 
-void RenderStage::handle_window_resize(void)
+void RenderStage::handle_window_resize()
 {
     set_dimensions();
     for (auto& target: targets_)

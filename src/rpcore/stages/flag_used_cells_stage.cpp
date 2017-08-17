@@ -31,14 +31,14 @@ namespace rpcore {
 FlagUsedCellsStage::RequireType FlagUsedCellsStage::required_inputs_;
 FlagUsedCellsStage::RequireType FlagUsedCellsStage::required_pipes_ = { "GBuffer" };
 
-FlagUsedCellsStage::ProduceType FlagUsedCellsStage::get_produced_pipes(void) const
+FlagUsedCellsStage::ProduceType FlagUsedCellsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("FlaggedCells", cell_grid_flags_->get_texture()),
     };
 }
 
-void FlagUsedCellsStage::create(void)
+void FlagUsedCellsStage::create()
 {
     target_ = create_target("FlagUsedCells");
     target_->prepare_buffer();
@@ -53,24 +53,24 @@ void FlagUsedCellsStage::create(void)
     target_->set_shader_input(ShaderInput("cellGridFlags", cell_grid_flags_->get_texture()));
 }
 
-void FlagUsedCellsStage::reload_shaders(void)
+void FlagUsedCellsStage::reload_shaders()
 {
     target_->set_shader(load_shader({"flag_used_cells.frag.glsl"}));
 }
 
-void FlagUsedCellsStage::update(void)
+void FlagUsedCellsStage::update()
 {
     cell_grid_flags_->clear_image();
 }
 
-void FlagUsedCellsStage::set_dimensions(void)
+void FlagUsedCellsStage::set_dimensions()
 {
     const LVecBase2i& tile_amount = pipeline_.get_light_mgr()->get_num_tiles();
     cell_grid_flags_->set_x_size(tile_amount.get_x());
     cell_grid_flags_->set_y_size(tile_amount.get_y());
 }
 
-std::string FlagUsedCellsStage::get_plugin_id(void) const
+std::string FlagUsedCellsStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

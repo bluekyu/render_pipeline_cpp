@@ -29,14 +29,14 @@ namespace rpplugins {
 ApplyCloudsStage::RequireType ApplyCloudsStage::required_inputs;
 ApplyCloudsStage::RequireType ApplyCloudsStage::required_pipes = { "ShadedScene", "GBuffer" };
 
-ApplyCloudsStage::ProduceType ApplyCloudsStage::get_produced_pipes(void) const
+ApplyCloudsStage::ProduceType ApplyCloudsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target_apply_clouds->get_color_tex()),
     };
 }
 
-void ApplyCloudsStage::create(void)
+void ApplyCloudsStage::create()
 {
     _render_target = create_target("RaymarchVoxels");
     _render_target->set_size(-2);
@@ -56,14 +56,14 @@ void ApplyCloudsStage::create(void)
     _target_apply_clouds->set_shader_input(ShaderInput("CloudsTex", _upscale_target->get_color_tex()));
 }
 
-void ApplyCloudsStage::reload_shaders(void)
+void ApplyCloudsStage::reload_shaders()
 {
     _target_apply_clouds->set_shader(load_plugin_shader({ "apply_clouds.frag.glsl" }));
     _render_target->set_shader(load_plugin_shader({ "render_clouds.frag.glsl" }));
     _upscale_target->set_shader(load_plugin_shader({ "/$$rp/shader/bilateral_upscale.frag.glsl" }));
 }
 
-std::string ApplyCloudsStage::get_plugin_id(void) const
+std::string ApplyCloudsStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

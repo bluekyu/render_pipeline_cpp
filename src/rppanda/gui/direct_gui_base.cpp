@@ -121,7 +121,7 @@ float DirectGuiWidget::_grid_spacing = 0.05f;
 bool DirectGuiWidget::gui_edit = ConfigVariableBool("direct-gui-edit", false).get_value();
 std::string DirectGuiWidget::inactive_init_state = gui_edit ? NORMAL : DISABLED;
 
-DirectGuiWidget::Options::Options(void)
+DirectGuiWidget::Options::Options()
 {
     state = NORMAL;
     relief = FLAT;
@@ -195,7 +195,7 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
     }
 }
 
-void DirectGuiWidget::enable_edit(void)
+void DirectGuiWidget::enable_edit()
 {
     this->bind(B2PRESS, edit_start, this);
     this->bind(B2RELEASE, edit_stop, this);
@@ -207,7 +207,7 @@ void DirectGuiWidget::enable_edit(void)
     }, this);
 }
 
-void DirectGuiWidget::disable_edit(void)
+void DirectGuiWidget::disable_edit()
 {
     this->unbind(B2PRESS);
     this->unbind(B2RELEASE);
@@ -247,7 +247,7 @@ void DirectGuiWidget::set_state(bool state)
     _gui_item->set_active(state);
 }
 
-void DirectGuiWidget::reset_frame_size(void)
+void DirectGuiWidget::reset_frame_size()
 {
     if (!f_init_)
         set_frame_size(true);
@@ -326,7 +326,7 @@ PGFrameStyle::Type DirectGuiWidget::get_frame_type(int state)
     return _frame_style[state].get_type();
 }
 
-void DirectGuiWidget::update_frame_style(void)
+void DirectGuiWidget::update_frame_style()
 {
     if (!f_init_)
     {
@@ -484,7 +484,7 @@ void DirectGuiWidget::initialise_options(const std::shared_ptr<Options>& options
     f_init_ = false;
 }
 
-void DirectGuiWidget::frame_initialise_func(void)
+void DirectGuiWidget::frame_initialise_func()
 {
     // Now allow changes to take effect
     update_frame_style();

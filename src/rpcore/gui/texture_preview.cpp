@@ -215,7 +215,7 @@ void TexturePreview::set_enable_tonemap(bool arg, const std::shared_ptr<void>&)
     _preview_image->set_shader_input(ShaderInput("tonemap", LVecBase4i(arg, 0, 0, 0)));
 }
 
-void TexturePreview::create_components(void)
+void TexturePreview::create_components()
 {
     DraggableWindow::create_components();
     _content_node = _node.attach_new_node("content");

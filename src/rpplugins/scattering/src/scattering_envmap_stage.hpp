@@ -40,16 +40,16 @@ class ScatteringEnvmapStage: public rpcore::RenderStage
 public:
     ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline);
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
+    RequireType& get_required_inputs() const final { return required_inputs; }
+    RequireType& get_required_pipes() const final { return required_pipes; }
 
-    ProduceType get_produced_pipes(void) const final;
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
-    void reload_shaders(void) final;
+    void create() final;
+    void reload_shaders() final;
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     static RequireType required_inputs;
     static RequireType required_pipes;

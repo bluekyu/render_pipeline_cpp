@@ -30,14 +30,14 @@ namespace rpplugins {
 ColorCorrectionStage::RequireType ColorCorrectionStage::required_inputs;
 ColorCorrectionStage::RequireType ColorCorrectionStage::required_pipes = { "ShadedScene" };
 
-ColorCorrectionStage::ProduceType ColorCorrectionStage::get_produced_pipes(void) const
+ColorCorrectionStage::ProduceType ColorCorrectionStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_->get_color_tex()),
     };
 }
 
-void ColorCorrectionStage::create(void)
+void ColorCorrectionStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -48,12 +48,12 @@ void ColorCorrectionStage::create(void)
     target_->prepare_buffer();
 }
 
-void ColorCorrectionStage::reload_shaders(void)
+void ColorCorrectionStage::reload_shaders()
 {
     target_->set_shader(load_plugin_shader({"post_fx.frag.glsl"}, stereo_mode_));
 }
 
-std::string ColorCorrectionStage::get_plugin_id(void) const
+std::string ColorCorrectionStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -72,7 +72,7 @@ public:
     void setup_render_2d(ShowBase* self);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
-    void create_base_audio_managers(void);
+    void create_base_audio_managers();
     void enable_music(bool enable);
 
     Filename get_screenshot_filename(const std::string& name_prefix, bool default_filename) const;
@@ -408,7 +408,7 @@ void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
         extra_sfx_manager->set_active(sfx_active_);
 }
 
-void ShowBase::Impl::create_base_audio_managers(void)
+void ShowBase::Impl::create_base_audio_managers()
 {
     rppanda_showbase_cat.debug() << "Creating base audio manager ..." << std::endl;
 
@@ -480,7 +480,7 @@ ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
     impl_->initailize(this);
 }
 
-ShowBase::~ShowBase(void)
+ShowBase::~ShowBase()
 {
     shutdown();
 
@@ -505,106 +505,106 @@ ShowBase::~ShowBase(void)
     global_showbase = nullptr;
 }
 
-void ShowBase::setup_render_2d(void) { impl_->setup_render_2d(this); }
-void ShowBase::setup_render_2dp(void) { impl_->setup_render_2dp(this); }
-void ShowBase::setup_mouse(void) { impl_->setup_mouse(this); }
-void ShowBase::create_base_audio_managers(void) { impl_->create_base_audio_managers(); }
+void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
+void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
+void ShowBase::setup_mouse() { impl_->setup_mouse(this); }
+void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
 
-ShowBase* ShowBase::get_global_ptr(void)
+ShowBase* ShowBase::get_global_ptr()
 {
     return global_showbase;
 }
 
-PandaFramework* ShowBase::get_panda_framework(void) const
+PandaFramework* ShowBase::get_panda_framework() const
 {
     return impl_->panda_framework_.get();
 }
 
-WindowFramework* ShowBase::get_window_framework(void) const
+WindowFramework* ShowBase::get_window_framework() const
 {
     return impl_->window_framework_;
 }
 
-rppanda::Loader* ShowBase::get_loader(void) const
+rppanda::Loader* ShowBase::get_loader() const
 {
     return impl_->loader_;
 }
 
-GraphicsEngine* ShowBase::get_graphics_engine(void) const
+GraphicsEngine* ShowBase::get_graphics_engine() const
 {
     return impl_->graphics_engine_;
 }
 
-GraphicsWindow* ShowBase::get_win(void) const
+GraphicsWindow* ShowBase::get_win() const
 {
     return impl_->win_;
 }
 
-const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list(void) const
+const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list() const
 {
     return impl_->sfx_manager_list_;
 }
 
-SfxPlayer* ShowBase::get_sfx_player(void) const
+SfxPlayer* ShowBase::get_sfx_player() const
 {
     return impl_->sfx_player_;
 }
 
-AudioManager* ShowBase::get_music_manager(void) const
+AudioManager* ShowBase::get_music_manager() const
 {
     return impl_->music_manager_;
 }
 
-NodePath ShowBase::get_render(void) const
+NodePath ShowBase::get_render() const
 {
     return impl_->window_framework_->get_render();
 }
 
-NodePath ShowBase::get_render_2d(void) const
+NodePath ShowBase::get_render_2d() const
 {
     return impl_->window_framework_->get_render_2d();
 }
 
-NodePath ShowBase::get_aspect_2d(void) const
+NodePath ShowBase::get_aspect_2d() const
 {
     return impl_->window_framework_->get_aspect_2d();
 }
 
-NodePath ShowBase::get_pixel_2d(void) const
+NodePath ShowBase::get_pixel_2d() const
 {
     return impl_->window_framework_->get_pixel_2d();
 }
 
-NodePath ShowBase::get_render_2dp(void) const
+NodePath ShowBase::get_render_2dp() const
 {
     return impl_->render_2dp_;
 }
 
-NodePath ShowBase::get_pixel_2dp(void) const
+NodePath ShowBase::get_pixel_2dp() const
 {
     return impl_->pixel_2dp_;
 }
 
-float ShowBase::get_config_aspect_ratio(void) const
+float ShowBase::get_config_aspect_ratio() const
 {
     return impl_->config_aspect_ratio_;
 }
 
-AsyncTaskManager* ShowBase::get_task_mgr(void) const
+AsyncTaskManager* ShowBase::get_task_mgr() const
 {
     return AsyncTaskManager::get_global_ptr();
 }
 
-bool ShowBase::open_default_window(void)
+bool ShowBase::open_default_window()
 {
     open_main_window();
 
     return impl_->win_ != nullptr;
 }
 
-void ShowBase::open_main_window(void)
+void ShowBase::open_main_window()
 {
     if (impl_->win_)
     {
@@ -613,7 +613,7 @@ void ShowBase::open_main_window(void)
     }
 }
 
-void ShowBase::setup_render(void)
+void ShowBase::setup_render()
 {
     // C++ sets already render node.
     //self.render.setAttrib(RescaleNormalAttrib.makeDefault())
@@ -673,19 +673,19 @@ NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4
     return camera2dp;
 }
 
-void ShowBase::setup_data_graph(void)
+void ShowBase::setup_data_graph()
 {
 
 }
 
-void ShowBase::setup_mouse_cb(void)
+void ShowBase::setup_mouse_cb()
 {
     // Note that WindowFramework::get_mouse
 
     impl_->window_framework_->enable_keyboard();
 }
 
-void ShowBase::toggle_backface(void)
+void ShowBase::toggle_backface()
 {
     if (impl_->backface_culling_enabled_)
         backface_culling_off();
@@ -693,21 +693,21 @@ void ShowBase::toggle_backface(void)
         backface_culling_on();
 }
 
-void ShowBase::backface_culling_on(void)
+void ShowBase::backface_culling_on()
 {
     if (!impl_->backface_culling_enabled_)
         get_render().set_two_sided(false);
     impl_->backface_culling_enabled_ = true;
 }
 
-void ShowBase::backface_culling_off(void)
+void ShowBase::backface_culling_off()
 {
     if (!impl_->backface_culling_enabled_)
         get_render().set_two_sided(true);
     impl_->backface_culling_enabled_ = false;
 }
 
-void ShowBase::toggle_wireframe(void)
+void ShowBase::toggle_wireframe()
 {
     if (impl_->wireframe_enabled_)
         wireframe_off();
@@ -715,7 +715,7 @@ void ShowBase::toggle_wireframe(void)
         wireframe_on();
 }
 
-void ShowBase::wireframe_on(void)
+void ShowBase::wireframe_on()
 {
     NodePath render = get_render();
     render.set_render_mode_wireframe(100);
@@ -723,7 +723,7 @@ void ShowBase::wireframe_on(void)
     impl_->wireframe_enabled_ = true;
 }
 
-void ShowBase::wireframe_off(void)
+void ShowBase::wireframe_off()
 {
     NodePath render = get_render();
     render.clear_render_mode();
@@ -802,7 +802,7 @@ const LVecBase2i& ShowBase::get_size(GraphicsOutput* win) const
     }
 }
 
-NodePath ShowBase::get_camera(void) const
+NodePath ShowBase::get_camera() const
 {
     return impl_->window_framework_->get_camera_group();
 }
@@ -822,28 +822,28 @@ Lens* ShowBase::get_cam_lens(int cam_index, int lens_index) const
     return get_cam_node(cam_index)->get_lens(lens_index);
 }
 
-MouseWatcher* ShowBase::get_mouse_watcher_node(void) const
+MouseWatcher* ShowBase::get_mouse_watcher_node() const
 {
     return impl_->mouse_watcher_node_;
 }
 
-NodePath ShowBase::get_button_thrower(void) const
+NodePath ShowBase::get_button_thrower() const
 {
     // Node that WindowFramework::enable_keyboard
     return impl_->window_framework_->get_mouse().find("kb-events");
 }
 
-const NodePath& ShowBase::get_data_root(void) const
+const NodePath& ShowBase::get_data_root() const
 {
     return impl_->panda_framework_->get_data_root();
 }
 
-PandaNode* ShowBase::get_data_root_node(void) const
+PandaNode* ShowBase::get_data_root_node() const
 {
     return get_data_root().node();
 }
 
-void ShowBase::restart(void)
+void ShowBase::restart()
 {
     rppanda_showbase_cat.debug() << "Re-staring ShowBase ..." << std::endl;
 
@@ -856,7 +856,7 @@ void ShowBase::restart(void)
     add_task(Impl::audio_loop, impl_.get(), "audio_loop", 60);
 }
 
-void ShowBase::shutdown(void)
+void ShowBase::shutdown()
 {
     rppanda_showbase_cat.debug() << "Shutdown ShowBase ..." << std::endl;
 
@@ -869,7 +869,7 @@ void ShowBase::shutdown(void)
         task_mgr->remove(task);
 }
 
-void ShowBase::disable_mouse(void)
+void ShowBase::disable_mouse()
 {
     // Note that WindowFramework::setup_trackball.
     NodePath tball2cam = impl_->window_framework_->get_mouse().find("trackball/tball2cam");
@@ -877,7 +877,7 @@ void ShowBase::disable_mouse(void)
         tball2cam.detach_node();
 }
 
-void ShowBase::use_trackball(void)
+void ShowBase::use_trackball()
 {
     impl_->window_framework_->setup_trackball();
 }
@@ -891,7 +891,7 @@ void ShowBase::set_all_sfx_enables(bool enable)
     }
 }
 
-void ShowBase::disable_all_audio(void)
+void ShowBase::disable_all_audio()
 {
     impl_->app_has_audio_focus_ = false;
     set_all_sfx_enables(false);
@@ -900,7 +900,7 @@ void ShowBase::disable_all_audio(void)
     rppanda_showbase_cat.debug() << "Disabling audio" << std::endl;
 }
 
-void ShowBase::enable_all_audio(void)
+void ShowBase::enable_all_audio()
 {
     impl_->app_has_audio_focus_ = true;
     set_all_sfx_enables(impl_->sfx_active_);
@@ -1009,7 +1009,7 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
     return "";
 }
 
-void ShowBase::run(void)
+void ShowBase::run()
 {
     impl_->panda_framework_->main_loop();
 }

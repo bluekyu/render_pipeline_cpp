@@ -25,4 +25,4 @@
 
 NotifyCategoryDecl(rppanda_interval, EXPORT_CLASS, EXPORT_TEMPL);
 
-extern void init_librppanda_interval(void);
+extern void init_librppanda_interval();

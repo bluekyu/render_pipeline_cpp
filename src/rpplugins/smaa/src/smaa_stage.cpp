@@ -31,7 +31,7 @@ namespace rpplugins {
 SMAAStage::RequireType SMAAStage::required_inputs;
 SMAAStage::RequireType SMAAStage::required_pipes = { "ShadedScene", "GBuffer", "CombinedVelocity" };
 
-SMAAStage::ProduceType SMAAStage::get_produced_pipes(void) const
+SMAAStage::ProduceType SMAAStage::get_produced_pipes() const
 {
     if (use_reprojection_)
     {
@@ -58,7 +58,7 @@ SMAAStage::SMAAStage(rpcore::RenderPipeline& pipeline, bool use_reprojection): R
     jitter_index_ = PTA_int::empty_array(1);
 }
 
-void SMAAStage::create(void)
+void SMAAStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -105,7 +105,7 @@ void SMAAStage::create(void)
     }
 }
 
-void SMAAStage::reload_shaders(void)
+void SMAAStage::reload_shaders()
 {
     edge_target_->set_shader(load_plugin_shader({ "edge_detection.frag.glsl" }, stereo_mode_));
     blend_target_->set_shader(load_plugin_shader({ "blending_weights.frag.glsl" }, stereo_mode_));
@@ -114,7 +114,7 @@ void SMAAStage::reload_shaders(void)
         resolve_target_->set_shader(load_plugin_shader({ "resolve_smaa.frag.glsl" }, stereo_mode_));
 }
 
-std::string SMAAStage::get_plugin_id(void) const
+std::string SMAAStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -31,11 +31,11 @@ class SMAAPlugin: public rpcore::BasePlugin
 public:
     SMAAPlugin(rpcore::RenderPipeline& pipeline);
 
-    RequrieType& get_required_plugins(void) const final;
+    RequrieType& get_required_plugins() const final;
 
-    void on_stage_setup(void) final;
-    void on_pre_render_update(void) final;
-    void on_window_resized(void) final;
+    void on_stage_setup() final;
+    void on_pre_render_update() final;
+    void on_window_resized() final;
 
 private:
     class Impl;

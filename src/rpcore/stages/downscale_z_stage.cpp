@@ -30,14 +30,14 @@ namespace rpcore {
 DownscaleZStage::RequireType DownscaleZStage::required_inputs_;
 DownscaleZStage::RequireType DownscaleZStage::required_pipes_ = { "GBuffer" };
 
-DownscaleZStage::ProduceType DownscaleZStage::get_produced_pipes(void) const
+DownscaleZStage::ProduceType DownscaleZStage::get_produced_pipes() const
 {
     return {
         ShaderInput("DownscaledDepth", target_->get_color_tex()),
     };
 }
 
-void DownscaleZStage::create(void)
+void DownscaleZStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -48,12 +48,12 @@ void DownscaleZStage::create(void)
     target_->prepare_buffer();
 }
 
-void DownscaleZStage::reload_shaders(void)
+void DownscaleZStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "downscale_depth.frag.glsl" }, stereo_mode_));
 }
 
-std::string DownscaleZStage::get_plugin_id(void) const
+std::string DownscaleZStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

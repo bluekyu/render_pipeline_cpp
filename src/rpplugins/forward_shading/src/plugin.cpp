@@ -34,7 +34,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _stage = std::make_shared<ForwardStage>(pipeline_);
     add_stage(_stage);

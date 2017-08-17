@@ -32,14 +32,14 @@ namespace rpcore {
 FinalStage::RequireType FinalStage::required_inputs_;
 FinalStage::RequireType FinalStage::required_pipes_ = { "ShadedScene" };
 
-FinalStage::ProduceType FinalStage::get_produced_pipes(void) const
+FinalStage::ProduceType FinalStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_->get_color_tex()),
     };
 }
 
-void FinalStage::create(void)
+void FinalStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -63,13 +63,13 @@ void FinalStage::create(void)
     present_target_->set_shader_input(ShaderInput("SourceTex", target_->get_color_tex()));
 }
 
-void FinalStage::reload_shaders(void)
+void FinalStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "final_stage.frag.glsl" }, stereo_mode_));
     present_target_->set_shader(load_shader({ "final_present_stage.frag.glsl" }));
 }
 
-std::string FinalStage::get_plugin_id(void) const
+std::string FinalStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

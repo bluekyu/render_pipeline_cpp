@@ -34,14 +34,14 @@ namespace rpplugins {
 SkyAOCaptureStage::RequireType SkyAOCaptureStage::required_inputs;
 SkyAOCaptureStage::RequireType SkyAOCaptureStage::required_pipes;
 
-SkyAOCaptureStage::ProduceType SkyAOCaptureStage::get_produced_pipes(void) const
+SkyAOCaptureStage::ProduceType SkyAOCaptureStage::get_produced_pipes() const
 {
     return {
         ShaderInput("SkyAOHeight", target_convert_->get_color_tex()),
     };
 }
 
-SkyAOCaptureStage::ProduceType SkyAOCaptureStage::get_produced_inputs(void) const
+SkyAOCaptureStage::ProduceType SkyAOCaptureStage::get_produced_inputs() const
 {
     return {
         ShaderInput("SkyAOCapturePosition", pta_position_),
@@ -53,7 +53,7 @@ SkyAOCaptureStage::SkyAOCaptureStage(rpcore::RenderPipeline& pipeline): RenderSt
     pta_position_ = PTA_LVecBase3f::empty_array(1);
 }
 
-void SkyAOCaptureStage::create(void)
+void SkyAOCaptureStage::create()
 {
     _camera = new Camera("SkyAOCaptureCam");
     _cam_lens = new OrthographicLens;
@@ -81,7 +81,7 @@ void SkyAOCaptureStage::create(void)
     pipeline_.get_tag_mgr()->register_camera("shadow", _camera);
 }
 
-void SkyAOCaptureStage::update(void)
+void SkyAOCaptureStage::update()
 {
     static const float snap_size = max_radius_ / float(resolution_);
     const LPoint3& cam_pos = rpcore::Globals::base->get_cam().get_pos(rpcore::Globals::base->get_render());
@@ -92,12 +92,12 @@ void SkyAOCaptureStage::update(void)
     pta_position_[0] = _cam_node.get_pos();
 }
 
-void SkyAOCaptureStage::reload_shaders(void)
+void SkyAOCaptureStage::reload_shaders()
 {
     target_convert_->set_shader(load_plugin_shader({"convert_depth.frag.glsl"}));
 }
 
-std::string SkyAOCaptureStage::get_plugin_id(void) const
+std::string SkyAOCaptureStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

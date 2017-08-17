@@ -29,7 +29,7 @@ namespace rpplugins {
 
 const JitterType JITTERS;
 
-JitterType::JitterType(void)
+JitterType::JitterType()
 {
     insert({
 

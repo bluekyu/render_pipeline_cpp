@@ -77,7 +77,7 @@ Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pip
     Globals::base->do_method_later(0.1f, update_stats, "RPDebugger_updateStats", this);
 }
 
-Debugger::~Debugger(void)
+Debugger::~Debugger()
 {
     for (auto& tn: debug_lines)
         delete tn;
@@ -92,12 +92,12 @@ Debugger::~Debugger(void)
     delete _analyzer;
 }
 
-bool Debugger::use_advanced_info(void) const
+bool Debugger::use_advanced_info() const
 {
     return pipeline->get_setting<bool>("pipeline.advanced_debugging_info");
 }
 
-void Debugger::create_components(void)
+void Debugger::create_components()
 {
     debugger_width = 460;
     debugger_visible = false;
@@ -130,7 +130,7 @@ void Debugger::create_components(void)
     handle_window_resize();
 }
 
-void Debugger::update(void)
+void Debugger::update()
 {
     _error_msg_handler->update();
     _pixel_widget->update();
@@ -148,7 +148,7 @@ AsyncTask::DoneStatus Debugger::collect_scene_data(GenericAsyncTask* task, void*
     return AsyncTask::DS_done;
 }
 
-void Debugger::create_stats(void)
+void Debugger::create_stats()
 {
     overlay_node = Globals::base->get_aspect_2d().attach_new_node("Overlay");
     debug_lines.clear();
@@ -167,7 +167,7 @@ void Debugger::create_stats(void)
     debug_lines[0]->set_color(LColor(1, 1, 0, 1));
 }
 
-void Debugger::create_hints(void)
+void Debugger::create_hints()
 {
     _hint_reloading = new Sprite("/$$rp/data/gui/shader_reload_hint.png", fullscreen_node);
     set_reload_hint_visible(false);
@@ -193,7 +193,7 @@ void Debugger::set_reload_hint_visible(bool flag)
         _hint_reloading->hide();
 }
 
-void Debugger::handle_window_resize(void)
+void Debugger::handle_window_resize()
 {
     // When using small resolutions, scale the GUI so its still useable,
     // otherwise the sub-windows are bigger than the main window
@@ -231,7 +231,7 @@ void Debugger::handle_window_resize(void)
     //self.rm_selector.center_on_screen()
 }
 
-void Debugger::init_keybindings(void)
+void Debugger::init_keybindings()
 {
     Globals::base->accept("v", [](const Event* ev, void* data) {
         if (Globals::base->get_render_2d().is_hidden())
@@ -259,7 +259,7 @@ void Debugger::init_keybindings(void)
     }, this);
 }
 
-void Debugger::toggle_gui_visible(void)
+void Debugger::toggle_gui_visible()
 {
     if (Globals::base->get_render_2d().is_hidden())
     {
@@ -271,7 +271,7 @@ void Debugger::toggle_gui_visible(void)
     }
 }
 
-void Debugger::toggle_keybindings_visible(void)
+void Debugger::toggle_keybindings_visible()
 {
     if (keybinding_instructions_->is_hidden())
     {

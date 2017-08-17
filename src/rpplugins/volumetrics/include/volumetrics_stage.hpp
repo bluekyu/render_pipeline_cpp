@@ -31,19 +31,19 @@ class VolumetricsStage: public rpcore::RenderStage
 {
 public:
     VolumetricsStage(rpcore::RenderPipeline& pipeline);
-    ~VolumetricsStage(void);
+    ~VolumetricsStage();
 
-    RequireType& get_required_inputs(void) const final;
-    RequireType& get_required_pipes(void) const final;
-    ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs() const final;
+    RequireType& get_required_pipes() const final;
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
-    void reload_shaders(void) final;
+    void create() final;
+    void reload_shaders() final;
 
     virtual void set_enable_volumetric_shadows(bool enable_volumetric_shadows);
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     class Impl;
     std::unique_ptr<Impl> impl_;

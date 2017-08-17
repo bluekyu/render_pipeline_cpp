@@ -32,14 +32,14 @@ ApplyLightsStage::RequireType ApplyLightsStage::required_pipes_ = {
     "GBuffer", "CellIndices", "PerCellLights", "ShadowAtlas",
     "ShadowAtlasPCF", "CombinedVelocity", "PerCellLightsCounts" };
 
-ApplyLightsStage::ProduceType ApplyLightsStage::get_produced_pipes(void) const
+ApplyLightsStage::ProduceType ApplyLightsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_->get_color_tex()),
     };
 }
 
-void ApplyLightsStage::create(void)
+void ApplyLightsStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -50,12 +50,12 @@ void ApplyLightsStage::create(void)
     target_->prepare_buffer();
 }
 
-void ApplyLightsStage::reload_shaders(void)
+void ApplyLightsStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "apply_lights.frag.glsl" }, stereo_mode_));
 }
 
-std::string ApplyLightsStage::get_plugin_id(void) const
+std::string ApplyLightsStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

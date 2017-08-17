@@ -31,14 +31,14 @@ namespace rpplugins {
 BloomStage::RequireType BloomStage::required_inputs;
 BloomStage::RequireType BloomStage::required_pipes = { "ShadedScene" };
 
-BloomStage::ProduceType BloomStage::get_produced_pipes(void) const
+BloomStage::ProduceType BloomStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target_apply->get_color_tex()),
     };
 }
 
-void BloomStage::create(void)
+void BloomStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -105,13 +105,13 @@ void BloomStage::create(void)
     _target_apply->set_shader_input(ShaderInput("BloomTex", _scene_target_img->get_texture()));
 }
 
-void BloomStage::set_dimensions(void)
+void BloomStage::set_dimensions()
 {
     _scene_target_img->set_x_size(rpcore::Globals::resolution.get_x());
     _scene_target_img->set_y_size(rpcore::Globals::resolution.get_y());
 }
 
-void BloomStage::reload_shaders(void)
+void BloomStage::reload_shaders()
 {
     _target_extract->set_shader(load_plugin_shader({"extract_bright_spots.frag.glsl"}));
 
@@ -128,7 +128,7 @@ void BloomStage::reload_shaders(void)
         target->set_shader(upsample_shader);
 }
 
-std::string BloomStage::get_plugin_id(void) const
+std::string BloomStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -30,7 +30,7 @@ std::shared_ptr<spdlog::logger> global_logger_ = spdlog::stdout_color_mt("rpcpp_
 class RPLogger::Impl
 {
 public:
-    ~Impl(void);
+    ~Impl();
 
     void create(const std::string& file_path);
 
@@ -38,7 +38,7 @@ public:
     std::shared_ptr<spdlog::logger> logger_;
 };
 
-RPLogger::Impl::~Impl(void)
+RPLogger::Impl::~Impl()
 {
     global_logger_.reset();
 }
@@ -66,19 +66,19 @@ void RPLogger::Impl::create(const std::string& file_path)
 
 // ************************************************************************************************
 
-RPLogger& RPLogger::get_instance(void)
+RPLogger& RPLogger::get_instance()
 {
     static RPLogger instance;
     return instance;
 }
 
-RPLogger::RPLogger(void): impl_(std::make_unique<Impl>())
+RPLogger::RPLogger(): impl_(std::make_unique<Impl>())
 {
 }
 
-RPLogger::~RPLogger(void) = default;
+RPLogger::~RPLogger() = default;
 
-std::shared_ptr<spdlog::logger> RPLogger::get_internal_logger(void)
+std::shared_ptr<spdlog::logger> RPLogger::get_internal_logger()
 {
     return impl_->logger_;
 }
@@ -88,7 +88,7 @@ void RPLogger::create(const std::string& file_path)
     impl_->create(file_path);
 }
 
-bool RPLogger::is_created(void) const
+bool RPLogger::is_created() const
 {
     return impl_->logger_ != nullptr;
 }

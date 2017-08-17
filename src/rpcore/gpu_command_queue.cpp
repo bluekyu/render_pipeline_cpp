@@ -41,24 +41,24 @@ GPUCommandQueue::GPUCommandQueue(RenderPipeline& pipeline): RPObject("GPUCommand
     register_defines();
 }
 
-GPUCommandQueue::~GPUCommandQueue(void)
+GPUCommandQueue::~GPUCommandQueue()
 {
     delete _command_list;
 }
 
-size_t GPUCommandQueue::get_num_queued_commands(void) const
+size_t GPUCommandQueue::get_num_queued_commands() const
 {
     return _command_list->get_num_commands();
 }
 
-void GPUCommandQueue::process_queue(void)
+void GPUCommandQueue::process_queue()
 {
     PTA_uchar pointer = _data_texture->get_texture()->modify_ram_image();
     size_t num_commands_exec = _command_list->write_commands_to(pointer, _commands_per_frame);
     _pta_num_commands[0] = num_commands_exec;
 }
 
-void GPUCommandQueue::reload_shaders(void)
+void GPUCommandQueue::reload_shaders()
 {
     _command_target->set_shader(RPLoader::load_shader({
         "/$$rp/shader/default_post_process.vert.glsl",
@@ -71,7 +71,7 @@ void GPUCommandQueue::register_input(CPT_InternalName key, Texture* val)
     _command_target->set_shader_input(ShaderInput(std::move(key), val));
 }
 
-void GPUCommandQueue::register_defines(void)
+void GPUCommandQueue::register_defines()
 {
     static_assert(GPUCommand::CommandType::CMD_type_count == 5, "GPUCommand::CommandType count is not the same with defined value");
 
@@ -84,14 +84,14 @@ void GPUCommandQueue::register_defines(void)
     defines["GPU_CMD_INT_AS_FLOAT"] = std::string(GPUCommand::get_uses_integer_packing() ? "1": "0");
 }
 
-void GPUCommandQueue::create_data_storage(void)
+void GPUCommandQueue::create_data_storage()
 {
     int command_buffer_size = _commands_per_frame * 32;
     debug(std::string("Allocating command buffer of size ") + std::to_string(command_buffer_size));
     _data_texture = Image::create_buffer("CommandQueue", command_buffer_size, "R32");
 }
 
-void GPUCommandQueue::create_command_target(void)
+void GPUCommandQueue::create_command_target()
 {
     _command_target = new RenderTarget("ExecCommandTarget");
     _command_target->set_size(1);

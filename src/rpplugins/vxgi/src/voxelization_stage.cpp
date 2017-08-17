@@ -36,27 +36,27 @@ namespace rpplugins {
 VoxelizationStage::RequireType VoxelizationStage::required_inputs = { "DefaultEnvmap", "AllLightsData", "maxLightIndex" };
 VoxelizationStage::RequireType VoxelizationStage::required_pipes;
 
-VoxelizationStage::ProduceType VoxelizationStage::get_produced_inputs(void) const
+VoxelizationStage::ProduceType VoxelizationStage::get_produced_inputs() const
 {
     return {
         ShaderInput("voxelGridPosition", _pta_grid_pos),
     };
 }
 
-VoxelizationStage::ProduceType VoxelizationStage::get_produced_pipes(void) const
+VoxelizationStage::ProduceType VoxelizationStage::get_produced_pipes() const
 {
     return {
         ShaderInput("SceneVoxels", _voxel_grid->get_texture()),
     };
 }
 
-void VoxelizationStage::create_ptas(void)
+void VoxelizationStage::create_ptas()
 {
     _pta_next_grid_pos = PTA_LVecBase3::empty_array(1);
     _pta_grid_pos = PTA_LVecBase3::empty_array(1);
 }
 
-void VoxelizationStage::create(void)
+void VoxelizationStage::create()
 {
     // Create the voxel grid used to generate the voxels
     _voxel_temp_grid = rpcore::Image::create_3d("VoxelsTemp", _voxel_resolution, _voxel_resolution, _voxel_resolution, "RGBA8");
@@ -125,7 +125,7 @@ void VoxelizationStage::create(void)
     rpcore::Globals::base->get_render().set_shader_input("VoxelGridDest", _voxel_temp_grid->get_texture());
 }
 
-void VoxelizationStage::update(void)
+void VoxelizationStage::update()
 {
     _voxel_cam_np.show();
     _voxel_target->set_active(true);
@@ -187,7 +187,7 @@ void VoxelizationStage::update(void)
     }
 }
 
-void VoxelizationStage::reload_shaders(void)
+void VoxelizationStage::reload_shaders()
 {
     _copy_target->set_shader(load_plugin_shader({ "/$$rp/shader/default_post_process_instanced.vert.glsl", "copy_voxels.frag.glsl" }));
 
@@ -201,7 +201,7 @@ void VoxelizationStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string VoxelizationStage::get_plugin_id(void) const
+std::string VoxelizationStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

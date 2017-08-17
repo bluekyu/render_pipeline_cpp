@@ -159,7 +159,7 @@ BoolType::BoolType(YAML::Node& data): BaseType(data)
     _value = _default;
 }
 
-std::string BoolType::get_value_as_string(void) const
+std::string BoolType::get_value_as_string() const
 {
     return boost::any_cast<bool>(_value) ? "1" : "0";
 }
@@ -188,7 +188,7 @@ EnumType::EnumType(YAML::Node& data): BaseType(data)
     _value = _default;
 }
 
-std::string EnumType::get_value_as_string(void) const
+std::string EnumType::get_value_as_string() const
 {
     return boost::any_cast<const std::string&>(_value);
 }
@@ -246,7 +246,7 @@ void SampleSequenceType::set_value(const YAML::Node& value)
     set_value(value.as<std::string>());
 }
 
-std::vector<std::string> SampleSequenceType::get_sequences(void) const
+std::vector<std::string> SampleSequenceType::get_sequences() const
 {
     std::vector<std::string> result;
     if (dimension_ == 2)

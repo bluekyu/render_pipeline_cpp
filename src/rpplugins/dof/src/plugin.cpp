@@ -37,7 +37,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _bloom_stage = std::make_shared<DoFStage>(pipeline_);
     add_stage(_bloom_stage);

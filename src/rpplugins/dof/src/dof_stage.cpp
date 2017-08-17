@@ -29,14 +29,14 @@ namespace rpplugins {
 DoFStage::RequireType DoFStage::required_inputs;
 DoFStage::RequireType DoFStage::required_pipes = { "ShadedScene", "GBuffer", "DownscaledDepth" };
 
-DoFStage::ProduceType DoFStage::get_produced_pipes(void) const
+DoFStage::ProduceType DoFStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_merge_->get_color_tex()),
     };
 }
 
-void DoFStage::create(void)
+void DoFStage::create()
 {
     target_prefilter_ = create_target("PrefilterDoF");
     //target_prefilter_->set_size("50%");
@@ -85,7 +85,7 @@ void DoFStage::create(void)
     // self.target_upscale.set_shader_input("upscaleWeights", Vec2(0.001, 0.001))
 }
 
-void DoFStage::reload_shaders(void)
+void DoFStage::reload_shaders()
 {
     tile_target_->set_shader(load_plugin_shader({ "fetch_dof_minmax.frag.glsl" }));
     tile_target_horiz_->set_shader(load_plugin_shader({ "fetch_dof_minmax_horiz.frag.glsl" }));
@@ -98,7 +98,7 @@ void DoFStage::reload_shaders(void)
     //     "/$$rp/shader/bilateral_upscale.frag.glsl")
 }
 
-std::string DoFStage::get_plugin_id(void) const
+std::string DoFStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

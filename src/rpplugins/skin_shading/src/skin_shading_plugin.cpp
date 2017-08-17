@@ -46,12 +46,12 @@ SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlug
 {
 }
 
-SkinShadingPlugin::RequrieType& SkinShadingPlugin::get_required_plugins(void) const
+SkinShadingPlugin::RequrieType& SkinShadingPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void SkinShadingPlugin::on_stage_setup(void)
+void SkinShadingPlugin::on_stage_setup()
 {
     impl_->stage_ = std::make_shared<SkinShadingStage>(pipeline_);
     add_stage(impl_->stage_);

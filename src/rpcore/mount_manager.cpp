@@ -43,13 +43,13 @@ class MountManager::Impl
 public:
     void set_write_path(const std::string& pth);
 
-    bool get_lock(void);
+    bool get_lock();
 
     void mount(MountManager& self);
 
-    std::string find_basepath(void) const;
+    std::string find_basepath() const;
 
-    void wrtie_lock(void);
+    void wrtie_lock();
 
     /**
      * @param[in] fname    Panda3D path (unix-style).
@@ -86,7 +86,7 @@ void MountManager::Impl::set_write_path(const std::string& pth)
     }
 }
 
-bool MountManager::Impl::get_lock(void)
+bool MountManager::Impl::get_lock()
 {
     // Check if there is a lockfile at all
     if (rppanda::isfile(lock_file_))
@@ -163,7 +163,7 @@ void MountManager::Impl::mount(MountManager& self)
     model_path.prepend_directory("/$$rptemp");
 }
 
-std::string MountManager::Impl::find_basepath(void) const
+std::string MountManager::Impl::find_basepath() const
 {
     Filename pth = Filename::from_os_specific(rppanda::join(
         Filename::from_os_specific(boost::dll::program_location().string()), ".."));
@@ -172,7 +172,7 @@ std::string MountManager::Impl::find_basepath(void) const
     return pth.get_fullpath();
 }
 
-void MountManager::Impl::wrtie_lock(void)
+void MountManager::Impl::wrtie_lock()
 {
     // TODO: implmeent this.
 }
@@ -240,28 +240,28 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
 
 // ************************************************************************************************
 
-MountManager::MountManager(void): RPObject("MountManager"), impl_(std::make_unique<Impl>())
+MountManager::MountManager(): RPObject("MountManager"), impl_(std::make_unique<Impl>())
 {
     set_base_path(impl_->find_basepath());
 
     debug("Auto-Detected base path to " + impl_->base_path_);
 }
 
-MountManager::~MountManager(void)
+MountManager::~MountManager()
 {
     impl_->on_exit_cleanup(*this);
 }
 
-void MountManager::mount(void) { impl_->mount(*this); }
+void MountManager::mount() { impl_->mount(*this); }
 void MountManager::set_write_path(const std::string& pth) { impl_->set_write_path(pth); }
-bool MountManager::get_lock(void) { return impl_->get_lock(); }
+bool MountManager::get_lock() { return impl_->get_lock(); }
 
-inline const std::string& MountManager::get_write_path(void) const
+inline const std::string& MountManager::get_write_path() const
 {
     return impl_->write_path_;
 }
 
-inline const std::string& MountManager::get_base_path(void) const
+inline const std::string& MountManager::get_base_path() const
 {
     return impl_->base_path_;
 }
@@ -272,7 +272,7 @@ void MountManager::set_base_path(const std::string& pth)
     impl_->base_path_ = Filename::from_os_specific(pth).get_fullpath();
 }
 
-inline const std::string& MountManager::get_config_dir(void) const
+inline const std::string& MountManager::get_config_dir() const
 {
     return impl_->config_dir_;
 }
@@ -282,7 +282,7 @@ void MountManager::set_config_dir(const std::string& pth)
     impl_->config_dir_ = Filename::from_os_specific(pth).get_fullpath();
 }
 
-inline bool MountManager::get_do_cleanup(void) const
+inline bool MountManager::get_do_cleanup() const
 {
     return impl_->do_cleanup_;
 }
@@ -292,12 +292,12 @@ inline void MountManager::set_do_cleanup(bool cleanup)
     impl_->do_cleanup_ = cleanup;
 }
 
-inline bool MountManager::is_mounted(void) const
+inline bool MountManager::is_mounted() const
 {
     return impl_->mounted_;
 }
 
-void MountManager::unmount(void)
+void MountManager::unmount()
 {
     throw std::runtime_error("TODO");
 }

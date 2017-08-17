@@ -44,17 +44,17 @@ class SMAAPlugin::Impl
 public:
     Impl(SMAAPlugin& self);
 
-    void on_pre_render_update(void);
+    void on_pre_render_update();
 
     /** Internal method to compute the SMAA sub-pixel frame offsets. */
-    void compute_jitters(void);
+    void compute_jitters();
 
     /** Loads all required textures. */
-    void load_textures(void);
+    void load_textures();
 
-    size_t get_history_length(void) const;
+    size_t get_history_length() const;
 
-    void update_jitter_pattern(void);
+    void update_jitter_pattern();
 
 public:
     static RequrieType require_plugins_;
@@ -72,7 +72,7 @@ SMAAPlugin::Impl::Impl(SMAAPlugin& self): self_(self)
 {
 }
 
-void SMAAPlugin::Impl::on_pre_render_update(void)
+void SMAAPlugin::Impl::on_pre_render_update()
 {
     // Apply jitter for temporal aa
     if (smaa_stage_->use_reprojection())
@@ -91,7 +91,7 @@ void SMAAPlugin::Impl::on_pre_render_update(void)
     }
 }
 
-void SMAAPlugin::Impl::compute_jitters(void)
+void SMAAPlugin::Impl::compute_jitters()
 {
     jitter_index_ = 0;
     float scale = 1.0f / float(rpcore::Globals::native_resolution.get_x());
@@ -105,7 +105,7 @@ void SMAAPlugin::Impl::compute_jitters(void)
     }
 }
 
-void SMAAPlugin::Impl::load_textures(void)
+void SMAAPlugin::Impl::load_textures()
 {
     PT(Texture) search_tex = rpcore::RPLoader::load_texture(self_.get_resource("search_tex.png"));
     PT(Texture) area_tex = rpcore::RPLoader::load_texture(self_.get_resource("area_tex.png"));
@@ -122,14 +122,14 @@ void SMAAPlugin::Impl::load_textures(void)
     smaa_stage_->set_search_tex(search_tex);
 }
 
-size_t SMAAPlugin::Impl::get_history_length(void) const
+size_t SMAAPlugin::Impl::get_history_length() const
 {
     if (boost::any_cast<bool>(self_.get_setting("use_reprojection")))
         return jitters_.size();
     return 1;
 }
 
-void SMAAPlugin::Impl::update_jitter_pattern(void)
+void SMAAPlugin::Impl::update_jitter_pattern()
 {
     compute_jitters();
 }
@@ -140,12 +140,12 @@ SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, R
 {
 }
 
-SMAAPlugin::RequrieType& SMAAPlugin::get_required_plugins(void) const
+SMAAPlugin::RequrieType& SMAAPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void SMAAPlugin::on_stage_setup(void)
+void SMAAPlugin::on_stage_setup()
 {
     const bool use_reprojection = boost::any_cast<bool>(get_setting("use_reprojection"));
     if (use_reprojection)
@@ -156,12 +156,12 @@ void SMAAPlugin::on_stage_setup(void)
     impl_->load_textures();
 }
 
-void SMAAPlugin::on_pre_render_update(void)
+void SMAAPlugin::on_pre_render_update()
 {
     impl_->on_pre_render_update();
 }
 
-void SMAAPlugin::on_window_resized(void)
+void SMAAPlugin::on_window_resized()
 {
     impl_->compute_jitters();
 }

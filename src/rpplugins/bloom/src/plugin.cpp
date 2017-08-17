@@ -37,7 +37,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 {
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _bloom_stage = std::make_shared<BloomStage>(pipeline_);
     add_stage(_bloom_stage);
@@ -46,7 +46,7 @@ void Plugin::on_stage_setup(void)
     _bloom_stage->set_remove_fireflies(boost::any_cast<bool>(get_setting("remove_fireflies")));
 }
 
-void Plugin::on_pipeline_created(void)
+void Plugin::on_pipeline_created()
 {
     Texture* dirt_tex = rpcore::RPLoader::load_texture(get_resource("lens_dirt.txo"));
     _bloom_stage->set_shader_input(ShaderInput("LensDirtTex", dirt_tex));

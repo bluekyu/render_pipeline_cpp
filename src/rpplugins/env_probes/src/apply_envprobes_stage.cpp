@@ -35,7 +35,7 @@ ApplyEnvprobesStage::ApplyEnvprobesStage(rpcore::RenderPipeline& pipeline): Rend
 {
 }
 
-ApplyEnvprobesStage::ProduceType ApplyEnvprobesStage::get_produced_pipes(void) const
+ApplyEnvprobesStage::ProduceType ApplyEnvprobesStage::get_produced_pipes() const
 {
     return {
         ShaderInput("EnvmapAmbientSpec", _target->get_color_tex()),
@@ -43,7 +43,7 @@ ApplyEnvprobesStage::ProduceType ApplyEnvprobesStage::get_produced_pipes(void) c
     };
 }
 
-void ApplyEnvprobesStage::create(void)
+void ApplyEnvprobesStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -57,12 +57,12 @@ void ApplyEnvprobesStage::create(void)
     rpcore::AmbientStage::get_global_required_pipes().push_back("EnvmapAmbientDiff");
 }
 
-void ApplyEnvprobesStage::reload_shaders(void)
+void ApplyEnvprobesStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({"apply_envprobes.frag.glsl"}, stereo_mode_));
 }
 
-std::string ApplyEnvprobesStage::get_plugin_id(void) const
+std::string ApplyEnvprobesStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

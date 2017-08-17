@@ -32,7 +32,7 @@ namespace rpplugins {
 class JitterType: public std::unordered_map<std::string, std::vector<LVecBase2>>
 {
 public:
-    JitterType(void);
+    JitterType();
 
 private:
     /** Low discrepancy halton sequence with a given prime */

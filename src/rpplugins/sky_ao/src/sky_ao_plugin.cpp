@@ -52,12 +52,12 @@ SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline,
 {
 }
 
-SkyAOPlugin::RequrieType& SkyAOPlugin::get_required_plugins(void) const
+SkyAOPlugin::RequrieType& SkyAOPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void SkyAOPlugin::on_stage_setup(void)
+void SkyAOPlugin::on_stage_setup()
 {
     impl_->capture_stage_ = std::make_shared<SkyAOCaptureStage>(pipeline_);
     add_stage(impl_->capture_stage_);
@@ -73,7 +73,7 @@ void SkyAOPlugin::on_stage_setup(void)
     rpcore::AmbientStage::get_global_required_pipes().push_back("SkyAO");
 }
 
-void SkyAOPlugin::on_post_stage_setup(void)
+void SkyAOPlugin::on_post_stage_setup()
 {
     if (is_plugin_enabled("env_probes"))
     {

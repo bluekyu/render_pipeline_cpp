@@ -33,14 +33,14 @@ namespace rpplugins {
 ForwardStage::RequireType ForwardStage::required_inputs = { "DefaultEnvmap", "PrefilteredBRDF", "PrefilteredCoatBRDF" };
 ForwardStage::RequireType ForwardStage::required_pipes = { "SceneDepth", "ShadedScene", "CellIndices" };
 
-ForwardStage::ProduceType ForwardStage::get_produced_pipes(void) const
+ForwardStage::ProduceType ForwardStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target_merge->get_color_tex()),
     };
 }
 
-void ForwardStage::create(void)
+void ForwardStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -67,7 +67,7 @@ void ForwardStage::create(void)
     _target_merge->set_shader_input(ShaderInput("ForwardColor", _target->get_color_tex()));
 }
 
-void ForwardStage::reload_shaders(void)
+void ForwardStage::reload_shaders()
 {
     _target_merge->set_shader(load_plugin_shader({"merge_with_deferred.frag.glsl"}, stereo_mode_));
 }
@@ -78,7 +78,7 @@ void ForwardStage::set_shader_input(const ShaderInput& inp)
     RenderStage::set_shader_input(inp);
 }
 
-std::string ForwardStage::get_plugin_id(void) const
+std::string ForwardStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -72,7 +72,7 @@ void SfxPlayer::Impl::set_cutoff_distance(float d)
     distance_scale_ = raw_cutoff_distance_ / cutoff_distance_;
 }
 
-SfxPlayer::SfxPlayer(void): impl_(std::make_unique<Impl>())
+SfxPlayer::SfxPlayer(): impl_(std::make_unique<Impl>())
 {
     // volume attenuates according to the inverse square of the
     // distance from the source. volume = 1/(distance^2)
@@ -92,9 +92,9 @@ SfxPlayer::SfxPlayer(void): impl_(std::make_unique<Impl>())
     }
 }
 
-SfxPlayer::~SfxPlayer(void) = default;
+SfxPlayer::~SfxPlayer() = default;
 
-float SfxPlayer::get_cutoff_distance(void)
+float SfxPlayer::get_cutoff_distance()
 {
     return impl_->cutoff_distance_;
 }

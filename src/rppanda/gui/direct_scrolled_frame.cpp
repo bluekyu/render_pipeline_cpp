@@ -45,7 +45,7 @@ namespace rppanda {
 
 TypeHandle DirectScrolledFrame::type_handle_;
 
-DirectScrolledFrame::Options::Options(void)
+DirectScrolledFrame::Options::Options()
 {
     frame_size = LVecBase4f(-0.5f, 0.5f, -0.5f, 0.5f);
     border_width = LVecBase2f(0.01f, 0.01f);
@@ -89,7 +89,7 @@ DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, cons
     }
 }
 
-PGScrollFrame* DirectScrolledFrame::get_gui_item(void) const
+PGScrollFrame* DirectScrolledFrame::get_gui_item() const
 {
     return DCAST(PGScrollFrame, _gui_item);
 }

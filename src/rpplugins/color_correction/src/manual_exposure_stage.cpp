@@ -30,14 +30,14 @@ namespace rpplugins {
 ManualExposureStage::RequireType ManualExposureStage::required_inputs;
 ManualExposureStage::RequireType ManualExposureStage::required_pipes = { "ShadedScene" };
 
-ManualExposureStage::ProduceType ManualExposureStage::get_produced_pipes(void) const
+ManualExposureStage::ProduceType ManualExposureStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _target->get_color_tex()),
     };
 }
 
-void ManualExposureStage::create(void)
+void ManualExposureStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -48,12 +48,12 @@ void ManualExposureStage::create(void)
     _target->prepare_buffer();
 }
 
-void ManualExposureStage::reload_shaders(void)
+void ManualExposureStage::reload_shaders()
 {
     _target->set_shader(load_plugin_shader({"manual_exposure.frag.glsl"}, stereo_mode_));
 }
 
-std::string ManualExposureStage::get_plugin_id(void) const
+std::string ManualExposureStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

@@ -32,23 +32,23 @@ class SMAAStage: public rpcore::RenderStage
 public:
     SMAAStage(rpcore::RenderPipeline& pipeline, bool use_reprojection);
 
-    RequireType& get_required_inputs(void) const final { return required_inputs; }
-    RequireType& get_required_pipes(void) const final { return required_pipes; }
-    ProduceType get_produced_pipes(void) const final;
+    RequireType& get_required_inputs() const final { return required_inputs; }
+    RequireType& get_required_pipes() const final { return required_pipes; }
+    ProduceType get_produced_pipes() const final;
 
-    void create(void) final;
-    void reload_shaders(void) final;
+    void create() final;
+    void reload_shaders() final;
 
     /** Sets the current jitter index. */
     void set_jitter_index(int idx);
 
-    bool use_reprojection(void) const { return use_reprojection_; }
+    bool use_reprojection() const { return use_reprojection_; }
 
     void set_area_tex(Texture* area_tex);
     void set_search_tex(Texture* search_tex);
 
 private:
-    std::string get_plugin_id(void) const final;
+    std::string get_plugin_id() const final;
 
     static RequireType required_inputs;
     static RequireType required_pipes;

@@ -43,19 +43,19 @@ bool TaskScheduler::is_scheduled(const std::string& task_name) const
     return std::find(tasks_[frame_index_].begin(), tasks_[frame_index_].end(), task_name) != tasks_[frame_index_].end();
 }
 
-void TaskScheduler::step(void)
+void TaskScheduler::step()
 {
     frame_index_ = (frame_index_ + 1) % tasks_.size();
 }
 
-size_t TaskScheduler::get_num_tasks(void) const
+size_t TaskScheduler::get_num_tasks() const
 {
     return std::accumulate(tasks_.begin(), tasks_.end(), size_t(0), [](const size_t& sum, const std::vector<std::string>& tasks) {
         return sum + tasks.size();
     });
 }
 
-void TaskScheduler::load_config(void)
+void TaskScheduler::load_config()
 {
     YAML::Node config_node;
     if (!rplibs::load_yaml_file("/$$rpconfig/task-scheduler.yaml", config_node))

@@ -33,18 +33,18 @@
 
 namespace rpcore {
 
-ErrorMessageDisplay::ErrorMessageDisplay(void): RPObject("ErrorMessageDisplay")
+ErrorMessageDisplay::ErrorMessageDisplay(): RPObject("ErrorMessageDisplay")
 {
     _error_node = Globals::base->get_pixel_2d().attach_new_node("ErrorDisplay");
     _error_node.set_z(-180);
 }
 
-ErrorMessageDisplay::~ErrorMessageDisplay(void)
+ErrorMessageDisplay::~ErrorMessageDisplay()
 {
     delete _notify_stream;
 }
 
-void ErrorMessageDisplay::update(void)
+void ErrorMessageDisplay::update()
 {
     if (!_notify_stream)
         init_notify();
@@ -99,13 +99,13 @@ void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3f& co
     }
 }
 
-void ErrorMessageDisplay::clear_messages(void)
+void ErrorMessageDisplay::clear_messages()
 {
     _error_node.node()->remove_all_children();
     _num_errors = 0;
 }
 
-void ErrorMessageDisplay::init_notify(void)
+void ErrorMessageDisplay::init_notify()
 {
     _notify_stream = new LineStream;
     Notify::ptr()->set_ostream_ptr(_notify_stream, false);

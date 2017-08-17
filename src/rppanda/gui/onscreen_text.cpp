@@ -181,7 +181,7 @@ OnscreenText::OnscreenText(const Parameters& params)
     NodePath::operator=(std::move(parent.attach_new_node(_text_node, params.sort)));
 }
 
-void OnscreenText::cleanup(void)
+void OnscreenText::cleanup()
 {
     _text_node = nullptr;
     if (!_is_clean)
@@ -196,7 +196,7 @@ void OnscreenText::set_decal(bool decal)
     DCAST(TextNode, _text_node)->set_card_decal(decal);
 }
 
-bool OnscreenText::get_decal(void) const
+bool OnscreenText::get_decal() const
 {
     return DCAST(TextNode, _text_node)->get_card_decal();
 }

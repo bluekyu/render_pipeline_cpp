@@ -31,7 +31,7 @@ namespace rpcore {
 CollectUsedCellsStage::RequireType CollectUsedCellsStage::required_inputs;
 CollectUsedCellsStage::RequireType CollectUsedCellsStage::required_pipes = { "FlaggedCells" };
 
-CollectUsedCellsStage::ProduceType CollectUsedCellsStage::get_produced_pipes(void) const
+CollectUsedCellsStage::ProduceType CollectUsedCellsStage::get_produced_pipes() const
 {
     return {
         ShaderInput("CellListBuffer", cell_list_buffer_->get_texture()),
@@ -39,7 +39,7 @@ CollectUsedCellsStage::ProduceType CollectUsedCellsStage::get_produced_pipes(voi
     };
 }
 
-void CollectUsedCellsStage::create(void)
+void CollectUsedCellsStage::create()
 {
     target_ = create_target("CollectUsedCells");
     target_->set_size(0);
@@ -52,18 +52,18 @@ void CollectUsedCellsStage::create(void)
     target_->set_shader_input(ShaderInput("CellListIndices", cell_index_buffer_->get_texture()));
 }
 
-void CollectUsedCellsStage::reload_shaders(void)
+void CollectUsedCellsStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "collect_used_cells.frag.glsl" }));
 }
 
-void CollectUsedCellsStage::update(void)
+void CollectUsedCellsStage::update()
 {
     cell_list_buffer_->clear_image();
     cell_index_buffer_->clear_image();
 }
 
-void CollectUsedCellsStage::set_dimensions(void)
+void CollectUsedCellsStage::set_dimensions()
 {
     const auto& tile_amount = pipeline_.get_light_mgr()->get_num_tiles();
     int num_slices = pipeline_.get_setting<int>("lighting.culling_grid_slices");
@@ -82,7 +82,7 @@ void CollectUsedCellsStage::set_dimensions(void)
     target_->set_size(tile_amount);
 }
 
-std::string CollectUsedCellsStage::get_plugin_id(void) const
+std::string CollectUsedCellsStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

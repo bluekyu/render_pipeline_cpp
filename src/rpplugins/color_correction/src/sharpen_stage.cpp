@@ -31,7 +31,7 @@ namespace rpplugins {
 SharpenStage::RequireType SharpenStage::required_inputs;
 SharpenStage::RequireType SharpenStage::required_pipes = { "ShadedScene" };
 
-SharpenStage::ProduceType SharpenStage::get_produced_pipes(void) const
+SharpenStage::ProduceType SharpenStage::get_produced_pipes() const
 {
     if (_sharpen_twice)
     {
@@ -47,7 +47,7 @@ SharpenStage::ProduceType SharpenStage::get_produced_pipes(void) const
     }
 }
 
-void SharpenStage::create(void)
+void SharpenStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -68,14 +68,14 @@ void SharpenStage::create(void)
     }
 }
 
-void SharpenStage::reload_shaders(void)
+void SharpenStage::reload_shaders()
 {
     auto sharpen_shader = load_plugin_shader({"sharpen.frag.glsl"}, stereo_mode_);
     for (auto& target: targets_)
         target.second->set_shader(sharpen_shader);
 }
 
-std::string SharpenStage::get_plugin_id(void) const
+std::string SharpenStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

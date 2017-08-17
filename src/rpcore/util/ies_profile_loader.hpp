@@ -52,7 +52,7 @@ public:
 
 private:
     /** Internal method to create the storage for the profile dataset textures. */
-    void create_storage(void);
+    void create_storage();
 
     RenderPipeline& pipeline_;
     int max_entries_ = 32;

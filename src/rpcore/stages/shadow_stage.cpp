@@ -37,7 +37,7 @@ ShadowStage::ShadowStage(RenderPipeline& pipeline): RenderStage(pipeline, "Shado
     size_ = 4096;
 }
 
-ShadowStage::ProduceType ShadowStage::get_produced_pipes(void) const
+ShadowStage::ProduceType ShadowStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadowAtlas", target_->get_depth_tex()),
@@ -45,7 +45,7 @@ ShadowStage::ProduceType ShadowStage::get_produced_pipes(void) const
     };
 }
 
-SamplerState ShadowStage::make_pcf_state(void) const
+SamplerState ShadowStage::make_pcf_state() const
 {
     SamplerState state;
     state.set_minfilter(SamplerState::FT_shadow);
@@ -56,12 +56,12 @@ SamplerState ShadowStage::make_pcf_state(void) const
     return state;
 }
 
-GraphicsOutput* ShadowStage::get_atlas_buffer(void) const
+GraphicsOutput* ShadowStage::get_atlas_buffer() const
 {
     return target_->get_internal_buffer();
 }
 
-void ShadowStage::create(void)
+void ShadowStage::create()
 {
     target_ = create_target("ShadowAtlas");
     target_->set_size(size_);
@@ -83,7 +83,7 @@ void ShadowStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-std::string ShadowStage::get_plugin_id(void) const
+std::string ShadowStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

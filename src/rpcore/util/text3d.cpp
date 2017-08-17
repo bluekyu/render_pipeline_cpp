@@ -85,14 +85,14 @@ Text3D::Text3D(const Parameters& params): impl_(std::make_unique<Impl>())
     set_color(params.color);
 }
 
-Text3D::~Text3D(void) = default;
+Text3D::~Text3D() = default;
 
-NodePath Text3D::get_np(void) const
+NodePath Text3D::get_np() const
 {
     return impl_->nodepath_;
 }
 
-std::string Text3D::get_text(void) const
+std::string Text3D::get_text() const
 {
     return impl_->node_->get_text();
 }
@@ -102,7 +102,7 @@ void Text3D::set_text(const std::string& text)
     return impl_->node_->set_text(text);
 }
 
-LColor Text3D::get_color(void) const
+LColor Text3D::get_color() const
 {
     CPT(RenderState) state = impl_->node_->get_state();
 

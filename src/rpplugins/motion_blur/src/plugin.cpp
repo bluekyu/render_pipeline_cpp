@@ -35,7 +35,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, R
 {
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     _stage = std::make_shared<MotionBlurStage>(pipeline_);
     add_stage(_stage);

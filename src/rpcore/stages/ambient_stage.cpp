@@ -31,7 +31,7 @@ AmbientStage::RequireType AmbientStage::required_inputs_ = {
     "DefaultEnvmap", "PrefilteredBRDF", "PrefilteredMetalBRDF", "PrefilteredCoatBRDF" };
 AmbientStage::RequireType AmbientStage::required_pipes_ = { "ShadedScene", "GBuffer" };
 
-AmbientStage::ProduceType AmbientStage::get_produced_pipes(void) const
+AmbientStage::ProduceType AmbientStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", target_->get_color_tex()),
@@ -39,7 +39,7 @@ AmbientStage::ProduceType AmbientStage::get_produced_pipes(void) const
     };
 }
 
-void AmbientStage::create(void)
+void AmbientStage::create()
 {
     stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
 
@@ -50,12 +50,12 @@ void AmbientStage::create(void)
     target_->prepare_buffer();
 }
 
-void AmbientStage::reload_shaders(void)
+void AmbientStage::reload_shaders()
 {
     target_->set_shader(load_shader({ "ambient_stage.frag.glsl" }, stereo_mode_));
 }
 
-std::string AmbientStage::get_plugin_id(void) const
+std::string AmbientStage::get_plugin_id() const
 {
     return std::string("render_pipeline_internal");
 }

@@ -29,14 +29,14 @@ namespace rpplugins {
 SkinShadingStage::RequireType SkinShadingStage::required_inputs;
 SkinShadingStage::RequireType SkinShadingStage::required_pipes = { "ShadedScene", "GBuffer" };
 
-SkinShadingStage::ProduceType SkinShadingStage::get_produced_pipes(void) const
+SkinShadingStage::ProduceType SkinShadingStage::get_produced_pipes() const
 {
     return {
         ShaderInput("ShadedScene", _final_tex.p()),
     };
 }
 
-void SkinShadingStage::create(void)
+void SkinShadingStage::create()
 {
     Texture* current_tex = nullptr;
     _blur_targets.clear();
@@ -64,14 +64,14 @@ void SkinShadingStage::create(void)
     _final_tex = current_tex;
 }
 
-void SkinShadingStage::reload_shaders(void)
+void SkinShadingStage::reload_shaders()
 {
     PT(Shader) blur_shader = load_plugin_shader({"sssss_blur.frag.glsl"});
     for (auto& target: _blur_targets)
         target->set_shader(blur_shader);
 }
 
-std::string SkinShadingStage::get_plugin_id(void) const
+std::string SkinShadingStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }
