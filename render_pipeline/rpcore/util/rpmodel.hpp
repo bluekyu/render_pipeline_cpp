@@ -37,7 +37,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPModel
 {
 public:
-    RPModel(void) = default;
+    RPModel() = default;
     RPModel(NodePath nodepath);
 
     void load_meta_file(const Filename& file_path="");

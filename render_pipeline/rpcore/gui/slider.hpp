@@ -43,13 +43,13 @@ public:
         const std::shared_ptr<void>& extra_args={});
 
     /** Returns the currently assigned value. */
-    float get_value(void) const;
+    float get_value() const;
 
     /** Sets the value of the slider. */
     void set_value(float value);
 
     /** Returns a handle to the internally used node. */
-    rppanda::DirectSlider* get_node(void) const;
+    rppanda::DirectSlider* get_node() const;
 
 private:
     PT(rppanda::DirectSlider) node_;
@@ -57,7 +57,7 @@ private:
 
 // ************************************************************************************************
 
-inline rppanda::DirectSlider* Slider::get_node(void) const
+inline rppanda::DirectSlider* Slider::get_node() const
 {
     return node_;
 }

@@ -47,13 +47,13 @@ public:
 
 public:
     DayBaseType(YAML::Node& data, const std::string& id="DayBaseType");
-    virtual ~DayBaseType(void);
+    virtual ~DayBaseType();
 
-    virtual const std::string& get_glsl_type(void) const = 0;
+    virtual const std::string& get_glsl_type() const = 0;
 
-    const std::string& get_type(void) const { return _type; }
-    const std::string& get_label(void) const { return _label; }
-    const std::string& get_description(void) const { return _description; }
+    const std::string& get_type() const { return _type; }
+    const std::string& get_label() const { return _label; }
+    const std::string& get_description() const { return _description; }
 
     /** Returns the unscaled value at the given day time offset. */
     ValueType get_value_at(float offset) const;
@@ -68,7 +68,7 @@ public:
     void set_control_points(const std::vector<std::vector<LVecBase2f>>& control_points);
 
     /** Serializes the setting to a yaml string. */
-    std::string serialize(void) const;
+    std::string serialize() const;
 
 protected:
     std::string _type;
@@ -84,7 +84,7 @@ class ScalarType: public DayBaseType
 public:
     ScalarType(YAML::Node& data);
 
-    virtual const std::string& get_glsl_type(void) const { return glsl_type; }
+    virtual const std::string& get_glsl_type() const { return glsl_type; }
 
     /** Scales a linear value. */
     ValueType get_scaled_value(const ValueType& values) const final;
@@ -108,7 +108,7 @@ class ColorType: public DayBaseType
 public:
     ColorType(YAML::Node& data);
 
-    virtual const std::string& get_glsl_type(void) const { return glsl_type; }
+    virtual const std::string& get_glsl_type() const { return glsl_type; }
 
     ValueType get_scaled_value(const ValueType& values) const final;
 

@@ -50,7 +50,7 @@ public:
     MovementController(const MovementController&) = delete;
     MovementController(MovementController&&) = delete;
 
-    ~MovementController(void);
+    ~MovementController();
 
     MovementController& operator=(const MovementController&) = delete;
     MovementController& operator=(MovementController&&) = delete;
@@ -62,9 +62,9 @@ public:
     void set_initial_position_hpr(const LVecBase3& pos, const LVecBase3& hpr);
 
     /** Resets the camera to the initial position. */
-    void reset_to_initial(void);
+    void reset_to_initial();
 
-    float get_speed(void) const;
+    float get_speed() const;
 
     void set_speed(float speed);
     void set_bobbing_amount(float amount);
@@ -76,21 +76,21 @@ public:
 
     void set_mouse_enabled(bool enabled);
 
-    void increase_speed(void);
-    void decrease_speed(void);
+    void increase_speed();
+    void decrease_speed();
 
-    void increase_bobbing_amount(void);
-    void decrease_bobbing_amount(void);
+    void increase_bobbing_amount();
+    void decrease_bobbing_amount();
 
-    void increase_bobbing_speed(void);
-    void decrease_bobbing_speed(void);
+    void increase_bobbing_speed();
+    void decrease_bobbing_speed();
 
-    ClockObject* get_clock_obj(void);
+    ClockObject* get_clock_obj();
 
-    void setup(void);
+    void setup();
 
     /** Prints the camera position and hpr. */
-    void print_position(void);
+    void print_position();
 
     /** Plays a motion path from the given set of points. */
     void play_motion_path(const MotionPathType& points, float point_duration=1.2f);

@@ -50,7 +50,7 @@ public:
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
     {
-        Options(void);
+        Options();
 
         LVecBase2 range = LVecBase2(0, 1);
         PN_stdfloat value = 0;
@@ -68,9 +68,9 @@ public:
 public:
     DirectScrollBar(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    PGSliderBar* get_gui_item(void) const;
+    PGSliderBar* get_gui_item() const;
 
-    float get_value(void) const;
+    float get_value() const;
 
     void set_range(const LVecBase2& range);
     void set_value(PN_stdfloat value);
@@ -95,10 +95,10 @@ private:
     PT(DirectButton) _dec_button;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -106,28 +106,28 @@ private:
 
 // ************************************************************************************************
 
-inline float DirectScrollBar::get_value(void) const
+inline float DirectScrollBar::get_value() const
 {
     return std::dynamic_pointer_cast<Options>(_options)->value;
 }
 
-inline TypeHandle DirectScrollBar::get_class_type(void)
+inline TypeHandle DirectScrollBar::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectScrollBar::init_type(void)
+inline void DirectScrollBar::init_type()
 {
     DirectFrame::init_type();
     register_type(type_handle_, "rppanda::DirectScrollBar", DirectFrame::get_class_type());
 }
 
-inline TypeHandle DirectScrollBar::get_type(void) const
+inline TypeHandle DirectScrollBar::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectScrollBar::force_init_type(void)
+inline TypeHandle DirectScrollBar::force_init_type()
 {
     init_type();
     return get_class_type();

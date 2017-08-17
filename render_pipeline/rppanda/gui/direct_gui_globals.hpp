@@ -97,6 +97,6 @@ static const int IMAGE_SORT_INDEX = 10;
 static const int GEOM_SORT_INDEX = 20;
 static const int TEXT_SORT_INDEX = 30;
 
-RENDER_PIPELINE_DECL extern TextFont* get_default_font(void);
+RENDER_PIPELINE_DECL extern TextFont* get_default_font();
 
 }

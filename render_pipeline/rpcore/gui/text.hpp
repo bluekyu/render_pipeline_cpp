@@ -55,7 +55,7 @@ public:
      */
     Text(const Parameters& params=Parameters());
 
-    rppanda::OnscreenText get_node(void) const;
+    rppanda::OnscreenText get_node() const;
 
     /**
      * Changes the text, remember to pass may_change to the constructor,
@@ -63,14 +63,14 @@ public:
      */
     void set_text(const std::string& text);
 
-    const LVecBase2f& get_initial_pos(void) const;
+    const LVecBase2f& get_initial_pos() const;
 
 private:
     LVecBase2f _initial_pos;
     rppanda::OnscreenText _node;
 };
 
-inline rppanda::OnscreenText Text::get_node(void) const
+inline rppanda::OnscreenText Text::get_node() const
 {
     return _node;
 }
@@ -80,7 +80,7 @@ inline void Text::set_text(const std::string& text)
     _node.set_text(text);
 }
 
-inline const LVecBase2f& Text::get_initial_pos(void) const
+inline const LVecBase2f& Text::get_initial_pos() const
 {
     return _initial_pos;
 }

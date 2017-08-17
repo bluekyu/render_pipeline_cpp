@@ -52,13 +52,13 @@ public:
 
     void set_image(const std::shared_ptr<ImageInput>& image, NodePath parent={}, const TransformState* transform=nullptr, int sort=0);
 
-    void destroy(void);
+    void destroy();
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -79,28 +79,28 @@ inline OnscreenImage::OnscreenImage(const std::shared_ptr<ImageInput>& image, No
     set_image(image, parent, nullptr, sort);
 }
 
-inline void OnscreenImage::destroy(void)
+inline void OnscreenImage::destroy()
 {
     remove_node();
 }
 
-inline TypeHandle OnscreenImage::get_class_type(void)
+inline TypeHandle OnscreenImage::get_class_type()
 {
     return type_handle_;
 }
 
-inline void OnscreenImage::init_type(void)
+inline void OnscreenImage::init_type()
 {
     DirectObject::init_type();
     register_type(type_handle_, "rppanda::OnscreenImage", DirectObject::get_class_type());
 }
 
-inline TypeHandle OnscreenImage::get_type(void) const
+inline TypeHandle OnscreenImage::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle OnscreenImage::force_init_type(void)
+inline TypeHandle OnscreenImage::force_init_type()
 {
     init_type();
     return get_class_type();

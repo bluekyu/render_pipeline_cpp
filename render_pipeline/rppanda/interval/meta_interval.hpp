@@ -72,10 +72,10 @@ protected:
     MetaInterval(const std::string& name, const Parameters& params=Parameters());
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -87,23 +87,23 @@ inline MetaInterval::MetaInterval(const std::string& name, const Parameters& par
     set_auto_finish(params.auto_finish);
 }
 
-inline TypeHandle MetaInterval::get_class_type(void)
+inline TypeHandle MetaInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void MetaInterval::init_type(void)
+inline void MetaInterval::init_type()
 {
     CMetaInterval::init_type();
     register_type(type_handle_, "rppanda::MetaInterval", CMetaInterval::get_class_type());
 }
 
-inline TypeHandle MetaInterval::get_type(void) const
+inline TypeHandle MetaInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle MetaInterval::force_init_type(void)
+inline TypeHandle MetaInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -116,10 +116,10 @@ public:
     Sequence(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -134,23 +134,23 @@ inline Sequence::Sequence(std::initializer_list<CInterval*> ivals, const Paramet
     pop_level(params.duration);
 }
 
-inline TypeHandle Sequence::get_class_type(void)
+inline TypeHandle Sequence::get_class_type()
 {
     return type_handle_;
 }
 
-inline void Sequence::init_type(void)
+inline void Sequence::init_type()
 {
     MetaInterval::init_type();
     register_type(type_handle_, "rppanda::Sequence", MetaInterval::get_class_type());
 }
 
-inline TypeHandle Sequence::get_type(void) const
+inline TypeHandle Sequence::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle Sequence::force_init_type(void)
+inline TypeHandle Sequence::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -163,10 +163,10 @@ public:
     Parallel(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -181,23 +181,23 @@ inline Parallel::Parallel(std::initializer_list<CInterval*> ivals, const Paramet
     pop_level(params.duration);
 }
 
-inline TypeHandle Parallel::get_class_type(void)
+inline TypeHandle Parallel::get_class_type()
 {
     return type_handle_;
 }
 
-inline void Parallel::init_type(void)
+inline void Parallel::init_type()
 {
     MetaInterval::init_type();
     register_type(type_handle_, "rppanda::Parallel", MetaInterval::get_class_type());
 }
 
-inline TypeHandle Parallel::get_type(void) const
+inline TypeHandle Parallel::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle Parallel::force_init_type(void)
+inline TypeHandle Parallel::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -210,10 +210,10 @@ public:
     ParallelEndTogether(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -232,23 +232,23 @@ inline ParallelEndTogether::ParallelEndTogether(std::initializer_list<CInterval*
     pop_level(params.duration);
 }
 
-inline TypeHandle ParallelEndTogether::get_class_type(void)
+inline TypeHandle ParallelEndTogether::get_class_type()
 {
     return type_handle_;
 }
 
-inline void ParallelEndTogether::init_type(void)
+inline void ParallelEndTogether::init_type()
 {
     MetaInterval::init_type();
     register_type(type_handle_, "rppanda::ParallelEndTogether", MetaInterval::get_class_type());
 }
 
-inline TypeHandle ParallelEndTogether::get_type(void) const
+inline TypeHandle ParallelEndTogether::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle ParallelEndTogether::force_init_type(void)
+inline TypeHandle ParallelEndTogether::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -263,10 +263,10 @@ public:
     Track(std::initializer_list<TrackType> track_list, const Parameters& params=Parameters());
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -281,23 +281,23 @@ inline Track::Track(std::initializer_list<TrackType> track_list, const Parameter
     pop_level(params.duration);
 }
 
-inline TypeHandle Track::get_class_type(void)
+inline TypeHandle Track::get_class_type()
 {
     return type_handle_;
 }
 
-inline void Track::init_type(void)
+inline void Track::init_type()
 {
     MetaInterval::init_type();
     register_type(type_handle_, "rppanda::Track", MetaInterval::get_class_type());
 }
 
-inline TypeHandle Track::get_type(void) const
+inline TypeHandle Track::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle Track::force_init_type(void)
+inline TypeHandle Track::force_init_type()
 {
     init_type();
     return get_class_type();

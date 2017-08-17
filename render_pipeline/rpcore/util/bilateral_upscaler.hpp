@@ -51,19 +51,19 @@ public:
      * a value of 0.05 means that 5% of all pixels may be invalid.
      */
     BilateralUpscaler(RenderStage& parent_stage, bool halfres=false, Texture* source_tex=nullptr, const std::string& name="", float percentage=0.05f, bool stereo=false);
-    ~BilateralUpscaler(void);
+    ~BilateralUpscaler();
 
     /** Returns the final upscaled texture. */
-    Texture* result_tex(void) const;
+    Texture* result_tex() const;
 
     /** Sets all required shaders. */
     void set_shaders(Shader* upscale_shader, Shader* fillin_shader);
 
     /** Adapts the targets to the current resolution. */
-    void set_dimensions(void);
+    void set_dimensions();
 
     /** Updates all targets and buffers. */
-    void update(void);
+    void update();
 
     void set_layer(int layer);
 

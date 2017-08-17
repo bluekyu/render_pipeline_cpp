@@ -56,22 +56,22 @@ public:
     LightManager(const LightManager&) = delete;
     LightManager(LightManager&&) = delete;
 
-    ~LightManager(void);
+    ~LightManager();
 
     LightManager& operator=(const LightManager&) = delete;
     LightManager& operator=(LightManager&&) = delete;
 
     /** Returns the total amount of tiles. */
-    int get_total_tiles(void) const;
+    int get_total_tiles() const;
 
     /** Returns the amount of stored light. */
-    size_t get_num_lights(void) const;
+    size_t get_num_lights() const;
 
     /** Returns the amount of stored shadow sources. */
-    size_t get_num_shadow_sources(void) const;
+    size_t get_num_shadow_sources() const;
 
     /** Returns the shadow atlas coverage in percentage. */
-    float get_shadow_atlas_coverage(void) const;
+    float get_shadow_atlas_coverage() const;
 
     /** Adds a new light. */
     void add_light(RPLight* light);
@@ -79,39 +79,39 @@ public:
     /** Removes a light. */
     void remove_light(RPLight* light);
 
-    void update(void);
+    void update();
 
     /** Reloads all assigned shaders. */
-    void reload_shaders(void);
+    void reload_shaders();
 
     /** Computes how many tiles there are on screen. */
-    void compute_tile_size(void);
+    void compute_tile_size();
 
     /** Inits the command queue. */
-    void init_command_queue(void);
+    void init_command_queue();
 
     /** Inits the shadow manager. */
-    void initshadow_manager(void);
+    void initshadow_manager();
 
     /**
      * Inits the shadows, this has to get called after the stages were
      * created, because we need the GraphicsOutput of the shadow atlas, which
      * is not available earlier.
      */
-    void init_shadows(void);
+    void init_shadows();
 
     /** Creates the light storage manager and the buffer to store the light data. */
-    void init_internal_manager(void);
+    void init_internal_manager();
 
     /** Inits all required stages for the lighting. */
-    void init_stages(void);
+    void init_stages();
 
     /** Inits the common defines. */
-    void init_defines(void);
+    void init_defines();
 
-    const LVecBase2i& get_num_tiles(void) const;
+    const LVecBase2i& get_num_tiles() const;
 
-    GPUCommandQueue* get_cmd_queue(void) const;
+    GPUCommandQueue* get_cmd_queue() const;
 
 private:
     RenderPipeline& pipeline_;
@@ -130,12 +130,12 @@ private:
 };
 
 // ************************************************************************************************
-inline const LVecBase2i& LightManager::get_num_tiles(void) const
+inline const LVecBase2i& LightManager::get_num_tiles() const
 {
     return num_tiles_;
 }
 
-inline GPUCommandQueue* LightManager::get_cmd_queue(void) const
+inline GPUCommandQueue* LightManager::get_cmd_queue() const
 {
     return cmd_queue_;
 }

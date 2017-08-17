@@ -50,7 +50,7 @@ public:
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
     {
-        Options(void);
+        Options();
 
         LVecBase4f canvas_size = LVecBase4f(-1, 1, -1, 1);
         bool manage_scroll_bars = true;
@@ -64,15 +64,15 @@ public:
 public:
     DirectScrolledFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    PGScrollFrame* get_gui_item(void) const;
+    PGScrollFrame* get_gui_item() const;
 
-    NodePath get_canvas(void);
-    DirectScrollBar* get_vertical_scroll(void) const;
-    DirectScrollBar* get_horizontal_scroll(void) const;
+    NodePath get_canvas();
+    DirectScrollBar* get_vertical_scroll() const;
+    DirectScrollBar* get_horizontal_scroll() const;
 
-    const LVecBase4f& get_canvas_size(void) const;
-    bool get_manage_scroll_bars(void) const;
-    bool get_auto_hide_scroll_bars(void) const;
+    const LVecBase4f& get_canvas_size() const;
+    bool get_manage_scroll_bars() const;
+    bool get_auto_hide_scroll_bars() const;
 
     void set_canvas_size(const LVecBase4f& canvas_size);
     void set_manage_scroll_bars(bool manage_scroll_bars);
@@ -92,10 +92,10 @@ private:
     PT(DirectScrollBar) _horizontal_scroll;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -103,53 +103,53 @@ private:
 
 // ************************************************************************************************
 
-inline NodePath DirectScrolledFrame::get_canvas(void)
+inline NodePath DirectScrolledFrame::get_canvas()
 {
     return _canvas;
 }
 
-inline DirectScrollBar* DirectScrolledFrame::get_vertical_scroll(void) const
+inline DirectScrollBar* DirectScrolledFrame::get_vertical_scroll() const
 {
     return _vertical_scroll;
 }
 
-inline DirectScrollBar* DirectScrolledFrame::get_horizontal_scroll(void) const
+inline DirectScrollBar* DirectScrolledFrame::get_horizontal_scroll() const
 {
     return _horizontal_scroll;
 }
 
-inline const LVecBase4f& DirectScrolledFrame::get_canvas_size(void) const
+inline const LVecBase4f& DirectScrolledFrame::get_canvas_size() const
 {
     return std::dynamic_pointer_cast<Options>(_options)->canvas_size;
 }
 
-inline bool DirectScrolledFrame::get_manage_scroll_bars(void) const
+inline bool DirectScrolledFrame::get_manage_scroll_bars() const
 {
     return std::dynamic_pointer_cast<Options>(_options)->manage_scroll_bars;
 }
 
-inline bool DirectScrolledFrame::get_auto_hide_scroll_bars(void) const
+inline bool DirectScrolledFrame::get_auto_hide_scroll_bars() const
 {
     return std::dynamic_pointer_cast<Options>(_options)->auto_hide_scroll_bars;
 }
 
-inline TypeHandle DirectScrolledFrame::get_class_type(void)
+inline TypeHandle DirectScrolledFrame::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectScrolledFrame::init_type(void)
+inline void DirectScrolledFrame::init_type()
 {
     DirectFrame::init_type();
     register_type(type_handle_, "rppanda::DirectScrolledFrame", DirectFrame::get_class_type());
 }
 
-inline TypeHandle DirectScrolledFrame::get_type(void) const
+inline TypeHandle DirectScrolledFrame::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectScrolledFrame::force_init_type(void)
+inline TypeHandle DirectScrolledFrame::force_init_type()
 {
     init_type();
     return get_class_type();

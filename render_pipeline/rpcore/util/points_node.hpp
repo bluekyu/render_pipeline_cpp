@@ -38,25 +38,25 @@ public:
     PointsNode(PointsNode&&);
 #endif
 
-    ~PointsNode(void);
+    ~PointsNode();
 
     PointsNode& operator=(const PointsNode&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     PointsNode& operator=(PointsNode&& other);
 #endif
 
-    NodePath get_nodepath(void) const;
+    NodePath get_nodepath() const;
 
     /** Set circular effect. */
-    void set_circular_point(void) const;
+    void set_circular_point() const;
 
     /** Get position. */
     const LPoint3f& get_position(int point_index) const;
 
     /** Get positions. */
-    const std::vector<LPoint3f>& get_positions(void) const;
+    const std::vector<LPoint3f>& get_positions() const;
 
-    std::vector<LPoint3f>& modify_positions(void);
+    std::vector<LPoint3f>& modify_positions();
 
     /** Set the position on the point_index-th point. */
     void set_position(const LPoint3f& positions, int point_index);
@@ -70,13 +70,13 @@ public:
     void set_positions(const std::vector<LPoint3f>& positions);
 
     /** Upload transform buffer texture to GPU. */
-    void upload_positions(void);
+    void upload_positions();
 
     /** Get the total count of points. */
-    int get_point_count(void) const;
+    int get_point_count() const;
 
     /** Get the active count of points. */
-    int get_active_point_count(void) const;
+    int get_active_point_count() const;
 
     /**
      * Set a count of active points.
@@ -86,7 +86,7 @@ public:
      */
     void set_active_point_count(int count);
 
-    float get_radius(void) const;
+    float get_radius() const;
     void set_radius(float radius);
 
 private:

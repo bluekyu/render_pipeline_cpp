@@ -39,31 +39,31 @@ public:
      */
     static std::string convert_to_physical_path(const std::string& path);
 
-    MountManager(void);
+    MountManager();
     MountManager(const MountManager&) = delete;
     MountManager(MountManager&&) = delete;
 
-    ~MountManager(void);
+    ~MountManager();
 
     MountManager& operator=(const MountManager&) = delete;
     MountManager& operator=(MountManager&&) = delete;
 
-    const std::string& get_write_path(void) const;
+    const std::string& get_write_path() const;
     void set_write_path(const std::string& pth);
 
-    const std::string& get_base_path(void) const;
+    const std::string& get_base_path() const;
     void set_base_path(const std::string& pth);
 
-    const std::string& get_config_dir(void) const;
+    const std::string& get_config_dir() const;
     void set_config_dir(const std::string& pth);
 
-    bool get_do_cleanup(void) const;
+    bool get_do_cleanup() const;
     void set_do_cleanup(bool cleanup);
 
-    bool get_lock(void);
+    bool get_lock();
 
     /** Returns whether the MountManager was already mounted by calling mount(). */
-    bool is_mounted(void) const;
+    bool is_mounted() const;
 
     /**
      * Inits the VFS Mounts. This creates the following virtual directory
@@ -81,10 +81,10 @@ public:
      * + ...
      * /$$rpshader/ (Link to /$$rp/rpcore/shader)
      */
-    void mount(void);
+    void mount();
 
     /** Unmounts the VFS. */
-    void unmount(void);
+    void unmount();
 
 private:
     class Impl;

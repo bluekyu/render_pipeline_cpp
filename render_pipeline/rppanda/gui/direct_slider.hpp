@@ -54,7 +54,7 @@ public:
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
     {
-        Options(void);
+        Options();
 
         LVecBase2 range = LVecBase2(0, 1);
         float value = 0;
@@ -72,13 +72,13 @@ public:
 public:
     DirectSlider(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    PGSliderBar* get_gui_item(void) const;
+    PGSliderBar* get_gui_item() const;
 
     void set_range(LVecBase2 range);
     void set_value(float value);
 
-    float get_value(void) const;
-    float get_ratio(void) const;
+    float get_value() const;
+    float get_ratio() const;
 
     void set_scroll_size(float scroll_size);
     void set_page_size(float page_size);
@@ -97,10 +97,10 @@ private:
     PT(DirectButton) thumb_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -108,23 +108,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle DirectSlider::get_class_type(void)
+inline TypeHandle DirectSlider::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectSlider::init_type(void)
+inline void DirectSlider::init_type()
 {
     DirectFrame::init_type();
     register_type(type_handle_, "rppanda::DirectSlider", DirectFrame::get_class_type());
 }
 
-inline TypeHandle DirectSlider::get_type(void) const
+inline TypeHandle DirectSlider::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectSlider::force_init_type(void)
+inline TypeHandle DirectSlider::force_init_type()
 {
     init_type();
     return get_class_type();

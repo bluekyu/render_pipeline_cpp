@@ -59,7 +59,7 @@ private:
     template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
 
 public:
-    static RenderPipeline* get_global_ptr(void);
+    static RenderPipeline* get_global_ptr();
 
     /** Create PandaFramework and initialize RenderPipeline. */
     RenderPipeline(int& argc, char**& argv);
@@ -67,10 +67,10 @@ public:
     /** Initialize RenderPipeline with given PandaFramework. */
     RenderPipeline(PandaFramework* framework);
 
-    ~RenderPipeline(void);
+    ~RenderPipeline();
 
     /** Call ShowBase::Run() */
-    void run(void);
+    void run();
 
     /**
      * Loads the pipeline configuration from a given filename. Usually
@@ -88,7 +88,7 @@ public:
      * this method is primarly useful for fast iterations when developing new
      * shaders.
      */
-    void reload_shaders(void);
+    void reload_shaders();
 
     /**
      * Setups all required pipeline settings and configuration which have
@@ -97,9 +97,9 @@ public:
      * call it manually before you init your custom showbase instance.
      * See the 00-Loading the pipeline sample for more information.
      */
-    bool pre_showbase_init(void);
+    bool pre_showbase_init();
 
-    bool create(void);
+    bool create();
 
     /**
      * Tells the pipeline to use the default loading screen, which consists
@@ -198,15 +198,15 @@ public:
     template <> std::string get_setting(const std::string& setting_path, const std::string& fallback) const;
     ///@}
 
-    PandaFramework* get_panda_framework(void) const;
-    rppanda::ShowBase* get_showbase(void) const;
-    MountManager* get_mount_mgr(void) const;
-    StageManager* get_stage_mgr(void) const;
-    TagStateManager* get_tag_mgr(void) const;
-    LightManager* get_light_mgr(void) const;
-    PluginManager* get_plugin_mgr(void) const;
-    TaskScheduler* get_task_scheduler(void) const;
-    DayTimeManager* get_daytime_mgr(void) const;
+    PandaFramework* get_panda_framework() const;
+    rppanda::ShowBase* get_showbase() const;
+    MountManager* get_mount_mgr() const;
+    StageManager* get_stage_mgr() const;
+    TagStateManager* get_tag_mgr() const;
+    LightManager* get_light_mgr() const;
+    PluginManager* get_plugin_mgr() const;
+    TaskScheduler* get_task_scheduler() const;
+    DayTimeManager* get_daytime_mgr() const;
 
 private:
     class Impl;

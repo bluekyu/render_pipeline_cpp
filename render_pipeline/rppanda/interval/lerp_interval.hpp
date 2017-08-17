@@ -62,10 +62,10 @@ public:
         NodePath other={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -80,23 +80,23 @@ inline LerpNodePathInterval::LerpNodePathInterval(NodePath nodepath, const boost
     ++lerp_node_path_num;
 }
 
-inline TypeHandle LerpNodePathInterval::get_class_type(void)
+inline TypeHandle LerpNodePathInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpNodePathInterval::init_type(void)
+inline void LerpNodePathInterval::init_type()
 {
     CLerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpNodePathInterval", CLerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpNodePathInterval::get_type(void) const
+inline TypeHandle LerpNodePathInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpNodePathInterval::force_init_type(void)
+inline TypeHandle LerpNodePathInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -112,10 +112,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -132,23 +132,23 @@ inline LerpPosInterval::LerpPosInterval(NodePath nodepath, double duration, cons
         set_start_pos(start_pos.get());
 }
 
-inline TypeHandle LerpPosInterval::get_class_type(void)
+inline TypeHandle LerpPosInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpPosInterval::init_type(void)
+inline void LerpPosInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpPosInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpPosInterval::get_type(void) const
+inline TypeHandle LerpPosInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpPosInterval::force_init_type(void)
+inline TypeHandle LerpPosInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -165,10 +165,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -188,23 +188,23 @@ inline LerpHprInterval::LerpHprInterval(NodePath nodepath, double duration, cons
         set_start_quat(start_quat.get());
 }
 
-inline TypeHandle LerpHprInterval::get_class_type(void)
+inline TypeHandle LerpHprInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpHprInterval::init_type(void)
+inline void LerpHprInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpHprInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpHprInterval::get_type(void) const
+inline TypeHandle LerpHprInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpHprInterval::force_init_type(void)
+inline TypeHandle LerpHprInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -224,10 +224,10 @@ public:
         const boost::optional<LVecBase3>& hpr={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -262,23 +262,23 @@ inline LerpQuatInterval::LerpQuatInterval(NodePath nodepath, double duration,
         set_start_quat(start_quat.get());
 }
 
-inline TypeHandle LerpQuatInterval::get_class_type(void)
+inline TypeHandle LerpQuatInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpQuatInterval::init_type(void)
+inline void LerpQuatInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpQuatInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpQuatInterval::get_type(void) const
+inline TypeHandle LerpQuatInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpQuatInterval::force_init_type(void)
+inline TypeHandle LerpQuatInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -296,10 +296,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -317,23 +317,23 @@ inline LerpScaleInterval::LerpScaleInterval(NodePath nodepath, double duration,
         set_start_hpr(start_scale.get());
 }
 
-inline TypeHandle LerpScaleInterval::get_class_type(void)
+inline TypeHandle LerpScaleInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpScaleInterval::init_type(void)
+inline void LerpScaleInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpScaleInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpScaleInterval::get_type(void) const
+inline TypeHandle LerpScaleInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpScaleInterval::force_init_type(void)
+inline TypeHandle LerpScaleInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -351,10 +351,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -373,23 +373,23 @@ inline LerpShearInterval::LerpShearInterval(NodePath nodepath, double duration,
         set_start_hpr(start_shear.get());
 }
 
-inline TypeHandle LerpShearInterval::get_class_type(void)
+inline TypeHandle LerpShearInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpShearInterval::init_type(void)
+inline void LerpShearInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpShearInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpShearInterval::get_type(void) const
+inline TypeHandle LerpShearInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpShearInterval::force_init_type(void)
+inline TypeHandle LerpShearInterval::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -409,10 +409,10 @@ public:
         bool fluid=false, const boost::optional<std::string>& name={});
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -438,23 +438,23 @@ inline LerpPosHprInterval::LerpPosHprInterval(NodePath nodepath, double duration
         set_start_quat(start_quat.get());
 }
 
-inline TypeHandle LerpPosHprInterval::get_class_type(void)
+inline TypeHandle LerpPosHprInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void LerpPosHprInterval::init_type(void)
+inline void LerpPosHprInterval::init_type()
 {
     LerpNodePathInterval::init_type();
     register_type(type_handle_, "rppanda::LerpPosHprInterval", LerpNodePathInterval::get_class_type());
 }
 
-inline TypeHandle LerpPosHprInterval::get_type(void) const
+inline TypeHandle LerpPosHprInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle LerpPosHprInterval::force_init_type(void)
+inline TypeHandle LerpPosHprInterval::force_init_type()
 {
     init_type();
     return get_class_type();

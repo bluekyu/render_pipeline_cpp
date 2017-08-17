@@ -42,22 +42,22 @@ public:
 
 public:
     static std::shared_ptr<Effect> load(const std::string& filename, const OptionType& options);
-    static const OptionType& get_default_options(void);
+    static const OptionType& get_default_options();
 
-    Effect(void);
+    Effect();
     Effect(const Effect&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     Effect(Effect&&);
 #endif
 
-    ~Effect(void);
+    ~Effect();
 
     Effect& operator=(const Effect&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     Effect& operator=(Effect&&);
 #endif
 
-    int get_effect_id(void) const;
+    int get_effect_id() const;
 
     bool get_option(const std::string& name) const;
 

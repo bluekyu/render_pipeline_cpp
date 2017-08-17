@@ -30,12 +30,12 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPLogger
 {
 public:
-    static RPLogger& get_instance(void);
+    static RPLogger& get_instance();
 
-    RPLogger(void);
-    ~RPLogger(void);
+    RPLogger();
+    ~RPLogger();
 
-    std::shared_ptr<spdlog::logger> get_internal_logger(void);
+    std::shared_ptr<spdlog::logger> get_internal_logger();
 
     /**
      * Create internal logger.
@@ -43,7 +43,7 @@ public:
      */
     void create(const std::string& file_path);
 
-    bool is_created(void) const;
+    bool is_created() const;
 
 private:
     class Impl;

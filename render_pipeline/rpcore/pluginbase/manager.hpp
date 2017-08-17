@@ -59,13 +59,13 @@ public:
      */
     PluginManager(RenderPipeline& pipeline);
 
-    ~PluginManager(void);
+    ~PluginManager();
 
     /**
      * Loads all plugins and their settings, and also constructs instances
      * of the main plugin classes for all enabled plugins.
      */
-    void load(void);
+    void load();
 
     /**
      * Disables a plugin, given its plugin_id. This will remove it from
@@ -74,10 +74,10 @@ public:
     void disable_plugin(const std::string& plugin_id);
 
     /** Unloads all plugins. */
-    void unload(void);
+    void unload();
 
     /** Main update method. */
-    void update(void) {}
+    void update() {}
 
     /**
      * Loads the base settings of all plugins, even of disabled plugins.
@@ -107,29 +107,29 @@ public:
     bool is_plugin_enabled(const std::string& plugin_id) const;
 
     /** Initializes all plugin settings as a define, so they can be queried in a shader. */
-    void init_defines(void);
+    void init_defines();
 
-    size_t get_enabled_plugins_count(void) const NOEXCEPT;
+    size_t get_enabled_plugins_count() const NOEXCEPT;
 
     const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const NOEXCEPT;
     const SettingsDataType& get_setting(const std::string& setting_id) const;
-    const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings(void) const;
+    const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings() const;
 
     /** Get plugin instance. */
     const std::shared_ptr<BasePlugin>& get_instance(const std::string& plugin_id) const;
 
     /** Trigger hook. */
     ///@{
-    void on_load(void);
-    void on_stage_setup(void);
-    void on_post_stage_setup(void);
-    void on_pipeline_created(void);
+    void on_load();
+    void on_stage_setup();
+    void on_post_stage_setup();
+    void on_pipeline_created();
     void on_prepare_scene(NodePath scene);
-    void on_pre_render_update(void);
-    void on_post_render_update(void);
-    void on_shader_reload(void);
-    void on_window_resized(void);
-    void on_unload(void);
+    void on_pre_render_update();
+    void on_post_render_update();
+    void on_shader_reload();
+    void on_window_resized();
+    void on_unload();
     ///@}
 
 private:

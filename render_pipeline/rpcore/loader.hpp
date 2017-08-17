@@ -67,11 +67,11 @@ public:
      */
     static Texture* load_sliced_3d_texture(const Filename& filename, int tile_size_x, int tile_size_y, int num_tiles);
 
-    RPLoader(void);
+    RPLoader();
 };
 
 // ************************************************************************************************
-inline RPLoader::RPLoader(void): RPObject("RPLoader")
+inline RPLoader::RPLoader(): RPObject("RPLoader")
 {
 }
 

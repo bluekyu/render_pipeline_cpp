@@ -41,23 +41,23 @@ class DraggableWindow: public RPObject
 {
 public:
     DraggableWindow(int width=800, int height=500, const std::string& title="Window", NodePath parent={});
-    ~DraggableWindow(void);
+    ~DraggableWindow();
 
     /** Centers the window on screen. */
-    void center_on_screen(void);
+    void center_on_screen();
 
     /** Sets the window title. */
     void set_title(const std::string& title);
 
     /** Shows the window. */
-    void show(void);
+    void show();
 
     /** Hides the window. */
-    void hide(void);
+    void hide();
 
 protected:
     /** Creates the window components. */
-    virtual void create_components(void);
+    virtual void create_components();
 
     int _width;
     int _height;
@@ -85,7 +85,7 @@ private:
      * Internal helper function to get the mouse position, scaled by
      * the context scale.
      */
-    LVecBase2 get_mouse_pos(void) const;
+    LVecBase2 get_mouse_pos() const;
 
     /** Task which updates the window while being dragged. */
     static AsyncTask::DoneStatus on_tick(GenericAsyncTask* task, void* user_data);
@@ -112,14 +112,14 @@ private:
 
 // ************************************************************************************************
 
-inline void DraggableWindow::show(void)
+inline void DraggableWindow::show()
 {
     _visible = true;
     center_on_screen();
     _node.show();
 }
 
-inline void DraggableWindow::hide(void)
+inline void DraggableWindow::hide()
 {
     _visible = false;
     stop_drag(nullptr, this);

@@ -96,7 +96,7 @@ public:
     Actor(Actor&&) = default;
 #endif
 
-    ~Actor(void) = default;
+    ~Actor() = default;
 
     Actor& operator=(const Actor&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -112,12 +112,12 @@ public:
      * Utility function to create a list of information about an actor.
      * Useful for iterating over details of an actor.
      */
-    ActorInfoType get_actor_info(void) const;
+    ActorInfoType get_actor_info() const;
 
-    std::vector<std::string> get_anim_names(void) const;
+    std::vector<std::string> get_anim_names() const;
 
     /** Pretty print actor's details. */
-    void pprint(void) const;
+    void pprint() const;
 
     /** accessing */
     ///@{
@@ -128,17 +128,17 @@ public:
      * Return list of Actor LOD names. If not an LOD actor,
      * returns 'lodRoot'
      */
-    const std::vector<std::string>& get_LOD_names(void) const;
+    const std::vector<std::string>& get_LOD_names() const;
 
     /** Return the node that contains all actor geometry. */
-    NodePath get_geom_node(void) const;
+    NodePath get_geom_node() const;
 
     /** Set the node that contains all actor geometry */
     void set_geom_node(NodePath node);
 
-    NodePath get_LOD_node(void) const;
+    NodePath get_LOD_node() const;
 
-    bool has_LOD(void) const;
+    bool has_LOD() const;
 
     /**
      * Return actual frame rate of given anim name and given part.
@@ -337,10 +337,10 @@ public:
     ///@}
 
     /** Show the bounds of all actor geoms. */
-    void show_all_bounds(void);
+    void show_all_bounds();
 
     /** Hide the bounds of all actor geoms. */
-    void hide_all_bounds(void);
+    void hide_all_bounds();
 
 protected:
     Loader* loader_;
@@ -362,7 +362,7 @@ private:
     public:
         PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model);
 
-        PartBundle* get_bundle(void) const;
+        PartBundle* get_bundle() const;
 
         NodePath part_bundle_np;
         PartBundleHandle* part_bundle_handle;
@@ -384,7 +384,7 @@ private:
     public:
         AnimDef(const std::string& filename="", AnimBundle* anim_bundle=nullptr);
 
-        AnimDef make_copy(void);
+        AnimDef make_copy();
 
         std::string filename;
         PT(AnimControl) anim_control = nullptr;
@@ -428,7 +428,7 @@ private:
      * Cache the sorted LOD names so we don't have to grab them
      * and sort them every time somebody asks for the list.
      */
-    void update_sorted_LOD_names(void);
+    void update_sorted_LOD_names();
 
     /**
      * Binds the named animation to the named part/lod and returns
@@ -457,10 +457,10 @@ private:
     bool subparts_complete_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -468,12 +468,12 @@ private:
 
 // ************************************************************************************************
 
-inline const std::vector<std::string>& Actor::get_LOD_names(void) const
+inline const std::vector<std::string>& Actor::get_LOD_names() const
 {
     return sorted_LOD_names_;
 }
 
-inline NodePath Actor::get_geom_node(void) const
+inline NodePath Actor::get_geom_node() const
 {
     return geom_node_;
 }
@@ -483,12 +483,12 @@ inline void Actor::set_geom_node(NodePath node)
     geom_node_ = node;
 }
 
-inline NodePath Actor::get_LOD_node(void) const
+inline NodePath Actor::get_LOD_node() const
 {
     return LOD_node_;
 }
 
-inline bool Actor::has_LOD(void) const
+inline bool Actor::has_LOD() const
 {
     return !LOD_node_.is_empty();
 }
@@ -584,23 +584,23 @@ inline void Actor::set_blend(boost::optional<bool> anim_blend, boost::optional<b
     }
 }
 
-inline TypeHandle Actor::get_class_type(void)
+inline TypeHandle Actor::get_class_type()
 {
     return type_handle_;
 }
 
-inline void Actor::init_type(void)
+inline void Actor::init_type()
 {
     DirectObject::init_type();
     register_type(type_handle_, "rppanda::Actor", DirectObject::get_class_type());
 }
 
-inline TypeHandle Actor::get_type(void) const
+inline TypeHandle Actor::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle Actor::force_init_type(void)
+inline TypeHandle Actor::force_init_type()
 {
     init_type();
     return get_class_type();

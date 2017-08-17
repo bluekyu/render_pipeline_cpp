@@ -50,35 +50,35 @@ public:
      * Returns the generated specular cubemap. The specular cubemap is
      * mipmapped and provides the specular IBL components of the input cubemap.
      */
-    std::shared_ptr<Image> get_specular_cubemap(void) const;
+    std::shared_ptr<Image> get_specular_cubemap() const;
 
     /**
      * Returns the generated diffuse cubemap. The diffuse cubemap has no
      * mipmaps and contains the filtered diffuse component of the input cubemap.
      */
-    std::shared_ptr<Image> get_diffuse_cubemap(void) const;
+    std::shared_ptr<Image> get_diffuse_cubemap() const;
 
     /** Returns the target where the caller should write the initial cubemap data to. */
-    std::shared_ptr<Image> get_target_cubemap(void) const;
+    std::shared_ptr<Image> get_target_cubemap() const;
 
     /**
      * Returns the size of the created cubemap, previously passed to the
      * constructor of the filter.
      */
-    int get_size(void) const;
+    int get_size() const;
 
     /**
      * Creates the filter. The input cubemap should be mipmapped, and will
      * get reused for the specular cubemap.
      */
-    void create(void);
+    void create();
 
     /** Sets all required shaders on the filter. */
-    void reload_shaders(void);
+    void reload_shaders();
 
 private:
     /** Internal method to create the cubemap storage. */
-    void make_maps(void);
+    void make_maps();
 
     /** Internal method to create the specular mip chain. */
     void make_specular_targets();
@@ -103,22 +103,22 @@ private:
 };
 
 // ************************************************************************************************
-inline std::shared_ptr<Image> CubemapFilter::get_specular_cubemap(void) const
+inline std::shared_ptr<Image> CubemapFilter::get_specular_cubemap() const
 {
     return _specular_map;
 }
 
-inline std::shared_ptr<Image> CubemapFilter::get_diffuse_cubemap(void) const
+inline std::shared_ptr<Image> CubemapFilter::get_diffuse_cubemap() const
 {
     return _diffuse_map;
 }
 
-inline std::shared_ptr<Image> CubemapFilter::get_target_cubemap(void) const
+inline std::shared_ptr<Image> CubemapFilter::get_target_cubemap() const
 {
     return _specular_map;
 }
 
-inline int CubemapFilter::get_size(void) const
+inline int CubemapFilter::get_size() const
 {
     return _size;
 }

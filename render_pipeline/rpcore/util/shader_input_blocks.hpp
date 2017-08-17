@@ -59,7 +59,7 @@ public:
 
     void bind_to(const std::shared_ptr<RenderStage>& target) const;
 
-    const std::string& get_name(void) const;
+    const std::string& get_name() const;
 
 private:
     InputsType inputs_;
@@ -99,7 +99,7 @@ inline void SimpleInputBlock::add_input(const std::string& id, const T& np)
     inputs_[id] = ShaderInput(name_ + "." + id, np, 0);
 }
 
-inline const std::string& SimpleInputBlock::get_name(void) const
+inline const std::string& SimpleInputBlock::get_name() const
 {
     return name_;
 }
@@ -176,9 +176,9 @@ public:
     const PTA_Types& get_input(const std::string& name) const;
 
     /** Generates the GLSL shader code to use the UBO. */
-    std::string generate_shader_code(void) const;
+    std::string generate_shader_code() const;
 
-    const std::string& get_name(void) const;
+    const std::string& get_name() const;
 
 private:
     const std::string name_;
@@ -229,7 +229,7 @@ inline void GroupedInputBlock::update_input(const std::string& name, const LMatr
     boost::get<PTA_LMatrix4f&>(ptas_.at(name))[index] = value;
 }
 
-inline const std::string& GroupedInputBlock::get_name(void) const
+inline const std::string& GroupedInputBlock::get_name() const
 {
     return name_;
 }

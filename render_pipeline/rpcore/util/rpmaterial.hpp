@@ -43,27 +43,27 @@ public:
 
 public:
     /** Create default material. */
-    RPMaterial(void);
+    RPMaterial();
 
     /** Wrapping given material. */
     RPMaterial(Material* material);
 
-    Material* get_material(void) const;
+    Material* get_material() const;
 
-    const LColor& get_base_color(void) const;
-    float get_specular_ior(void) const;
-    float get_metallic(void) const;
-    float get_roughness(void) const;
-    ShadingModel get_shading_model(void) const;
-    float get_normal_factor(void) const;
-    float get_arbitrary0(void) const;
+    const LColor& get_base_color() const;
+    float get_specular_ior() const;
+    float get_metallic() const;
+    float get_roughness() const;
+    ShadingModel get_shading_model() const;
+    float get_normal_factor() const;
+    float get_arbitrary0() const;
 
     /** Used in only TRANSPARENT_MODEL mode. */
-    float get_alpha(void) const;
+    float get_alpha() const;
 
     void set_material(Material* mat);
 
-    void set_default(void);
+    void set_default();
     void set_base_color(const LColor& color);
     void set_specular_ior(float specular_ior);
     void set_metallic(float metallic);
@@ -80,7 +80,7 @@ private:
 };
 
 // ************************************************************************************************
-inline RPMaterial::RPMaterial(void): material_(new Material)
+inline RPMaterial::RPMaterial(): material_(new Material)
 {
     set_default();
 }
@@ -89,47 +89,47 @@ inline RPMaterial::RPMaterial(Material* material): material_(material)
 {
 }
 
-inline Material* RPMaterial::get_material(void) const
+inline Material* RPMaterial::get_material() const
 {
     return material_;
 }
 
-inline const LColor& RPMaterial::get_base_color(void) const
+inline const LColor& RPMaterial::get_base_color() const
 {
     return material_->get_base_color();
 }
 
-inline float RPMaterial::get_specular_ior(void) const
+inline float RPMaterial::get_specular_ior() const
 {
     return material_->get_refractive_index();
 }
 
-inline float RPMaterial::get_metallic(void) const
+inline float RPMaterial::get_metallic() const
 {
     return material_->get_metallic();
 }
 
-inline float RPMaterial::get_roughness(void) const
+inline float RPMaterial::get_roughness() const
 {
     return material_->get_roughness();
 }
 
-inline RPMaterial::ShadingModel RPMaterial::get_shading_model(void) const
+inline RPMaterial::ShadingModel RPMaterial::get_shading_model() const
 {
     return ShadingModel(int(material_->get_emission().get_x()));
 }
 
-inline float RPMaterial::get_normal_factor(void) const
+inline float RPMaterial::get_normal_factor() const
 {
     return int(material_->get_emission().get_y());
 }
 
-inline float RPMaterial::get_arbitrary0(void) const
+inline float RPMaterial::get_arbitrary0() const
 {
     return int(material_->get_emission().get_z());
 }
 
-inline float RPMaterial::get_alpha(void) const
+inline float RPMaterial::get_alpha() const
 {
     if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
         return get_arbitrary0();
@@ -141,7 +141,7 @@ inline void RPMaterial::set_material(Material* mat)
     material_ = mat;
 }
 
-inline void RPMaterial::set_default(void)
+inline void RPMaterial::set_default()
 {
     set_shading_model(ShadingModel::DEFAULT_MODEL);
     set_base_color(LColor(0.8f, 0.8f, 0.8f, 1.0f));

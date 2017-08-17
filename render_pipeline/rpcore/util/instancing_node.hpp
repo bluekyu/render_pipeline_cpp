@@ -47,12 +47,12 @@ public:
     InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
         const std::string& effect_path="", GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
 
-    ~InstancingNode(void);
+    ~InstancingNode();
 
-    NodePath get_instanced_node(void) const;
+    NodePath get_instanced_node() const;
 
     /** Get the count of instances. */
-    int get_instance_count(void) const;
+    int get_instance_count() const;
 
     /** Set the count of instances. */
     void set_instance_count(int instance_count);
@@ -65,10 +65,10 @@ public:
     const LMatrix4f& get_transform(int instance_index) const;
 
     /** Get local instancing tranforms. */
-    const std::vector<LMatrix4f>& get_transforms(void) const;
+    const std::vector<LMatrix4f>& get_transforms() const;
 
     /** Modify local instancing tranforms. */
-    std::vector<LMatrix4f>& modify_transforms(void);
+    std::vector<LMatrix4f>& modify_transforms();
 
     /** Set local instancing transform. */
     void set_transform(const LMatrix4f& transform, int instance_index);
@@ -77,7 +77,7 @@ public:
     void set_transforms(const std::vector<LMatrix4f>& transforms);
 
     /** Upload transform buffer texture to GPU. */
-    void upload_transforms(void);
+    void upload_transforms();
 
     /**
      * Get child matrix relative to other with instancing transform.

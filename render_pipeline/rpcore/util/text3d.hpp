@@ -51,19 +51,19 @@ public:
      * panda3d implementation
      */
     Text3D(const Parameters& params=Parameters());
-    ~Text3D(void);
+    ~Text3D();
 
     /** Returns the node path of the text. */
-    NodePath get_np(void) const;
+    NodePath get_np() const;
 
     /** Returns the current text. */
-    std::string get_text(void) const;
+    std::string get_text() const;
 
     /** Sets the current text. */
     void set_text(const std::string& text);
 
     /** Returns the current text color. */
-    LColor get_color(void) const;
+    LColor get_color() const;
 
     /** Sets the current text color. */
     void set_color(const LColor& color);

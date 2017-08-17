@@ -102,9 +102,9 @@ public:
      */
     OnscreenText(const Parameters& params=Parameters());
 
-    void cleanup(void);
+    void cleanup();
 
-    void destroy(void) { cleanup(); }
+    void destroy() { cleanup(); }
 
     /**
      * Reimplementation of TextNode::set_card_decal.
@@ -113,15 +113,15 @@ public:
      *                    into the 3-D scene graph.
      */
     void set_decal(bool decal);
-    bool get_decal(void) const;
+    bool get_decal() const;
 
     void set_font(TextFont* font);
-    TextFont* get_font(void) const;
+    TextFont* get_font() const;
 
     void clear_text();
     void set_text(const std::string& text);
     void append_text(const std::string& text);
-    std::string get_text(void) const;
+    std::string get_text() const;
 
     /** Position the onscreen text on the x-axis. */
     void set_x(float x);
@@ -130,7 +130,7 @@ public:
     /** Position the onscreen text in 2d screen space. */
     void set_pos(float x, float y);
     void set_pos(const LVecBase2f& pos);
-    const LVecBase2f& get_pos(void) const;
+    const LVecBase2f& get_pos() const;
 
     void set_roll(float roll);
     float get_roll() const;
@@ -144,11 +144,11 @@ public:
      */
     void set_scale(const LVecBase2f& scale);
 
-    void update_transform_mat(void);
+    void update_transform_mat();
     const LVecBase2f& get_scale() const;
 
     void set_wordwrap(float wordwarp);
-    float get_wordwrap(void) const;
+    float get_wordwrap() const;
 
     void set_fg(const LColor& fg);
     void set_bg(const LColor& bg);
@@ -205,12 +205,12 @@ inline void OnscreenText::set_scale(float scaleX, float scaleY)
     set_scale(LVecBase2f(scaleX, scaleY));
 }
 
-inline float OnscreenText::get_wordwrap(void) const
+inline float OnscreenText::get_wordwrap() const
 {
     return _wordwrap;
 }
 
-inline void OnscreenText::update_transform_mat(void)
+inline void OnscreenText::update_transform_mat()
 {
     const LMatrix4f& mat =
         LMatrix4f::scale_mat(_scale.get_x(), 1, _scale.get_y()) *

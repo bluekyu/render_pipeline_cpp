@@ -60,11 +60,11 @@ class RENDER_PIPELINE_DECL SfxPlayer: public TypedReferenceCount
 public:
     static bool use_inverse_suqare_;
 
-    SfxPlayer(void);
-    ~SfxPlayer(void);
+    SfxPlayer();
+    ~SfxPlayer();
 
     /** Return the curent cutoff distance. */
-    float get_cutoff_distance(void);
+    float get_cutoff_distance();
 
     float get_localized_volume(NodePath node, boost::optional<NodePath> listener_node={}, boost::optional<float> cutoff={});
 
@@ -83,10 +83,10 @@ private:
     std::unique_ptr<Impl> impl_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -94,23 +94,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle SfxPlayer::get_class_type(void)
+inline TypeHandle SfxPlayer::get_class_type()
 {
     return type_handle_;
 }
 
-inline void SfxPlayer::init_type(void)
+inline void SfxPlayer::init_type()
 {
     TypedReferenceCount::init_type();
     register_type(type_handle_, "rppanda::SfxPlayer", TypedReferenceCount::get_class_type());
 }
 
-inline TypeHandle SfxPlayer::get_type(void) const
+inline TypeHandle SfxPlayer::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle SfxPlayer::force_init_type(void)
+inline TypeHandle SfxPlayer::force_init_type()
 {
     init_type();
     return get_class_type();

@@ -47,7 +47,7 @@ public:
     static int CURRENT_SORT;
 
     RenderTarget(const std::string& name);
-    ~RenderTarget(void);
+    ~RenderTarget();
 
     void add_color_attachment(const LVecBase3i& bits);
     void add_color_attachment(const LVecBase4i& bits);
@@ -78,19 +78,19 @@ public:
     void set_size(int width, int height) NOEXCEPT;
 
     /** Get current active. */
-    bool get_active(void) const;
+    bool get_active() const;
 
     /** Set activity of this target and region. */
     void set_active(bool flag);
 
     /** Get the map of targets. */
-    const std::unordered_map<std::string, PT(Texture)>& get_targets(void) const;
+    const std::unordered_map<std::string, PT(Texture)>& get_targets() const;
 
     /** Get the color texture. */
-    Texture* get_color_tex(void) const;
+    Texture* get_color_tex() const;
 
     /** Get the depth texture. */
-    Texture* get_depth_tex(void) const;
+    Texture* get_depth_tex() const;
 
     /** Get the n-th aux textures. */
     Texture* get_aux_tex(size_t index) const;
@@ -100,21 +100,21 @@ public:
 
     void set_shader(const Shader* sha);
 
-    GraphicsBuffer* get_internal_buffer(void) const;
-    DisplayRegion* get_display_region(void) const;
-    PostProcessRegion* get_postprocess_region(void) const;
+    GraphicsBuffer* get_internal_buffer() const;
+    DisplayRegion* get_display_region() const;
+    PostProcessRegion* get_postprocess_region() const;
 
     /** Prepares to render a scene. */
     void prepare_render(const NodePath& camera);
 
     /** Prepares the target to render to an offscreen buffer. */
-    void prepare_buffer(void);
+    void prepare_buffer();
 
     /** Prepares the target to render on the main window, to present the final rendered image. */
-    void present_on_screen(void);
+    void present_on_screen();
 
     /** Deletes this buffer, restoring the previous state. */
-    void remove(void);
+    void remove();
 
     /** Sets the  clear color. */
     void set_clear_color(const LColor& color);
@@ -122,13 +122,13 @@ public:
     /** Sets the instance count. */
     void set_instance_count(int count);
 
-    void consider_resize(void);
+    void consider_resize();
 
-    const boost::optional<int>& get_sort(void) const NOEXCEPT;
+    const boost::optional<int>& get_sort() const NOEXCEPT;
     void set_sort(int sort) NOEXCEPT;
 
-    bool get_support_transparency(void) const;
-    bool get_create_default_region(void) const;
+    bool get_support_transparency() const;
+    bool get_create_default_region() const;
 
 private:
     class Impl;

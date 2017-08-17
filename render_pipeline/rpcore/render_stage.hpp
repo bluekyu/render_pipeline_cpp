@@ -65,28 +65,28 @@ public:
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
 
-    virtual ~RenderStage(void) {}
+    virtual ~RenderStage() {}
 
-    virtual RequireType& get_required_inputs(void) const = 0;
-    virtual RequireType& get_required_pipes(void) const = 0;
+    virtual RequireType& get_required_inputs() const = 0;
+    virtual RequireType& get_required_pipes() const = 0;
 
-    virtual ProduceType get_produced_inputs(void) const;
-    virtual ProduceType get_produced_pipes(void) const;
+    virtual ProduceType get_produced_inputs() const;
+    virtual ProduceType get_produced_pipes() const;
 
-    virtual DefinesType get_produced_defines(void) const;
+    virtual DefinesType get_produced_defines() const;
 
-    virtual void create(void) = 0;
-    virtual void update(void) {}
-    virtual void reload_shaders(void) {}
+    virtual void create() = 0;
+    virtual void update() {}
+    virtual void reload_shaders() {}
 
-    const std::string& get_stage_id(void) const;
+    const std::string& get_stage_id() const;
 
     /**
      * This method sets a shader input on all stages, which is mainly used by the stage manager.
      */
     virtual void set_shader_input(const ShaderInput& inp);
 
-    bool get_active(void) const;
+    bool get_active() const;
     void set_active(bool state);
 
     /**
@@ -116,14 +116,14 @@ public:
      */
     std::pair<std::shared_ptr<Image>, std::shared_ptr<Image>> prepare_upscaler(int max_invalid_pixels=2048) const;
 
-    void handle_window_resize(void);
-    virtual void set_dimensions(void) {}
+    void handle_window_resize();
+    virtual void set_dimensions() {}
 
 protected:
     RenderPipeline& pipeline_;
     std::unordered_map<std::string, std::shared_ptr<RenderTarget>> targets_;
 
-    virtual std::string get_plugin_id(void) const = 0;
+    virtual std::string get_plugin_id() const = 0;
 
 private:
     PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const;
@@ -133,12 +133,12 @@ private:
 };
 
 // ************************************************************************************************
-inline const std::string& RenderStage::get_stage_id(void) const
+inline const std::string& RenderStage::get_stage_id() const
 {
     return stage_id_;
 }
 
-inline bool RenderStage::get_active(void) const
+inline bool RenderStage::get_active() const
 {
     return active_;
 }

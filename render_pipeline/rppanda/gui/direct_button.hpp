@@ -53,7 +53,7 @@ public:
     /** Parameter Container. */
     struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
     {
-        Options(void);
+        Options();
 
         /// Command to be called on button click.
         std::function<void(const std::shared_ptr<void>&)> command;
@@ -77,15 +77,15 @@ public:
 public:
     DirectButton(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    PGButton* get_gui_item(void) const;
+    PGButton* get_gui_item() const;
 
-    void set_command_buttons(void);
+    void set_command_buttons();
 
     static void command_func(const Event* ev, void* user_data);
 
-    void set_click_sound(void);
+    void set_click_sound();
 
-    void set_rollover_sound(void);
+    void set_rollover_sound();
 
 protected:
     DirectButton(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
@@ -96,10 +96,10 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -107,23 +107,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle DirectButton::get_class_type(void)
+inline TypeHandle DirectButton::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectButton::init_type(void)
+inline void DirectButton::init_type()
 {
     DirectGuiWidget::init_type();
     register_type(type_handle_, "rppanda::DirectButton", DirectGuiWidget::get_class_type());
 }
 
-inline TypeHandle DirectButton::get_type(void) const
+inline TypeHandle DirectButton::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectButton::force_init_type(void)
+inline TypeHandle DirectButton::force_init_type()
 {
     init_type();
     return get_class_type();

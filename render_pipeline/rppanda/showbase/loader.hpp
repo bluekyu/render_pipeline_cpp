@@ -59,7 +59,7 @@ public:
     Loader(Loader&&);
 #endif
 
-    ~Loader(void);
+    ~Loader();
 
     Loader& operator=(const Loader&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -98,10 +98,10 @@ private:
     std::unique_ptr<Impl> impl_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -109,23 +109,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle Loader::get_class_type(void)
+inline TypeHandle Loader::get_class_type()
 {
     return type_handle_;
 }
 
-inline void Loader::init_type(void)
+inline void Loader::init_type()
 {
     DirectObject::init_type();
     register_type(type_handle_, "rppanda::Loader", DirectObject::get_class_type());
 }
 
-inline TypeHandle Loader::get_type(void) const
+inline TypeHandle Loader::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle Loader::force_init_type(void)
+inline TypeHandle Loader::force_init_type()
 {
     init_type();
     return get_class_type();

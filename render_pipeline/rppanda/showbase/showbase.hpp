@@ -75,31 +75,31 @@ public:
     ShowBase(const ShowBase&) = delete;
     ShowBase(ShowBase&&) = delete;
 
-    ~ShowBase(void);
+    ~ShowBase();
 
     ShowBase& operator=(const ShowBase&) = delete;
     ShowBase& operator=(ShowBase&&) = delete;
 
-    static ShowBase* get_global_ptr(void);
+    static ShowBase* get_global_ptr();
 
-    PandaFramework* get_panda_framework(void) const;
-    WindowFramework* get_window_framework(void) const;
+    PandaFramework* get_panda_framework() const;
+    WindowFramework* get_window_framework() const;
 
-    rppanda::Loader* get_loader(void) const;
-    GraphicsEngine* get_graphics_engine(void) const;
-    GraphicsWindow* get_win(void) const;
+    rppanda::Loader* get_loader() const;
+    GraphicsEngine* get_graphics_engine() const;
+    GraphicsWindow* get_win() const;
 
-    SfxPlayer* get_sfx_player(void) const;
-    const std::vector<PT(AudioManager)>& get_sfx_manager_list(void) const;
-    AudioManager* get_music_manager(void) const;
+    SfxPlayer* get_sfx_player() const;
+    const std::vector<PT(AudioManager)>& get_sfx_manager_list() const;
+    AudioManager* get_music_manager() const;
 
-    NodePath get_render(void) const;
-    NodePath get_render_2d(void) const;
-    NodePath get_aspect_2d(void) const;
-    NodePath get_pixel_2d(void) const;
-    NodePath get_render_2dp(void) const;
-    NodePath get_pixel_2dp(void) const;
-    float get_config_aspect_ratio(void) const;
+    NodePath get_render() const;
+    NodePath get_render_2d() const;
+    NodePath get_aspect_2d() const;
+    NodePath get_pixel_2d() const;
+    NodePath get_render_2dp() const;
+    NodePath get_pixel_2dp() const;
+    float get_config_aspect_ratio() const;
 
     /**
      * Returns the actual aspect ratio of the indicated (or main
@@ -125,7 +125,7 @@ public:
       * self.camera is the parent node of all cameras: a node that
       * we can move around to move all cameras as a group.
       */
-    NodePath get_camera(void) const;
+    NodePath get_camera() const;
     ///@}
 
     /**
@@ -140,15 +140,15 @@ public:
     /** Convenience accessor for base.get_cam_node()->get_lens(). */
     Lens* get_cam_lens(int cam_index=0, int lens_index=0) const;
 
-    MouseWatcher* get_mouse_watcher_node(void) const;
-    NodePath get_button_thrower(void) const;
+    MouseWatcher* get_mouse_watcher_node() const;
+    NodePath get_button_thrower() const;
 
-    const NodePath& get_data_root(void) const;
-    PandaNode* get_data_root_node(void) const;
+    const NodePath& get_data_root() const;
+    PandaNode* get_data_root_node() const;
 
-    AsyncTaskManager* get_task_mgr(void) const;
+    AsyncTaskManager* get_task_mgr() const;
 
-    bool open_default_window(void);
+    bool open_default_window();
 
     /**
      * Creates the initial, main window for the application, and sets
@@ -161,48 +161,48 @@ public:
      * which case base.win may be either None, or the previous,
      * closed window).
      */
-    void open_main_window(void);
+    void open_main_window();
 
     /**
      * Creates a render2d scene graph, the secondary scene graph for
      * 2-d objects and gui elements that are superimposed over the
      * 2-d and 3-d geometry in the window.
      */
-    void setup_render_2dp(void);
+    void setup_render_2dp();
 
-    void setup_render(void);
+    void setup_render();
 
-    void setup_render_2d(void);
+    void setup_render_2d();
 
     NodePath make_camera2dp(GraphicsWindow* win, int sort=20,
         const LVecBase4f& display_region=LVecBase4f(0, 1, 0, 1),
         const LVecBase4f& coords=LVecBase4f(-1, 1, -1, 1),
         Lens* lens=nullptr, const std::string& camera_name="");
 
-    void setup_data_graph(void);
+    void setup_data_graph();
 
-    void setup_mouse(void);
-    void setup_mouse_cb(void);
+    void setup_mouse();
+    void setup_mouse_cb();
 
-    void toggle_backface(void);
-    void backface_culling_on(void);
-    void backface_culling_off(void);
+    void toggle_backface();
+    void backface_culling_on();
+    void backface_culling_off();
 
-    void toggle_wireframe(void);
-    void wireframe_on(void);
-    void wireframe_off(void);
+    void toggle_wireframe();
+    void wireframe_on();
+    void wireframe_off();
 
-    void restart(void);
+    void restart();
 
-    void shutdown(void);
+    void shutdown();
 
-    void disable_mouse(void);
+    void disable_mouse();
 
-    void use_trackball(void);
+    void use_trackball();
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
 
-    void create_base_audio_managers(void);
+    void create_base_audio_managers();
 
     /**
      * enable_music/enable_sound_effects are meant to be called in response
@@ -222,10 +222,10 @@ public:
      * affecting internal sfxActive/musicActive sound settings, so things
      * come back ok when the app is switched back to
      */
-    void disable_all_audio(void);
+    void disable_all_audio();
 
-    /** @see disable_all_audio(void) */
-    void enable_all_audio(void);
+    /** @see disable_all_audio() */
+    void enable_all_audio();
 
     void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume={},
         float time=0.0, boost::optional<NodePath> node={}, boost::optional<NodePath> listener_node={},
@@ -270,17 +270,17 @@ public:
     Filename screenshot(DisplayRegion* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
 
-    void run(void);
+    void run();
 
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -288,23 +288,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle ShowBase::get_class_type(void)
+inline TypeHandle ShowBase::get_class_type()
 {
     return type_handle_;
 }
 
-inline void ShowBase::init_type(void)
+inline void ShowBase::init_type()
 {
     DirectObject::init_type();
     register_type(type_handle_, "rppanda::ShowBase", DirectObject::get_class_type());
 }
 
-inline TypeHandle ShowBase::get_type(void) const
+inline TypeHandle ShowBase::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle ShowBase::force_init_type(void)
+inline TypeHandle ShowBase::force_init_type()
 {
     init_type();
     return get_class_type();

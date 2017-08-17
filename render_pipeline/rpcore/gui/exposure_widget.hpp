@@ -46,11 +46,11 @@ class ExposureWidget: public RPObject
 {
 public:
     ExposureWidget(RenderPipeline* pipeline, NodePath parent);
-    ~ExposureWidget(void);
+    ~ExposureWidget();
 
 private:
     /** Internal method to init the widgets components. */
-    void create_components(void);
+    void create_components();
 
     /**
      * Gets called after the pipeline initialized, this extracts the

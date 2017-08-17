@@ -68,10 +68,10 @@ public:
     GenericAsyncTask* do_method_later(float delay, GenericAsyncTask::TaskFunc* func, const std::string& name, void* user_data);
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -79,23 +79,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle DirectObject::get_class_type(void)
+inline TypeHandle DirectObject::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectObject::init_type(void)
+inline void DirectObject::init_type()
 {
     TypedReferenceCount::init_type();
     register_type(type_handle_, "rppanda::DirectObject", TypedReferenceCount::get_class_type());
 }
 
-inline TypeHandle DirectObject::get_type(void) const
+inline TypeHandle DirectObject::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectObject::force_init_type(void)
+inline TypeHandle DirectObject::force_init_type()
 {
     init_type();
     return get_class_type();

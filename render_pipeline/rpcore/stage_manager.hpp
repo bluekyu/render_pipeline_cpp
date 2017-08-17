@@ -49,10 +49,10 @@ public:
     /** Constructs the stage manager. */
     StageManager(RenderPipeline& pipeline);
 
-    ~StageManager(void);
+    ~StageManager();
 
-    DefinesType& get_defines(void);
-    const DefinesType& get_defines(void) const;
+    DefinesType& get_defines();
+    const DefinesType& get_defines() const;
 
     void add_input(const ShaderInput& inp);
 
@@ -61,7 +61,7 @@ public:
     /** Add a new stage. */
     void add_stage(const std::shared_ptr<RenderStage>& stage);
 
-    const std::vector<std::shared_ptr<RenderStage>>& get_stages(void) const;
+    const std::vector<std::shared_ptr<RenderStage>>& get_stages() const;
 
     /** Returns a handle to an instantiated stage. */
     std::shared_ptr<RenderStage> get_stage(const std::string& stage_id) const;
@@ -70,29 +70,29 @@ public:
     void add_input_blocks(const std::shared_ptr<GroupedInputBlock>& input_block);
 
     /** Setups the stages. */
-    void setup(void);
+    void setup();
 
     /**
      * This pass sets the shaders to all passes and also generates the shader configuration.
      */
-    void reload_shaders(void);
+    void reload_shaders();
 
     /**
      * Calls the update method for each registered stage. Inactive stages are skipped.
      */
-    void update(void);
+    void update();
 
     /**
      * Method to get called when the window got resized.
      * Propagates the resize event to all registered stages.
      */
-    void handle_window_resize(void);
+    void handle_window_resize();
 
     /**
      * Writes the shader auto config, based on the defines specified by the
      * different stages.
      */
-    void write_autoconfig(void);
+    void write_autoconfig();
 
 private:
     class Impl;

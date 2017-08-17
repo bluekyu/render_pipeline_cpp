@@ -38,9 +38,9 @@ class RENDER_PIPELINE_DECL RPGeomNode
 public:
     RPGeomNode(NodePath nodepath);
 
-    NodePath get_nodepath(void) const;
+    NodePath get_nodepath() const;
 
-    int get_num_geoms(void) const;
+    int get_num_geoms() const;
 
     bool has_material(int geom_index) const;
     RPMaterial get_material(int geom_index) const;
@@ -58,7 +58,7 @@ private:
 
 // ************************************************************************************************
 
-inline NodePath RPGeomNode::get_nodepath(void) const
+inline NodePath RPGeomNode::get_nodepath() const
 {
     return nodepath_;
 }

@@ -58,9 +58,9 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectGuiBase: public DirectObject
 {
 public:
-    DirectGuiBase(void) = default;
+    DirectGuiBase() = default;
 
-    const std::string& get_gui_id(void) const;
+    const std::string& get_gui_id() const;
 
     /** Create a component (during construction or later) for this widget. */
     boost::any& create_component(const std::string& component_name, boost::any&& component);
@@ -87,10 +87,10 @@ private:
     std::unordered_map<std::string, boost::any> component_info_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -101,28 +101,28 @@ inline bool DirectGuiBase::has_component(const std::string& name) const
     return component_info_.find(name) != component_info_.end();
 }
 
-inline const std::string& DirectGuiBase::get_gui_id(void) const
+inline const std::string& DirectGuiBase::get_gui_id() const
 {
     return gui_id_;
 }
 
-inline TypeHandle DirectGuiBase::get_class_type(void)
+inline TypeHandle DirectGuiBase::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectGuiBase::init_type(void)
+inline void DirectGuiBase::init_type()
 {
     DirectObject::init_type();
     register_type(type_handle_, "rppanda::DirectGuiBase", DirectObject::get_class_type());
 }
 
-inline TypeHandle DirectGuiBase::get_type(void) const
+inline TypeHandle DirectGuiBase::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectGuiBase::force_init_type(void)
+inline TypeHandle DirectGuiBase::force_init_type()
 {
     init_type();
     return get_class_type();
@@ -140,8 +140,8 @@ public:
      */
     struct RENDER_PIPELINE_DECL Options
     {
-        Options(void);
-        virtual ~Options(void) = default;
+        Options();
+        virtual ~Options() = default;
 
         int num_states = 1;
         std::vector<int> inverted_frames;
@@ -172,37 +172,37 @@ public:
 
     DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    void enable_edit(void);
-    void disable_edit(void);
+    void enable_edit();
+    void disable_edit();
 
     static void edit_start(const Event* ev, void* user_data);
     static void edit_stop(const Event* ev, void* user_data);
 
-    PGFrameStyle::Type get_relief(void) const;
-    const LColor& get_frame_color(void) const;
-    const std::vector<PT(Texture)>& get_frame_texture(void) const;
-    const LVecBase2& get_frame_visible_scale(void) const;
-    const LVecBase2& get_border_uv_width(void) const;
-    const LVecBase2& get_border_width(void) const;
+    PGFrameStyle::Type get_relief() const;
+    const LColor& get_frame_color() const;
+    const std::vector<PT(Texture)>& get_frame_texture() const;
+    const LVecBase2& get_frame_visible_scale() const;
+    const LVecBase2& get_border_uv_width() const;
+    const LVecBase2& get_border_width() const;
 
-    const boost::optional<LVecBase4>& get_frame_size(void) const;
+    const boost::optional<LVecBase4>& get_frame_size() const;
 
     void set_state(const std::string& state);
     void set_state(bool state);
 
-    void reset_frame_size(void);
+    void reset_frame_size();
 
     void set_frame_size(bool clear_frame=false);
     void set_frame_size(const LVecBase4& frame_size);
 
     LVecBase4 get_bounds(int state=0);
-    float get_width(void) const;
-    float get_height(void) const;
-    LVecBase2 get_center(void) const;
+    float get_width() const;
+    float get_height() const;
+    LVecBase2 get_center() const;
 
     PGFrameStyle::Type get_frame_type(int state=0);
 
-    void update_frame_style(void);
+    void update_frame_style();
 
     void set_relief(PGFrameStyle::Type relief);
     void set_relief(const std::string& relief_name);
@@ -217,13 +217,13 @@ public:
 
     void print_config(int indent=0);
 
-    PGItem* get_gui_item(void) const;
+    PGItem* get_gui_item() const;
 
 protected:
     DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);
 
     void initialise_options(const std::shared_ptr<Options>& options);
-    void frame_initialise_func(void);
+    void frame_initialise_func();
 
     PGItem* const _gui_item;    ///< This is just for access and stored in NodePath
     std::vector<NodePath> _state_node_path;
@@ -241,89 +241,89 @@ private:
     std::vector<PGFrameStyle> _frame_style;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
 };
 
-inline const boost::optional<LVecBase4f>& DirectGuiWidget::get_frame_size(void) const
+inline const boost::optional<LVecBase4f>& DirectGuiWidget::get_frame_size() const
 {
     return _options->frame_size;
 }
 
-inline PGFrameStyle::Type DirectGuiWidget::get_relief(void) const
+inline PGFrameStyle::Type DirectGuiWidget::get_relief() const
 {
     return _options->relief;
 }
 
-inline const LColor& DirectGuiWidget::get_frame_color(void) const
+inline const LColor& DirectGuiWidget::get_frame_color() const
 {
     return _options->frame_color;
 }
 
-inline const std::vector<PT(Texture)>& DirectGuiWidget::get_frame_texture(void) const
+inline const std::vector<PT(Texture)>& DirectGuiWidget::get_frame_texture() const
 {
     return _options->frame_texture;
 }
 
-inline const LVecBase2& DirectGuiWidget::get_frame_visible_scale(void) const
+inline const LVecBase2& DirectGuiWidget::get_frame_visible_scale() const
 {
     return _options->frame_visible_scale.get();
 }
 
-inline const LVecBase2& DirectGuiWidget::get_border_uv_width(void) const
+inline const LVecBase2& DirectGuiWidget::get_border_uv_width() const
 {
     return _options->border_uv_width;
 }
 
-inline const LVecBase2& DirectGuiWidget::get_border_width(void) const
+inline const LVecBase2& DirectGuiWidget::get_border_width() const
 {
     return _options->border_width;
 }
 
-inline float DirectGuiWidget::get_width(void) const
+inline float DirectGuiWidget::get_width() const
 {
     return _bounds[1] - _bounds[0];
 }
 
-inline float DirectGuiWidget::get_height(void) const
+inline float DirectGuiWidget::get_height() const
 {
     return _bounds[3] - _bounds[2];
 }
 
-inline LVecBase2 DirectGuiWidget::get_center(void) const
+inline LVecBase2 DirectGuiWidget::get_center() const
 {
     PN_stdfloat x = _bounds[0] + (_bounds[1] - _bounds[0]) / 2.0f;
     PN_stdfloat y = _bounds[2] + (_bounds[3] + _bounds[2]) / 2.0f;
     return LVecBase2(x, y);
 }
 
-inline PGItem* DirectGuiWidget::get_gui_item(void) const
+inline PGItem* DirectGuiWidget::get_gui_item() const
 {
     return _gui_item;
 }
 
-inline TypeHandle DirectGuiWidget::get_class_type(void)
+inline TypeHandle DirectGuiWidget::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectGuiWidget::init_type(void)
+inline void DirectGuiWidget::init_type()
 {
     DirectGuiBase::init_type();
     register_type(type_handle_, "rppanda::DirectGuiWidget", DirectGuiBase::get_class_type());
 }
 
-inline TypeHandle DirectGuiWidget::get_type(void) const
+inline TypeHandle DirectGuiWidget::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectGuiWidget::force_init_type(void)
+inline TypeHandle DirectGuiWidget::force_init_type()
 {
     init_type();
     return get_class_type();

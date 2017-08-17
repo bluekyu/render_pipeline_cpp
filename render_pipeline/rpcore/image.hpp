@@ -72,24 +72,24 @@ public:
     static std::string convert_texture_format(ComponentFormatType comp_format_type);
 
     Image(const std::string& name);
-    ~Image(void);
+    ~Image();
 
     void setup_buffer(int size, const std::string& component_format);
-    void setup_counter(void);
+    void setup_counter();
     void setup_2d(int w, int h, const std::string& component_format);
     void setup_2d_array(int w, int h, int slices, const std::string& component_format);
     void setup_3d(int w, int h, int slices, const std::string& component_format);
     void setup_cube(int size, const std::string& component_format);
     void setup_cube_array(int size, int num_cubemaps, const std::string& component_format);
 
-    int get_sort(void) const;
+    int get_sort() const;
 
-    std::string get_texture_format(void) const;
+    std::string get_texture_format() const;
 
-    Texture* get_texture(void) const;
+    Texture* get_texture() const;
 
     void set_clear_color(const LColor& color);
-    void clear_image(void);
+    void clear_image();
 
     void set_x_size(int x_size);
     void set_y_size(int y_size);
@@ -109,12 +109,12 @@ private:
 
 // ************************************************************************************************
 
-inline int Image::get_sort(void) const
+inline int Image::get_sort() const
 {
     return sort_;
 }
 
-inline Texture* Image::get_texture(void) const
+inline Texture* Image::get_texture() const
 {
     return texture_;
 }
@@ -124,7 +124,7 @@ inline void Image::set_clear_color(const LColor& color)
     texture_->set_clear_color(color);
 }
 
-inline void Image::clear_image(void)
+inline void Image::clear_image()
 {
     texture_->clear_image();
 }

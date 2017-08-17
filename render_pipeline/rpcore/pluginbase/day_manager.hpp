@@ -34,13 +34,13 @@ class RENDER_PIPELINE_DECL DayTimeManager: public RPObject
 {
 public:
     DayTimeManager(RenderPipeline& pipeline);
-    ~DayTimeManager(void);
+    ~DayTimeManager();
 
     /**
      * Returns the current time of day as floating point number
      * from 0 to 1, whereas 0 means 00:00 and 1 means 24:00 (=00:00)
      */
-    float get_time(void) const;
+    float get_time() const;
 
     /**
      * Sets the current time of day as floating point number from
@@ -58,16 +58,16 @@ public:
     void set_time(const std::string& time);
 
     /** Returns the current time as formatted string, e.g. 12:34. */
-    std::string get_formatted_time(void) const;
+    std::string get_formatted_time() const;
 
     /**
      * Loads all day time settings from the plugin manager and registers
      * them to the used input buffer.
      */
-    void load_settings(void);
+    void load_settings();
 
     /** Internal update method which updates all day time settings. */
-    void update(void);
+    void update();
 
 private:
     class Impl;

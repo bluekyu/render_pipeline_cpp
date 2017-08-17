@@ -44,17 +44,17 @@ public:
     /** Returns whether a given task is supposed to run this frame. */
     bool is_scheduled(const std::string& task_name) const;
 
-    void step(void);
+    void step();
 
     /** Returns the total amount of tasks. */
-    size_t get_num_tasks(void) const;
+    size_t get_num_tasks() const;
 
     /** Returns the amount of scheduled tasks this frame. */
-    size_t get_num_scheduled_tasks(void) const;
+    size_t get_num_scheduled_tasks() const;
 
 private:
     /** Loads the tasks distribution configuration. */
-    void load_config(void);
+    void load_config();
 
     /**
      * Checks whether the given task is scheduled at some point. This can
@@ -67,7 +67,7 @@ private:
     std::vector<std::vector<std::string>> tasks_;
 };
 
-inline size_t TaskScheduler::get_num_scheduled_tasks(void) const
+inline size_t TaskScheduler::get_num_scheduled_tasks() const
 {
     return tasks_[frame_index_].size();
 }

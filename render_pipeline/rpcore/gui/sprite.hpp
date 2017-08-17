@@ -51,13 +51,13 @@ public:
         bool transparent=true, bool near_filter=true, bool any_filter=true);
 
     /** Returns a pos interval, this is a wrapper around NodePath.posInterval. */
-    const LVecBase3f& get_initial_pos(void) const;
+    const LVecBase3f& get_initial_pos() const;
 
     /** Returns the width of the image in pixels. */
-    int get_width(void) const;
+    int get_width() const;
 
     /** Returns the height of the image in pixels. */
-    int get_height(void) const;
+    int get_height() const;
 
     /** Sets the position. */
     void set_pos(float x, float y);
@@ -69,15 +69,15 @@ public:
     void set_shader_input(const ShaderInput& inp);
 
     /** Hides the image. */
-    void hide(void);
+    void hide();
 
     /** Shows the image if it was previously hidden. */
-    void show(void);
+    void show();
 
     /** Returns whether the image is hidden. */
-    bool is_hidden(void) const;
+    bool is_hidden() const;
 
-    rppanda::OnscreenImage* get_node(void) const;
+    rppanda::OnscreenImage* get_node() const;
 
 private:
     void init(Texture* image, int w, int h, NodePath parent, float x, float y,
@@ -103,17 +103,17 @@ inline LVecBase3f Sprite::translate_pos(float x, float y) const
     return LVecBase3f(x + _width / 2.0f, 1, -y - _height / 2.0f);
 }
 
-inline const LVecBase3f& Sprite::get_initial_pos(void) const
+inline const LVecBase3f& Sprite::get_initial_pos() const
 {
     return _initial_pos;
 }
 
-inline int Sprite::get_width(void) const
+inline int Sprite::get_width() const
 {
     return _width;
 }
 
-inline int Sprite::get_height(void) const
+inline int Sprite::get_height() const
 {
     return _height;
 }
@@ -133,22 +133,22 @@ inline void Sprite::set_shader_input(const ShaderInput& inp)
     node_->set_shader_input(inp);
 }
 
-inline void Sprite::hide(void)
+inline void Sprite::hide()
 {
     node_->hide();
 }
 
-inline void Sprite::show(void)
+inline void Sprite::show()
 {
     node_->show();
 }
 
-inline bool Sprite::is_hidden(void) const
+inline bool Sprite::is_hidden() const
 {
     return node_->is_hidden();
 }
 
-inline rppanda::OnscreenImage* Sprite::get_node(void) const
+inline rppanda::OnscreenImage* Sprite::get_node() const
 {
     return node_;
 }

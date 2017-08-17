@@ -47,15 +47,15 @@ public:
     LabeledCheckbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback={},
         const std::shared_ptr<void>& chb_args={}, bool chb_checked=false, const std::string& text="", float text_size=16,
         bool radio=false, const boost::optional<LVecBase3>& text_color={}, int expand_width=100, bool enabled=true);
-    ~LabeledCheckbox(void);
+    ~LabeledCheckbox();
 
     /** Returns a handle to the checkbox. */
-    Checkbox* get_checkbox(void) const;
+    Checkbox* get_checkbox() const;
 
     /** Returns a handle to the label. */
-    Text* get_label(void) const;
+    Text* get_label() const;
 
-    const LVecBase3& get_text_color(void) const;
+    const LVecBase3& get_text_color() const;
 
 private:
     /** Internal callback when the node gets hovered. */
@@ -69,17 +69,17 @@ private:
     LVecBase3 text_color_;
 };
 
-inline Checkbox* LabeledCheckbox::get_checkbox(void) const
+inline Checkbox* LabeledCheckbox::get_checkbox() const
 {
     return checkbox_;
 }
 
-inline Text* LabeledCheckbox::get_label(void) const
+inline Text* LabeledCheckbox::get_label() const
 {
     return text_;
 }
 
-inline const LVecBase3& LabeledCheckbox::get_text_color(void) const
+inline const LVecBase3& LabeledCheckbox::get_text_color() const
 {
     return text_color_;
 }

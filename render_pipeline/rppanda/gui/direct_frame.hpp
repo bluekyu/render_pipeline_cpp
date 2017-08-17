@@ -48,7 +48,7 @@ public:
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options: public DirectGuiWidget::Options
     {
-        Options(void);
+        Options();
 
         std::vector<std::string> text;
         std::vector<std::shared_ptr<ImageInput>> image;
@@ -74,10 +74,10 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -89,23 +89,23 @@ inline void DirectFrame::set_image(const std::shared_ptr<ImageInput>& image)
     set_image(std::vector<std::shared_ptr<ImageInput>>({image}));
 }
 
-inline TypeHandle DirectFrame::get_class_type(void)
+inline TypeHandle DirectFrame::get_class_type()
 {
     return type_handle_;
 }
 
-inline void DirectFrame::init_type(void)
+inline void DirectFrame::init_type()
 {
     DirectGuiWidget::init_type();
     register_type(type_handle_, "rppanda::DirectFrame", DirectGuiWidget::get_class_type());
 }
 
-inline TypeHandle DirectFrame::get_type(void) const
+inline TypeHandle DirectFrame::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle DirectFrame::force_init_type(void)
+inline TypeHandle DirectFrame::force_init_type()
 {
     init_type();
     return get_class_type();

@@ -56,10 +56,10 @@ private:
     WPT(Actor) actor_;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -67,23 +67,23 @@ private:
 
 // ************************************************************************************************
 
-inline TypeHandle ActorInterval::get_class_type(void)
+inline TypeHandle ActorInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void ActorInterval::init_type(void)
+inline void ActorInterval::init_type()
 {
     CInterval::init_type();
     register_type(type_handle_, "rppanda::ActorInterval", CInterval::get_class_type());
 }
 
-inline TypeHandle ActorInterval::get_type(void) const
+inline TypeHandle ActorInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle ActorInterval::force_init_type(void)
+inline TypeHandle ActorInterval::force_init_type()
 {
     init_type();
     return get_class_type();

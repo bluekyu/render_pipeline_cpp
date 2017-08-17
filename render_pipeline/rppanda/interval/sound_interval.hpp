@@ -60,28 +60,28 @@ public:
         boost::optional<NodePath> node={}, bool seamless_loop=true, boost::optional<NodePath> listener_node={},
         boost::optional<float> cut_off={});
 
-    ~SoundInterval(void) = default;
+    ~SoundInterval() = default;
 
-    AudioSound* get_sound(void) const;
-    float get_sound_duration(void) const;
-    bool get_f_loop(void) const;
-    double get_volume(void) const;
-    double get_start_time(void) const;
-    boost::optional<NodePath> get_node(void) const;
-    boost::optional<NodePath> get_listener_node(void) const;
-    boost::optional<float> get_cut_off(void) const;
+    AudioSound* get_sound() const;
+    float get_sound_duration() const;
+    bool get_f_loop() const;
+    double get_volume() const;
+    double get_start_time() const;
+    boost::optional<NodePath> get_node() const;
+    boost::optional<NodePath> get_listener_node() const;
+    boost::optional<float> get_cut_off() const;
 
     void loop(double start_t=0.0, double end_t=-1.0, double play_rate=1.0, bool stagger=false);
-    void finish(void);
+    void finish();
 
     void priv_initialize(double t) override;
-    void priv_instant(void) override;
+    void priv_instant() override;
     void priv_step(double t) override;
-    void priv_finalize(void) override;
+    void priv_finalize() override;
     void priv_reverse_initialize(double t) override;
-    void priv_reverse_instant(void) override;
-    void priv_reverse_finalize(void) override;
-    void priv_interrupt(void) override;
+    void priv_reverse_instant() override;
+    void priv_reverse_finalize() override;
+    void priv_interrupt() override;
 
 protected:
     PT(AudioSound) sound_;
@@ -98,10 +98,10 @@ protected:
     bool in_finish_ = false;
 
 public:
-    static TypeHandle get_class_type(void);
-    static void init_type(void);
-    virtual TypeHandle get_type(void) const;
-    virtual TypeHandle force_init_type(void);
+    static TypeHandle get_class_type();
+    static void init_type();
+    virtual TypeHandle get_type() const;
+    virtual TypeHandle force_init_type();
 
 private:
     static TypeHandle type_handle_;
@@ -109,63 +109,63 @@ private:
 
 // ************************************************************************************************
 
-inline AudioSound* SoundInterval::get_sound(void) const
+inline AudioSound* SoundInterval::get_sound() const
 {
     return sound_;
 }
 
-inline float SoundInterval::get_sound_duration(void) const
+inline float SoundInterval::get_sound_duration() const
 {
     return sound_duration_;
 }
 
-inline bool SoundInterval::get_f_loop(void) const
+inline bool SoundInterval::get_f_loop() const
 {
     return f_loop_;
 }
 
-inline double SoundInterval::get_volume(void) const
+inline double SoundInterval::get_volume() const
 {
     return volume_;
 }
 
-inline double SoundInterval::get_start_time(void) const
+inline double SoundInterval::get_start_time() const
 {
     return start_time_;
 }
 
-inline boost::optional<NodePath> SoundInterval::get_node(void) const
+inline boost::optional<NodePath> SoundInterval::get_node() const
 {
     return node_;
 }
 
-inline boost::optional<NodePath> SoundInterval::get_listener_node(void) const
+inline boost::optional<NodePath> SoundInterval::get_listener_node() const
 {
     return listener_node_;
 }
 
-inline boost::optional<float> SoundInterval::get_cut_off(void) const
+inline boost::optional<float> SoundInterval::get_cut_off() const
 {
     return cut_off_;
 }
 
-inline TypeHandle SoundInterval::get_class_type(void)
+inline TypeHandle SoundInterval::get_class_type()
 {
     return type_handle_;
 }
 
-inline void SoundInterval::init_type(void)
+inline void SoundInterval::init_type()
 {
     CInterval::init_type();
     register_type(type_handle_, "rppanda::SoundInterval", CInterval::get_class_type());
 }
 
-inline TypeHandle SoundInterval::get_type(void) const
+inline TypeHandle SoundInterval::get_type() const
 {
     return get_class_type();
 }
 
-inline TypeHandle SoundInterval::force_init_type(void)
+inline TypeHandle SoundInterval::force_init_type()
 {
     init_type();
     return get_class_type();

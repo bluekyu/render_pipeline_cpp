@@ -45,10 +45,10 @@ public:
         const std::shared_ptr<void>& extra_args={}, bool radio=false, int expand_width=100, bool checked=false, bool enabled=true);
 
     /** Returns whether the node is currently checked. */
-    bool is_checked(void) const;
+    bool is_checked() const;
 
     /** Returns a handle to the internally used node. */
-    rppanda::DirectCheckBox* get_node(void) const;
+    rppanda::DirectCheckBox* get_node() const;
 
     /** Internal method when another checkbox in the same radio group changed it's value. */
     void update_status(const std::shared_ptr<void>&);
@@ -63,7 +63,7 @@ private:
     std::shared_ptr<void> extra_args_;
 };
 
-inline rppanda::DirectCheckBox* Checkbox::get_node(void) const
+inline rppanda::DirectCheckBox* Checkbox::get_node() const
 {
     return node_;
 }

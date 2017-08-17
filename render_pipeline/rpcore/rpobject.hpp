@@ -39,7 +39,7 @@ public:
 
     RPObject(const std::string& name);
 
-    const std::string& get_debug_name(void) const;
+    const std::string& get_debug_name() const;
     void set_debug_name(const std::string& name);
 
     void trace(const std::string& message) const;
@@ -55,7 +55,7 @@ protected:
 
 // ************************************************************************************************
 
-inline const std::string& RPObject::get_debug_name(void) const
+inline const std::string& RPObject::get_debug_name() const
 {
     return debug_name_;
 }

@@ -66,13 +66,13 @@ public:
     BasePlugin(const BasePlugin&) = delete;
     BasePlugin(BasePlugin&&) = delete;
 
-    virtual ~BasePlugin(void) {}
+    virtual ~BasePlugin() {}
 
     BasePlugin& operator=(const BasePlugin&) = delete;
     BasePlugin& operator=(BasePlugin&&) = delete;
 
     /** Returns the path to the root directory of the plugin. */
-    virtual Filename get_base_path(void) const;
+    virtual Filename get_base_path() const;
 
     /** Converts a local path from the plugins resource directory into an absolute path.*/
     Filename get_resource(const Filename& pth) const;
@@ -92,25 +92,25 @@ public:
     bool is_plugin_enabled(const std::string& plugin_id) const;
 
     /** Reloads all shaders of the plugin. */
-    void reload_shaders(void);
+    void reload_shaders();
 
-    const std::string& get_plugin_id(void) const;
-    const PluginInfo& get_plugin_info(void) const;
+    const std::string& get_plugin_id() const;
+    const PluginInfo& get_plugin_info() const;
 
-    virtual RequrieType& get_required_plugins(void) const = 0;
+    virtual RequrieType& get_required_plugins() const = 0;
 
     /** Trigger hook. */
     ///@{
-    virtual void on_load(void) {}
-    virtual void on_stage_setup(void) {}
-    virtual void on_post_stage_setup(void) {}
-    virtual void on_pipeline_created(void) {}
+    virtual void on_load() {}
+    virtual void on_stage_setup() {}
+    virtual void on_post_stage_setup() {}
+    virtual void on_pipeline_created() {}
     virtual void on_prepare_scene(NodePath scene) {}
-    virtual void on_pre_render_update(void) {}
-    virtual void on_post_render_update(void) {}
-    virtual void on_shader_reload(void) {}
-    virtual void on_window_resized(void) {}
-    virtual void on_unload(void) {}
+    virtual void on_pre_render_update() {}
+    virtual void on_post_render_update() {}
+    virtual void on_shader_reload() {}
+    virtual void on_window_resized() {}
+    virtual void on_unload() {}
     ///@}
 
 protected:
@@ -122,7 +122,7 @@ private:
 };
 
 // ************************************************************************************************
-inline const std::string& BasePlugin::get_plugin_id(void) const
+inline const std::string& BasePlugin::get_plugin_id() const
 {
     return plugin_id_;
 }
