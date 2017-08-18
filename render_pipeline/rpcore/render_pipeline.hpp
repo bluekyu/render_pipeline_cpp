@@ -53,12 +53,11 @@ class PluginManager;
 
 class RENDER_PIPELINE_DECL RenderPipeline: public RPObject
 {
-private:
-    /** This is not implemented. */
-    template <class Type> Type get_setting(const std::string& setting_path) const;
-    template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
-
 public:
+    static const std::string& get_version(void);
+    static const std::string& get_build_data(void);
+    static const std::string& get_git_commit(void);
+
     static RenderPipeline* get_global_ptr();
 
     /** Create PandaFramework and initialize RenderPipeline. */
@@ -166,6 +165,10 @@ public:
 
     /** Get setting value iun pipeline setting. */
     ///@{
+    /** This is not implemented. */
+    template <class Type> Type get_setting(const std::string& setting_path) const;
+    template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
+
     /** Get YAML node from given flatten path in pipeline setting. */
     const YAML::Node& get_setting(const std::string& setting_path) const;
 

@@ -69,6 +69,7 @@
 #include "rpcore/gui/loading_screen.hpp"
 #include "rpcore/util/ies_profile_loader.hpp"
 #include "rplibs/yaml.hpp"
+#include "rpcore/version.hpp"
 
 namespace rpcore {
 
@@ -812,6 +813,24 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
 }
 
 // ************************************************************************************************
+
+const std::string& RenderPipeline::get_version(void)
+{
+    static const std::string version(RENDER_PIPELINE_VERSION);
+    return version;
+}
+
+const std::string& RenderPipeline::get_build_data(void)
+{
+    static const std::string build_data(__DATE__ " " __TIME__);
+    return build_data;
+}
+
+const std::string& RenderPipeline::get_git_commit(void)
+{
+    static const std::string git_commit(RENDER_PIPELINE_GIT_COMMIT);
+    return git_commit;
+}
 
 RenderPipeline* RenderPipeline::get_global_ptr()
 {

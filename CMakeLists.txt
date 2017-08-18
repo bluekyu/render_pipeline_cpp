@@ -6,6 +6,9 @@ project(render_pipeline)
 
 # === configure ====================================================================================
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+include(debugging-information)
+include(git-utils)
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
@@ -13,23 +16,18 @@ if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
 endif()
 
 # version
-file(STRINGS "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/version.hpp" _render_pipeline_VERSION_HPP REGEX "#define RENDER_PIPELINE_VERSION ")
-if("${_render_pipeline_VERSION_HPP}" MATCHES "#define RENDER_PIPELINE_VERSION ([0-9]+)")
-    set(render_pipeline_VERSION "${CMAKE_MATCH_1}")
+set(render_pipeline_VERSION "0.2.1")
+set(render_pipeline_SEMANTIC_VERSION "${render_pipeline_VERSION}")
+set(PROJECT_VERSION "${render_pipeline_SEMANTIC_VERSION}")
+message("[render_pipeline] build version: ${render_pipeline_SEMANTIC_VERSION}")
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+    # git commit
+    get_git_head_hash(${CMAKE_CURRENT_SOURCE_DIR} render_pipeline_GIT_COMMIT)
+    message("[render_pipeline] git commit: ${render_pipeline_GIT_COMMIT}")
+else()
+    set(render_pipeline_GIT_COMMIT "")
 endif()
-unset(_render_pipeline_VERSION_HPP)
-
-math(EXPR render_pipeline_VERSION_MAJOR "${render_pipeline_VERSION} / 10000")
-math(EXPR render_pipeline_VERSION_MINOR "${render_pipeline_VERSION} / 100 % 100")
-math(EXPR render_pipeline_VERSION_PATCH "${render_pipeline_VERSION} % 100")
-set(render_pipeline_VERSION_TAG "")
-
-set(render_pipeline_VERSION "${render_pipeline_VERSION_MAJOR}.${render_pipeline_VERSION_MINOR}.${render_pipeline_VERSION_PATCH}${render_pipeline_VERSION_TAG}")
-set(PROJECT_VERSION "${render_pipeline_VERSION}")
-
-message("Render Pipeline building version: ${render_pipeline_VERSION}")
-
-include(debugging-information)
 
 # configure project package
 include(FindPackages)
@@ -81,12 +79,21 @@ function(render_pipeline_generate_schema_headers target_)
         target_sources(${target_} PRIVATE ${schema_header_file})
     endforeach()
 endfunction()
+
+function(render_pipeline_generate_version_hpp)
+    configure_file("${PROJECT_SOURCE_DIR}/src/rpcore/version.hpp.in"
+        "${PROJECT_BINARY_DIR}/rpcore/version.hpp"
+        @ONLY
+    )
+    target_sources(${PROJECT_NAME} PRIVATE "${PROJECT_BINARY_DIR}/rpcore/version.hpp")
+endfunction()
 # ==================================================================================================
 
 # === target =======================================================================================
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
 render_pipeline_generate_schema_headers(${PROJECT_NAME})
+render_pipeline_generate_version_hpp()
 
 if(MSVC)
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors)
