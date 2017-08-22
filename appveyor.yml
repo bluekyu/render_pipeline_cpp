@@ -3,7 +3,12 @@
 #---------------------------------#
 
 # version format
-version: 1.0.{build}
+version: '{branch}-{build}'
+
+# branches to build
+branches:
+  only:
+  - test-appveyor
 
 #---------------------------------#
 #    environment configuration    #
@@ -12,20 +17,45 @@ version: 1.0.{build}
 # Build worker image (VM template)
 image: Visual Studio 2017
 
+# scripts that are called at very beginning, before repo cloning
+init:
+- cmd: >-
+    git --version
+
+    cmake --version
+
+    set PATH=C:\Python36-x64;%PATH%
+
+    python --version
+
 # clone directory
 clone_folder: c:\projects\render_pipeline_cpp
 
 # environment variables
 environment:
-  CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+  CMAKE_PREFIX_PATH: C:\projects\_install
+  BOOST_ROOT: C:\Libraries\boost_1_64_0
+  FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
+
+# build cache to preserve files/folders between builds
+cache:
+    - C:\projects\_install
+
+# scripts that run after cloning repository
+install:
+    - git clone https://github.com/bluekyu/render_pipeline_cpp_ci.git c:\projects\render_pipeline_cpp_ci
+    - mklink /J c:\projects\render_pipeline_cpp_ci\render_pipeline_cpp C:\projects\render_pipeline_cpp
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
 
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# to run your custom scripts instead of automatic MSBuild
 build_script:
-  - cmake --version
-  - cd c:\projects\render_pipeline_cpp
-  - mkdir build && cd build
-  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INSTALL_PREFIX=%CD:\=/%/install -DCMAKE_BUILD_TYPE=Release ..
-  - cmake --build . --config Release --target install
+- cmd: >-
+    cd c:\projects\render_pipeline_cpp_ci
+
+    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install"
