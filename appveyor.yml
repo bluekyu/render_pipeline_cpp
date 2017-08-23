@@ -5,11 +5,6 @@
 # version format
 version: '{branch}-{build}'
 
-# branches to build
-branches:
-  only:
-  - test-appveyor
-
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
