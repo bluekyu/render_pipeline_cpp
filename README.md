@@ -1,5 +1,7 @@
 # Render Pipeline C++
 
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/j6q88qp5sxskog5p/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master)
+
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
 And I am developing the project and new features for CR Software Framework (...).
