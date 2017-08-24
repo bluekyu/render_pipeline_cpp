@@ -53,4 +53,4 @@ build_script:
 - cmd: >-
     cd c:\projects\render_pipeline_cpp_ci
 
-    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install"
+    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install" --all
