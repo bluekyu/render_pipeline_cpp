@@ -38,8 +38,10 @@ cache:
 
 # scripts that run after cloning repository
 install:
-    - git clone https://github.com/bluekyu/render_pipeline_cpp_ci.git c:\projects\render_pipeline_cpp_ci
-    - mklink /J c:\projects\render_pipeline_cpp_ci\render_pipeline_cpp C:\projects\render_pipeline_cpp
+- cmd: >-
+    git clone --depth 1 "https://github.com/bluekyu/render_pipeline_cpp_ci.git" c:\projects\render_pipeline_cpp_ci
+
+    mklink /J c:\projects\render_pipeline_cpp_ci\render_pipeline_cpp C:\projects\render_pipeline_cpp
 
 #---------------------------------#
 #       build configuration       #
