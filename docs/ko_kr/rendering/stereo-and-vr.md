@@ -36,11 +36,13 @@ OpenVR 플러그인을 설치한 후, OpenVR 플러그인을 `plugins.yaml` 에�
 자르는 방식을 사용하려면 `pipeline.yaml` 파일에서 `screen_cropping` 값을 `true` 로 설정한다.
 
 ### 요약
-- `plugins.yaml`: 플러그인 활성화 (예, `openvr`)
-- 창크기 변경 `Config.prc` 수정
-  - `win-size` 에 `width x height` 적용
-- 창크기 고정: `pipeline.yaml` 수정
-  - `stereo_mode`: true
-  - `resolution_scale`: 0.0
-  - `resolution_width` 및 `resolution_height` 에 `width x height` 적용
-  - 창크기에 맞게 자르기(cropping): `screen_cropping` 값을 `true` 로 변경
+1. `plugins.yaml`: 플러그인 활성화 (예, `openvr`)
+2. 스테레오 모드 활성화(`pipeline.yaml`)
+   - `stereo_mode`: true
+3. 렌더링 크기 조절
+   - 창크기 변경(`Config.prc`)
+     - `win-size` 에서 `width x height` 에 HMD 해상도 적용
+   - 또는 창크기 고정(`pipeline.yaml`)
+     - `resolution_scale`: 0.0
+     - `resolution_width` 및 `resolution_height` 에서 `width x height` 에 HMD 해상도 적용
+     - 창크기에 맞게 자르기(cropping): `screen_cropping` 값을 `true` 로 변경
