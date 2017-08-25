@@ -28,7 +28,7 @@ clone_folder: c:\projects\render_pipeline_cpp
 
 # environment variables
 environment:
-  CMAKE_PREFIX_PATH: C:\projects\_install
+  CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache
   BOOST_ROOT: C:\Libraries\boost_1_64_0
   FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
 
