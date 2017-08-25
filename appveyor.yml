@@ -19,8 +19,6 @@ init:
 
     cmake --version
 
-    set PATH=C:\Python36-x64;%PATH%
-
     python --version
 
 # clone directory
@@ -28,9 +26,10 @@ clone_folder: c:\projects\render_pipeline_cpp
 
 # environment variables
 environment:
-  CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache
+  CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
   BOOST_ROOT: C:\Libraries\boost_1_64_0
   FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
+  PATH: C:\Python36-x64;%PATH%
 
 # build cache to preserve files/folders between builds
 cache:
@@ -55,7 +54,7 @@ build_script:
 - cmd: >-
     cd c:\projects\render_pipeline_cpp_ci
 
-    python build.py render_pipeline_cpp --all --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix "C:/projects/_install" --cache-prefix "C:/projects/_cache" --artifacts-prefix "C:/projects/render_pipeline_cpp/_artifacts"
+    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix "C:/projects/_install" --cache-prefix "C:/projects/_cache" --artifacts-prefix "C:/projects/render_pipeline_cpp/_artifacts"
 
 #---------------------------------#
 #      artifacts configuration    #
