@@ -34,7 +34,7 @@ environment:
 
 # build cache to preserve files/folders between builds
 cache:
-    - C:\projects\_install
+    - C:\projects\_cache
 
 # scripts that run after cloning repository
 install:
@@ -55,4 +55,12 @@ build_script:
 - cmd: >-
     cd c:\projects\render_pipeline_cpp_ci
 
-    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install" --all
+    python build.py render_pipeline_cpp --all --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix "C:/projects/_install" --cache-prefix "C:/projects/_cache" --artifacts-prefix "C:/projects/render_pipeline_cpp/_artifacts"
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+- path: _artifacts
+  name: render_pipeline_cpp
