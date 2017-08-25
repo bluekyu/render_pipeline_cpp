@@ -12,17 +12,29 @@ version: '{branch}-{build}'
 # Build worker image (VM template)
 image: Visual Studio 2017
 
-# scripts that are called at very beginning, before repo cloning
-init:
-- cmd: >-
-    git --version
-
-    cmake --version
-
-    python --version
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
 
 # clone directory
 clone_folder: c:\projects\render_pipeline_cpp
+
+# scripts that are called at very beginning, before repo cloning
+init:
+- ps: >-
+    if (Test-Path env:TRIGGER_NAME) {
+      Update-AppveyorBuild -Message "Build from $env:TRIGGER_COMMIT in $env:TRIGGER_NAME"
+    }
+
+    else {
+      Set-AppveyorBuildVariable -Name 'TRIGGER_NAME' -Value "$env:APPVEYOR_PROJECT_NAME"
+      Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
+    }
+
+    git --version
+
+    python --version
+
+    cmake --version
 
 # environment variables
 environment:
@@ -31,10 +43,6 @@ environment:
   FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
   PATH: C:\Python36-x64;%PATH%
 
-# build cache to preserve files/folders between builds
-cache:
-    - C:\projects\_cache
-
 # scripts that run after cloning repository
 install:
 - cmd: >-
@@ -42,12 +50,13 @@ install:
 
     mklink /J c:\projects\render_pipeline_cpp_ci\render_pipeline_cpp C:\projects\render_pipeline_cpp
 
+# build cache to preserve files/folders between builds
+cache:
+    - C:\projects\_cache
+
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
-
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: x64
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
@@ -63,3 +72,15 @@ build_script:
 artifacts:
 - path: _artifacts
   name: render_pipeline_cpp
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+
+# on successful build
+on_success:
+- ps: >-
+    Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp_plugins' -EnvironmentVariables @{
+       TRIGGER_NAME = $env:TRIGGER_NAME
+       TRIGGER_COMMIT = $env:TRIGGER_COMMIT
+    }
