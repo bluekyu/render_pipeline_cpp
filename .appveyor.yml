@@ -80,7 +80,7 @@ artifacts:
 # on successful build
 on_success:
 - ps: >-
-    Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp_plugins' -EnvironmentVariables @{
+    Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp-plugins' -EnvironmentVariables @{
        TRIGGER_NAME = $env:TRIGGER_NAME
        TRIGGER_COMMIT = $env:TRIGGER_COMMIT
     }
