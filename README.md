@@ -1,14 +1,15 @@
 # Render Pipeline C++
 
-[![Windows build status](https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master)
 
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
 And I am developing the project and new features for CR Software Framework (...).
 
 
+
 ## Documents
-- See [docs/index.md](docs/index.md) document.
+See [docs/index.md](docs/index.md) document.
 
 
 
@@ -44,10 +45,10 @@ See [docs/build_rpcpp.md](docs/build_rpcpp.md) document.
 
 
 ## Related Projects
+- Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
 - (patched) Panda3D: https://github.com/bluekyu/panda3d
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
 - Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
-- CI for Render Pipeline C++: https://github.com/bluekyu/render_pipeline_cpp_ci
 
 
 

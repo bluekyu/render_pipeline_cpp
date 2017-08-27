@@ -5,9 +5,9 @@
 - Panda3D
 - FreeType2 (Panda3D third-party 포함된 버전)
 - Boost
-- YAML-CPP
-- spdlog
-- flatbuffers
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [spdlog](https://github.com/gabime/spdlog)
+- [flatbuffers](https://github.com/google/flatbuffers)
 - CMake (빌드 도구)
 
 ### 선택사항

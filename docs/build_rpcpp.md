@@ -5,9 +5,9 @@
 - Panda3D
 - FreeType2 (included in Panda3D third-party)
 - Boost
-- YAML-CPP
-- spdlog
-- flatbuffers
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [spdlog](https://github.com/gabime/spdlog)
+- [flatbuffers](https://github.com/google/flatbuffers)
 - CMake (build tool)
 
 ### Optional
