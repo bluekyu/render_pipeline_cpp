@@ -15,6 +15,9 @@ image: Visual Studio 2017
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
+# set clone depth
+clone_depth: 1
+
 # clone directory
 clone_folder: c:\projects\render_pipeline_cpp
 
@@ -22,37 +25,56 @@ clone_folder: c:\projects\render_pipeline_cpp
 init:
 - ps: >-
     if (Test-Path env:TRIGGER_NAME) {
-      Update-AppveyorBuild -Message "Build from $env:TRIGGER_COMMIT in $env:TRIGGER_NAME"
+        Update-AppveyorBuild -Message "Build from $env:TRIGGER_COMMIT in $env:TRIGGER_NAME"
+    } else {
+        Set-AppveyorBuildVariable -Name 'TRIGGER_NAME' -Value "$env:APPVEYOR_PROJECT_NAME"
+        Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
     }
-
-    else {
-      Set-AppveyorBuildVariable -Name 'TRIGGER_NAME' -Value "$env:APPVEYOR_PROJECT_NAME"
-      Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
-    }
-
-    git --version
-
-    python --version
-
-    cmake --version
+- git --version
+- python --version
+- cmake --version
 
 # environment variables
 environment:
-  CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
-  BOOST_ROOT: C:\Libraries\boost_1_64_0
-  FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
-  PATH: C:\Python36-x64;%PATH%
+    CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
+    CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    BOOST_ROOT: C:\Libraries\boost_1_64_0
+    FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
+    PATH: C:\Python36-x64;%PATH%
 
 # scripts that run after cloning repository
 install:
+- ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
+- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=develop'
+- 7z x -y panda3d-thirdparty.7z > nul
+- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=develop'
+- 7z x -y panda3d.7z > nul
+- ps: popd
+- ps: (mkdir C:\projects\_build_cache) -and (pushd C:\projects\_build_cache)
+- ps: Start-FileDownload 'https://raw.githubusercontent.com/bluekyu/render_pipeline_cpp_ci/master/builder.py'
 - cmd: >-
-    git clone --depth 1 "https://github.com/bluekyu/render_pipeline_cpp_ci.git" c:\projects\render_pipeline_cpp_ci
-
-    mklink /J c:\projects\render_pipeline_cpp_ci\render_pipeline_cpp C:\projects\render_pipeline_cpp
+    python .\builder.py "https://github.com/jbeder/yaml-cpp.git"
+    --branch "master"
+    --cmake-generator "%CMAKE_GENERATOR%"
+    --install-prefix "C:/projects/_cache/yaml-cpp"
+    --hash-path "C:/projects/_cache/yaml-cpp.hash"
+- cmd: >-
+    python .\builder.py "https://github.com/gabime/spdlog.git"
+    --branch "v0.13.0"
+    --cmake-generator "%CMAKE_GENERATOR%"
+    --install-prefix "C:/projects/_cache/spdlog"
+    --hash-path "C:/projects/_cache/spdlog.hash"
+- cmd: >-
+    python .\builder.py "https://github.com/google/flatbuffers.git"
+    --branch "v1.7.1"
+    --cmake-generator "%CMAKE_GENERATOR%"
+    --install-prefix "C:/projects/_cache/flatbuffers"
+    --hash-path "C:/projects/_cache/flatbuffers.hash"
+- ps: popd
 
 # build cache to preserve files/folders between builds
 cache:
-    - C:\projects\_cache
+    - C:\projects\_cache -> .appveyor.yml
 
 #---------------------------------#
 #       build configuration       #
@@ -60,18 +82,34 @@ cache:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
+- ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
-    cd c:\projects\render_pipeline_cpp_ci
+    cmake -G "%CMAKE_GENERATOR%" -Wno-dev
+    -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
+    -DBoost_USE_STATIC_LIBS:BOOL=ON
+    -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
+    -Dyaml-cpp_DIR:PATH="C:/projects/_cache/yaml-cpp/CMake"
+    -DFlatBuffers_ROOT:PATH="C:/projects/_cache/flatbuffers"
+    ..
+- cmake --build . --config "Release" --target INSTALL
+- ps: popd
 
-    python build.py render_pipeline_cpp --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix "C:/projects/_install" --cache-prefix "C:/projects/_cache" --artifacts-prefix "C:/projects/render_pipeline_cpp/_artifacts"
+after_build:
+- 7z a render_pipeline_cpp.7z "C:/projects/_install/render_pipeline_cpp"
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+# to disable automatic tests
+test: off
 
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
 
 artifacts:
-- path: _artifacts
-  name: render_pipeline_cpp
+- path: render_pipeline_cpp.7z
 
 #---------------------------------#
 #        global handlers          #
@@ -81,6 +119,6 @@ artifacts:
 on_success:
 - ps: >-
     Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp-plugins' -EnvironmentVariables @{
-       TRIGGER_NAME = $env:TRIGGER_NAME
-       TRIGGER_COMMIT = $env:TRIGGER_COMMIT
+        TRIGGER_NAME = $env:TRIGGER_NAME
+        TRIGGER_COMMIT = $env:TRIGGER_COMMIT
     }
