@@ -96,9 +96,11 @@ render_pipeline_generate_schema_headers(${PROJECT_NAME})
 render_pipeline_generate_version_hpp()
 
 if(MSVC)
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors)
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
+        PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>
+    )
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/std:c++14>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/std:c++14>
     )
 else()
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors

@@ -27,7 +27,7 @@ These are required when you include related headers to access internal data.
 
 ## Tested Platforms
 I tested it in the following platforms:
-- Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2013 / VS2017
+- Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2013 / VS2015 / VS2017
 
 
 
