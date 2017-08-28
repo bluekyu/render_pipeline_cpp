@@ -35,9 +35,15 @@ list(REMOVE_DUPLICATES panda3d_FIND_COMPONENTS)
 set(panda3d_NON_DEFAULT_COMPONENTS ${panda3d_FIND_COMPONENTS})
 list(REMOVE_ITEM panda3d_NON_DEFAULT_COMPONENTS ${panda3d_DEFAULT_COMPONENTS})
 
+if(WIN32)
+    set(panda3d_LIB_PREFIX "lib")
+else()
+    set(panda3d_LIB_PREFIX "")
+endif()
+
 foreach(COMPONENT_NAME ${panda3d_FIND_COMPONENTS})
     find_library(panda3d_${COMPONENT_NAME}_LIBRARY
-        NAMES lib${COMPONENT_NAME}
+        NAMES ${panda3d_LIB_PREFIX}${COMPONENT_NAME}
         PATHS "${panda3d_ROOT}"
         PATH_SUFFIXES lib
     )

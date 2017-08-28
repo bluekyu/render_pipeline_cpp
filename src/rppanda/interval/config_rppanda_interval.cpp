@@ -23,6 +23,7 @@
 
 #include "dconfig.h"
 
+#include "render_pipeline/rppanda/actor/actor.hpp"
 #include "render_pipeline/rppanda/interval/actor_interval.hpp"
 #include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 #include "render_pipeline/rppanda/interval/meta_interval.hpp"

@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.6)
 project(render_pipeline)
 
 # === configure ====================================================================================
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(debugging-information)
 include(git-utils)
 
@@ -44,7 +44,7 @@ if(NOT TARGET yaml-cpp)
 endif()
 
 # find freetype
-find_package(FreeType REQUIRED)
+find_package(Freetype REQUIRED)
 if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()

@@ -69,6 +69,7 @@ public:
 
     struct Parameters
     {
+        Parameters() {}
         std::string text = "";
         Style style = Style::plain;
         LVecBase2 pos = LVecBase2(0);
