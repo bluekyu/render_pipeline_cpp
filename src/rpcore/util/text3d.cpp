@@ -27,6 +27,8 @@
 #include <textNode.h>
 #include <dynamicTextFont.h>
 
+#include <spdlog/fmt/ostr.h>
+
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
@@ -62,7 +64,7 @@ Text3D::Text3D(const std::string& node_name, NodePath parent, float pixel_size,
     }
     catch (...)
     {
-        std::cout << "Invalid align (" << align << ").";
+        RPObject::global_error("Text3D", fmt::format("Invalid align ({}).", align));
         node->set_align(text_align_map.at("left"));
     }
 

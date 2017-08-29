@@ -33,12 +33,6 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Text3D
 {
 public:
-    struct Parameters
-    {
-        Parameters() {}
-    };
-
-public:
     /**
      * Constructs a new text node, forwaring the parameters to the internal
      * panda3d implementation
