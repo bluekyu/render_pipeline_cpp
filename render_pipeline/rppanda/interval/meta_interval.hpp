@@ -57,19 +57,11 @@ protected:
     static int sequence_num_;
 
 public:
-    struct Parameters
-    {
-        boost::optional<std::string> name;
-        bool auto_pause = false;
-        bool auto_finish = false;
-        double duration = -1;
-    };
-
-public:
-    MetaInterval(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
+    MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+        bool auto_pause=false, bool auto_finish=false);
 
 protected:
-    MetaInterval(const std::string& name, const Parameters& params=Parameters());
+    MetaInterval(const std::string& name, bool auto_pause, bool auto_finish);
 
 public:
     static TypeHandle get_class_type();
@@ -81,10 +73,10 @@ private:
     static TypeHandle type_handle_;
 };
 
-inline MetaInterval::MetaInterval(const std::string& name, const Parameters& params): CMetaInterval(name)
+inline MetaInterval::MetaInterval(const std::string& name, bool auto_pause, bool auto_finish): CMetaInterval(name)
 {
-    set_auto_pause(params.auto_pause);
-    set_auto_finish(params.auto_finish);
+    set_auto_pause(auto_pause);
+    set_auto_finish(auto_finish);
 }
 
 inline TypeHandle MetaInterval::get_class_type()
@@ -113,7 +105,8 @@ inline TypeHandle MetaInterval::force_init_type()
 class RENDER_PIPELINE_DECL Sequence: public MetaInterval
 {
 public:
-    Sequence(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
+    Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+        bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
     static TypeHandle get_class_type();
@@ -125,13 +118,14 @@ private:
     static TypeHandle type_handle_;
 };
 
-inline Sequence::Sequence(std::initializer_list<CInterval*> ivals, const Parameters& params):
-    MetaInterval(params.name ? params.name.get() : ("Sequence" + std::to_string(sequence_num_++)), params)
+inline Sequence::Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
+    bool auto_pause, bool auto_finish, double duration):
+    MetaInterval(name ? name.get() : ("Sequence" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (CInterval* ival: ivals)
         add_c_interval(ival, 0.0, CMetaInterval::RS_previous_end);
-    pop_level(params.duration);
+    pop_level(duration);
 }
 
 inline TypeHandle Sequence::get_class_type()
@@ -160,7 +154,8 @@ inline TypeHandle Sequence::force_init_type()
 class RENDER_PIPELINE_DECL Parallel: public MetaInterval
 {
 public:
-    Parallel(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
+    Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+        bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
     static TypeHandle get_class_type();
@@ -172,13 +167,14 @@ private:
     static TypeHandle type_handle_;
 };
 
-inline Parallel::Parallel(std::initializer_list<CInterval*> ivals, const Parameters& params):
-    MetaInterval(params.name ? params.name.get() : ("Parallel" + std::to_string(sequence_num_++)), params)
+inline Parallel::Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
+    bool auto_pause, bool auto_finish, double duration):
+    MetaInterval(name ? name.get() : ("Parallel" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (CInterval* ival: ivals)
         add_c_interval(ival, 0.0, CMetaInterval::RS_level_begin);
-    pop_level(params.duration);
+    pop_level(duration);
 }
 
 inline TypeHandle Parallel::get_class_type()
@@ -207,7 +203,8 @@ inline TypeHandle Parallel::force_init_type()
 class RENDER_PIPELINE_DECL ParallelEndTogether: public MetaInterval
 {
 public:
-    ParallelEndTogether(std::initializer_list<CInterval*> ivals, const Parameters& params=Parameters());
+    ParallelEndTogether(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+        bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
     static TypeHandle get_class_type();
@@ -219,8 +216,9 @@ private:
     static TypeHandle type_handle_;
 };
 
-inline ParallelEndTogether::ParallelEndTogether(std::initializer_list<CInterval*> ivals, const Parameters& params):
-    MetaInterval(params.name ? params.name.get() : ("ParallelEndTogether" + std::to_string(sequence_num_++)), params)
+inline ParallelEndTogether::ParallelEndTogether(std::initializer_list<CInterval*> ivals,
+    const boost::optional<std::string>& name, bool auto_pause, bool auto_finish, double duration):
+    MetaInterval(name ? name.get() : ("ParallelEndTogether" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     double max_duration = 0;
     for (CInterval* ival: ivals)
@@ -229,7 +227,7 @@ inline ParallelEndTogether::ParallelEndTogether(std::initializer_list<CInterval*
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (CInterval* ival: ivals)
         add_c_interval(ival, max_duration - ival->get_duration(), CMetaInterval::RS_level_begin);
-    pop_level(params.duration);
+    pop_level(duration);
 }
 
 inline TypeHandle ParallelEndTogether::get_class_type()
@@ -260,7 +258,8 @@ class RENDER_PIPELINE_DECL Track: public MetaInterval
 public:
     using TrackType = std::tuple<double, CInterval*, RelativeStart>;
 
-    Track(std::initializer_list<TrackType> track_list, const Parameters& params=Parameters());
+    Track(std::initializer_list<TrackType> track_list, const boost::optional<std::string>& name={},
+        bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
     static TypeHandle get_class_type();
@@ -272,13 +271,14 @@ private:
     static TypeHandle type_handle_;
 };
 
-inline Track::Track(std::initializer_list<TrackType> track_list, const Parameters& params):
-    MetaInterval(params.name ? params.name.get() : ("Track" + std::to_string(sequence_num_++)), params)
+inline Track::Track(std::initializer_list<TrackType> track_list, const boost::optional<std::string>& name,
+    bool auto_pause, bool auto_finish, double duration):
+    MetaInterval(name ? name.get() : ("Track" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (const auto& track: track_list)
         add_c_interval(std::get<1>(track), std::get<0>(track), std::get<2>(track));
-    pop_level(params.duration);
+    pop_level(duration);
 }
 
 inline TypeHandle Track::get_class_type()

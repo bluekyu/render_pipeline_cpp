@@ -49,8 +49,10 @@ TypeHandle Parallel::type_handle_;
 TypeHandle ParallelEndTogether::type_handle_;
 TypeHandle Track::type_handle_;
 
-MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const Parameters& params):
-    MetaInterval(params.name ? params.name.get() : ("MetaInterval" + std::to_string(sequence_num_++)), params)
+MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
+    bool auto_pause, bool auto_finish):
+    MetaInterval(name ? name.get() : ("MetaInterval" + std::to_string(sequence_num_++)),
+        auto_pause, auto_finish)
 {
     if (ivals.size() == 0)
         ;
