@@ -50,39 +50,40 @@ public:
     NodePath nodepath_;
 };
 
-Text3D::Text3D(const Parameters& params): impl_(std::make_unique<Impl>())
+Text3D::Text3D(const std::string& node_name, NodePath parent, float pixel_size,
+    const LVecBase3& pos, const LColor& color, const std::string& align, const std::string& font,
+    const std::string& text): impl_(std::make_unique<Impl>())
 {
-    PT(::TextNode) node = new ::TextNode(params.node_name);
-    node->set_text(params.text);
+    PT(::TextNode) node = new ::TextNode(node_name);
+    node->set_text(text);
     try
     {
-        node->set_align(text_align_map.at(params.align));
+        node->set_align(text_align_map.at(align));
     }
     catch (...)
     {
-        std::cout << "Invalid align (" << params.align << ").";
+        std::cout << "Invalid align (" << align << ").";
         node->set_align(text_align_map.at("left"));
     }
 
-    NodePath parent = params.parent;
     if (parent.is_empty())
         parent = Globals::base->get_render();
 
     impl_->nodepath_ = parent.attach_new_node(node);
-    impl_->nodepath_.set_pos(params.pos);
+    impl_->nodepath_.set_pos(pos);
 
-    DynamicTextFont* dfont = DCAST(DynamicTextFont, RPLoader::load_font(params.font));
+    DynamicTextFont* dfont = DCAST(DynamicTextFont, RPLoader::load_font(font));
     //dfont->set_outline(LColor(0, 0, 0, 0.78), 1.6, 0.37);
     dfont->set_outline(LColor(0, 0, 0, 1), 1.6, 0.37);
     dfont->set_scale_factor(1.0);
-    dfont->set_texture_margin(int(params.pixel_size / 4.0 * 2.0));
+    dfont->set_texture_margin(int(pixel_size / 4.0 * 2.0));
     dfont->set_bg(LColor(0, 0, 0, 0));
     node->set_font(dfont);
-    set_pixel_size(params.pixel_size);
+    set_pixel_size(pixel_size);
 
     impl_->node_ = node;
 
-    set_color(params.color);
+    set_color(color);
 }
 
 Text3D::~Text3D() = default;

@@ -35,14 +35,7 @@ class RENDER_PIPELINE_DECL Text3D
 public:
     struct Parameters
     {
-        std::string node_name = "";
-        NodePath parent = NodePath();
-        float pixel_size = 16.0f;
-        LVecBase3 pos = LVecBase3(0);
-        LColor color = LColor(1);
-        std::string align = "left";
-        std::string font = "/$$rp/data/font/Roboto-Bold.ttf";
-        std::string text = "";
+        Parameters() {}
     };
 
 public:
@@ -50,7 +43,10 @@ public:
      * Constructs a new text node, forwaring the parameters to the internal
      * panda3d implementation
      */
-    Text3D(const Parameters& params=Parameters());
+    Text3D(const std::string& node_name="", NodePath parent={}, float pixel_size=16.0f,
+        const LVecBase3& pos=LVecBase3(0), const LColor& color=LColor(1),
+        const std::string& align="left", const std::string& font="/$$rp/data/font/Roboto-Bold.ttf",
+        const std::string& text="");
     ~Text3D();
 
     /** Returns the node path of the text. */
