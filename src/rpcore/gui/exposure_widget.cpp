@@ -67,15 +67,7 @@ void ExposureWidget::create_components()
 
     _display_img = new Sprite(_storage_tex->get_texture(), 140, 20, _node, 20, 50);
 
-    Text::Parameters params;
-    params.text = "CURRENT EXPOSURE";
-    params.parent = _node;
-    params.x = 160;
-    params.y = 40;
-    params.size = 13;
-    params.align = "right";
-    params.color = LVecBase3(0.8f);
-    _display_txt = new Text(params);
+    _display_txt = new Text("CURRENT EXPOSURE", _node, 160, 40, 13, "right", LVecBase3(0.8f));
 
     // Create the shader which generates the visualization texture
     _cshader_node = new ComputeNode("ExposureWidget");

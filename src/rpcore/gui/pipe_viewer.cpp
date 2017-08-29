@@ -121,15 +121,7 @@ void PipeViewer::populate_content()
         const std::string key("Stage");
         stage_name.replace(stage_name.find(key), key.length(), "");
 
-        {
-            Text::Parameters params;
-            params.text = stage_name;
-            params.parent = node;
-            params.x = 20;
-            params.y = 25;
-            params.size = 15;
-            Text stage_text(params);
-        }
+        Text stage_text(stage_name, node, 20, 25, 15);
 
         for (const auto& pipe_tex: stage->get_produced_pipes())
         {
@@ -221,17 +213,8 @@ void PipeViewer::populate_content()
                     tex_desc += std::string(" - ") + boost::to_upper_copy(pipe_texture->format_format(pipe_texture->get_format()));
                 }
 
-                {
-                    Text::Parameters params;
-                    params.text = tex_desc;
-                    params.parent = node;
-                    params.x = 55 + 48 / 2;
-                    params.y = 130 + pipe_idx * pipe_height;
-                    params.size = 12;
-                    params.align = "center";
-                    params.color = LVecBase3f(0.2f);
-                    Text tex_desc_text(params);
-                }
+                Text tex_desc_text(tex_desc, node, 55+48/2.0f, 130+pipe_idx*pipe_height,
+                    12, "center", LVecBase3f(0.2f));
             }
         }
 
@@ -276,15 +259,8 @@ void PipeViewer::populate_content()
         df_options->pos = LVecBase3(0, 1, -(long long)(idx) * pipe_height);
         rppanda::DirectFrame pipe_desc_df(_pipe_descriptions, df_options);
 
-        Text::Parameters text_params;
-        text_params.text = current_pipes[idx];
-        text_params.parent = _pipe_descriptions;
-        text_params.x = 42;
-        text_params.y = 121 + idx * pipe_height;
-        text_params.size = 15;
-        text_params.align = "left";
-        text_params.color = LVecBase3f(0.1);
-        Text pipe_text(text_params);
+        Text pipe_text(current_pipes[idx], _pipe_descriptions, 42, 121 + idx * pipe_height,
+            15, "left", LVecBase3f(0.1));
 
         Sprite("/$$rp/data/gui/icon_pipe.png", _pipe_descriptions, 9, 103 + idx * pipe_height, true, false);
     }

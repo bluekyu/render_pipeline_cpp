@@ -290,15 +290,7 @@ void BufferViewer::render_stages()
         frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
         frame_hover->bind(rppanda::B1PRESS, on_texture_clicked, frame_click_data.back().get());
 
-        Text::Parameters params;
-        params.text = stage_name;
-        params.parent = node;
-        params.x = 15;
-        params.y = 29;
-        params.size = 12;
-        params.align = "left";
-        params.color = LVecBase3f(0.8f);
-        Text stage_text(params);
+        Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3f(0.8f));
 
         // Scale image so it always fits
         int w = stage_tex->get_x_size();

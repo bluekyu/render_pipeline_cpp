@@ -43,16 +43,7 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
 
     checkbox_ = new Checkbox(parent, x, y, chb_callback, chb_args, radio, expand_width, chb_checked, enabled);
 
-    Text::Parameters text_params;
-    text_params.text = text;
-    text_params.parent = parent;
-    text_params.x = x + 26;
-    text_params.y = y + 9;
-    text_params.size = text_size;
-    text_params.align = "left";
-    text_params.color = text_color_;
-    text_params.may_change = true;
-    text_ = new Text(text_params);
+    text_ = new Text(text, parent, x+26, y+9, text_size, "left", text_color_, true);
 
     if (enabled)
     {

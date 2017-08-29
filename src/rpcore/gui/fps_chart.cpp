@@ -79,30 +79,8 @@ AsyncTask::DoneStatus FPSChart::late_init(GenericAsyncTask* task, void* user_dat
 {
     FPSChart* fc = reinterpret_cast<FPSChart*>(user_data);
 
-    {
-        Text::Parameters params;
-        params.text = "40 ms";
-        params.parent = fc->_node;
-        params.x = 20;
-        params.y = 25;
-        params.size = 13;
-        params.align = "left";
-        params.color = LVecBase3f(1);
-        params.may_change = true;
-        fc->_display_txt = new Text(params);
-    }
-    {
-        Text::Parameters params;
-        params.text = "0 ms";
-        params.parent = fc->_node;
-        params.x = 20;
-        params.y = 120;
-        params.size = 13;
-        params.align = "left";
-        params.color = LVecBase3f(1);
-        params.may_change = true;
-        fc->_display_txt_bottom = new Text(params);
-    }
+    fc->_display_txt = new Text("40 ms", fc->_node, 20, 25, 13, "left", LVecBase3f(1), true);
+    fc->_display_txt_bottom = new Text("0 ms", fc->_node, 20, 120, 13, "left", LVecBase3f(1), true);
 
     // Create the shader which generates the visualization texture
     fc->_cshader_node = new ComputeNode("FPSChart");

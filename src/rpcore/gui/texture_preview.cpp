@@ -76,33 +76,14 @@ void TexturePreview::present(Texture* tex)
         boost::to_upper_copy(Texture::format_component_type(tex->get_component_type()))
         ).str();
 
-    {
-        Text::Parameters params;
-        params.text = description;
-        params.parent = _content_node;
-        params.x = 17.0f;
-        params.y = 70.0f;
-        params.size = 16;
-        params.align = "left";
-        params.color = LVecBase3(0.6f, 0.6f, 0.6f);
-        Text desc_text(params);
-    }
+    Text desc_text(description, _content_node, 17.0f, 70.0f, 16, "left", LVecBase3(0.6f, 0.6f, 0.6f));
 
     size_t estimated_bytes = tex->estimate_texture_memory();
     const std::string& size_desc = (boost::format("Estimated memory: %2.2f MB") %
         (estimated_bytes / (1024.0f * 1024.0f))).str();
 
-    {
-        Text::Parameters params;
-        params.text = size_desc;
-        params.parent = _content_node;
-        params.x = _width - 20.0f;
-        params.y = 70.0f;
-        params.size = 18;
-        params.align = "right";
-        params.color = LVecBase3(0.34f, 0.564f, 0.192f);
-        Text size_desc_text(params);
-    }
+    Text size_desc_text(size_desc, _content_node, _width-20.0f, 70.0f, 18, "right",
+        LVecBase3(0.34f, 0.564f, 0.192f));
 
     int x_pos = static_cast<int>(size_desc.length()) * 9 + 140;
 
@@ -115,15 +96,8 @@ void TexturePreview::present(Texture* tex)
 
         x_pos += 140 + 5;
 
-        Text::Parameters params;
-        params.text = "MIP: 5";
-        params.parent = _content_node;
-        params.x = x_pos;
-        params.y = 72;
-        params.size = 18;
-        params.color = LVecBase3(1.0f, 0.4f, 0.4f);
-        params.may_change = true;
-        _mip_text = std::make_shared<Text>(params);
+        _mip_text = std::make_shared<Text>("MIP: 5", _content_node, x_pos, 72, 18, "left",
+            LVecBase3(1.0f, 0.4f, 0.4f), true);
 
         x_pos += 50 + 30;
     }
@@ -136,15 +110,8 @@ void TexturePreview::present(Texture* tex)
 
         x_pos += 250 + 5;
 
-        Text::Parameters params;
-        params.text = "Z: 5";
-        params.parent = _content_node;
-        params.x = x_pos;
-        params.y = 72;
-        params.size = 18;
-        params.color = LVecBase3(0.4f, 1.0f, 0.4f);
-        params.may_change = true;
-        _slice_text = std::make_shared<Text>(params);
+        _slice_text = std::make_shared<Text>("Z: 5", _content_node, x_pos, 72, 18, "left",
+            LVecBase3(0.4f, 1.0f, 0.4f), true);
 
         x_pos += 50 + 30;
     }
@@ -154,18 +121,8 @@ void TexturePreview::present(Texture* tex)
         0, 1, std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1));
 
     x_pos += 140 + 5;
-    {
-        Text::Parameters params;
-        params.text = "Bright: 1";
-        params.parent = _content_node;
-        params.x = x_pos;
-        params.y = 72;
-        params.size = 18;
-        params.align = "left";
-        params.color = LVecBase3(0.4f, 0.4f, 1.0f);
-        params.may_change = true;
-        _bright_text = std::make_shared<Text>(params);
-    }
+    _bright_text = std::make_shared<Text>("Bright: 1", _content_node, x_pos, 72, 18,
+        "left", LVecBase3(0.4f, 0.4f, 1.0f), true);
     x_pos += 100 + 30;
 
     // Slider to enable reinhard tonemapping

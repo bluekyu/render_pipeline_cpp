@@ -80,15 +80,8 @@ void ErrorMessageDisplay::add_warning(const std::string& msg)
 
 void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3f& color)
 {
-    Text::Parameters params;
-    params.text = boost::trim_copy(text);
-    params.parent = _error_node;
-    params.x = Globals::native_resolution.get_x() - 30;
-    params.y = _num_errors * 23;
-    params.size = 12.0f;
-    params.align = "right";
-    params.color = color;
-    Text error_text(params);
+    Text error_text(boost::trim_copy(text), _error_node, Globals::native_resolution.get_x()-30,
+        _num_errors * 23, 12.0f, "right", color);
 
     _num_errors += 1;
 

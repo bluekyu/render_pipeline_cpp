@@ -85,16 +85,7 @@ void DraggableWindow::create_components()
     title_bar_options->state = rppanda::NORMAL;
     _title_bar = new rppanda::DirectFrame(_node, title_bar_options);
 
-    Text::Parameters params;
-    params.text = _title;
-    params.parent = _node;
-    params.x = 8.0f;
-    params.y = 17.0f;
-    params.size = 13.0f;
-    params.align = "left";
-    params.color = LVecBase3f(0.15f);
-    params.may_change = true;
-    _window_title = new Text(params);
+    _window_title = new Text(_title, _node, 8.0f, 17.0f, 13.0f, "left", LVecBase3f(0.15f), true);
 
     auto btn_close_options = std::make_shared<rppanda::DirectButton::Options>();
     btn_close_options->relief = rppanda::FLAT;

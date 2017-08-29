@@ -22,40 +22,27 @@
 
 #pragma once
 
-#include <nodePath.h>
-
-#include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class TextFont;
 
 namespace rpcore {
 
 /** Simple wrapper around OnscreenText, providing a simpler interface. */
-class Text: public RPObject
+class RENDER_PIPELINE_DECL Text: public RPObject
 {
-public:
-    struct Parameters
-    {
-        std::string text = "";
-        NodePath parent = NodePath();
-        float x = 0.0f;
-        float y = 0.0f;
-        float size = 10.0f;
-        std::string align = "left";
-        LVecBase3 color = LVecBase3(1);
-        bool may_change = false;
-        TextFont* font = nullptr;
-    };
-
 public:
     /**
      * Constructs a new text. The parameters are almost equal to the
      * parameters of OnscreenText.
      */
-    Text(const Parameters& params=Parameters());
+    Text(const std::string& text="", NodePath parent={}, float x=0, float y=0, float size=10.0f,
+        const std::string& align="left", const LVecBase3& color=LVecBase3(1),
+        bool may_change=false, TextFont* font=nullptr);
 
-    rppanda::OnscreenText get_node() const;
+    const rppanda::OnscreenText& get_node() const;
+    rppanda::OnscreenText& get_node();
 
     /**
      * Changes the text, remember to pass may_change to the constructor,
@@ -66,23 +53,28 @@ public:
     const LVecBase2f& get_initial_pos() const;
 
 private:
-    LVecBase2f _initial_pos;
-    rppanda::OnscreenText _node;
+    LVecBase2f initial_pos_;
+    rppanda::OnscreenText node_;
 };
 
-inline rppanda::OnscreenText Text::get_node() const
+inline const rppanda::OnscreenText& Text::get_node() const
 {
-    return _node;
+    return node_;
+}
+
+inline rppanda::OnscreenText& Text::get_node()
+{
+    return node_;
 }
 
 inline void Text::set_text(const std::string& text)
 {
-    _node.set_text(text);
+    node_.set_text(text);
 }
 
 inline const LVecBase2f& Text::get_initial_pos() const
 {
-    return _initial_pos;
+    return initial_pos_;
 }
 
 }
