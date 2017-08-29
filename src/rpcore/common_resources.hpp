@@ -39,7 +39,7 @@ class RenderPipeline;
  * This class manages the loading and binding of commonly used resources,
  * such as textures, models, but also shader inputs.
  */
-class CommonResources: public RPObject
+class CommonResources : public RPObject
 {
 public:
     CommonResources(RenderPipeline& pipeline);

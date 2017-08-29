@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage applies the motion blur, using the screen space velocity vectors. */
-class MotionBlurStage: public rpcore::RenderStage
+class MotionBlurStage : public rpcore::RenderStage
 {
 public:
     MotionBlurStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "MotionBlurStage") {}

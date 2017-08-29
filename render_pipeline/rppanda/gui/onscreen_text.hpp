@@ -51,7 +51,7 @@ class TextFont;
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL OnscreenText: public NodePath
+class RENDER_PIPELINE_DECL OnscreenText : public NodePath
 {
 public:
     // These are the styles of text we might commonly see.  They set the

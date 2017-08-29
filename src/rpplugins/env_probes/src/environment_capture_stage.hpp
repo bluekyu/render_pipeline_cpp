@@ -32,7 +32,7 @@ namespace rpplugins {
 class EnvironmentProbe;
 
 /** This stage renders the scene to a cubemap. */
-class EnvironmentCaptureStage: public rpcore::RenderStage
+class EnvironmentCaptureStage : public rpcore::RenderStage
 {
 public:
     EnvironmentCaptureStage(rpcore::RenderPipeline& pipeline);

@@ -144,7 +144,7 @@ GroupedInputBlock::PTA_ID GroupedInputBlock::glsl_type_to_pta(const std::string&
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
-struct BindToVisitor: public boost::static_visitor<>
+struct BindToVisitor : public boost::static_visitor<>
 {
 public:
     BindToVisitor(const std::shared_ptr<RenderStage>& target): target(target)

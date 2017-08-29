@@ -41,7 +41,7 @@ class GroupedInputBlock;
  * This manager takes a list of RenderStages and puts them into an order,
  * while connecting the different pipes, inputs, ubos and defines.
  */
-class RENDER_PIPELINE_DECL StageManager: public RPObject
+class RENDER_PIPELINE_DECL StageManager : public RPObject
 {
 public:
     using DefinesType = std::unordered_map<std::string, std::string>;

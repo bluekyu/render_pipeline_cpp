@@ -31,7 +31,7 @@ class RenderTarget;
 class Image;
 
 /** This stage flags all used cells based on the depth buffer. */
-class FlagUsedCellsStage: public RenderStage
+class FlagUsedCellsStage : public RenderStage
 {
 public:
     FlagUsedCellsStage(RenderPipeline& pipeline): RenderStage(pipeline, "FlagUsedCellsStage") {}

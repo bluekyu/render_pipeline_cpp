@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class VXGIPlugin: public rpcore::BasePlugin
+class VXGIPlugin : public rpcore::BasePlugin
 {
 public:
     VXGIPlugin(rpcore::RenderPipeline& pipeline);

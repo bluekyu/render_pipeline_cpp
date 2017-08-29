@@ -28,7 +28,7 @@
 
 namespace rpcore {
 
-class RENDER_PIPELINE_DECL MountManager: public RPObject
+class RENDER_PIPELINE_DECL MountManager : public RPObject
 {
 public:
     /**

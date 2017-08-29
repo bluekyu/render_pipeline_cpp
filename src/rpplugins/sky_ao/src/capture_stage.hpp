@@ -30,7 +30,7 @@
 namespace rpplugins {
 
 /** This stage captures the sky ao by rendering the scene from above. */
-class SkyAOCaptureStage: public rpcore::RenderStage
+class SkyAOCaptureStage : public rpcore::RenderStage
 {
 public:
     SkyAOCaptureStage(rpcore::RenderPipeline& pipeline);

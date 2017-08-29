@@ -43,7 +43,7 @@ class ExposureWidget;
 class FPSChart;
 class PixelInspector;
 
-class Debugger: public RPObject
+class Debugger : public RPObject
 {
 public:
     Debugger(RenderPipeline* pipeline);

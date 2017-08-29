@@ -42,7 +42,7 @@ class Sprite;
 class Text;
 
 /** Widget to show the current exposure. */
-class ExposureWidget: public RPObject
+class ExposureWidget : public RPObject
 {
 public:
     ExposureWidget(RenderPipeline* pipeline, NodePath parent);

@@ -42,11 +42,11 @@
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL DirectFrame: public DirectGuiWidget
+class RENDER_PIPELINE_DECL DirectFrame : public DirectGuiWidget
 {
 public:
     /** @see DirectGuiWidget::Options */
-    struct RENDER_PIPELINE_DECL Options: public DirectGuiWidget::Options
+    struct RENDER_PIPELINE_DECL Options : public DirectGuiWidget::Options
     {
         Options();
 

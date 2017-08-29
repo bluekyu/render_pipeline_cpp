@@ -35,7 +35,7 @@ class RenderTarget;
  * specify inputs, since the StageManager passes all required inputs on demand.
  * Also this stage does not load any shaders, but creates them on the fly.
  */
-class UpdatePreviousPipesStage: public RenderStage
+class UpdatePreviousPipesStage : public RenderStage
 {
 public:
     UpdatePreviousPipesStage(RenderPipeline& pipeline): RenderStage(pipeline, "UpdatePreviousPipesStage") {}

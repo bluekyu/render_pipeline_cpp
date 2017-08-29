@@ -38,7 +38,7 @@ class Sprite;
 class Text;
 
 /** Widget to show the FPS as a chart . */
-class FPSChart: public RPObject
+class FPSChart : public RPObject
 {
 public:
     FPSChart(RenderPipeline* pipeline, NodePath parent);

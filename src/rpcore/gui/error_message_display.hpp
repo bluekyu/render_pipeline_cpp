@@ -30,7 +30,7 @@ class LineStream;
 
 namespace rpcore {
 
-class ErrorMessageDisplay: public RPObject
+class ErrorMessageDisplay : public RPObject
 {
 public:
     ErrorMessageDisplay();

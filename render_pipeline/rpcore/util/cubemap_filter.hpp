@@ -37,7 +37,7 @@ class Image;
  * Util class for filtering cubemaps, provides funcionality to generate
  * a specular and diffuse IBL cubemap.
  */
-class RENDER_PIPELINE_DECL CubemapFilter: public RPObject
+class RENDER_PIPELINE_DECL CubemapFilter : public RPObject
 {
 public:
     // Fixed size for the diffuse cubemap, since it does not contain much detail

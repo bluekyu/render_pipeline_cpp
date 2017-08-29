@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage applies the volumetric lighting. */
-class VXGIStage: public rpcore::RenderStage
+class VXGIStage : public rpcore::RenderStage
 {
 public:
     VXGIStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "VXGIStage") {}

@@ -36,7 +36,7 @@ class RenderPipeline;
  * It generates a LUT for each loaded ies profile which is used by the lighting
  * pipeline later on.
  */
-class IESProfileLoader: public RPObject
+class IESProfileLoader : public RPObject
 {
 public:
     /**< Supported IES Profiles. */

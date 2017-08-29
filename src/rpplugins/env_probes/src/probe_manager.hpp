@@ -34,7 +34,7 @@ namespace rpplugins {
 class EnvironmentProbe;
 
 /** Manages all environment probes. */
-class ProbeManager: public rpcore::RPObject
+class ProbeManager : public rpcore::RPObject
 {
 public:
     ProbeManager();

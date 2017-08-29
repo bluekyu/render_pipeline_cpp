@@ -30,7 +30,7 @@ namespace rpcore {
 /**
  * Simple wrapper arround OnscreenImage, providing a simpler interface.
  */
-class Sprite: public RPObject
+class Sprite : public RPObject
 {
 public:
     /**

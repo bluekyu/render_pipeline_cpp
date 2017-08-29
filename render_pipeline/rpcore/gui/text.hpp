@@ -30,7 +30,7 @@ class TextFont;
 namespace rpcore {
 
 /** Simple wrapper around OnscreenText, providing a simpler interface. */
-class RENDER_PIPELINE_DECL Text: public RPObject
+class RENDER_PIPELINE_DECL Text : public RPObject
 {
 public:
     /**

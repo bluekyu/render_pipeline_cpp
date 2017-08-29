@@ -29,7 +29,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage upscales the scene to native resolution, using a bicubic filter. */
-class RENDER_PIPELINE_DECL UpscaleStage: public RenderStage
+class RENDER_PIPELINE_DECL UpscaleStage : public RenderStage
 {
 public:
     UpscaleStage(RenderPipeline& pipeline): RenderStage(pipeline, "UpscaleStage") {}

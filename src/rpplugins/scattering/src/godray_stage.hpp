@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage renders the suns godrays. */
-class GodrayStage: public rpcore::RenderStage
+class GodrayStage : public rpcore::RenderStage
 {
 public:
     GodrayStage(rpcore::RenderPipeline& pipeline);

@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This is the main stage used by the SkinShadingStage plugin. */
-class SkinShadingStage: public rpcore::RenderStage
+class SkinShadingStage : public rpcore::RenderStage
 {
 public:
     SkinShadingStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SkinShadingStage") {}

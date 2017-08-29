@@ -41,7 +41,7 @@ namespace rppanda {
 
 class Actor;
 
-class ActorInterval: public CInterval
+class ActorInterval : public CInterval
 {
 public:
     // Name counter

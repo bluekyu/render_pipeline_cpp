@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage takes the per-cell environment probes and samples them. */
-class ApplyEnvprobesStage: public rpcore::RenderStage
+class ApplyEnvprobesStage : public rpcore::RenderStage
 {
 public:
     ApplyEnvprobesStage(rpcore::RenderPipeline& pipeline);

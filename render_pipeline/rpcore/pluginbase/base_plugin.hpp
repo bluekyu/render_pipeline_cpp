@@ -47,7 +47,7 @@ namespace rpcore {
 class RenderPipeline;
 class RenderStage;
 
-class RENDER_PIPELINE_DECL BasePlugin: public RPObject
+class RENDER_PIPELINE_DECL BasePlugin : public RPObject
 {
 public:
     using RequrieType = std::vector<std::string>;

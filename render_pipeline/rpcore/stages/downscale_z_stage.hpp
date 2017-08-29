@@ -29,7 +29,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage downscales the depth buffer. */
-class DownscaleZStage: public RenderStage
+class DownscaleZStage : public RenderStage
 {
 public:
     DownscaleZStage(RenderPipeline& pipeline): RenderStage(pipeline, "DownscaleZStage") {}

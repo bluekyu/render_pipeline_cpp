@@ -32,7 +32,7 @@ namespace rpplugins {
  * Forward shading stage, which first renders all forward objects,
  * and then merges them with the scene.
  */
-class ForwardStage: public rpcore::RenderStage
+class ForwardStage : public rpcore::RenderStage
 {
 public:
     ForwardStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "ForwardStage") {}

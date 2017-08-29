@@ -49,7 +49,7 @@
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL SoundInterval: public CInterval
+class RENDER_PIPELINE_DECL SoundInterval : public CInterval
 {
 public:
     static size_t sound_num_;   //!< Name counter

@@ -50,7 +50,7 @@ namespace rppanda {
 
 class ShowBase;
 
-class RENDER_PIPELINE_DECL Loader: public DirectObject
+class RENDER_PIPELINE_DECL Loader : public DirectObject
 {
 public:
     Loader(ShowBase& base);

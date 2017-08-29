@@ -28,7 +28,7 @@ namespace rpplugins {
 
 class VolumetricsStage;
 
-class VolumentricsPlugin: public rpcore::BasePlugin
+class VolumentricsPlugin : public rpcore::BasePlugin
 {
 public:
     VolumentricsPlugin(rpcore::RenderPipeline& pipeline);

@@ -31,7 +31,7 @@ namespace rpplugins {
  * This stage takes the list of used cells and creates a list of environment
  * probes for each cell.
  */
-class CullProbesStage: public rpcore::RenderStage
+class CullProbesStage : public rpcore::RenderStage
 {
 public:
     CullProbesStage(rpcore::RenderPipeline& pipeline);

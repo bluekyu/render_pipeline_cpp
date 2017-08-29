@@ -39,7 +39,7 @@ namespace rpcore {
 
 class PostProcessRegion;
 
-class RENDER_PIPELINE_DECL RenderTarget: public RPObject
+class RENDER_PIPELINE_DECL RenderTarget : public RPObject
 {
 public:
     static bool USE_R11G11B10;

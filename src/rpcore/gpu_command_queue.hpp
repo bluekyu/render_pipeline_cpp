@@ -37,7 +37,7 @@ class RenderTarget;
  * This class offers an interface to the gpu, allowing commands to be
  * pushed to a queue which then get executed on the gpu.
  */
-class GPUCommandQueue: public RPObject
+class GPUCommandQueue : public RPObject
 {
 public:
     GPUCommandQueue(RenderPipeline& pipeline);

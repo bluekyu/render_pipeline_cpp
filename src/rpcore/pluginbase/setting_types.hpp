@@ -35,7 +35,7 @@ namespace rpcore {
 
 // ************************************************************************************************
 /** This is the base setting type, all setting types derive from this. */
-class BaseType: public RPObject
+class BaseType : public RPObject
 {
 public:
     BaseType(YAML::Node& data);
@@ -71,7 +71,7 @@ protected:
  * It is shared between integer and floating point types.
  */
 template <class T>
-class TemplatedType: public BaseType
+class TemplatedType : public BaseType
 {
 public:
     TemplatedType(YAML::Node& data);
@@ -130,7 +130,7 @@ using FloatType = TemplatedType<float>;
 
 // ************************************************************************************************
 /** Type for any power of two resolution. */
-class PowerOfTwoType: public IntType
+class PowerOfTwoType : public IntType
 {
 public:
     PowerOfTwoType(YAML::Node& data);
@@ -160,7 +160,7 @@ inline void PowerOfTwoType::set_value(int value)
 
 // ************************************************************************************************
 /** Boolean setting type. */
-class BoolType: public BaseType
+class BoolType : public BaseType
 {
 public:
     BoolType(YAML::Node& data);
@@ -175,7 +175,7 @@ private:
 
 // ************************************************************************************************
 /** Enumeration setting type. */
-class EnumType: public BaseType
+class EnumType : public BaseType
 {
 public:
     EnumType(YAML::Node& data);
@@ -193,7 +193,7 @@ private:
 
 // ************************************************************************************************
 /** Type for any 2D or 3D sample sequence. */
-class SampleSequenceType: public BaseType
+class SampleSequenceType : public BaseType
 {
 public:
     static const std::vector<int> POISSON_2D_SIZES;
@@ -231,7 +231,7 @@ inline void SampleSequenceType::set_value(const std::string& value)
 
 // ************************************************************************************************
 /** Path type to specify paths to files. */
-class PathType: public BaseType
+class PathType : public BaseType
 {
 public:
     PathType(YAML::Node& data);

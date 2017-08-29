@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class SMAAPlugin: public rpcore::BasePlugin
+class SMAAPlugin : public rpcore::BasePlugin
 {
 public:
     SMAAPlugin(rpcore::RenderPipeline& pipeline);

@@ -34,7 +34,7 @@ namespace rpcore {
 class RenderPipeline;
 
 /** Widget to analyze the rendered pixels, by zooming in. */
-class PixelInspector: public RPObject
+class PixelInspector : public RPObject
 {
 public:
     PixelInspector(RenderPipeline* pipeline);

@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class SharpenStage: public rpcore::RenderStage
+class SharpenStage : public rpcore::RenderStage
 {
 public:
     SharpenStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SharpenStage") {}

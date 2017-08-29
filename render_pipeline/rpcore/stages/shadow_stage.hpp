@@ -31,7 +31,7 @@ class GraphicsOutput;
 namespace rpcore {
 
 /** This is the stage which renders all shadows. */
-class ShadowStage: public RenderStage
+class ShadowStage : public RenderStage
 {
 public:
     ShadowStage(RenderPipeline& pipeline);

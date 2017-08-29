@@ -27,7 +27,7 @@
 
 namespace rpplugins {
 
-class BloomStage: public rpcore::RenderStage
+class BloomStage : public rpcore::RenderStage
 {
 public:
     BloomStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "BloomStage") {}

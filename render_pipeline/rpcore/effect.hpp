@@ -35,7 +35,7 @@ namespace rpcore {
  * This class represents an instance of a compiled effect. It can be loaded
  * from a file.
  */
-class RENDER_PIPELINE_DECL Effect: public RPObject
+class RENDER_PIPELINE_DECL Effect : public RPObject
 {
 public:
     using OptionType = std::map<std::string, bool>;

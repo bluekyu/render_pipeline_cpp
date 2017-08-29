@@ -36,7 +36,7 @@ namespace rpplugins {
  * of the scene. This is required because the shadow cascades only cover the
  * view frustum, but many plugins (VXGI, EnvMaps) require a shadow map.
  */
-class PSSMSceneShadowStage: public rpcore::RenderStage
+class PSSMSceneShadowStage : public rpcore::RenderStage
 {
 public:
     PSSMSceneShadowStage(rpcore::RenderPipeline& pipeline);

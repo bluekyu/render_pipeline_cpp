@@ -31,7 +31,7 @@ class Sprite;
 class LabeledCheckbox;
 class Slider;
 
-class TexturePreview: public DraggableWindow
+class TexturePreview : public DraggableWindow
 {
 public:
     TexturePreview(RenderPipeline* pipeline, NodePath parent);

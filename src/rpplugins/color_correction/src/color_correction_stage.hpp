@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class ColorCorrectionStage: public rpcore::RenderStage
+class ColorCorrectionStage : public rpcore::RenderStage
 {
 public:
     ColorCorrectionStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "ColorCorrectionStage") {}

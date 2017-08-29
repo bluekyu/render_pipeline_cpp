@@ -30,7 +30,7 @@
 namespace rpplugins {
 
 /** Simple class, representing an environment probe. */
-class EnvironmentProbe: public rpcore::RPObject
+class EnvironmentProbe : public rpcore::RPObject
 {
 public:
     EnvironmentProbe();

@@ -35,7 +35,7 @@ class DirectSlider;
 namespace rpcore {
 
 /** This is a simple wrapper around DirectSlider, providing a simpler interface. */
-class Slider: public RPObject
+class Slider : public RPObject
 {
 public:
     Slider(float x=0, float y=0, NodePath parent={}, float size=100, float min_value=0, float max_value=100,

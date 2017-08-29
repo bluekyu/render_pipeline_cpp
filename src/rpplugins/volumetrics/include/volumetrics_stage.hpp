@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage applies the volumetric lighting. */
-class VolumetricsStage: public rpcore::RenderStage
+class VolumetricsStage : public rpcore::RenderStage
 {
 public:
     VolumetricsStage(rpcore::RenderPipeline& pipeline);

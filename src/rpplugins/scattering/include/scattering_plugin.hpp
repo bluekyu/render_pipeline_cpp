@@ -31,7 +31,7 @@ class ScatteringEnvmapStage;
 class GodrayStage;
 class ScatteringMethod;
 
-class ScatteringPlugin: public rpcore::BasePlugin
+class ScatteringPlugin : public rpcore::BasePlugin
 {
 public:
     ScatteringPlugin(rpcore::RenderPipeline& pipeline);

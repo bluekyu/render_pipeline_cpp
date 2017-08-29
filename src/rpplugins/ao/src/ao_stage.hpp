@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class AOStage: public rpcore::RenderStage
+class AOStage : public rpcore::RenderStage
 {
 public:
     AOStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "AOStage") {}

@@ -48,11 +48,11 @@ namespace rppanda {
  * DirectSlider -- a widget which represents a slider that the
  * user can pull left and right to represent a continuous value.
  */
-class RENDER_PIPELINE_DECL DirectSlider: public DirectFrame
+class RENDER_PIPELINE_DECL DirectSlider : public DirectFrame
 {
 public:
     /** @see DirectGuiWidget::Options */
-    struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
+    struct RENDER_PIPELINE_DECL Options : public DirectFrame::Options
     {
         Options();
 

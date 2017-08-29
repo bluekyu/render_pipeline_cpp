@@ -105,7 +105,7 @@ public:
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
-struct VisitorBindToStage: public boost::static_visitor<>
+struct VisitorBindToStage : public boost::static_visitor<>
 {
     template <class T>
     void operator()(const T& block)
@@ -116,7 +116,7 @@ struct VisitorBindToStage: public boost::static_visitor<>
     std::shared_ptr<RenderStage> stage;
 };
 
-struct VisitorInsertToInputBlocks: public boost::static_visitor<>
+struct VisitorInsertToInputBlocks : public boost::static_visitor<>
 {
     VisitorInsertToInputBlocks(std::unordered_map<std::string, boost::variant<
         std::shared_ptr<SimpleInputBlock>,

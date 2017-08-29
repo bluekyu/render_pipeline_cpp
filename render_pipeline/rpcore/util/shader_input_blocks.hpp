@@ -39,7 +39,7 @@ class RenderStage;
  * This does not use any fancy uniform buffer objects under the hood, and
  * instead just sets every value as a shader input.
  */
-class RENDER_PIPELINE_DECL SimpleInputBlock: public RPObject
+class RENDER_PIPELINE_DECL SimpleInputBlock : public RPObject
 {
 public:
     using InputsType = std::unordered_map<std::string, ShaderInput>;
@@ -111,7 +111,7 @@ inline const std::string& SimpleInputBlock::get_name() const
  * store and update the shader inputs, or in case of uniform buffer object (UBO)
  * support, uses these to pass the inputs to the shaders.
  */
-class RENDER_PIPELINE_DECL GroupedInputBlock: public RPObject
+class RENDER_PIPELINE_DECL GroupedInputBlock : public RPObject
 {
 public:
     using PTA_Types = boost::variant<

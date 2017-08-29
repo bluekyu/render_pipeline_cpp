@@ -47,11 +47,11 @@ namespace rppanda {
  * DirectButton(parent) - Create a DirectGuiWidget which responds
  * to mouse clicks and execute a callback function if defined.
  */
-class RENDER_PIPELINE_DECL DirectButton: public DirectFrame
+class RENDER_PIPELINE_DECL DirectButton : public DirectFrame
 {
 public:
     /** Parameter Container. */
-    struct RENDER_PIPELINE_DECL Options: public DirectFrame::Options
+    struct RENDER_PIPELINE_DECL Options : public DirectFrame::Options
     {
         Options();
 

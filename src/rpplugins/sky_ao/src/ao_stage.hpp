@@ -30,7 +30,7 @@ namespace rpplugins {
  * This is the main stage used by the Sky AO plugin, and computes
  * the sky occlusion term.
  */
-class SkyAOStage: public rpcore::RenderStage
+class SkyAOStage : public rpcore::RenderStage
 {
 public:
     SkyAOStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SkyAOStage") {}

@@ -51,7 +51,7 @@ class DayTimeManager;
 class IESProfileLoader;
 class PluginManager;
 
-class RENDER_PIPELINE_DECL RenderPipeline: public RPObject
+class RENDER_PIPELINE_DECL RenderPipeline : public RPObject
 {
 public:
     static const std::string& get_version(void);

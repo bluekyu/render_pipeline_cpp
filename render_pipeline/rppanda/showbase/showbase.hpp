@@ -63,7 +63,7 @@ namespace rppanda {
 class SfxPlayer;
 class Loader;
 
-class RENDER_PIPELINE_DECL ShowBase: public DirectObject
+class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 {
 public:
     /** Create PandaFramework and open main window, and then initialize ShowBase. */

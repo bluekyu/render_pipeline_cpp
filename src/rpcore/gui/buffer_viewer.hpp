@@ -37,7 +37,7 @@ class RenderStage;
 class LabeledCheckbox;
 
 /** This class provides a view into the buffers to inspect them . */
-class BufferViewer: public DraggableWindow
+class BufferViewer : public DraggableWindow
 {
     enum class EntryID: int
     {

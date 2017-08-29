@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class SkyAOPlugin: public rpcore::BasePlugin
+class SkyAOPlugin : public rpcore::BasePlugin
 {
 public:
     SkyAOPlugin(rpcore::RenderPipeline& pipeline);

@@ -35,7 +35,7 @@ namespace rpplugins {
  * This stage uses the precomputed data to make a cubemap containing the
  * scattering.
  */
-class ScatteringEnvmapStage: public rpcore::RenderStage
+class ScatteringEnvmapStage : public rpcore::RenderStage
 {
 public:
     ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline);

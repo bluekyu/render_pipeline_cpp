@@ -29,7 +29,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage computes the ambient term. */
-class ApplyLightsStage: public RenderStage
+class ApplyLightsStage : public RenderStage
 {
 public:
     ApplyLightsStage(RenderPipeline& pipeline): RenderStage(pipeline, "ApplyLightsStage") {}

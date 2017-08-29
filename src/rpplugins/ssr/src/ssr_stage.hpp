@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage does the SSR pass. */
-class SSRStage: public rpcore::RenderStage
+class SSRStage : public rpcore::RenderStage
 {
 public:
     SSRStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SSRStage") {}

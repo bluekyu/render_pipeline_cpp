@@ -42,7 +42,7 @@ class ShadowStage;
  * This class is a wrapper around the InternalLightManager, and provides
  * additional functionality like setting up all required stages and defines.
  */
-class RENDER_PIPELINE_DECL LightManager: public RPObject
+class RENDER_PIPELINE_DECL LightManager : public RPObject
 {
 public:
     // Maximum amount of lights, has to match the definitions in the native code

@@ -30,7 +30,7 @@
 namespace rpplugins {
 
 /** This stage generates a depth map using Variance Shadow Maps for very distant objects. */
-class PSSMDistShadowStage: public rpcore::RenderStage
+class PSSMDistShadowStage : public rpcore::RenderStage
 {
 public:
     PSSMDistShadowStage(rpcore::RenderPipeline& pipeline);

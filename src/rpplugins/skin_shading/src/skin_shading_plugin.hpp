@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class SkinShadingPlugin: public rpcore::BasePlugin
+class SkinShadingPlugin : public rpcore::BasePlugin
 {
 public:
     SkinShadingPlugin(rpcore::RenderPipeline& pipeline);

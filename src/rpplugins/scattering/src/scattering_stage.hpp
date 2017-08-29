@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage uses the precomputed data to display the scattering. */
-class ScatteringStage: public rpcore::RenderStage
+class ScatteringStage : public rpcore::RenderStage
 {
 public:
     ScatteringStage(rpcore::RenderPipeline& pipeline);

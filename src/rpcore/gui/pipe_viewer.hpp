@@ -38,7 +38,7 @@ class RenderPipeline;
 class StageManager;
 
 /** Small tool which displays the order of the graphic pipes. */
-class PipeViewer: public DraggableWindow
+class PipeViewer : public DraggableWindow
 {
 public:
     PipeViewer(RenderPipeline* pipeline, NodePath parent);

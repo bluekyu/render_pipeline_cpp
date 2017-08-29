@@ -30,7 +30,7 @@ namespace rpcore {
 
 class RenderPipeline;
 
-class RENDER_PIPELINE_DECL DayTimeManager: public RPObject
+class RENDER_PIPELINE_DECL DayTimeManager : public RPObject
 {
 public:
     DayTimeManager(RenderPipeline& pipeline);

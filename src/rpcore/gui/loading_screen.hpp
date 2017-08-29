@@ -31,7 +31,7 @@ namespace rpcore {
 class RenderPipeline;
 class Sprite;
 
-class LoadingScreen: public RPObject
+class LoadingScreen : public RPObject
 {
 public:
     /**

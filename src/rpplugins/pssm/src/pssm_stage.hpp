@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage uses the PSSM Shadow map to render the shadows. */
-class PSSMStage: public rpcore::RenderStage
+class PSSMStage : public rpcore::RenderStage
 {
 public:
     PSSMStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "PSSMStage") {}

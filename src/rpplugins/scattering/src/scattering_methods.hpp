@@ -34,7 +34,7 @@
 namespace rpplugins {
 
 /** Base class for all scattering methods. */
-class ScatteringMethod: public rpcore::RPObject
+class ScatteringMethod : public rpcore::RPObject
 {
 public:
     ScatteringMethod(ScatteringPlugin& plugin, const std::string& name="ScatteringMethod"): RPObject(name), handle_(plugin) {}
@@ -50,7 +50,7 @@ protected:
 
 // ************************************************************************************************
 /** Precomputed atmospheric scattering by Eric Bruneton. */
-class ScatteringMethodEricBruneton: public ScatteringMethod
+class ScatteringMethodEricBruneton : public ScatteringMethod
 {
 public:
     ScatteringMethodEricBruneton(ScatteringPlugin& plugin): ScatteringMethod(plugin, "ScatteringMethodEricBruneton") {}

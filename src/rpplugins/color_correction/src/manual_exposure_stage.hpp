@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class ManualExposureStage: public rpcore::RenderStage
+class ManualExposureStage : public rpcore::RenderStage
 {
 public:
     ManualExposureStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "ManualExposureStage") {}

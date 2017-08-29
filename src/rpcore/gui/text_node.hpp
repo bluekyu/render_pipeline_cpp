@@ -31,7 +31,7 @@ namespace rpcore {
 /**
  * Interface for the Panda3D TextNode.
  */
-class TextNode: public RPObject
+class TextNode : public RPObject
 {
 public:
     struct Parameters

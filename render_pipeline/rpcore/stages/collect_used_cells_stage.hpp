@@ -33,7 +33,7 @@ class RenderTarget;
  * This stage collects the flagged cells from the FlagUsedCellsStage and
  * makes a list of them.
  */
-class CollectUsedCellsStage: public RenderStage
+class CollectUsedCellsStage : public RenderStage
 {
 public:
     CollectUsedCellsStage(RenderPipeline& pipeline): RenderStage(pipeline, "CollectUsedCellsStage") {}

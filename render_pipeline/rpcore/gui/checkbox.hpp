@@ -38,7 +38,7 @@ namespace rpcore {
  * This is a wrapper around DirectCheckBox, providing a simpler interface
  * and better visuals.
  */
-class RENDER_PIPELINE_DECL Checkbox: public RPObject
+class RENDER_PIPELINE_DECL Checkbox : public RPObject
 {
 public:
     Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& callback={},

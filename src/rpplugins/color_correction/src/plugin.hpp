@@ -32,7 +32,7 @@
 
 namespace rpplugins {
 
-class Plugin: public rpcore::BasePlugin
+class Plugin : public rpcore::BasePlugin
 {
 public:
     Plugin(rpcore::RenderPipeline& pipeline);

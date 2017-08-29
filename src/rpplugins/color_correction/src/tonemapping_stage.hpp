@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class TonemappingStage: public rpcore::RenderStage
+class TonemappingStage : public rpcore::RenderStage
 {
 public:
     TonemappingStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "TonemappingStage") {}

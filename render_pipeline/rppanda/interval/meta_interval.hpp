@@ -51,7 +51,7 @@
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL MetaInterval: public CMetaInterval
+class RENDER_PIPELINE_DECL MetaInterval : public CMetaInterval
 {
 protected:
     static int sequence_num_;
@@ -102,7 +102,7 @@ inline TypeHandle MetaInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL Sequence: public MetaInterval
+class RENDER_PIPELINE_DECL Sequence : public MetaInterval
 {
 public:
     Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
@@ -151,7 +151,7 @@ inline TypeHandle Sequence::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL Parallel: public MetaInterval
+class RENDER_PIPELINE_DECL Parallel : public MetaInterval
 {
 public:
     Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
@@ -200,7 +200,7 @@ inline TypeHandle Parallel::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL ParallelEndTogether: public MetaInterval
+class RENDER_PIPELINE_DECL ParallelEndTogether : public MetaInterval
 {
 public:
     ParallelEndTogether(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
@@ -253,7 +253,7 @@ inline TypeHandle ParallelEndTogether::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL Track: public MetaInterval
+class RENDER_PIPELINE_DECL Track : public MetaInterval
 {
 public:
     using TrackType = std::tuple<double, CInterval*, RelativeStart>;

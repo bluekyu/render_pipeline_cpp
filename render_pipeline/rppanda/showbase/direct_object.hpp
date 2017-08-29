@@ -50,7 +50,7 @@
 namespace rppanda {
 
 /** This is the class that all Direct/SAL classes should inherit from. */
-class RENDER_PIPELINE_DECL DirectObject: public TypedReferenceCount
+class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 {
 public:
     bool accept(const std::string& ev_name, EventHandler::EventFunction* func);

@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage does the DoF pass. */
-class DoFStage: public rpcore::RenderStage
+class DoFStage : public rpcore::RenderStage
 {
 public:
     DoFStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "DoFStage") {}

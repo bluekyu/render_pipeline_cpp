@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class PSSMPlugin: public rpcore::BasePlugin
+class PSSMPlugin : public rpcore::BasePlugin
 {
 public:
     PSSMPlugin(rpcore::RenderPipeline& pipeline);

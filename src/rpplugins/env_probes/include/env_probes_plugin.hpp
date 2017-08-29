@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class EnvProbesPlugin: public rpcore::BasePlugin
+class EnvProbesPlugin : public rpcore::BasePlugin
 {
 public:
     EnvProbesPlugin(rpcore::RenderPipeline& pipeline);

@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage does the actual SMAA. */
-class SMAAStage: public rpcore::RenderStage
+class SMAAStage : public rpcore::RenderStage
 {
 public:
     SMAAStage(rpcore::RenderPipeline& pipeline, bool use_reprojection);

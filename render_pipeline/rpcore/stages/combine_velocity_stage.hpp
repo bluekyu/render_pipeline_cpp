@@ -29,7 +29,7 @@ namespace rpcore {
 class RenderTarget;
 
 /** This stage combines the per-object velocity with the camera velocity. */
-class CombineVelocityStage: public RenderStage
+class CombineVelocityStage : public RenderStage
 {
 public:
     CombineVelocityStage(RenderPipeline& pipeline): RenderStage(pipeline, "CombineVelocityStage") {}

@@ -40,7 +40,7 @@ namespace rpcore {
 class SmoothConnectedCurve;
 
 /** DayBase setting type for all setting types. */
-class DayBaseType: public RPObject
+class DayBaseType : public RPObject
 {
 public:
     using ValueType = std::pair<LVecBase3f, int>;
@@ -79,7 +79,7 @@ protected:
 };
 
 /** Setting type storing a single scalar. */
-class ScalarType: public DayBaseType
+class ScalarType : public DayBaseType
 {
 public:
     ScalarType(YAML::Node& data);
@@ -103,7 +103,7 @@ private:
 };
 
 /** Setting type storing a RGB color triple. */
-class ColorType: public DayBaseType
+class ColorType : public DayBaseType
 {
 public:
     ColorType(YAML::Node& data);

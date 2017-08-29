@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class SSRPlugin: public rpcore::BasePlugin
+class SSRPlugin : public rpcore::BasePlugin
 {
 public:
     SSRPlugin(rpcore::RenderPipeline& pipeline);

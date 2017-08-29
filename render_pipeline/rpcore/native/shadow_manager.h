@@ -45,7 +45,7 @@ namespace rpcore {
 NotifyCategoryDecl(shadowmanager, EXPORT_CLASS, EXPORT_TEMPL);
 
 
-class ShadowManager : public ReferenceCount {
+class ShadowManager  : public ReferenceCount {
 
     PUBLISHED:
         ShadowManager();

@@ -37,7 +37,7 @@ class DirectButton;
 namespace rpcore {
 
 /** This is a simple draggable but not resizeable window. */
-class DraggableWindow: public RPObject
+class DraggableWindow : public RPObject
 {
 public:
     DraggableWindow(int width=800, int height=500, const std::string& title="Window", NodePath parent={});

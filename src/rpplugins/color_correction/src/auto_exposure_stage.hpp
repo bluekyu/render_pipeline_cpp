@@ -26,7 +26,7 @@
 
 namespace rpplugins {
 
-class AutoExposureStage: public rpcore::RenderStage
+class AutoExposureStage : public rpcore::RenderStage
 {
 public:
     AutoExposureStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "AutoExposureStage") {}

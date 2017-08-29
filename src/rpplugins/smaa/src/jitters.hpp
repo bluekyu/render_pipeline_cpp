@@ -29,7 +29,7 @@
 
 namespace rpplugins {
 
-class JitterType: public std::unordered_map<std::string, std::vector<LVecBase2>>
+class JitterType : public std::unordered_map<std::string, std::vector<LVecBase2>>
 {
 public:
     JitterType();

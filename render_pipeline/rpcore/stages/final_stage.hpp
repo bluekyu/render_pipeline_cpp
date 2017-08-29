@@ -26,7 +26,7 @@
 
 namespace rpcore {
 
-class FinalStage: public RenderStage
+class FinalStage : public RenderStage
 {
 public:
     FinalStage(RenderPipeline& pipeline): RenderStage(pipeline, "FinalStage") {}

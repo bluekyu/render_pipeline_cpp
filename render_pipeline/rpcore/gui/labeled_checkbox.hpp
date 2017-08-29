@@ -37,7 +37,7 @@ class Checkbox;
  * This is a checkbox, combined with a label. The arguments are
  * equal to the Checkbox and OnscreenText arguments.
  */
-class RENDER_PIPELINE_DECL LabeledCheckbox: public RPObject
+class RENDER_PIPELINE_DECL LabeledCheckbox : public RPObject
 {
 public:
     /**

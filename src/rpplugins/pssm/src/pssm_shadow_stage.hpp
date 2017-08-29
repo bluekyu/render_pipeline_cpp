@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage generates the depth-maps used for rendering PSSM. */
-class PSSMShadowStage: public rpcore::RenderStage
+class PSSMShadowStage : public rpcore::RenderStage
 {
 public:
     PSSMShadowStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "PSSMShadowStage") {}

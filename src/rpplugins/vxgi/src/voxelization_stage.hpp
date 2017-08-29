@@ -31,7 +31,7 @@
 namespace rpplugins {
 
 /** This stage voxelizes the whole scene */
-class VoxelizationStage: public rpcore::RenderStage
+class VoxelizationStage : public rpcore::RenderStage
 {
 public:
     // The different states of voxelization

@@ -51,7 +51,7 @@ namespace rppanda {
  * This is the base class for all of the lerps, defined below, that
  * affect a property on a NodePath, like pos or hpr.
  */
-class RENDER_PIPELINE_DECL LerpNodePathInterval: public CLerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpNodePathInterval : public CLerpNodePathInterval
 {
 protected:
     static int lerp_node_path_num;
@@ -103,7 +103,7 @@ inline TypeHandle LerpNodePathInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpPosInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpPosInterval : public LerpNodePathInterval
 {
 public:
     LerpPosInterval(NodePath nodepath, double duration, const LVecBase3& pos,
@@ -155,7 +155,7 @@ inline TypeHandle LerpPosInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpHprInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpHprInterval : public LerpNodePathInterval
 {
 public:
     LerpHprInterval(NodePath nodepath, double duration, const LVecBase3& hpr,
@@ -211,7 +211,7 @@ inline TypeHandle LerpHprInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpQuatInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpQuatInterval : public LerpNodePathInterval
 {
 public:
     LerpQuatInterval(NodePath nodepath, double duration,
@@ -285,7 +285,7 @@ inline TypeHandle LerpQuatInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpScaleInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpScaleInterval : public LerpNodePathInterval
 {
 public:
     LerpScaleInterval(NodePath nodepath, double duration,
@@ -340,7 +340,7 @@ inline TypeHandle LerpScaleInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpShearInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpShearInterval : public LerpNodePathInterval
 {
 public:
     LerpShearInterval(NodePath nodepath, double duration,
@@ -396,7 +396,7 @@ inline TypeHandle LerpShearInterval::force_init_type()
 }
 
 // ************************************************************************************************
-class RENDER_PIPELINE_DECL LerpPosHprInterval: public LerpNodePathInterval
+class RENDER_PIPELINE_DECL LerpPosHprInterval : public LerpNodePathInterval
 {
 public:
     LerpPosHprInterval(NodePath nodepath, double duration,

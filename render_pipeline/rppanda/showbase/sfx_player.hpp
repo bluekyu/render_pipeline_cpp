@@ -55,7 +55,7 @@ namespace rppanda {
 /**
  * Play sound effects, potentially localized.
  */
-class RENDER_PIPELINE_DECL SfxPlayer: public TypedReferenceCount
+class RENDER_PIPELINE_DECL SfxPlayer : public TypedReferenceCount
 {
 public:
     static bool use_inverse_suqare_;

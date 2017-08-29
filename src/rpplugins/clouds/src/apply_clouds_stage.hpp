@@ -27,7 +27,7 @@
 namespace rpplugins {
 
 /** This stage raymarchs the cloud voxel grid. */
-class ApplyCloudsStage: public rpcore::RenderStage
+class ApplyCloudsStage : public rpcore::RenderStage
 {
 public:
     ApplyCloudsStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "ApplyCloudsStage") {}
