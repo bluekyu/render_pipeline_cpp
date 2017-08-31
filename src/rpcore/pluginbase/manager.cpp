@@ -24,7 +24,6 @@
 
 #include <unordered_set>
 
-#include <boost/detail/winapi/dll.hpp>
 #include <boost/dll/import.hpp>
 
 #include <spdlog/fmt/fmt.h>
@@ -386,10 +385,10 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const Fil
         fatal("Invalid plugin configuration, did you miss '!!omap'?");
 
     SettingsDataType& settings = impl_->settings_[plugin_id];
-    for (auto& settings_node: config["settings"])
+    for (auto settings_node: config["settings"])
     {
         // XXX: omap of yaml-cpp is list.
-        for (auto& key_val: settings_node)
+        for (auto key_val: settings_node)
         {
             settings[key_val.first.as<std::string>()] = make_setting_from_data(key_val.second);
         }
@@ -398,10 +397,10 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const Fil
     if (impl_->requires_daytime_settings_)
     {
         DaySettingsDataType& day_settings = impl_->day_settings_[plugin_id];
-        for (auto& daytime_settings_node: config["daytime_settings"])
+        for (auto daytime_settings_node: config["daytime_settings"])
         {
             // XXX: omap of yaml-cpp is list.
-            for (auto& key_val: daytime_settings_node)
+            for (auto key_val: daytime_settings_node)
             {
                 day_settings[key_val.first.as<std::string>()] = make_daysetting_from_data(key_val.second);
             }

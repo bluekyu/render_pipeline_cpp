@@ -107,7 +107,7 @@ void InstancingNode::Impl::upload_transforms()
     }
 
     auto ram_image = buffer_texture_->modify_ram_image();
-    std::memcpy(ram_image.p(), &transforms_[0], instance_count * sizeof(LMatrix4f));
+    memcpy(ram_image.p(), &transforms_[0], instance_count * sizeof(LMatrix4f));
 
     dirty_ = false;
 }

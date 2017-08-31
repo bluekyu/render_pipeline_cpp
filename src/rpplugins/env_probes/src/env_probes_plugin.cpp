@@ -25,6 +25,7 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
+#include <displayRegion.h>
 #include <nodePathCollection.h>
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>

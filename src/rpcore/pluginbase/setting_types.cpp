@@ -27,8 +27,6 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "rplibs/yaml.hpp"
-
 namespace rpcore {
 
 enum class BaseTypeIndex: int

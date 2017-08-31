@@ -24,12 +24,9 @@
 
 #include <boost/any.hpp>
 
-#include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/stage_manager.hpp>
-
-namespace YAML {
-class Node;
-}
+#include "render_pipeline/rpcore/rpobject.hpp"
+#include "render_pipeline/rpcore/stage_manager.hpp"
+#include "rplibs/yaml.hpp"
 
 namespace rpcore {
 

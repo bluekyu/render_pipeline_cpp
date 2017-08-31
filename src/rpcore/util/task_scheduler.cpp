@@ -25,6 +25,7 @@
 // XXX: fix compile error for std::vector<std::string>
 #include <vector_string.h>
 #include <numeric>
+#include <algorithm>
 
 #include "rplibs/yaml.hpp"
 
@@ -40,7 +41,7 @@ TaskScheduler::TaskScheduler(RenderPipeline& pipeline): RPObject("TaskScheduler"
 bool TaskScheduler::is_scheduled(const std::string& task_name) const
 {
     check_missing_schedule(task_name);
-    return std::find(tasks_[frame_index_].begin(), tasks_[frame_index_].end(), task_name) != tasks_[frame_index_].end();
+    return std::find(tasks_[frame_index_].cbegin(), tasks_[frame_index_].cend(), task_name) != tasks_[frame_index_].cend();
 }
 
 void TaskScheduler::step()
@@ -80,7 +81,7 @@ void TaskScheduler::check_missing_schedule(const std::string& task_name) const
     bool found = false;
     for (const auto& tasks: tasks_)
     {
-        if (std::find(tasks.begin(), tasks.end(), task_name) != tasks.end())
+        if (std::find(tasks.cbegin(), tasks.cend(), task_name) != tasks.cend())
         {
             found = true;
             break;

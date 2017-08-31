@@ -72,7 +72,7 @@ bool ProbeManager::add_probe(const std::shared_ptr<EnvironmentProbe>& probe)
 
 void ProbeManager::update()
 {
-    PTA_uchar& buffer_ptr = _dataset_storage->get_texture()->modify_ram_image();
+    PTA_uchar buffer_ptr = _dataset_storage->get_texture()->modify_ram_image();
     for (auto& probe: _probes)
     {
         if (probe->is_modified())
