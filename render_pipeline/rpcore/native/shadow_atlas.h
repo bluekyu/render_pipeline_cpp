@@ -30,10 +30,9 @@
 #include "pandabase.h"
 #include "lvecBase4.h"
 
-namespace rpcore {
-
 NotifyCategoryDecl(shadowatlas, EXPORT_CLASS, EXPORT_TEMPL);
 
+namespace rpcore {
 
 /**
  * @brief Class which manages distributing shadow maps in an atlas.

@@ -35,7 +35,7 @@
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
 #include <pointLight.h>
-#include <spotLight.h>
+#include <spotlight.h>
 #include <materialAttrib.h>
 #include <genericAsyncTask.h>
 #include <geomTristrips.h>

@@ -104,7 +104,7 @@ if(MSVC)
     )
 else()
     if(CMAKE_VERSION VERSION_LESS 3.8)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++17)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++1z)
     else()
         target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
             PRIVATE cxx_std_17)

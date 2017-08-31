@@ -223,7 +223,7 @@ void Debugger::handle_window_resize()
 
     for (const auto& text: debug_lines)
     {
-        text->set_pixel_size(16 * max(0.8, gui_scale));
+        text->set_pixel_size(16 * (std::max)(0.8, gui_scale));
     }
 
     _buffer_viewer->center_on_screen();

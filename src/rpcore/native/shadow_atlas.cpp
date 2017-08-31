@@ -28,9 +28,9 @@
 #include "render_pipeline/rpcore/native/shadow_atlas.h"
 #include <string.h>
 
-namespace rpcore {
-
 NotifyCategoryDef(shadowatlas, "");
+
+namespace rpcore {
 
 /**
  * @brief Constructs a new shadow atlas.
