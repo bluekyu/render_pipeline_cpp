@@ -33,6 +33,8 @@
 
 namespace rpcore {
 
+const std::string DraggableWindow::Default::title = "Window";
+
 DraggableWindow::DraggableWindow(int width, int height, const std::string& title, NodePath parent): RPObject(std::string("Window-")+title),
     _width(width), _height(height), _title(title)
 {

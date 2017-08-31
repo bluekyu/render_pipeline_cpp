@@ -91,12 +91,13 @@ void TexturePreview::present(Texture* tex)
     if (tex->uses_mipmaps())
     {
         _mip_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, 0,
-            tex->get_expected_num_mipmap_levels()-1, 0, 1,
+            tex->get_expected_num_mipmap_levels()-1, 0, Slider::Default::page_size,
             std::bind(&TexturePreview::set_mip, this, std::placeholders::_1));
 
         x_pos += 140 + 5;
 
-        _mip_text = std::make_shared<Text>("MIP: 5", _content_node, x_pos, 72, 18, "left",
+        _mip_text = std::make_shared<Text>("MIP: 5", _content_node, x_pos, 72, 18,
+            Text::Default::align,
             LVecBase3(1.0f, 0.4f, 0.4f), true);
 
         x_pos += 50 + 30;
@@ -106,11 +107,13 @@ void TexturePreview::present(Texture* tex)
     if (tex->get_z_size() > 1)
     {
         _slice_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 250, 0,
-            tex->get_z_size() - 1, 0, 1, std::bind(&TexturePreview::set_slice, this, std::placeholders::_1));
+            tex->get_z_size() - 1, 0, Slider::Default::page_size,
+            std::bind(&TexturePreview::set_slice, this, std::placeholders::_1));
 
         x_pos += 250 + 5;
 
-        _slice_text = std::make_shared<Text>("Z: 5", _content_node, x_pos, 72, 18, "left",
+        _slice_text = std::make_shared<Text>("Z: 5", _content_node, x_pos, 72, 18,
+            Text::Default::align,
             LVecBase3(0.4f, 1.0f, 0.4f), true);
 
         x_pos += 50 + 30;
@@ -118,11 +121,12 @@ void TexturePreview::present(Texture* tex)
 
     // Slider to adjust brightness
     _bright_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, -14, 14,
-        0, 1, std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1));
+        0, Slider::Default::page_size,
+        std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1));
 
     x_pos += 140 + 5;
     _bright_text = std::make_shared<Text>("Bright: 1", _content_node, x_pos, 72, 18,
-        "left", LVecBase3(0.4f, 0.4f, 1.0f), true);
+        Text::Default::align, LVecBase3(0.4f, 0.4f, 1.0f), true);
     x_pos += 100 + 30;
 
     // Slider to enable reinhard tonemapping

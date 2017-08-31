@@ -33,12 +33,20 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Text : public RPObject
 {
 public:
+    struct Default
+    {
+        static const float size;
+        static const std::string align;
+        static const LVecBase3 color;
+    };
+
+public:
     /**
      * Constructs a new text. The parameters are almost equal to the
      * parameters of OnscreenText.
      */
-    Text(const std::string& text="", NodePath parent={}, float x=0, float y=0, float size=10.0f,
-        const std::string& align="left", const LVecBase3& color=LVecBase3(1),
+    Text(const std::string& text={}, NodePath parent={}, float x=0, float y=0, float size=Default::size,
+        const std::string& align=Default::align, const LVecBase3& color=Default::color,
         bool may_change=false, TextFont* font=nullptr);
 
     const rppanda::OnscreenText& get_node() const;

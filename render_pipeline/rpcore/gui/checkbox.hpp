@@ -41,8 +41,14 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Checkbox : public RPObject
 {
 public:
+    struct Default
+    {
+        static const int expand_width = 100;
+    };
+
+public:
     Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& callback={},
-        const std::shared_ptr<void>& extra_args={}, bool radio=false, int expand_width=100, bool checked=false, bool enabled=true);
+        const std::shared_ptr<void>& extra_args={}, bool radio=false, int expand_width=Default::expand_width, bool checked=false, bool enabled=true);
 
     /** Returns whether the node is currently checked. */
     bool is_checked() const;

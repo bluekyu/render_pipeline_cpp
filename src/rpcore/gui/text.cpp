@@ -31,6 +31,10 @@
 
 namespace rpcore {
 
+const float Text::Default::size = 10;
+const std::string Text::Default::align("left");
+const LVecBase3 Text::Default::color(1);
+
 Text::Text(const std::string& text, NodePath parent, float x, float y, float size,
     const std::string& align, const LVecBase3& color, bool may_change, TextFont* font): RPObject("Text")
 {

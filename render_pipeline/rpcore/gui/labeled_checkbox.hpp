@@ -40,13 +40,24 @@ class Checkbox;
 class RENDER_PIPELINE_DECL LabeledCheckbox : public RPObject
 {
 public:
+    struct Default
+    {
+        static const float text_size;
+        static const int expand_width = 100;
+    };
+
+public:
     /**
      * Constructs a new checkbox, forwarding most of the elements to the
      * underlying Checkbox and Text.
      */
-    LabeledCheckbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback={},
-        const std::shared_ptr<void>& chb_args={}, bool chb_checked=false, const std::string& text="", float text_size=16,
-        bool radio=false, const boost::optional<LVecBase3>& text_color={}, int expand_width=100, bool enabled=true);
+    LabeledCheckbox(
+        NodePath parent={}, float x=0, float y=0,
+        const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback={},
+        const std::shared_ptr<void>& chb_args={}, bool chb_checked=false,
+        const std::string& text={}, float text_size=Default::text_size,
+        bool radio=false, const boost::optional<LVecBase3>& text_color={},
+        int expand_width=Default::expand_width, bool enabled=true);
     ~LabeledCheckbox();
 
     /** Returns a handle to the checkbox. */

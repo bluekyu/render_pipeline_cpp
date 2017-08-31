@@ -27,6 +27,11 @@
 
 namespace rpcore {
 
+const float Slider::Default::size = 100;
+const float Slider::Default::max_value = 100;
+const float Slider::Default::value = 50;
+const float Slider::Default::page_size = 1;
+
 Slider::Slider(float x, float y, NodePath parent, float size, float min_value, float max_value,
     float value, float page_size, const std::function<void(const std::shared_ptr<void>&)>& callback,
     const std::shared_ptr<void>& extra_args): RPObject("Slider")
