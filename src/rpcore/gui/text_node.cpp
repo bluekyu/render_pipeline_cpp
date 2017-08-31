@@ -33,6 +33,11 @@
 
 namespace rpcore {
 
+const float TextNode::Default::pixel_size = 16;
+const LVecBase3 TextNode::Default::color(1);
+const std::string TextNode::Default::align = "left";
+const std::string TextNode::Default::font = "/$$rp/data/font/Roboto-Bold.ttf";
+
 static const std::map<std::string, ::TextNode::Alignment> text_align_map ={
     {"left", ::TextNode::Alignment::A_left},
     {"right", ::TextNode::Alignment::A_right},
@@ -49,28 +54,34 @@ public:
     NodePath nodepath_;
 };
 
-TextNode::TextNode(const Parameters& params): RPObject("TextNode"), impl_(std::make_unique<Impl>())
+TextNode::TextNode(
+    NodePath parent,
+    float pixel_size,
+    const LVecBase2& pos,
+    const LVecBase3& color,
+    const std::string& align,
+    const std::string& font,
+    const std::string& text): RPObject("TextNode"), impl_(std::make_unique<Impl>())
 {
     PT(::TextNode) node = new ::TextNode("FTN");
-    node->set_text(params.text);
-    node->set_align(text_align_map.at(params.align));
-    node->set_text_color(LColorf(params.color, 1.0f));
+    node->set_text(text);
+    node->set_align(text_align_map.at(align));
+    node->set_text_color(LColorf(color, 1.0f));
 
-    NodePath parent = params.parent;
     if (parent.is_empty())
         parent = Globals::base->get_aspect_2d();
 
     impl_->nodepath_ = parent.attach_new_node(node);
-    impl_->nodepath_.set_pos(params.pos.get_x(), 0, params.pos.get_y());
+    impl_->nodepath_.set_pos(pos.get_x(), 0, pos.get_y());
 
-    DynamicTextFont* dfont = DCAST(DynamicTextFont, RPLoader::load_font(params.font));
+    DynamicTextFont* dfont = DCAST(DynamicTextFont, RPLoader::load_font(font));
     //dfont->set_outline(LColor(0, 0, 0, 0.78), 1.6, 0.37);
     dfont->set_outline(LColor(0, 0, 0, 1), 1.6, 0.37);
     dfont->set_scale_factor(1.0);
-    dfont->set_texture_margin(int(params.pixel_size / 4.0 * 2.0));
+    dfont->set_texture_margin(int(pixel_size / 4.0 * 2.0));
     dfont->set_bg(LColor(0, 0, 0, 0));
     node->set_font(dfont);
-    set_pixel_size(params.pixel_size);
+    set_pixel_size(pixel_size);
 
     impl_->node_ = node;
 }

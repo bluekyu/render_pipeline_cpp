@@ -156,13 +156,12 @@ void Debugger::create_stats()
     const int num_lines = use_advanced_info() ? 6 : 1;
     for (int k = 0; k < num_lines; ++k)
     {
-        rpcore::TextNode::Parameters params;
-        params.parent = overlay_node;
-        params.pixel_size = 16.0f;
-        params.pos = LVecBase2(0, -k * 0.046f);
-        params.color = LVecBase3(0.7, 1, 1);
-        params.align = "right";
-        debug_lines.push_back(new rpcore::TextNode(params));
+        debug_lines.push_back(new TextNode(
+            overlay_node,
+            TextNode::Default::pixel_size,
+            LVecBase2(0, -k * 0.046f),
+            LVecBase3(0.7, 1, 1),
+            "right"));
     }
     debug_lines[0]->set_color(LColor(1, 1, 0, 1));
 }
@@ -178,10 +177,15 @@ void Debugger::create_hints()
     // Keybinding hints
     keybinding_instructions_ = new Sprite("/$$rp/data/gui/keybindings.png", fullscreen_node, 0.0f, 0.0f, true, true, false);
 
-    TextNode::Parameters params;
-    params.text = "F6: View Keyboard Shortcuts";
-    params.color = LVecBase3(0.8, 0.8, 0.8);
-    keybinding_text_ = new TextNode(params);
+    keybinding_text_ = new TextNode(
+        {},
+        TextNode::Default::pixel_size,
+        LVecBase2(0),
+        LVecBase3(0.8, 0.8, 0.8),
+        TextNode::Default::align,
+        TextNode::Default::font,
+        "F6: View Keyboard Shortcuts"
+    );
     toggle_keybindings_visible();
 }
 
@@ -223,7 +227,7 @@ void Debugger::handle_window_resize()
 
     for (const auto& text: debug_lines)
     {
-        text->set_pixel_size(16 * (std::max)(0.8, gui_scale));
+        text->set_pixel_size(16 * (std::max)(0.8f, gui_scale));
     }
 
     _buffer_viewer->center_on_screen();

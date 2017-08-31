@@ -34,15 +34,12 @@ namespace rpcore {
 class TextNode : public RPObject
 {
 public:
-    struct Parameters
+    struct Default
     {
-        NodePath parent = NodePath();
-        float pixel_size = 16.0f;
-        LVecBase2 pos = LVecBase2(0);
-        LVecBase3 color = LVecBase3(1);
-        std::string align = "left";
-        std::string font = "/$$rp/data/font/Roboto-Bold.ttf";
-        std::string text = "";
+        static const float pixel_size;
+        static const LVecBase3 color;
+        static const std::string align;
+        static const std::string font;
     };
 
 public:
@@ -50,7 +47,14 @@ public:
      * Constructs a new text node, forwaring the parameters to the internal
      * panda3d implementation
      */
-    TextNode(const Parameters& params=Parameters());
+    TextNode(
+        NodePath parent = {},
+        float pixel_size = Default::pixel_size,
+        const LVecBase2& pos = LVecBase2(0),
+        const LVecBase3& color = Default::color,
+        const std::string& align = Default::align,
+        const std::string& font = Default::font,
+        const std::string& text = {});
     ~TextNode();
 
     /** Returns the node path of the text. */
