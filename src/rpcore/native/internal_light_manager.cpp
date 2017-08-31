@@ -29,9 +29,9 @@
 
 #include <algorithm>
 
-namespace rpcore {
-
 NotifyCategoryDef(lightmgr, "");
+
+namespace rpcore {
 
 
 /**

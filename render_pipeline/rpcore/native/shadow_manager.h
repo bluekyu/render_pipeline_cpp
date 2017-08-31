@@ -40,10 +40,9 @@
 #include "shadow_source.h"
 #include "shadow_atlas.h"
 
-namespace rpcore {
-
 NotifyCategoryDecl(shadowmanager, EXPORT_CLASS, EXPORT_TEMPL);
 
+namespace rpcore {
 
 class ShadowManager  : public ReferenceCount {
 

@@ -27,9 +27,9 @@
 
 #include "render_pipeline/rpcore/native/tag_state_manager.h"
 
-namespace rpcore {
-
 NotifyCategoryDef(tagstatemgr, "");
+
+namespace rpcore {
 
 /**
  * @brief Constructs a new TagStateManager

@@ -30,9 +30,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-namespace rpcore {
-
 NotifyCategoryDef(iesdataset, "")
+
+namespace rpcore {
 
 /**
  * @brief Constructs a new empty dataset.

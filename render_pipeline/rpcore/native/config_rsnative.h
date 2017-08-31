@@ -32,10 +32,6 @@
 #include "configVariableString.h"
 #include "configVariableInt.h"
 
-namespace rpcore {
-
 NotifyCategoryDecl(rsnative, EXPORT_CLASS, EXPORT_TEMPL);
 
 extern void init_librsnative();
-
-}

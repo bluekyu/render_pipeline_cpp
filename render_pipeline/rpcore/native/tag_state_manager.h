@@ -38,9 +38,9 @@
 
 #include <render_pipeline/rpcore/config.hpp>
 
-namespace rpcore {
-
 NotifyCategoryDecl(tagstatemgr, EXPORT_CLASS, EXPORT_TEMPL);
+
+namespace rpcore {
 
 /**
  * @brief This class handles all different tag states

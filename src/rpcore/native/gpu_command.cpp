@@ -30,9 +30,9 @@
 #include <iomanip>
 #include <stdlib.h>
 
-namespace rpcore {
-
 NotifyCategoryDef(gpucommand, "");
+
+namespace rpcore {
 
 /**
  * @brief Constructs a new GPUCommand with the given command type.

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <LVecBase2.h>
+#include <lvecBase2.h>
 #include <pta_int.h>
 
 #include <render_pipeline/rpcore/rpobject.hpp>

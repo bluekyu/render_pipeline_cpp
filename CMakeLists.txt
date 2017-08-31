@@ -51,7 +51,7 @@ endif()
 
 # find flatbuffers
 if(NOT TARGET flatbuffers)
-    find_package(flatbuffers REQUIRED)
+    find_package(FlatBuffers REQUIRED)
 endif()
 
 set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
@@ -103,9 +103,13 @@ if(MSVC)
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/std:c++14>
     )
 else()
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-        PRIVATE cxx_generic_lambdas)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    if(CMAKE_VERSION VERSION_LESS 3.8)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++17)
+    else()
+        target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
+            PRIVATE cxx_std_17)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    endif()
 endif()
 
 target_compile_definitions(${PROJECT_NAME}

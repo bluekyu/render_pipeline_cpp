@@ -32,9 +32,9 @@
 #include "texture.h"
 #include "pnmImage.h"
 
-namespace rpcore {
-
 NotifyCategoryDecl(iesdataset, EXPORT_CLASS, EXPORT_TEMPL);
+
+namespace rpcore {
 
 
 /**

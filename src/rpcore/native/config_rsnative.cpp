@@ -31,8 +31,6 @@
 
 #include "dconfig.h"
 
-namespace rpcore {
-
 Configure(config_rsnative);
 NotifyCategoryDef(rsnative, "");
 
@@ -50,6 +48,4 @@ init_librsnative() {
 
   // RPLight::init_type();
   // RPPointLight::init_type();
-}
-
 }

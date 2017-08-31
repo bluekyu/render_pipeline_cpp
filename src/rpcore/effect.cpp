@@ -163,15 +163,11 @@ std::string Effect::Impl::convert_filename_to_name(const std::string& filepath)
 
 void Effect::Impl::parse_content(Effect& self, YAML::Node& parsed_yaml)
 {
-    YAML::Node& vtx_data = parsed_yaml["vertex"];
-    YAML::Node& geom_data = parsed_yaml["geometry"];
-    YAML::Node& frag_data = parsed_yaml["fragment"];
-
     for (const auto& pass_id_multiview: passes_)
     {
-        parse_shader_template(self, pass_id_multiview, "vertex", vtx_data);
-        parse_shader_template(self, pass_id_multiview, "geometry", geom_data);
-        parse_shader_template(self, pass_id_multiview, "fragment", frag_data);
+        parse_shader_template(self, pass_id_multiview, "vertex", parsed_yaml["vertex"]);
+        parse_shader_template(self, pass_id_multiview, "geometry", parsed_yaml["geometry"]);
+        parse_shader_template(self, pass_id_multiview, "fragment", parsed_yaml["fragment"]);
     }
 }
 

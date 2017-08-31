@@ -27,9 +27,9 @@
 
 #include "render_pipeline/rpcore/native/shadow_manager.h"
 
-namespace rpcore {
-
 NotifyCategoryDef(shadowmanager, "");
+
+namespace rpcore {
 
 /**
  * @brief Constructs a new shadow atlas

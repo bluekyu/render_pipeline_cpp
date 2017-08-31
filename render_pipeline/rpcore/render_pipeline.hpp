@@ -165,40 +165,12 @@ public:
 
     /** Get setting value iun pipeline setting. */
     ///@{
-    /** This is not implemented. */
-    template <class Type> Type get_setting(const std::string& setting_path) const;
-    template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
-
     /** Get YAML node from given flatten path in pipeline setting. */
     const YAML::Node& get_setting(const std::string& setting_path) const;
 
-    /** Get bool value from given flatten path in pipeline setting. */
-    template <> bool get_setting<bool>(const std::string& setting_path) const;
-    template <> bool get_setting<bool>(const std::string& setting_path, const bool& fallback) const;
-
-    /** Get int value from given flatten path in pipeline setting. */
-    template <> int get_setting(const std::string& setting_path) const;
-    template <> int get_setting(const std::string& setting_path, const int& fallback) const;
-
-    /** Get unsigned int value from given flatten path in pipeline setting. */
-    template <> unsigned int get_setting(const std::string& setting_path) const;
-    template <> unsigned int get_setting(const std::string& setting_path, const unsigned int& fallback) const;
-
-    /** Get size_t value from given flatten path in pipeline setting. */
-    template <> size_t get_setting(const std::string& setting_path) const;
-    template <> size_t get_setting(const std::string& setting_path, const size_t& fallback) const;
-
-    /** Get float value from given flatten path in pipeline setting. */
-    template <> float get_setting(const std::string& setting_path) const;
-    template <> float get_setting(const std::string& setting_path, const float& fallback) const;
-
-    /** Get double value from given flatten path in pipeline setting. */
-    template <> double get_setting(const std::string& setting_path) const;
-    template <> double get_setting(const std::string& setting_path, const double& fallback) const;
-
-    /** Get string value from given flatten path in pipeline setting. */
-    template <> std::string get_setting(const std::string& setting_path) const;
-    template <> std::string get_setting(const std::string& setting_path, const std::string& fallback) const;
+    /** This is not implemented. */
+    template <class Type> Type get_setting(const std::string& setting_path) const;
+    template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
     ///@}
 
     PandaFramework* get_panda_framework() const;
@@ -215,5 +187,35 @@ private:
     class Impl;
     std::unique_ptr<Impl> impl_;
 };
+
+// ************************************************************************************************
+
+/** Get bool value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL bool RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL bool RenderPipeline::get_setting(const std::string& setting_path, const bool& fallback) const;
+
+/** Get int value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL int RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL int RenderPipeline::get_setting(const std::string& setting_path, const int& fallback) const;
+
+/** Get unsigned int value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL unsigned int RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL unsigned int RenderPipeline::get_setting(const std::string& setting_path, const unsigned int& fallback) const;
+
+/** Get size_t value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL size_t RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL size_t RenderPipeline::get_setting(const std::string& setting_path, const size_t& fallback) const;
+
+/** Get float value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL float RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL float RenderPipeline::get_setting(const std::string& setting_path, const float& fallback) const;
+
+/** Get double value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL double RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL double RenderPipeline::get_setting(const std::string& setting_path, const double& fallback) const;
+
+/** Get string value from given flatten path in pipeline setting. */
+template <> RENDER_PIPELINE_DECL std::string RenderPipeline::get_setting(const std::string& setting_path) const;
+template <> RENDER_PIPELINE_DECL std::string RenderPipeline::get_setting(const std::string& setting_path, const std::string& fallback) const;
 
 }

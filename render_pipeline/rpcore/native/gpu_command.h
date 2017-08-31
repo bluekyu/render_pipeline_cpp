@@ -30,9 +30,9 @@
 #include "pandabase.h"
 #include "luse.h"
 
-namespace rpcore {
-
 NotifyCategoryDecl(gpucommand, EXPORT_CLASS, EXPORT_TEMPL);
+
+namespace rpcore {
 
 #define GPU_COMMAND_ENTRIES 32
 

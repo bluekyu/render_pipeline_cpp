@@ -38,9 +38,9 @@
 #define MAX_LIGHT_COUNT 65535
 #define MAX_SHADOW_SOURCES 2048
 
-namespace rpcore {
-
 NotifyCategoryDecl(lightmgr, EXPORT_CLASS, EXPORT_TEMPL);
+
+namespace rpcore {
 
 /**
  * @brief Internal class used for handling lights and shadows.
