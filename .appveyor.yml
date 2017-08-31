@@ -10,10 +10,8 @@ version: '{branch}-{build}'
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2017
-
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: x64
+image:
+- Visual Studio 2017
 
 # set clone depth
 clone_depth: 1
@@ -74,11 +72,21 @@ install:
 
 # build cache to preserve files/folders between builds
 cache:
-    - C:\projects\_cache -> .appveyor.yml
+- C:\projects\_cache -> .appveyor.yml
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration:
+- Release
+
+build:
+    parallel: true                  # enable MSBuild parallel builds
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
@@ -91,7 +99,7 @@ build_script:
     -Dyaml-cpp_DIR:PATH="C:/projects/_cache/yaml-cpp/CMake"
     -DFlatBuffers_ROOT:PATH="C:/projects/_cache/flatbuffers"
     ..
-- cmake --build . --config "Release" --target INSTALL
+- cmake --build . --config %CONFIGURATION% --target install
 - ps: popd
 
 after_build:
