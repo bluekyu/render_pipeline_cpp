@@ -5,6 +5,7 @@
 - [Render Pipeline C++ 빌드](build_rpcpp.md)
 
 ## 시스템
+- [설정](configuration.md)
 - [Render Pipeline Structures](structures.md)
 - [Virtual File System](virtual_filesystem.md)
 

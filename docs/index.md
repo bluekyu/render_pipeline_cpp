@@ -5,6 +5,7 @@
 - [Build Render Pipeline C++](build_rpcpp.md)
 
 ## System
+- [Configuration](configuration.md)
 - [Render Pipeline Structures](structures.md)
 - [Virtual File System](virtual_filesystem.md)
 
