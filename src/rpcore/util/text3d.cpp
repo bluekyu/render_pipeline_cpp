@@ -52,6 +52,11 @@ public:
     NodePath nodepath_;
 };
 
+const float Text3D::Default::pixel_size = 16;
+const LColor Text3D::Default::color(1);
+const std::string Text3D::Default::align("left");
+const std::string Text3D::Default::font = "/$$rp/data/font/Roboto-Bold.ttf";
+
 Text3D::Text3D(const std::string& node_name, NodePath parent, float pixel_size,
     const LVecBase3& pos, const LColor& color, const std::string& align, const std::string& font,
     const std::string& text): impl_(std::make_unique<Impl>())
