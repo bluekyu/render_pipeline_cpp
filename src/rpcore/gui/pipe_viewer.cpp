@@ -46,14 +46,16 @@ PipeViewer::PipeViewer(RenderPipeline* pipeline, NodePath parent): DraggableWind
 
 void PipeViewer::toggle()
 {
+    static const std::string task_name("RP_GUI_UpdatePipeViewer");
+
     if (_visible)
     {
-        Globals::base->remove_task("UpdatePipeViewer");
+        Globals::base->remove_task(task_name);
         hide();
     }
     else
     {
-        Globals::base->add_task(update_task, this, "RP_GUI_UpdatePipeViewer");
+        Globals::base->add_task(update_task, this, task_name);
         if (!_created)
             populate_content();
         show();
