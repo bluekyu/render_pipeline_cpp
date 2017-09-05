@@ -25,7 +25,7 @@
 #include <asyncTask.h>
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/gui/text.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 class GenericAsyncTask;
 
@@ -35,6 +35,8 @@ class DirectButton;
 }
 
 namespace rpcore {
+
+class Text;
 
 /** This is a simple draggable but not resizeable window. */
 class RENDER_PIPELINE_DECL DraggableWindow : public RPObject
@@ -99,24 +101,24 @@ private:
     /** Task which updates the window while being dragged. */
     static AsyncTask::DoneStatus on_tick(GenericAsyncTask* task, void* user_data);
 
-    void set_pos(const LVecBase2f& pos);
+    void set_pos(const LVecBase2& pos);
 
-    std::string _title;
-    NodePath _parent;
-    bool _dragging = false;
-    LVecBase2f _drag_offset = LVecBase2f(0);
-    LVecBase2f _pos = LVecBase2f(0);
+    std::string title_;
+    NodePath parent_;
+    bool dragging_ = false;
+    LVecBase2 drag_offset_ = LVecBase2(0);
+    LVecBase2 pos_ = LVecBase2(0);
 
-    float _context_scale;
-    float _context_width;
-    float _context_height;
-    LVecBase2f _set_pos;
+    float context_scale_;
+    float context_width_;
+    float context_height_;
+    LVecBase2 set_pos_;
 
-    Text* _window_title = nullptr;
-    PT(rppanda::DirectFrame) _border_frame = nullptr;
-    PT(rppanda::DirectFrame) _background = nullptr;
-    PT(rppanda::DirectFrame) _title_bar = nullptr;
-    PT(rppanda::DirectButton) _btn_close = nullptr;
+    std::unique_ptr<Text> window_title_;
+    PT(rppanda::DirectFrame) border_frame_ = nullptr;
+    PT(rppanda::DirectFrame) background_ = nullptr;
+    PT(rppanda::DirectFrame) title_bar_ = nullptr;
+    PT(rppanda::DirectButton) btn_close_ = nullptr;
 };
 
 // ************************************************************************************************
@@ -141,14 +143,14 @@ inline void DraggableWindow::stop_drag(GenericAsyncTask* ev, bool clean_exit, vo
 }
 
 /** Moves the window to the specified position. */
-inline void DraggableWindow::set_pos(const LVecBase2f& pos)
+inline void DraggableWindow::set_pos(const LVecBase2& pos)
 {
-    _pos = pos;
-    _pos.set_x((std::max)(_pos.get_x(), -width_ + 100.0f));
-    _pos.set_y((std::max)(_pos.get_y(), 25.0f));
-    _pos.set_x((std::min)(_pos.get_x(), _context_width - 100.0f));
-    _pos.set_y((std::min)(_pos.get_y(), _context_height - 50.0f));
-    node_.set_pos(_pos.get_x(), 1, -_pos.get_y());
+    pos_ = pos;
+    pos_.set_x((std::max)(pos_.get_x(), -width_ + 100.0f));
+    pos_.set_y((std::max)(pos_.get_y(), 25.0f));
+    pos_.set_x((std::min)(pos_.get_x(), context_width_ - 100.0f));
+    pos_.set_y((std::min)(pos_.get_y(), context_height_ - 50.0f));
+    node_.set_pos(pos_.get_x(), 1, -pos_.get_y());
 }
 
 }

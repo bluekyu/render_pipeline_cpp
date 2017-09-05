@@ -33,6 +33,7 @@
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/util/generic.hpp"
 #include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
 
 #include "rpcore/util/display_shader_builder.hpp"
 

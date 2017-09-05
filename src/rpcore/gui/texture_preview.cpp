@@ -31,6 +31,7 @@
 #include "render_pipeline/rpcore/gui/slider.hpp"
 #include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rppanda/gui/direct_slider.hpp"
+#include "render_pipeline/rpcore/gui/text.hpp"
 
 #include "rpcore/util/display_shader_builder.hpp"
 

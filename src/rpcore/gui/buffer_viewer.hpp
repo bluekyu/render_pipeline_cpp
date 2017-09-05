@@ -59,7 +59,7 @@ public:
 
 private:
     /** Creates the window components. */
-    virtual void create_components();
+    void create_components() override;
 
     /** Sets whether images and textures will be shown. */
     void set_show_images(bool arg, const std::shared_ptr<void>&);

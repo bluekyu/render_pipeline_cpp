@@ -55,7 +55,7 @@ private:
     void populate_content();
 
     /** Internal method to create the window components. */
-    virtual void create_components();
+    void create_components() override;
 
     RenderPipeline* _pipeline;
     int _scroll_width = 8000;
