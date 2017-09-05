@@ -219,7 +219,7 @@ void MovementController::reset_to_initial()
     }
 }
 
-ClockObject* MovementController::get_clock_obj()
+ClockObject* MovementController::get_clock_obj() const
 {
     return impl_->showbase_->get_task_mgr()->get_clock();
 }

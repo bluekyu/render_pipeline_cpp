@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
+#include "rpcore/gui/exposure_widget.hpp"
 
 #include <computeNode.h>
 

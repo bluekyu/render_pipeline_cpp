@@ -57,7 +57,6 @@ set(header_rpcore
 set(header_rpcore_gui
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/exposure_widget.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/sprite.hpp"
@@ -235,6 +234,7 @@ set(source_rpcore_gui
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/error_message_display.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/exposure_widget.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/exposure_widget.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/fps_chart.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/labeled_checkbox.cpp"

@@ -85,7 +85,7 @@ public:
     void increase_bobbing_speed();
     void decrease_bobbing_speed();
 
-    ClockObject* get_clock_obj();
+    ClockObject* get_clock_obj() const;
 
     void setup();
 

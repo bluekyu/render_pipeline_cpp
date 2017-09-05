@@ -38,7 +38,6 @@
 #include "render_pipeline/rpcore/light_manager.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
-#include "render_pipeline/rpcore/gui/exposure_widget.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
@@ -49,6 +48,7 @@
 #include <rpplugins/pssm/include/pssm_plugin.hpp>
 
 #include "rpcore/gpu_command_queue.hpp"
+#include "rpcore/gui/exposure_widget.hpp"
 #include "rpcore/gui/text_node.hpp"
 #include "rpcore/gui/buffer_viewer.hpp"
 #include "rpcore/gui/error_message_display.hpp"

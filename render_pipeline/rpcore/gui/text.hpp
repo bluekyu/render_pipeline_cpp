@@ -58,10 +58,10 @@ public:
      */
     void set_text(const std::string& text);
 
-    const LVecBase2f& get_initial_pos() const;
+    const LVecBase2& get_initial_pos() const;
 
 private:
-    LVecBase2f initial_pos_;
+    LVecBase2 initial_pos_;
     rppanda::OnscreenText node_;
 };
 
@@ -80,7 +80,7 @@ inline void Text::set_text(const std::string& text)
     node_.set_text(text);
 }
 
-inline const LVecBase2f& Text::get_initial_pos() const
+inline const LVecBase2& Text::get_initial_pos() const
 {
     return initial_pos_;
 }

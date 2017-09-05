@@ -75,19 +75,19 @@ private:
     /** Internal callback when the node gets no longer hovered. */
     static void on_node_leave(const Event* ev, void* user_data);
 
-    Checkbox* checkbox_;
-    Text* text_;
+    std::unique_ptr<Checkbox> checkbox_;
+    std::unique_ptr<Text> text_;
     LVecBase3 text_color_;
 };
 
 inline Checkbox* LabeledCheckbox::get_checkbox() const
 {
-    return checkbox_;
+    return checkbox_.get();
 }
 
 inline Text* LabeledCheckbox::get_label() const
 {
-    return text_;
+    return text_.get();
 }
 
 inline const LVecBase3& LabeledCheckbox::get_text_color() const

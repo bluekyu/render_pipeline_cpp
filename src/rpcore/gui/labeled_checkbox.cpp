@@ -43,9 +43,9 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
     if (!enabled)
         text_color_ = LVecBase3(1.0f, 0.0f, 0.28f);
 
-    checkbox_ = new Checkbox(parent, x, y, chb_callback, chb_args, radio, expand_width, chb_checked, enabled);
+    checkbox_ = std::make_unique<Checkbox>(parent, x, y, chb_callback, chb_args, radio, expand_width, chb_checked, enabled);
 
-    text_ = new Text(text, parent, x+26, y+9, text_size, Text::Default::align, text_color_, true);
+    text_ = std::make_unique<Text>(text, parent, x+26, y+9, text_size, Text::Default::align, text_color_, true);
 
     if (enabled)
     {
@@ -54,11 +54,7 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
     }
 }
 
-LabeledCheckbox::~LabeledCheckbox()
-{
-    delete text_;
-    delete checkbox_;
-}
+LabeledCheckbox::~LabeledCheckbox() = default;
 
 void LabeledCheckbox::on_node_enter(const Event* ev, void* user_data)
 {
