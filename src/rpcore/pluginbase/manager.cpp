@@ -43,12 +43,26 @@ namespace rpcore {
 class PluginManager::Impl
 {
 public:
+    struct PluginThirdpartyInfo
+    {
+        std::string name;
+        std::vector<std::string> load_paths;
+        std::string description;
+
+        std::vector<std::shared_ptr<boost::dll::shared_library>> handles;
+    };
+
+public:
     Impl(PluginManager& self, RenderPipeline& pipeline);
 
     void unload();
 
+    void load_thirdparty(const std::string& plugin_id);
+
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
+
+    void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
 
     void load_setting_overrides(const std::string& override_path);
 
@@ -74,6 +88,7 @@ public:
 
     std::unordered_set<std::string> enabled_plugins_;
     std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
+    std::unordered_map<std::string, std::vector<PluginThirdpartyInfo>> plugin_thirdparties_;
 
     std::unordered_map<std::string, BasePlugin::PluginInfo> plugin_info_map_;
 
@@ -111,28 +126,81 @@ void PluginManager::Impl::unload()
     day_settings_.clear();
     enabled_plugins_.clear();
 
-    // unload plugins.
+    // unload DLL of plugins.
     plugin_creators_.clear();
+
+    // unload DLLs of third-party.
+    plugin_thirdparties_.clear();
+}
+
+void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
+{
+    auto thirdparties = plugin_thirdparties_.find(plugin_id);
+    if (thirdparties == plugin_thirdparties_.end())
+        return;
+
+    const boost::filesystem::path plugin_dir_path =
+        boost::filesystem::canonical(boost::filesystem::path(plugin_dir_) / plugin_id);
+
+    for (auto& thirdparty_info: thirdparties->second)
+    {
+        self_.trace(fmt::format("Loading DLLs of third-party ({}) in plugin ({})", thirdparty_info.name, plugin_id));
+        for (const auto& load_path_string: thirdparty_info.load_paths)
+        {
+            if (load_path_string.empty())
+            {
+                self_.warn(fmt::format("A DLL path is empty string in plugin ({}).", plugin_id));
+                continue;
+            }
+
+            const boost::filesystem::path load_path(load_path_string);
+            if (!load_path.is_relative())
+            {
+                self_.error(fmt::format("A DLL path ({}) is NOT a relative path in plugin ({}).",
+                    load_path.string(), plugin_id));
+                continue;
+            }
+
+            boost::filesystem::path shared_lib_path;
+            try
+            {
+                // check if it is in subdirectory.
+                shared_lib_path = boost::filesystem::weakly_canonical(plugin_dir_path / load_path);
+                if (std::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
+                    shared_lib_path.begin(), shared_lib_path.end()).first != plugin_dir_path.end())
+                {
+                    self_.error(fmt::format("A DLL path ({}) is NOT in subdirectory of plugin ({}).",
+                        shared_lib_path.string(), plugin_id));
+                    continue;
+                }
+
+                thirdparty_info.handles.push_back(std::make_shared<boost::dll::shared_library>(
+                    shared_lib_path,
+                    boost::dll::load_mode::append_decorations));
+            }
+            catch (const boost::filesystem::filesystem_error& err)
+            {
+                self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", load_path_string, plugin_id));
+                self_.error(fmt::format("Boost::Filesystem error message: {}", err.what()));
+            }
+            catch (const std::exception& err)
+            {
+                self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", shared_lib_path.string(), plugin_id));
+                self_.error(fmt::format("Loaded path: {}", shared_lib_path.string()));
+                self_.error(fmt::format("Boost::DLL error message: {}", err.what()));
+            }
+        }
+    }
 }
 
 std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& plugin_id)
 {
-    boost::filesystem::path plugin_path(plugin_dir_);
+    boost::filesystem::path plugin_path = boost::filesystem::canonical(boost::filesystem::path(plugin_dir_) / plugin_id);
 
 #if defined(RENDER_PIPELINE_BUILD_CFG_POSTFIX)
-    plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX));
+    plugin_path = plugin_path / ("rpplugin_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);
 #else
-    plugin_path = boost::filesystem::absolute(plugin_path / plugin_id / ("rpplugin_" + plugin_id));
-#endif
-
-#if defined(BOOST_OS_WINDOWS)
-    // try to use extended-length in Windows
-    // see http://www.boost.org/doc/libs/1_64_0/libs/filesystem/doc/reference.html#long-path-warning
-    if (plugin_path.size() > 259)
-    {
-        self_.warn(fmt::format("Plugin ({}) path has long path. Try to use extended-length path.", plugin_id));
-        plugin_path = "\\\\?\\" + plugin_path.string();
-    }
+    plugin_path = plugin_path / ("rpplugin_" + plugin_id);
 #endif
 
     self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
@@ -149,12 +217,102 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     catch (const std::exception& err)
     {
         self_.error(fmt::format("Failed to import plugin or to create plugin ({}).", plugin_id));
-        self_.error(fmt::format("Loaded path: {}{}", plugin_path.string(), boost::dll::shared_library::suffix().string()));
+        self_.error(fmt::format("Loaded path: {}", plugin_path.string()));
         self_.error(fmt::format("Boost::DLL Error message: {}", err.what()));
         return nullptr;
     }
 
     // TODO: implement
+}
+
+void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)
+{
+    const Filename& config_file = rppanda::join(plugin_pth, "config.yaml");
+
+    YAML::Node config;
+    if (!rplibs::load_yaml_file(config_file, config))
+        return;
+
+    // When you don't specify anything in the settings, instead of
+    // returning an empty dictionary, pyyaml returns None
+
+    if (!config["information"])
+    {
+        self_.error(fmt::format("Plugin ({}) configuration does NOT have information.", plugin_id));
+        return;
+    }
+
+    const auto& info_node = config["information"];
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo{
+        info_node["category"].as<std::string>("empty_category"),
+        info_node["name"].as<std::string>("empty_name"),
+        info_node["author"].as<std::string>("empty_author"),
+        info_node["version"].as<std::string>(""),
+        info_node["description"].as<std::string>("empty_description") });
+#else
+    impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo{
+        info_node["category"].as<std::string>("empty_category"),
+        info_node["name"].as<std::string>("empty_name"),
+        info_node["author"].as<std::string>("empty_author"),
+        info_node["version"].as<std::string>("empty_version"),
+        info_node["description"].as<std::string>("empty_description") };
+#endif
+
+    if (config["thirdparty"] && config["thirdparty"].size() != 0)
+    {
+        if (!config["thirdparty"].IsSequence())
+            self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'thirdparty'?");
+
+        auto& thirdparties = plugin_thirdparties_[plugin_id];
+        for (auto thirdparty_node: config["thirdparty"])
+        {
+            PluginThirdpartyInfo plugin_thirdparty;
+            plugin_thirdparty.name = thirdparty_node["name"].as<std::string>("empty_name");
+            plugin_thirdparty.description = thirdparty_node["description"].as<std::string>("empty_description");
+
+            if (thirdparty_node["load_paths"])
+            {
+                if (thirdparty_node["load_paths"].IsSequence())
+                {
+                    for (const auto paths: thirdparty_node["load_paths"])
+                        plugin_thirdparty.load_paths.push_back(paths.as<std::string>(""));
+                }
+                else
+                {
+                    plugin_thirdparty.load_paths.push_back(thirdparty_node["load_paths"].as<std::string>(""));
+                }
+            }
+
+            thirdparties.push_back(std::move(plugin_thirdparty));
+        }
+    }
+
+    if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
+        self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'settings'?");
+
+    SettingsDataType& settings = settings_[plugin_id];
+    for (auto settings_node: config["settings"])
+    {
+        // XXX: omap of yaml-cpp is list.
+        for (auto key_val: settings_node)
+        {
+            settings[key_val.first.as<std::string>()] = make_setting_from_data(key_val.second);
+        }
+    }
+
+    if (requires_daytime_settings_)
+    {
+        DaySettingsDataType& day_settings = day_settings_[plugin_id];
+        for (auto daytime_settings_node: config["daytime_settings"])
+        {
+            // XXX: omap of yaml-cpp is list.
+            for (auto key_val : daytime_settings_node)
+            {
+                day_settings[key_val.first.as<std::string>()] = make_daysetting_from_data(key_val.second);
+            }
+        }
+    }
 }
 
 void PluginManager::Impl::load_setting_overrides(const std::string& override_path)
@@ -303,6 +461,8 @@ void PluginManager::load()
             continue;
         }
 
+        impl_->load_thirdparty(plugin_id);
+
         std::shared_ptr<BasePlugin> handle = impl_->load_plugin(plugin_id);
 
         if (handle)
@@ -349,63 +509,7 @@ void PluginManager::load_base_settings(const Filename& plugin_dir)
 
 void PluginManager::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)
 {
-    const Filename& config_file = rppanda::join(plugin_pth, "config.yaml");
-
-    YAML::Node config;
-    if (!rplibs::load_yaml_file(config_file, config))
-        return;
-
-    // When you don't specify anything in the settings, instead of
-    // returning an empty dictionary, pyyaml returns None
-
-    if (!config["information"])
-    {
-        error(fmt::format("Plugin ({}) configuration does NOT have information.", plugin_id));
-        return;
-    }
-
-    const auto& info_node = config["information"];
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    impl_->plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo {
-        info_node["category"].as<std::string>("empty_category"),
-        info_node["name"].as<std::string>("empty_name"),
-        info_node["author"].as<std::string>("empty_author"),
-        info_node["version"].as<std::string>("empty_version"),
-        info_node["description"].as<std::string>("empty_description") });
-#else
-    impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo {
-        info_node["category"].as<std::string>("empty_category"),
-        info_node["name"].as<std::string>("empty_name"),
-        info_node["author"].as<std::string>("empty_author"),
-        info_node["version"].as<std::string>("empty_version"),
-        info_node["description"].as<std::string>("empty_description") };
-#endif
-
-    if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
-        fatal("Invalid plugin configuration, did you miss '!!omap'?");
-
-    SettingsDataType& settings = impl_->settings_[plugin_id];
-    for (auto settings_node: config["settings"])
-    {
-        // XXX: omap of yaml-cpp is list.
-        for (auto key_val: settings_node)
-        {
-            settings[key_val.first.as<std::string>()] = make_setting_from_data(key_val.second);
-        }
-    }
-
-    if (impl_->requires_daytime_settings_)
-    {
-        DaySettingsDataType& day_settings = impl_->day_settings_[plugin_id];
-        for (auto daytime_settings_node: config["daytime_settings"])
-        {
-            // XXX: omap of yaml-cpp is list.
-            for (auto key_val: daytime_settings_node)
-            {
-                day_settings[key_val.first.as<std::string>()] = make_daysetting_from_data(key_val.second);
-            }
-        }
-    }
+    impl_->load_plugin_settings(plugin_id, plugin_pth);
 }
 
 void PluginManager::load_daytime_overrides(const std::string& override_path)
