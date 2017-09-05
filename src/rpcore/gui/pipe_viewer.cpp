@@ -48,7 +48,7 @@ void PipeViewer::toggle()
 {
     static const std::string task_name("RP_GUI_UpdatePipeViewer");
 
-    if (_visible)
+    if (visible_)
     {
         Globals::base->remove_task(task_name);
         hide();
@@ -76,15 +76,15 @@ void PipeViewer::create_components()
     DraggableWindow::create_components();
 
     auto content_frame_options = std::make_shared<rppanda::DirectScrolledFrame::Options>();
-    content_frame_options->frame_size = LVecBase4f(0, _width - 40, 0, _height - 80);
+    content_frame_options->frame_size = LVecBase4f(0, width_ - 40, 0, height_ - 80);
     content_frame_options->canvas_size = LVecBase4f(0, _scroll_width, 0, _scroll_height);
     content_frame_options->auto_hide_scroll_bars = false;
     content_frame_options->scroll_bar_width = 20.0f;
     content_frame_options->frame_color = LColorf(0);
     content_frame_options->vertical_scroll_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->relief = PGFrameStyle::Type(0);
-    content_frame_options->pos = LVecBase3f(20, 1, -_height + 20);
-    _content_frame = new rppanda::DirectScrolledFrame(_node, content_frame_options);
+    content_frame_options->pos = LVecBase3f(20, 1, -height_ + 20);
+    _content_frame = new rppanda::DirectScrolledFrame(node_, content_frame_options);
 
     _content_node = _content_frame->get_canvas().attach_new_node("PipeComponents");
     _content_node.set_scale(1, 1, -1);

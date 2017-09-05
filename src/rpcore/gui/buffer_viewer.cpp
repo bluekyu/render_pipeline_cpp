@@ -55,7 +55,7 @@ BufferViewer::BufferViewer(RenderPipeline* pipeline, NodePath parent): Draggable
 
 void BufferViewer::toggle()
 {
-    if (_visible)
+    if (visible_)
     {
         remove_components();
         hide();
@@ -115,8 +115,8 @@ void BufferViewer::create_components()
     DraggableWindow::create_components();
 
     auto content_frame_options = std::make_shared<rppanda::DirectScrolledFrame::Options>();
-    content_frame_options->frame_size = LVecBase4f(0, _width - 15, 0, _height - 70);
-    content_frame_options->canvas_size = LVecBase4f(0, _width - 80, 0, _scroll_height);
+    content_frame_options->frame_size = LVecBase4f(0, width_ - 15, 0, height_ - 70);
+    content_frame_options->canvas_size = LVecBase4f(0, width_ - 80, 0, _scroll_height);
     content_frame_options->auto_hide_scroll_bars = false;
     content_frame_options->scroll_bar_width = 12.0f;
     content_frame_options->frame_color = LColorf(0, 0, 0, 0);
@@ -133,14 +133,14 @@ void BufferViewer::create_components()
     content_frame_options->horizontal_scroll_options->thumb_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->inc_button_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->dec_button_options->relief = PGFrameStyle::Type(0);
-    content_frame_options->pos = LVecBase3f(0, 1, -_height);
-    _content_frame = new rppanda::DirectScrolledFrame(_node, content_frame_options);
+    content_frame_options->pos = LVecBase3f(0, 1, -height_);
+    _content_frame = new rppanda::DirectScrolledFrame(node_, content_frame_options);
 
     _content_node = _content_frame->get_canvas().attach_new_node("BufferComponents");
     _content_node.set_scale(1, 1, -1);
     _content_node.set_z(_scroll_height);
 
-    _chb_show_images = std::make_shared<LabeledCheckbox>(_node, 10, 43,
+    _chb_show_images = std::make_shared<LabeledCheckbox>(node_, 10, 43,
         std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1, std::placeholders::_2),
         nullptr, false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
 }
@@ -154,7 +154,7 @@ void BufferViewer::set_show_images(bool arg, const std::shared_ptr<void>&)
 void BufferViewer::set_scroll_height(int height)
 {
     _scroll_height = height;
-    _content_frame->set_canvas_size(LVecBase4f(0, _width - 80.0f, 0, _scroll_height));
+    _content_frame->set_canvas_size(LVecBase4f(0, width_ - 80.0f, 0, _scroll_height));
     _content_node.set_z(_scroll_height);
 }
 

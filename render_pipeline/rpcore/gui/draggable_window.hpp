@@ -37,7 +37,7 @@ class DirectButton;
 namespace rpcore {
 
 /** This is a simple draggable but not resizeable window. */
-class DraggableWindow : public RPObject
+class RENDER_PIPELINE_DECL DraggableWindow : public RPObject
 {
 public:
     struct Default
@@ -68,10 +68,10 @@ protected:
     /** Creates the window components. */
     virtual void create_components();
 
-    int _width;
-    int _height;
-    bool _visible = true;
-    NodePath _node;
+    int width_;
+    int height_;
+    bool visible_ = true;
+    NodePath node_;
 
 private:
     /** Gets called when the user starts dragging the window. */
@@ -123,16 +123,16 @@ private:
 
 inline void DraggableWindow::show()
 {
-    _visible = true;
+    visible_ = true;
     center_on_screen();
-    _node.show();
+    node_.show();
 }
 
 inline void DraggableWindow::hide()
 {
-    _visible = false;
+    visible_ = false;
     stop_drag(nullptr, this);
-    _node.hide();
+    node_.hide();
 }
 
 inline void DraggableWindow::stop_drag(GenericAsyncTask* ev, bool clean_exit, void* user_data)
@@ -144,11 +144,11 @@ inline void DraggableWindow::stop_drag(GenericAsyncTask* ev, bool clean_exit, vo
 inline void DraggableWindow::set_pos(const LVecBase2f& pos)
 {
     _pos = pos;
-    _pos.set_x((std::max)(_pos.get_x(), -_width + 100.0f));
+    _pos.set_x((std::max)(_pos.get_x(), -width_ + 100.0f));
     _pos.set_y((std::max)(_pos.get_y(), 25.0f));
     _pos.set_x((std::min)(_pos.get_x(), _context_width - 100.0f));
     _pos.set_y((std::min)(_pos.get_y(), _context_height - 50.0f));
-    _node.set_pos(_pos.get_x(), 1, -_pos.get_y());
+    node_.set_pos(_pos.get_x(), 1, -_pos.get_y());
 }
 
 }

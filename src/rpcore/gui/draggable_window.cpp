@@ -36,7 +36,7 @@ namespace rpcore {
 const std::string DraggableWindow::Default::title = "Window";
 
 DraggableWindow::DraggableWindow(int width, int height, const std::string& title, NodePath parent): RPObject(std::string("Window-")+title),
-    _width(width), _height(height), _title(title)
+    width_(width), height_(height), _title(title)
 {
     _parent = parent.is_empty() ? Globals::base->get_pixel_2d() : parent;
 }
@@ -51,7 +51,7 @@ void DraggableWindow::center_on_screen()
     _context_scale = 1.0f / _parent.get_sx();
     _context_width = Globals::native_resolution.get_x() * _context_scale;
     _context_height = Globals::native_resolution.get_y() * _context_scale;
-    set_pos(LVecBase2f((_context_width - _width) / 2.0f, (_context_height - _height) / 2.0f));
+    set_pos(LVecBase2f((_context_width - width_) / 2.0f, (_context_height - height_) / 2.0f));
 }
 
 void DraggableWindow::set_title(const std::string& title)
@@ -62,41 +62,41 @@ void DraggableWindow::set_title(const std::string& title)
 
 void DraggableWindow::create_components()
 {
-    _node = _parent.attach_new_node("Window");
-    _node.set_pos(_pos.get_x(), 1, -_pos.get_y());
+    node_ = _parent.attach_new_node("Window");
+    node_.set_pos(_pos.get_x(), 1, -_pos.get_y());
     int border_px = 1;
-    const LVecBase4f border_frame_size(-border_px, _width + border_px, border_px, -_height - border_px);
+    const LVecBase4f border_frame_size(-border_px, width_ + border_px, border_px, -height_ - border_px);
 
     auto border_frame_options = std::make_shared<rppanda::DirectFrame::Options>();
     border_frame_options->pos = LVecBase3f(0, 1, 0);
     border_frame_options->frame_size = border_frame_size;
     border_frame_options->frame_color = LColorf(24 / 255.0, 131 / 255.0, 215 / 255.0, 1);
     border_frame_options->state = rppanda::NORMAL;
-    _border_frame = new rppanda::DirectFrame(_node, border_frame_options);
+    _border_frame = new rppanda::DirectFrame(node_, border_frame_options);
 
     auto background_options = std::make_shared<rppanda::DirectFrame::Options>();
     background_options->pos = LVecBase3f(0, 1, 0);
-    background_options->frame_size = LVecBase4f(0, _width, 0, -_height);
+    background_options->frame_size = LVecBase4f(0, width_, 0, -height_);
     background_options->frame_color = LColorf(0.1f, 0.1f, 0.1f, 1.0f);
-    _background = new rppanda::DirectFrame(_node, background_options);
+    _background = new rppanda::DirectFrame(node_, background_options);
 
     auto title_bar_options = std::make_shared<rppanda::DirectFrame::Options>();
     title_bar_options->pos = LVecBase3f(0, 1, 0);
-    title_bar_options->frame_size = LVecBase4f(0, _width, 0, -25);
+    title_bar_options->frame_size = LVecBase4f(0, width_, 0, -25);
     title_bar_options->frame_color = LColorf(1, 1, 1, 1);
     title_bar_options->state = rppanda::NORMAL;
-    _title_bar = new rppanda::DirectFrame(_node, title_bar_options);
+    _title_bar = new rppanda::DirectFrame(node_, title_bar_options);
 
-    _window_title = new Text(_title, _node, 8.0f, 17.0f, 13.0f, "left", LVecBase3f(0.15f), true);
+    _window_title = new Text(_title, node_, 8.0f, 17.0f, 13.0f, "left", LVecBase3f(0.15f), true);
 
     auto btn_close_options = std::make_shared<rppanda::DirectButton::Options>();
     btn_close_options->relief = rppanda::FLAT;
     btn_close_options->press_effect = true;
-    btn_close_options->pos = LVecBase3f(_width - 22, 1, -12);
+    btn_close_options->pos = LVecBase3f(width_ - 22, 1, -12);
     btn_close_options->frame_color = LColorf(1.0f, 0.2f, 0.2f, 0.5f);
     btn_close_options->scale = LVecBase3f(45 / 2.0f, 1.0f, 24 / 2.0f);
     btn_close_options->image = { std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window.png")) };
-    _btn_close = new rppanda::DirectButton(_node, btn_close_options);
+    _btn_close = new rppanda::DirectButton(node_, btn_close_options);
 
     // Init bindings
     _btn_close->set_transparency(TransparencyAttrib::M_alpha);
@@ -111,8 +111,8 @@ void DraggableWindow::start_drag(const Event* ev, void* user_data)
 {
     DraggableWindow* self = reinterpret_cast<DraggableWindow*>(user_data);
     self->_dragging = true;
-    self->_node.detach_node();
-    self->_node.reparent_to(self->_parent);
+    self->node_.detach_node();
+    self->node_.reparent_to(self->_parent);
     GenericAsyncTask* task = Globals::base->add_task(on_tick, self, "UIWindowDrag");
     task->set_upon_death(stop_drag);
 

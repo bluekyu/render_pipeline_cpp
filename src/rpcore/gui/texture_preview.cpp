@@ -52,8 +52,8 @@ void TexturePreview::present(Texture* tex)
 
     const int w = tex->get_x_size();
     const int h = tex->get_y_size();
-    int display_w = _width - 40.0f;
-    int display_h = _height - 110.0f;
+    int display_w = width_ - 40.0f;
+    int display_h = height_ - 110.0f;
     if (h > 1)
     {
         float scale_x = display_w / float(w);
@@ -82,7 +82,7 @@ void TexturePreview::present(Texture* tex)
     const std::string& size_desc = (boost::format("Estimated memory: %2.2f MB") %
         (estimated_bytes / (1024.0f * 1024.0f))).str();
 
-    Text size_desc_text(size_desc, _content_node, _width-20.0f, 70.0f, 18, "right",
+    Text size_desc_text(size_desc, _content_node, width_-20.0f, 70.0f, 18, "right",
         LVecBase3(0.34f, 0.564f, 0.192f));
 
     int x_pos = static_cast<int>(size_desc.length()) * 9 + 140;
@@ -179,7 +179,7 @@ void TexturePreview::set_enable_tonemap(bool arg, const std::shared_ptr<void>&)
 void TexturePreview::create_components()
 {
     DraggableWindow::create_components();
-    _content_node = _node.attach_new_node("content");
+    _content_node = node_.attach_new_node("content");
 }
 
 }
