@@ -14,6 +14,12 @@
 #
 #   panda3d_FOUND            - True if panda3d has been found and can be used
 #
+# This module reads hints about search locations from variables::
+#
+#   panda3d_ROOT             - Preferred installation prefix
+#   panda3d_ROOT_DEBUG       - Preferred Debug installation prefix (Panda3D optimization level 1-2)
+#   panda3d_ROOT_RELEASE     - Preferred Release installation prefix (Panda3D optimization level 3-4)
+#
 # The following `IMPORTED` targets are also defined::
 #
 #   panda3d::panda3d    - Target for the Panda3D necessary libraries.
@@ -23,8 +29,7 @@ cmake_minimum_required(VERSION 3.6)
 
 find_path(panda3d_INCLUDE_DIR
     NAMES "pandaFramework.h"
-    PATHS "${panda3d_ROOT}"
-    PATH_SUFFIXES include
+    HINTS "${panda3d_ROOT}/include"
 )
 
 set(panda3d_DEFAULT_COMPONENTS p3framework panda pandaexpress p3dtool p3dtoolconfig p3direct p3interrogatedb)
@@ -36,50 +41,76 @@ set(panda3d_NON_DEFAULT_COMPONENTS ${panda3d_FIND_COMPONENTS})
 list(REMOVE_ITEM panda3d_NON_DEFAULT_COMPONENTS ${panda3d_DEFAULT_COMPONENTS})
 
 if(WIN32)
-    set(panda3d_LIB_PREFIX "lib")
+    set(panda3d_lib_prefix "lib")
 else()
-    set(panda3d_LIB_PREFIX "")
+    set(panda3d_lib_prefix "")
 endif()
+set(panda3d_lib_suffix_RELEASE "")
+set(panda3d_lib_suffix_DEBUG "_d")
+set(panda3d_configurations "DEBUG" "RELEASE")
 
-foreach(COMPONENT_NAME ${panda3d_FIND_COMPONENTS})
-    find_library(panda3d_${COMPONENT_NAME}_LIBRARY
-        NAMES ${panda3d_LIB_PREFIX}${COMPONENT_NAME}
-        PATHS "${panda3d_ROOT}"
-        PATH_SUFFIXES lib
-    )
-    list(APPEND panda3d_LIBRARY ${panda3d_${COMPONENT_NAME}_LIBRARY})
+foreach(configuration ${panda3d_configurations})
+    foreach(component_name ${panda3d_FIND_COMPONENTS})
+        find_library(panda3d_${component_name}_LIBRARY_${configuration}
+            NAMES ${panda3d_lib_prefix}${component_name}${panda3d_lib_suffix_${configuration}}
+            HINTS "${panda3d_ROOT_${configuration}}" "${panda3d_ROOT}"
+            PATH_SUFFIXES "lib"
+        )
+        list(APPEND panda3d_LIBRARY_${configuration} ${panda3d_${component_name}_LIBRARY_${configuration}})
+    endforeach()
 endforeach()
-#find_library(panda3d_LIBRARY_DEBUG
-#    NAMES ${panda3d_FIND_COMPONENTS}
-#    HINTS ${panda3d_LIBRARYDIR}
-#    PATH_SUFFIXES lib64 lib
-#)
 
 # Set panda3d_FOUND
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(panda3d
     FOUND_VAR panda3d_FOUND
-    REQUIRED_VARS panda3d_LIBRARY panda3d_INCLUDE_DIR
+    REQUIRED_VARS panda3d_INCLUDE_DIR
 )
 
 if(panda3d_FOUND)
     message(STATUS "Found the following Panda3D libraries:")
-    foreach(COMPONENT ${panda3d_FIND_COMPONENTS})
-        message (STATUS "  ${COMPONENT}")
-    endforeach()
 
     # create targets of found components
-    foreach(COMPONENT_NAME ${panda3d_FIND_COMPONENTS})
-        if(NOT TARGET panda3d::${COMPONENT_NAME})
-            add_library(panda3d::${COMPONENT_NAME} UNKNOWN IMPORTED)
-            set_target_properties(panda3d::${COMPONENT_NAME} PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES "${panda3d_INCLUDE_DIR}"
-                IMPORTED_LOCATION "${panda3d_${COMPONENT_NAME}_LIBRARY}"
-                IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-            )
+    foreach(component_name ${panda3d_FIND_COMPONENTS})
+        if(NOT TARGET panda3d::${component_name})
+            add_library(panda3d::${component_name} UNKNOWN IMPORTED)
 
-            # Make variables changeable to the advanced user
-            mark_as_advanced(panda3d_${COMPONENT_NAME}_LIBRARY)
+            if(EXISTS "${panda3d_${component_name}_LIBRARY_RELEASE}")
+                set_property(TARGET panda3d::${component_name} APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+                set_property(TARGET panda3d::${component_name} APPEND PROPERTY IMPORTED_CONFIGURATIONS RELWITHDEBINFO)
+                set_target_properties(panda3d::${component_name} PROPERTIES
+                    IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+                    IMPORTED_LOCATION "${panda3d_${component_name}_LIBRARY_RELEASE}"
+
+                    IMPORTED_LINK_INTERFACE_LANGUAGES_${configuration} "CXX"
+                    IMPORTED_LOCATION_RELEASE "${panda3d_${component_name}_LIBRARY_RELEASE}"
+                    IMPORTED_LOCATION_RELWITHDEBINFO "${panda3d_${component_name}_LIBRARY_RELEASE}"
+                    IMPORTED_LOCATION_MINSIZEREL "${panda3d_${component_name}_LIBRARY_RELEASE}"
+                )
+
+                # Make variables changeable to the advanced user
+                mark_as_advanced(panda3d_${component_name}_LIBRARY_RELEASE)
+                message(STATUS "  ${component_name}")
+            endif()
+
+            if(EXISTS "${panda3d_${component_name}_LIBRARY_DEBUG}")
+                set_property(TARGET panda3d::${component_name} APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
+                set_target_properties(panda3d::${component_name} PROPERTIES
+                    IMPORTED_LINK_INTERFACE_LANGUAGES_${configuration} "CXX"
+                    IMPORTED_LOCATION_DEBUG "${panda3d_${component_name}_LIBRARY_DEBUG}"
+                )
+
+                # Make variables changeable to the advanced user
+                mark_as_advanced(panda3d_${component_name}_LIBRARY_DEBUG)
+
+                if(NOT EXISTS "${panda3d_${component_name}_LIBRARY_RELEASE}")
+                    set_target_properties(panda3d::${component_name} PROPERTIES
+                        IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+                        IMPORTED_LOCATION "${panda3d_${component_name}_LIBRARY_DEBUG}"
+                    )
+                    message(STATUS "  ${component_name}")
+                endif()
+            endif()
         endif()
     endforeach()
 
@@ -87,8 +118,8 @@ if(panda3d_FOUND)
     if(NOT TARGET panda3d::panda3d)
         add_library(panda3d::panda3d INTERFACE IMPORTED)
 
-        foreach(COMPONENT_NAME ${panda3d_DEFAULT_COMPONENTS})
-            list(APPEND _panda3d_DEFAULT_TARGET_DEPENDENCIES panda3d::${COMPONENT_NAME})
+        foreach(component_name ${panda3d_DEFAULT_COMPONENTS})
+            list(APPEND _panda3d_DEFAULT_TARGET_DEPENDENCIES panda3d::${component_name})
         endforeach()
 
         set_target_properties(panda3d::panda3d PROPERTIES
