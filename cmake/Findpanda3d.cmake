@@ -87,9 +87,6 @@ if(panda3d_FOUND)
                     IMPORTED_LOCATION_RELWITHDEBINFO "${panda3d_${component_name}_LIBRARY_RELEASE}"
                     IMPORTED_LOCATION_MINSIZEREL "${panda3d_${component_name}_LIBRARY_RELEASE}"
                 )
-
-                # Make variables changeable to the advanced user
-                mark_as_advanced(panda3d_${component_name}_LIBRARY_RELEASE)
                 message(STATUS "  ${component_name}")
             endif()
 
@@ -100,9 +97,6 @@ if(panda3d_FOUND)
                     IMPORTED_LOCATION_DEBUG "${panda3d_${component_name}_LIBRARY_DEBUG}"
                 )
 
-                # Make variables changeable to the advanced user
-                mark_as_advanced(panda3d_${component_name}_LIBRARY_DEBUG)
-
                 if(NOT EXISTS "${panda3d_${component_name}_LIBRARY_RELEASE}")
                     set_target_properties(panda3d::${component_name} PROPERTIES
                         IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
@@ -111,6 +105,10 @@ if(panda3d_FOUND)
                     message(STATUS "  ${component_name}")
                 endif()
             endif()
+
+            # Make variables changeable to the advanced user
+            mark_as_advanced(panda3d_${component_name}_LIBRARY_RELEASE)
+            mark_as_advanced(panda3d_${component_name}_LIBRARY_DEBUG)
         endif()
     endforeach()
 
@@ -126,7 +124,6 @@ if(panda3d_FOUND)
             INTERFACE_INCLUDE_DIRECTORIES "${panda3d_INCLUDE_DIR}"
             INTERFACE_LINK_LIBRARIES "${_panda3d_DEFAULT_TARGET_DEPENDENCIES}"
         )
-
-        mark_as_advanced(panda3d_INCLUDE_DIR)
     endif()
+    mark_as_advanced(panda3d_INCLUDE_DIR)
 endif()
