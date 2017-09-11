@@ -24,6 +24,11 @@
 
 #include <unordered_set>
 
+#if WIN32
+// TODO: remove fs::canonical bug is fixed.
+#include <Shlwapi.h>
+#endif
+
 #include <boost/dll/import.hpp>
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
@@ -43,6 +48,37 @@
 #include "rpcore/pluginbase/setting_types.hpp"
 
 namespace rpcore {
+
+// TODO: change to fs::canonical after canonical bug is fixed.
+static boost::filesystem::path get_canonical_path(const boost::filesystem::path& path)
+{
+#if WIN32
+    wchar_t path_buffer[32768] = {};
+    PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
+    boost::filesystem::path result(path_buffer);
+    if (!boost::filesystem::exists(result))
+        throw boost::filesystem::filesystem_error("boost::filesystem::canonical",
+            boost::system::error_code(
+                boost::system::errc::no_such_file_or_directory, boost::system::generic_category()));
+
+    return result;
+#else
+    return boost::filesystem::canonical(plugin_dir_ / plugin_id);
+#endif
+}
+
+// TODO: change to fs::canonical after canonical bug is fixed.
+static boost::filesystem::path get_weakly_canonical_path(const boost::filesystem::path& path)
+{
+#if WIN32
+    wchar_t path_buffer[32768] = {};
+    PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
+    return boost::filesystem::path(path_buffer);
+#else
+    return boost::filesystem::weakly_canonical(plugin_dir_ / plugin_id);
+#endif
+}
+
 
 class PluginManager::Impl
 {
@@ -84,7 +120,7 @@ public:
 public:
     PluginManager& self_;
     RenderPipeline& pipeline_;
-    std::string plugin_dir_;
+    boost::filesystem::path plugin_dir_;
 
     bool requires_daytime_settings_;
 
@@ -143,8 +179,7 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
     if (thirdparties == plugin_thirdparties_.end())
         return;
 
-    const boost::filesystem::path plugin_dir_path =
-        boost::filesystem::canonical(boost::filesystem::path(plugin_dir_) / plugin_id);
+    const boost::filesystem::path plugin_dir_path = get_canonical_path(plugin_dir_ / plugin_id);
 
     for (auto& thirdparty_info: thirdparties->second)
     {
@@ -169,7 +204,7 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
             try
             {
                 // check if it is in subdirectory.
-                shared_lib_path = boost::filesystem::weakly_canonical(plugin_dir_path / load_path);
+                shared_lib_path = get_weakly_canonical_path(plugin_dir_path / load_path);
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
                 if (std::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
@@ -210,7 +245,7 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
 
 std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& plugin_id)
 {
-    boost::filesystem::path plugin_path = boost::filesystem::canonical(boost::filesystem::path(plugin_dir_) / plugin_id);
+    boost::filesystem::path plugin_path = get_canonical_path(plugin_dir_ / plugin_id);
 
 #if defined(RENDER_PIPELINE_BUILD_CFG_POSTFIX)
     plugin_path = plugin_path / ("rpplugin_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);

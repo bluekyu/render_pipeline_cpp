@@ -24,7 +24,11 @@
 
 #include <memory>
 
+#include <boost/filesystem.hpp>
+
 #include <render_pipeline/rpcore/rpobject.hpp>
+
+class Filename;
 
 namespace rpcore {
 
@@ -37,7 +41,7 @@ public:
      * This function converts the path of Panda3D virutal file system to that of physical filesystem.
      * If failed, this will return empty string.
      */
-    static std::string convert_to_physical_path(const std::string& path);
+    static boost::filesystem::path convert_to_physical_path(const Filename& path);
 
     MountManager();
     MountManager(const MountManager&) = delete;

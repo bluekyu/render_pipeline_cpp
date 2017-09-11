@@ -134,6 +134,8 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem
     ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog flatbuffers
+
+    $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

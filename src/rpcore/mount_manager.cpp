@@ -302,23 +302,23 @@ void MountManager::unmount()
     throw std::runtime_error("TODO");
 }
 
-std::string MountManager::convert_to_physical_path(const std::string& path)
+boost::filesystem::path MountManager::convert_to_physical_path(const Filename& path)
 {
-    Filename plugin_dir_in_vfs(path);
-    plugin_dir_in_vfs.standardize();
+    Filename path_in_vfs(path);
+    path_in_vfs.standardize();
 
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     for (int k=0, k_end=vfs->get_num_mounts(); k < k_end; ++k)
     {
         const std::string mount_point = vfs->get_mount(k)->get_mount_point().to_os_specific();
-        const std::string plugin_dir_in_vfs_string = plugin_dir_in_vfs.to_os_specific();
+        const std::string plugin_dir_in_vfs_string = path_in_vfs.to_os_specific();
 
         // /{mount_point}/...
         if (mount_point.substr(0, 2) == std::string("$$") && plugin_dir_in_vfs_string.find(mount_point) == 1)
         {
             boost::filesystem::path physical_plugin_dir = DCAST(VirtualFileMountSystem, vfs->get_mount(k))->get_physical_filename().to_os_specific();
             physical_plugin_dir /= plugin_dir_in_vfs_string.substr(1+mount_point.length());
-            return physical_plugin_dir.string();
+            return physical_plugin_dir;
         }
     }
     

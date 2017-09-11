@@ -227,10 +227,10 @@ void RPModel::load_meta_data(const std::string& json_string)
         return;
     }
 
-    const std::string schema_dir = MountManager::convert_to_physical_path(schema_path.get_dirname());
+    const auto& schema_dir = MountManager::convert_to_physical_path(schema_path.get_dirname());
 
     flatbuffers::Parser parser;
-    const char* include_directories[] = { schema_dir.c_str(), nullptr };
+    const char* include_directories[] = { schema_dir.generic_string().c_str(), nullptr };
     if (!parser.Parse(schema_conents.c_str(), include_directories))
     {
         RPObject::global_error(CONTEXT_NAME, fmt::format("Cannot parse schema file ({}): {}",
