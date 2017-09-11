@@ -33,7 +33,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Text : public RPObject
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const float size;
         static const std::string align;

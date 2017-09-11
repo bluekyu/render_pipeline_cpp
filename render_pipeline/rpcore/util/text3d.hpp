@@ -33,7 +33,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Text3D
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const float pixel_size;
         static const LColor color;

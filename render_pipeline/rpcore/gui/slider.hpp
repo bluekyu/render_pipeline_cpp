@@ -38,7 +38,7 @@ namespace rpcore {
 class Slider : public RPObject
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const float size;
         static const float max_value;

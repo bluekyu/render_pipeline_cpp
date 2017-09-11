@@ -41,7 +41,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Checkbox : public RPObject
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const int expand_width = 100;
     };

@@ -34,7 +34,7 @@ namespace rpcore {
 class TextNode : public RPObject
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const float pixel_size;
         static const LVecBase3 color;

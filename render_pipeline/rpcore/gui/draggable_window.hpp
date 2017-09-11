@@ -42,7 +42,7 @@ class Text;
 class RENDER_PIPELINE_DECL DraggableWindow : public RPObject
 {
 public:
-    struct Default
+    struct RENDER_PIPELINE_DECL Default
     {
         static const int width = 800;
         static const int height = 500;
