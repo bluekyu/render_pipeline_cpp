@@ -25,6 +25,10 @@
 #include <unordered_set>
 
 #include <boost/dll/import.hpp>
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#else
+#include <boost/algorithm/cxx14/mismatch.hpp>
+#endif
 
 #include <spdlog/fmt/fmt.h>
 
@@ -166,6 +170,8 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
             {
                 // check if it is in subdirectory.
                 shared_lib_path = boost::filesystem::weakly_canonical(plugin_dir_path / load_path);
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 if (std::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
                     shared_lib_path.begin(), shared_lib_path.end()).first != plugin_dir_path.end())
                 {
@@ -173,6 +179,15 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
                         shared_lib_path.string(), plugin_id));
                     continue;
                 }
+#else
+                if (boost::algorithm::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
+                    shared_lib_path.begin(), shared_lib_path.end()).first != plugin_dir_path.end())
+                {
+                    self_.error(fmt::format("A DLL path ({}) is NOT in subdirectory of plugin ({}).",
+                        shared_lib_path.string(), plugin_id));
+                    continue;
+                }
+#endif
 
                 thirdparty_info.handles.push_back(std::make_shared<boost::dll::shared_library>(
                     shared_lib_path,
@@ -251,7 +266,7 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
         info_node["version"].as<std::string>(""),
         info_node["description"].as<std::string>("empty_description") });
 #else
-    impl_->plugin_info_map_[plugin_id] = BasePlugin::PluginInfo{
+    plugin_info_map_[plugin_id] = BasePlugin::PluginInfo{
         info_node["category"].as<std::string>("empty_category"),
         info_node["name"].as<std::string>("empty_name"),
         info_node["author"].as<std::string>("empty_author"),

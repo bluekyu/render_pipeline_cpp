@@ -46,7 +46,7 @@ RENDER_PIPELINE_DECL NodePath create_plane(const std::string& name);
 /**
  * Create cube (box) primitive.
  *
- * min is (-0.5, -0.5, -0.5) and max is (0.5, 0.5, 0.5).
+ * min bound is (-0.5, -0.5, -0.5) and max bound is (0.5, 0.5, 0.5).
  */
 RENDER_PIPELINE_DECL NodePath create_cube(const std::string& name);
 
