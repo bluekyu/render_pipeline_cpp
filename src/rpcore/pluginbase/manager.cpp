@@ -83,21 +83,9 @@ static boost::filesystem::path get_weakly_canonical_path(const boost::filesystem
 class PluginManager::Impl
 {
 public:
-    struct PluginThirdpartyInfo
-    {
-        std::string name;
-        std::vector<std::string> load_paths;
-        std::string description;
-
-        std::vector<std::shared_ptr<boost::dll::shared_library>> handles;
-    };
-
-public:
     Impl(PluginManager& self, RenderPipeline& pipeline);
 
     void unload();
-
-    void load_thirdparty(const std::string& plugin_id);
 
     /** Internal method to load a plugin. */
     std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
@@ -128,7 +116,6 @@ public:
 
     std::unordered_set<std::string> enabled_plugins_;
     std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
-    std::unordered_map<std::string, std::vector<PluginThirdpartyInfo>> plugin_thirdparties_;
 
     std::unordered_map<std::string, BasePlugin::PluginInfo> plugin_info_map_;
 
@@ -168,79 +155,6 @@ void PluginManager::Impl::unload()
 
     // unload DLL of plugins.
     plugin_creators_.clear();
-
-    // unload DLLs of third-party.
-    plugin_thirdparties_.clear();
-}
-
-void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
-{
-    auto thirdparties = plugin_thirdparties_.find(plugin_id);
-    if (thirdparties == plugin_thirdparties_.end())
-        return;
-
-    const boost::filesystem::path plugin_dir_path = get_canonical_path(plugin_dir_ / plugin_id);
-
-    for (auto& thirdparty_info: thirdparties->second)
-    {
-        self_.trace(fmt::format("Loading DLLs of third-party ({}) in plugin ({})", thirdparty_info.name, plugin_id));
-        for (const auto& load_path_string: thirdparty_info.load_paths)
-        {
-            if (load_path_string.empty())
-            {
-                self_.warn(fmt::format("A DLL path is empty string in plugin ({}).", plugin_id));
-                continue;
-            }
-
-            const boost::filesystem::path load_path(load_path_string);
-            if (!load_path.is_relative())
-            {
-                self_.error(fmt::format("A DLL path ({}) is NOT a relative path in plugin ({}).",
-                    load_path.string(), plugin_id));
-                continue;
-            }
-
-            boost::filesystem::path shared_lib_path;
-            try
-            {
-                // check if it is in subdirectory.
-                shared_lib_path = get_weakly_canonical_path(plugin_dir_path / load_path);
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-                if (std::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
-                    shared_lib_path.begin(), shared_lib_path.end()).first != plugin_dir_path.end())
-                {
-                    self_.error(fmt::format("A DLL path ({}) is NOT in subdirectory of plugin ({}).",
-                        shared_lib_path.string(), plugin_id));
-                    continue;
-                }
-#else
-                if (boost::algorithm::mismatch(plugin_dir_path.begin(), plugin_dir_path.end(),
-                    shared_lib_path.begin(), shared_lib_path.end()).first != plugin_dir_path.end())
-                {
-                    self_.error(fmt::format("A DLL path ({}) is NOT in subdirectory of plugin ({}).",
-                        shared_lib_path.string(), plugin_id));
-                    continue;
-                }
-#endif
-
-                thirdparty_info.handles.push_back(std::make_shared<boost::dll::shared_library>(
-                    shared_lib_path,
-                    boost::dll::load_mode::append_decorations));
-            }
-            catch (const boost::filesystem::filesystem_error& err)
-            {
-                self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", load_path_string, plugin_id));
-                self_.error(fmt::format("Boost::Filesystem error message: {}", err.what()));
-            }
-            catch (const boost::system::system_error& err)
-            {
-                self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", shared_lib_path.string(), plugin_id));
-                self_.error(fmt::format("Loaded path: {}", shared_lib_path.string()));
-                self_.error(fmt::format("Boost::DLL error message: {}", err.what()));
-            }
-        }
-    }
 }
 
 std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& plugin_id)
@@ -315,35 +229,6 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
         info_node["version"].as<std::string>("empty_version"),
         info_node["description"].as<std::string>("empty_description") };
 #endif
-
-    if (config["thirdparty"] && config["thirdparty"].size() != 0)
-    {
-        if (!config["thirdparty"].IsSequence())
-            self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'thirdparty'?");
-
-        auto& thirdparties = plugin_thirdparties_[plugin_id];
-        for (auto thirdparty_node: config["thirdparty"])
-        {
-            PluginThirdpartyInfo plugin_thirdparty;
-            plugin_thirdparty.name = thirdparty_node["name"].as<std::string>("empty_name");
-            plugin_thirdparty.description = thirdparty_node["description"].as<std::string>("empty_description");
-
-            if (thirdparty_node["load_paths"])
-            {
-                if (thirdparty_node["load_paths"].IsSequence())
-                {
-                    for (const auto paths: thirdparty_node["load_paths"])
-                        plugin_thirdparty.load_paths.push_back(paths.as<std::string>(""));
-                }
-                else
-                {
-                    plugin_thirdparty.load_paths.push_back(thirdparty_node["load_paths"].as<std::string>(""));
-                }
-            }
-
-            thirdparties.push_back(std::move(plugin_thirdparty));
-        }
-    }
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'settings'?");
@@ -517,8 +402,6 @@ void PluginManager::load()
             error(fmt::format("Cannot find plugin ({}) in plugin directory.", plugin_id));
             continue;
         }
-
-        impl_->load_thirdparty(plugin_id);
 
         std::shared_ptr<BasePlugin> handle = impl_->load_plugin(plugin_id);
 
