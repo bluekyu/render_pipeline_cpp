@@ -3,9 +3,20 @@
 
 ## Panda3D 파일 시스템
 
+### 유니코드
+Panda3D 에서는 미리 설정된 인코딩 값을 사용하고, 기본값은 UTF8 을 사용한다.
+따라서 Panda3D API 에서 파일 경로를 사용할 때에는 UTF8 문자열을 사용하면 된다.
+
+Windows 에서 native 문자열을 사용할 경우, MBCS 혹은 유니코드(UTF16) 를 사용하는데,
+`Filename` 클래스에서 `wstring` 을 사용하는 유니코드 인터페이스를 제공하므로 이를 사용하면 된다.
+
+유니코드 내용 및 소스 코드 예시는 [유니코드](unicode.md) 문서 참조.
+
+
 
 ## Render Pipeline 파일 시스템
-Render Pipeline에서는 Panda3D의 Virtual File System에 가상 경로를 추가하여, 플러그인 및 데이터에 쉽게 접근 할 수 있도록 한다.
+Render Pipeline에서는 Panda3D의 Virtual File System에 가상 경로를 추가하여,
+플러그인 및 데이터에 쉽게 접근 할 수 있도록 한다.
 
 추가하는 가상 경로를 설정하는 것은 rpcore::MountManager 에서 담당한다. Render Pipeline를 일반적으로 설치하면,
 `share/render_pipeline` 폴더 아래에 데이터들이 설치되는데, 여기가 `base` 폴더가 된다.

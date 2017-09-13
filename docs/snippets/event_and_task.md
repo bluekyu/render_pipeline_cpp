@@ -14,8 +14,14 @@ See also https://www.panda3d.org/manual/index.php?title=Keyboard_Support&languag
 
 
 ## Task
+- Add
 ```cpp
 rpcore::Globals::base->add_task([](const GenericAsyncTask* task, void* user_data) {
         ...
     }, DATA_PTR, TASK_NAME);
+```
+
+- Remove
+```cpp
+rpcore::Globals::base->remove_task(TASK_NAME);
 ```
