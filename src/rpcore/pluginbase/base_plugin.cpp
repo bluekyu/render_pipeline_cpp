@@ -22,13 +22,16 @@
 
 #include "render_pipeline/rpcore/pluginbase/base_plugin.hpp"
 
-#include <filename.h>
+#include <boost/dll/import.hpp>
+
+#include <spdlog/fmt/fmt.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 
 #include "rplibs/yaml.hpp"
 
@@ -36,11 +39,22 @@
 
 namespace rpcore {
 
-BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id): RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id)
+class BasePlugin::Impl
+{
+public:
+    std::vector<std::shared_ptr<RenderStage>> assigned_stages_;
+    std::vector<std::shared_ptr<boost::dll::shared_library>> shared_libs_;
+};
+
+BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id):
+    RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id),
+    impl_(std::make_unique<Impl>())
 {
     // TODO: implement
     //self._set_debug_color("magenta", "bright")
 }
+
+BasePlugin::~BasePlugin() = default;
 
 Filename BasePlugin::get_base_path() const
 {
@@ -60,7 +74,7 @@ Filename BasePlugin::get_shader_resource(const Filename& pth) const
 void BasePlugin::add_stage(const std::shared_ptr<RenderStage>& stage)
 {
     pipeline_.get_stage_mgr()->add_stage(stage);
-    assigned_stages_.push_back(stage);
+    impl_->assigned_stages_.push_back(stage);
 }
 
 const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
@@ -86,13 +100,24 @@ bool BasePlugin::is_plugin_enabled(const std::string& plugin_id) const
 
 void BasePlugin::reload_shaders()
 {
-    for (const auto& stage: assigned_stages_)
+    for (const auto& stage: impl_->assigned_stages_)
         stage->reload_shaders();
 }
 
 const BasePlugin::PluginInfo& BasePlugin::get_plugin_info() const
 {
     return pipeline_.get_plugin_mgr()->get_plugin_info(plugin_id_);
+}
+
+void BasePlugin::load_shared_library(const Filename& path)
+{
+    auto lib_path = rppanda::convert_path(get_base_path() / path);
+
+    trace(fmt::format("Loading shared library file ({}) in plugin ({})", lib_path.generic_string(), plugin_id_));
+
+    impl_->shared_libs_.push_back(std::make_shared<boost::dll::shared_library>(
+        lib_path,
+        boost::dll::load_mode::append_decorations));
 }
 
 }

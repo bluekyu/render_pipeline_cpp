@@ -66,7 +66,7 @@ public:
     BasePlugin(const BasePlugin&) = delete;
     BasePlugin(BasePlugin&&) = delete;
 
-    virtual ~BasePlugin() {}
+    virtual ~BasePlugin();
 
     BasePlugin& operator=(const BasePlugin&) = delete;
     BasePlugin& operator=(BasePlugin&&) = delete;
@@ -114,11 +114,19 @@ public:
     ///@}
 
 protected:
+    /**
+     * Load a shared library in plugin directory.
+     *
+     * @throw   boost::system::system_error from boost::dll library.
+     */
+    void load_shared_library(const Filename& path);
+
     RenderPipeline& pipeline_;
     const std::string plugin_id_;
 
 private:
-    std::vector<std::shared_ptr<RenderStage>> assigned_stages_;
+    class Impl;
+    std::unique_ptr<Impl> impl_;
 };
 
 // ************************************************************************************************

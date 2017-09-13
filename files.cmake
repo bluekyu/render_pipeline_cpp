@@ -9,6 +9,7 @@ set(header_rppanda_stdpy
 
 set(header_rppanda_util
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/image_input.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/util/filesystem.hpp"
 )
 
 set(header_rppanda_gui
@@ -205,6 +206,10 @@ set(source_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/showbase.cpp"
 )
 
+set(source_rppanda_util
+    "${PROJECT_SOURCE_DIR}/src/rppanda/util/filesystem.cpp"
+)
+
 set(source_rpcore
     "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/common_resources.hpp"
@@ -326,6 +331,7 @@ set(render_pipeline_sources
     ${source_rppanda_gui}
     ${source_rppanda_interval}
     ${source_rppanda_showbase}
+    ${source_rppanda_util}
     ${source_rpcore}
     ${source_rpcore_gui}
     ${source_rpcore_native_source}
@@ -340,6 +346,7 @@ source_group("src\\rppanda\\actor" FILES ${source_rppanda_actor})
 source_group("src\\rppanda\\gui" FILES ${source_rppanda_gui})
 source_group("src\\rppanda\\interval" FILES ${source_rppanda_interval})
 source_group("src\\rppanda\\showbase" FILES ${source_rppanda_showbase})
+source_group("src\\rppanda\\util" FILES ${source_rppanda_util})
 source_group("src\\rpcore" FILES ${source_rpcore})
 source_group("src\\rpcore\\gui" FILES ${source_rpcore_gui})
 source_group("src\\rpcore\\native\\source" FILES ${source_rpcore_native_source})

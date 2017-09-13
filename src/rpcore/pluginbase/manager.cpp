@@ -233,7 +233,7 @@ void PluginManager::Impl::load_thirdparty(const std::string& plugin_id)
                 self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", load_path_string, plugin_id));
                 self_.error(fmt::format("Boost::Filesystem error message: {}", err.what()));
             }
-            catch (const std::exception& err)
+            catch (const boost::system::system_error& err)
             {
                 self_.error(fmt::format("Failed to load third-party DLL ({}) in plugin ({}).", shared_lib_path.string(), plugin_id));
                 self_.error(fmt::format("Loaded path: {}", shared_lib_path.string()));
@@ -264,11 +264,18 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 
         return plugin_creators_.at(plugin_id)(pipeline_);
     }
-    catch (const std::exception& err)
+    catch (const boost::system::system_error& err)
     {
         self_.error(fmt::format("Failed to import plugin or to create plugin ({}).", plugin_id));
         self_.error(fmt::format("Loaded path: {}", plugin_path.string()));
         self_.error(fmt::format("Boost::DLL Error message: {}", err.what()));
+        return nullptr;
+    }
+    catch (const std::exception& err)
+    {
+        self_.error(fmt::format("Failed to import plugin or to create plugin ({}).", plugin_id));
+        self_.error(fmt::format("Loaded path: {}", plugin_path.string()));
+        self_.error(fmt::format("Plugin error message: {}", err.what()));
         return nullptr;
     }
 

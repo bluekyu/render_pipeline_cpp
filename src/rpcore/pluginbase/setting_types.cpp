@@ -267,15 +267,15 @@ std::vector<std::string> SampleSequenceType::get_sequences() const
 // ************************************************************************************************
 PathType::PathType(YAML::Node& data): BaseType(data)
 {
-    _default = data["default"].as<std::string>();
+    _default = data["default"].as<std::string>("");
     data.remove("default");
 
     _value = _default;
 
-    _file_type = data["file_type"].as<std::string>();
+    _file_type = data["file_type"].as<std::string>("");
     data.remove("file_type");
 
-    _base_path = data["base_path"].as<std::string>();
+    _base_path = data["base_path"].as<std::string>("");
     data.remove("base_path");
 }
 
