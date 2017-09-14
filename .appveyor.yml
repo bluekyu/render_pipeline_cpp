@@ -58,7 +58,7 @@ install:
     --hash-path "C:/projects/_cache/yaml-cpp.hash"
 - cmd: >-
     python .\builder.py "https://github.com/gabime/spdlog.git"
-    --branch "v0.13.0"
+    --branch "v0.14.0"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/spdlog"
     --hash-path "C:/projects/_cache/spdlog.hash"

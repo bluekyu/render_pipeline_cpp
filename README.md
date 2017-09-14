@@ -39,7 +39,7 @@ See [docs/build_rpcpp.md](docs/build_rpcpp.md) document.
 - FreeType2: 2.5.2 (in Panda3D)
 - Boost: 1.64.0
 - YAML-CPP: master
-- spdlog: 0.13.0
+- spdlog: 0.14.0
 - flatbuffers: 1.7.1
 
 
