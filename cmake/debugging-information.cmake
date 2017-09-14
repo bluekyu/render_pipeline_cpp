@@ -7,6 +7,10 @@
 #
 # If you want to strip private debugging information (ex, sources), you can set 'private_debinfo_postfix' string.
 # Then, you will get stripped debugging information and a full debugging file.
+#
+# configure_debugging_information(<target> [<postfix>])
+# @param    target      target variable
+# @param    postfix     postfix of file to strip private debugging information
 function(configure_debugging_information target)
     if(ARGV1)
         set(private_debinfo_postfix ${ARGV1})

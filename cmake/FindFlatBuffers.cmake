@@ -12,11 +12,11 @@
 #
 # This module defines the following variables::
 #
-#   FlatBuffers_FOUND            - True if FlatBuffers has been found and can be used
+#   FlatBuffers_FOUND               - True if FlatBuffers has been found and can be used
 #
 # and the following imported targets::
 #
-#   flatbuffers        - FlatBuffers library
+#   FlatBuffers::FlatBuffers        - FlatBuffers library
 
 cmake_minimum_required(VERSION 3.6)
 
@@ -47,9 +47,9 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(FlatBuffers
 if(FlatBuffers_FOUND)
     message(STATUS "Found the FlatBuffers library")
 
-    if(NOT TARGET flatbuffers)
-        add_library(flatbuffers UNKNOWN IMPORTED)
-        set_target_properties(flatbuffers PROPERTIES
+    if(NOT TARGET FlatBuffers::FlatBuffers)
+        add_library(FlatBuffers::FlatBuffers UNKNOWN IMPORTED)
+        set_target_properties(FlatBuffers::FlatBuffers PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "${FlatBuffers_INCLUDE_DIR}"
             IMPORTED_LOCATION "${FlatBuffers_LIBRARY}"
             IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"

@@ -1,7 +1,7 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.8)
 project(render_pipeline)
 
 # === configure ====================================================================================
@@ -103,13 +103,9 @@ if(MSVC)
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/std:c++14>
     )
 else()
-    if(CMAKE_VERSION VERSION_LESS 3.8)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++1z)
-    else()
-        target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-            PRIVATE cxx_std_17)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
-    endif()
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
+        PRIVATE cxx_std_17)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
@@ -132,8 +128,8 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost panda3d::panda3d
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::filesystem
-    ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog flatbuffers
+    Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
+    FlatBuffers::FlatBuffers
 
     $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )
@@ -148,12 +144,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 configure_debugging_information(${PROJECT_NAME})
 
-# configure package
+# === configure package ===
 set(PACKAGE_NAME "${PROJECT_NAME}")
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
-set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
+set(${PROJECT_NAME}_TARGET_NAMESPACE "render_pipeline::")
+set(${PROJECT_NAME}_TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "lib/cmake/${PACKAGE_NAME}")
 
 include(CMakePackageConfigHelpers)
@@ -166,18 +163,23 @@ configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-confi
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
+
+add_library(${${PROJECT_NAME}_TARGET_NAMESPACE}${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 # ==================================================================================================
 
 # === install ======================================================================================
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
 
 install(TARGETS ${PROJECT_NAME}
-    EXPORT ${TARGET_EXPORT_NAME}
+    EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib"
 )
-export(EXPORT ${TARGET_EXPORT_NAME} FILE ${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake)
+export(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
+    NAMESPACE ${${PROJECT_NAME}_TARGET_NAMESPACE}
+    FILE "${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_TARGET_EXPORT_NAME}.cmake"
+)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}/")
@@ -188,7 +190,10 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/rpcore" DESTINATION "${render
 install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} ${${PROJECT_NAME}_MACRO_CMAKE_FILE}
     DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
-install(EXPORT ${TARGET_EXPORT_NAME} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
+install(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
+    NAMESPACE ${${PROJECT_NAME}_TARGET_NAMESPACE}
+    DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
+)
 
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
     DESTINATION "share/${PROJECT_NAME}/"
