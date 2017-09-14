@@ -53,7 +53,7 @@ target_link_libraries(${RPPLUGIN_ID}
 
 # configure package
 set(PACKAGE_NAME "rpplugin_${RPPLUGIN_ID}")
-set(TARGET_NAMESPACE "rpplugin::")
+set(TARGET_NAMESPACE "rpplugins::")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")

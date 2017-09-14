@@ -19,7 +19,7 @@ set(render_pipeline_RELWITHDEBINFO_POSTFIX "-reldeb" CACHE INTERNAL
 function(render_pipeline_FIND_PLUGINS plugin_id_list)
     set(missed_plugin_id_list "")
     foreach(plugin_id ${plugin_id_list})
-        if(NOT TARGET rpplugin::${plugin_id})
+        if(NOT TARGET rpplugins::${plugin_id})
             list(APPEND missed_plugin_id_list ${plugin_id})
         endif()
     endforeach()

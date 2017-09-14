@@ -38,7 +38,7 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/probe_manager.hpp"
 )
 include("../rpplugin_build.cmake")
-target_link_libraries(${PROJECT_NAME} PRIVATE rpplugin::pssm)
+target_link_libraries(${PROJECT_NAME} PRIVATE rpplugins::pssm)
 # ==================================================================================================
 
 # === install ======================================================================================

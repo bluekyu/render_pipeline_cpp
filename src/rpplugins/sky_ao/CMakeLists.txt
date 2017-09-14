@@ -32,7 +32,7 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/capture_stage.cpp"
 )
 include("../rpplugin_build.cmake")
-target_link_libraries(${PROJECT_NAME} PRIVATE rpplugin::env_probes)
+target_link_libraries(${PROJECT_NAME} PRIVATE rpplugins::env_probes)
 # ==================================================================================================
 
 # === install ======================================================================================

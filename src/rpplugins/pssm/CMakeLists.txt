@@ -36,7 +36,7 @@ set(plugin_sources
     "${PROJECT_SOURCE_DIR}/src/pssm_stage.cpp"
 )
 include("../rpplugin_build.cmake")
-target_link_libraries(${PROJECT_NAME} PRIVATE rpplugin::scattering rpplugin::volumetrics)
+target_link_libraries(${PROJECT_NAME} PRIVATE rpplugins::scattering rpplugins::volumetrics)
 # ==================================================================================================
 
 # === install ======================================================================================
