@@ -13,6 +13,9 @@
 - [모델](rendering/model.md)  
 - [스테레오 및 가상현실](rendering/stereo-and-vr.md)
 
+## 기타
+- [문제점 및 해결방법](issues_and_solutions.md)
+
 ## 코드 스니펫
 - [Panda3D 수학](../snippets/math.md)
 - [Panda3D Event 및 Task](../snippets/event_and_task.md)
