@@ -1,2 +1,2 @@
 # dependency
-render_pipeline_FIND_PLUGINS("env_probes")
+render_pipeline_find_plugins("env_probes")

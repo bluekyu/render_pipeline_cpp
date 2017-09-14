@@ -1,2 +1,2 @@
 # dependency
-render_pipeline_FIND_PLUGINS("scattering;volumetrics")
+render_pipeline_find_plugins("scattering;volumetrics")

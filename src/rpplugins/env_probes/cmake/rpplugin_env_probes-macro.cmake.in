@@ -1,2 +1,2 @@
 # dependency
-render_pipeline_FIND_PLUGINS("pssm")
+render_pipeline_find_plugins("pssm")

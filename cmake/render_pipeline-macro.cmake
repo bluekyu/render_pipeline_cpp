@@ -16,7 +16,7 @@ set(render_pipeline_RELWITHDEBINFO_POSTFIX "-reldeb" CACHE INTERNAL
 )
 
 # help function to find rpplugin
-function(render_pipeline_FIND_PLUGINS plugin_id_list)
+function(render_pipeline_find_plugins plugin_id_list)
     set(missed_plugin_id_list "")
     foreach(plugin_id ${plugin_id_list})
         if(NOT TARGET rpplugins::${plugin_id})
