@@ -38,6 +38,7 @@ boost::filesystem::path convert_path(const Filename& path)
     Filename strpath = pathname.get_filename_index(0).get_fullpath().substr(1);
     strpath.set_type(path.get_type());
 
+    Filename result = path;
     for (int k = 0, k_end = vfs->get_num_mounts(); k < k_end; ++k)
     {
         auto mount = vfs->get_mount(k);
@@ -47,7 +48,8 @@ boost::filesystem::path convert_path(const Filename& path)
         {
             // Here's an exact match on the mount point.  This filename is the root
             // directory of this mount object.
-            return boost::filesystem::path(DCAST(VirtualFileMountSystem, mount)->get_physical_filename().to_os_specific_w());
+            result = DCAST(VirtualFileMountSystem, mount)->get_physical_filename();
+            break;
         }
         else if (strpath.length() > mount_point.length() &&
             mount_point == strpath.substr(0, mount_point.length()) &&
@@ -55,12 +57,16 @@ boost::filesystem::path convert_path(const Filename& path)
         {
             // This pathname falls within this mount system.
             Filename local_filename = strpath.substr(mount_point.length() + 1);
-            return boost::filesystem::path(DCAST(VirtualFileMountSystem, mount)->get_physical_filename().to_os_specific_w()) /
-                boost::filesystem::path(local_filename.to_os_specific_w());
+            result = DCAST(VirtualFileMountSystem, mount)->get_physical_filename() / local_filename;
+            break;
         }
     }
 
-    return boost::filesystem::path(path.to_os_specific_w());
+#if WIN32
+    return boost::filesystem::path(result.to_os_specific_w());
+#else
+    return boost::filesystem::path(result.to_os_specific());
+#endif
 }
 
 }

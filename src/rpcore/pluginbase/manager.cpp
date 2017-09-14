@@ -30,10 +30,6 @@
 #endif
 
 #include <boost/dll/import.hpp>
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#else
-#include <boost/algorithm/cxx14/mismatch.hpp>
-#endif
 
 #include <spdlog/fmt/fmt.h>
 
