@@ -115,11 +115,12 @@ public:
 
 protected:
     /**
-     * Load a shared library in plugin directory.
+     * Load a shared library and manage the handle.
      *
+     * A extension (.dll or .so, etc) can be omitted.
      * @throw   boost::system::system_error from boost::dll library.
      */
-    void load_shared_library(const Filename& path);
+    bool load_shared_library(const Filename& path);
 
     RenderPipeline& pipeline_;
     const std::string plugin_id_;

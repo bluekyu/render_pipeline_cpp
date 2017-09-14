@@ -109,15 +109,27 @@ const BasePlugin::PluginInfo& BasePlugin::get_plugin_info() const
     return pipeline_.get_plugin_mgr()->get_plugin_info(plugin_id_);
 }
 
-void BasePlugin::load_shared_library(const Filename& path)
+bool BasePlugin::load_shared_library(const Filename& path)
 {
-    auto lib_path = rppanda::convert_path(get_base_path() / path);
+    auto lib_path = rppanda::convert_path(path);
 
     trace(fmt::format("Loading shared library file ({}) in plugin ({})", lib_path.generic_string(), plugin_id_));
 
-    impl_->shared_libs_.push_back(std::make_shared<boost::dll::shared_library>(
-        lib_path,
-        boost::dll::load_mode::append_decorations));
+    try
+    {
+        impl_->shared_libs_.push_back(std::make_shared<boost::dll::shared_library>(
+            lib_path,
+            boost::dll::load_mode::append_decorations));
+    }
+    catch (const boost::system::system_error& err)
+    {
+        error(fmt::format("Failed to load shared library in plugin ({}).", plugin_id_));
+        error(fmt::format("Loaded path: {}", lib_path.string()));
+        error(fmt::format("Boost::DLL Error message: {}", err.what()));
+        return false;
+    }
+
+    return true;
 }
 
 }
