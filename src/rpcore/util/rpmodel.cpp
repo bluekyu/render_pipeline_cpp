@@ -35,6 +35,7 @@
 #include "render_pipeline/rpcore/rpobject.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 #include "render_pipeline/rpcore/util/rpgeomnode.hpp"
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 
 #include "rplibs/yaml.hpp"
 #include "rpcore/schema/model_root_schema_generated.h"
@@ -227,7 +228,7 @@ void RPModel::load_meta_data(const std::string& json_string)
         return;
     }
 
-    const auto& schema_dir = MountManager::convert_to_physical_path(schema_path.get_dirname());
+    const auto& schema_dir = rppanda::convert_path(schema_path.get_dirname());
 
     flatbuffers::Parser parser;
     const char* include_directories[] = { schema_dir.generic_string().c_str(), nullptr };

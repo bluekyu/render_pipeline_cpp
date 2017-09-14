@@ -38,6 +38,7 @@
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 
 #include "rplibs/yaml.hpp"
 
@@ -426,7 +427,7 @@ void PluginManager::load_base_settings(const Filename& plugin_dir)
 {
     trace(fmt::format("Loading base setting from '{}'", plugin_dir.c_str()));
 
-    impl_->plugin_dir_ = MountManager::convert_to_physical_path(plugin_dir);
+    impl_->plugin_dir_ = rppanda::convert_path(plugin_dir);
     if (impl_->plugin_dir_.empty())
     {
         error(fmt::format("Cannot find plugin directory ({}).", plugin_dir.c_str()));
