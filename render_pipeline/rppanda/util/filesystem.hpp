@@ -21,11 +21,11 @@
 
 #pragma once
 
+#include <filename.h>
+
 #include <boost/filesystem.hpp>
 
 #include <render_pipeline/rpcore/config.hpp>
-
-class Filename;
 
 namespace rppanda {
 
@@ -36,5 +36,7 @@ namespace rppanda {
  * and resolve the mount point.
  */
 RENDER_PIPELINE_DECL boost::filesystem::path convert_path(const Filename& path);
+
+RENDER_PIPELINE_DECL Filename convert_path(const boost::filesystem::path& path);
 
 }

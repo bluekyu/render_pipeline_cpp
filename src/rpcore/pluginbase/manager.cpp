@@ -24,7 +24,7 @@
 
 #include <unordered_set>
 
-#if WIN32
+#ifdef _WIN32
 // TODO: remove fs::canonical bug is fixed.
 #include <Shlwapi.h>
 #endif
@@ -49,7 +49,7 @@ namespace rpcore {
 // TODO: change to fs::canonical after canonical bug is fixed.
 static boost::filesystem::path get_canonical_path(const boost::filesystem::path& path)
 {
-#if WIN32
+#ifdef _WIN32
     wchar_t path_buffer[32768] = {};
     PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
     boost::filesystem::path result(path_buffer);
@@ -67,7 +67,7 @@ static boost::filesystem::path get_canonical_path(const boost::filesystem::path&
 // TODO: change to fs::canonical after canonical bug is fixed.
 static boost::filesystem::path get_weakly_canonical_path(const boost::filesystem::path& path)
 {
-#if WIN32
+#ifdef _WIN32
     wchar_t path_buffer[32768] = {};
     PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
     return boost::filesystem::path(path_buffer);

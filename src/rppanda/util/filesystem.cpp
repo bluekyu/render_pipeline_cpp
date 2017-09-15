@@ -62,10 +62,19 @@ boost::filesystem::path convert_path(const Filename& path)
         }
     }
 
-#if WIN32
+#ifdef BOOST_WINDOWS_API
     return boost::filesystem::path(result.to_os_specific_w());
 #else
     return boost::filesystem::path(result.to_os_specific());
+#endif
+}
+
+Filename convert_path(const boost::filesystem::path& path)
+{
+#ifdef BOOST_WINDOWS_API
+    return Filename::from_os_specific_w(path.wstring());
+#else
+    return Filename::from_os_specific(path.string());
 #endif
 }
 

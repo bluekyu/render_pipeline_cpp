@@ -42,14 +42,14 @@ public:
     MountManager& operator=(const MountManager&) = delete;
     MountManager& operator=(MountManager&&) = delete;
 
-    const std::string& get_write_path() const;
-    void set_write_path(const std::string& pth);
+    const Filename& get_write_path() const;
+    void set_write_path(const Filename& pth);
 
-    const std::string& get_base_path() const;
-    void set_base_path(const std::string& pth);
+    const Filename& get_base_path() const;
+    void set_base_path(const Filename& pth);
 
-    const std::string& get_config_dir() const;
-    void set_config_dir(const std::string& pth);
+    const Filename& get_config_dir() const;
+    void set_config_dir(const Filename& pth);
 
     bool get_do_cleanup() const;
     void set_do_cleanup(bool cleanup);

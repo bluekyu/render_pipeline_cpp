@@ -228,7 +228,7 @@ void RPModel::load_meta_data(const std::string& json_string)
         return;
     }
 
-    const auto& schema_dir = rppanda::convert_path(schema_path.get_dirname());
+    const auto& schema_dir = rppanda::convert_path(schema_path).parent_path();
 
     flatbuffers::Parser parser;
     const char* include_directories[] = { schema_dir.generic_string().c_str(), nullptr };

@@ -35,19 +35,20 @@
 #include <spdlog/fmt/ostr.h>
 
 #include "render_pipeline/rppanda/stdpy/file.hpp"
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 
 namespace rpcore {
 
 class MountManager::Impl
 {
 public:
-    void set_write_path(const std::string& pth);
+    void set_write_path(const Filename& pth);
 
     bool get_lock();
 
     void mount(MountManager& self);
 
-    std::string find_basepath() const;
+    Filename find_basepath() const;
 
     void wrtie_lock();
 
@@ -62,17 +63,17 @@ public:
 public:
     /** This is Panda3D path (unix-style). */
     ///@{
-    std::string base_path_;
-    std::string lock_file_ = "instance.pid";
-    std::string write_path_;
-    std::string config_dir_;
+    Filename base_path_;
+    Filename lock_file_ = "instance.pid";
+    Filename write_path_;
+    Filename config_dir_;
     ///@}
 
     bool mounted_ = false;
     bool do_cleanup_ = true;
 };
 
-void MountManager::Impl::set_write_path(const std::string& pth)
+void MountManager::Impl::set_write_path(const Filename& pth)
 {
     if (pth.empty())
     {
@@ -81,8 +82,9 @@ void MountManager::Impl::set_write_path(const std::string& pth)
     }
     else
     {
-        write_path_ = Filename::from_os_specific(pth).get_fullpath();
-        lock_file_ = rppanda::join(pth, "instance.pid");
+        write_path_ = pth;
+        write_path_.make_absolute();
+        lock_file_ = rppanda::join(write_path_, "instance.pid");
     }
 }
 
@@ -107,21 +109,22 @@ void MountManager::Impl::mount(MountManager& self)
     self.debug("Setting up virtual filesystem");
     mounted_ = true;
 
-    auto convert_path = [](const std::string& pth) {
-        return Filename::from_os_specific(pth).get_fullpath();
+    auto convert_path = [](Filename pth) {
+        pth.make_absolute();
+        return pth;
     };
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
 
     // Mount config dir as $$rpconf
     if (config_dir_.empty())
     {
-        const std::string& config_dir = convert_path(rppanda::join(base_path_, "config/"));
-        self.debug("Mounting auto-detected config dir: " + config_dir);
+        const Filename& config_dir = convert_path(rppanda::join(base_path_, "config/"));
+        self.debug(fmt::format("Mounting auto-detected config dir: {}", config_dir.to_os_specific()));
         vfs->mount(config_dir, "/$$rpconfig", 0);
     }
     else
     {
-        self.debug("Mounting custom config dir: " + config_dir_);
+        self.debug(fmt::format("Mounting custom config dir: {}", config_dir_.to_os_specific()));
         vfs->mount(convert_path(config_dir_), "/$$rpconfig", 0);
     }
 
@@ -145,7 +148,7 @@ void MountManager::Impl::mount(MountManager& self)
             self.debug("Creating temporary path, since it does not exist yet");
             try
             {
-                vfs->make_directory_full(Filename(write_path_));
+                vfs->make_directory_full(write_path_);
             }
             catch (const std::exception& err)
             {
@@ -153,7 +156,7 @@ void MountManager::Impl::mount(MountManager& self)
             }
         }
 
-        self.debug("Mounting " + write_path_ + " as /$$rptemp");
+        self.debug(fmt::format("Mounting {} as /$$rptemp", write_path_.to_os_specific()));
         vfs->mount(convert_path(write_path_), "/$$rptemp", 0);
     }
 
@@ -163,13 +166,11 @@ void MountManager::Impl::mount(MountManager& self)
     model_path.prepend_directory("/$$rptemp");
 }
 
-std::string MountManager::Impl::find_basepath() const
+Filename MountManager::Impl::find_basepath() const
 {
-    Filename pth = Filename::from_os_specific(rppanda::join(
-        Filename::from_os_specific(boost::dll::program_location().string()), ".."));
+    Filename pth = rppanda::join(rppanda::convert_path(boost::dll::program_location()), "..");
     pth.make_absolute();
-
-    return pth.get_fullpath();
+    return pth;
 }
 
 void MountManager::Impl::wrtie_lock()
@@ -207,7 +208,7 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
             // We explicitely use os.listdir here instead of panda's listdir,
             // to work with actual paths.
             VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
-            const std::string& write_path_os = Filename(write_path_).to_os_specific();
+            const auto& write_path_os = rppanda::convert_path(write_path_);
             for (const auto& fpath: boost::filesystem::directory_iterator(write_path_os))
             {
                 const std::string& fname = fpath.path().filename().generic_string();
@@ -228,7 +229,7 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
                 try
                 {
                     boost::filesystem::remove(write_path_os);
-                    self.debug("Remove '" + write_path_os + "'");
+                    self.debug(fmt::format("Remove '{}'", rppanda::convert_path(write_path_os).to_os_specific()));
                 }
                 catch (...)
                 {
@@ -244,7 +245,7 @@ MountManager::MountManager(): RPObject("MountManager"), impl_(std::make_unique<I
 {
     set_base_path(impl_->find_basepath());
 
-    debug("Auto-Detected base path to " + impl_->base_path_);
+    debug(fmt::format("Auto-Detected base path to {}", impl_->base_path_.to_os_specific()));
 }
 
 MountManager::~MountManager()
@@ -253,33 +254,34 @@ MountManager::~MountManager()
 }
 
 void MountManager::mount() { impl_->mount(*this); }
-void MountManager::set_write_path(const std::string& pth) { impl_->set_write_path(pth); }
+void MountManager::set_write_path(const Filename& pth) { impl_->set_write_path(pth); }
 bool MountManager::get_lock() { return impl_->get_lock(); }
 
-inline const std::string& MountManager::get_write_path() const
+inline const Filename& MountManager::get_write_path() const
 {
     return impl_->write_path_;
 }
 
-inline const std::string& MountManager::get_base_path() const
+inline const Filename& MountManager::get_base_path() const
 {
     return impl_->base_path_;
 }
 
-void MountManager::set_base_path(const std::string& pth)
+void MountManager::set_base_path(const Filename& pth)
 {
-    debug("Set base path to '" + pth + "'");
-    impl_->base_path_ = Filename::from_os_specific(pth).get_fullpath();
+    debug(fmt::format("Set base path to '{}'", pth.to_os_specific()));
+    impl_->base_path_ = pth;
+    impl_->base_path_.make_absolute();
 }
 
-inline const std::string& MountManager::get_config_dir() const
+inline const Filename& MountManager::get_config_dir() const
 {
     return impl_->config_dir_;
 }
 
-void MountManager::set_config_dir(const std::string& pth)
+void MountManager::set_config_dir(const Filename& pth)
 {
-    impl_->config_dir_ = Filename::from_os_specific(pth).get_fullpath();
+    impl_->config_dir_ = pth.get_fullpath();
 }
 
 inline bool MountManager::get_do_cleanup() const
