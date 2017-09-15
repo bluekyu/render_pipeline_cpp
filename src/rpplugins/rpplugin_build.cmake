@@ -8,6 +8,8 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/std:c++14>
     )
+    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
+    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
     if(CMAKE_VERSION VERSION_LESS 3.8)
         target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++1z)

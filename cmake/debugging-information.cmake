@@ -49,8 +49,8 @@ function(configure_debugging_information target)
                 set_target_properties(${target} PROPERTIES DEBINFO_PATH_${config_upper} "${DEBINFO_PATH}")
                 set_target_properties(${target} PROPERTIES DEBINFO_STRIP_PATH_${config_upper} "${DEBINFO_STRIP_PATH}")
 
-                set_target_properties(${target} PROPERTIES LINK_FLAGS_${config_upper}
-                    "/PDB:${DEBINFO_PATH} /PDBSTRIPPED:${DEBINFO_STRIP_PATH}"
+                set_property(TARGET ${target} APPEND_STRING PROPERTY LINK_FLAGS_${config_upper}
+                    " /PDB:${DEBINFO_PATH} /PDBSTRIPPED:${DEBINFO_STRIP_PATH} "
                 )
             else()
                 set(DEBINFO_PATH "${LIBRARY_OUTPUT_DIRECTORY}/${OUTPUT_NAME}${POSTFIX}.pdb")
