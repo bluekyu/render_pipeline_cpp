@@ -985,7 +985,7 @@ void RenderPipeline::remove_light(RPLight* light)
     impl_->light_mgr_->remove_light(light);
 }
 
-size_t RenderPipeline::load_ies_profile(const std::string& filename)
+size_t RenderPipeline::load_ies_profile(const Filename& filename)
 {
     return impl_->ies_loader_->load(filename);
 }

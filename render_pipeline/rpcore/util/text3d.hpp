@@ -38,7 +38,7 @@ public:
         static const float pixel_size;
         static const LColor color;
         static const std::string align;
-        static const std::string font;
+        static const Filename font;
     };
 
 public:
@@ -48,7 +48,7 @@ public:
      */
     Text3D(const std::string& node_name="", NodePath parent={}, float pixel_size=Default::pixel_size,
         const LVecBase3& pos=LVecBase3(0), const LColor& color=Default::color,
-        const std::string& align=Default::align, const std::string& font=Default::font,
+        const std::string& align=Default::align, const Filename& font=Default::font,
         const std::string& text="");
     ~Text3D();
 

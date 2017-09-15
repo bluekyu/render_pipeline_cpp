@@ -39,7 +39,7 @@ const std::vector<std::string> IESProfileLoader::PROFILES = {
     "ERCO Leuchten GmbH"
 };
 
-size_t IESProfileLoader::load(const std::string& filename)
+size_t IESProfileLoader::load(const Filename& filename)
 {
     // TODO: implement
     return 0;

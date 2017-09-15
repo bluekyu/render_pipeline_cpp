@@ -120,7 +120,7 @@ public:
      * Loads an IES profile from a given filename and returns a handle which
      * can be used to set an ies profile on a light.
      */
-    size_t load_ies_profile(const std::string& filename);
+    size_t load_ies_profile(const Filename& filename);
 
     /**
      * Sets an effect to the given object, using the specified options.

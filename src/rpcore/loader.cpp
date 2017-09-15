@@ -51,7 +51,7 @@ class TimedLoadingOperation
 public:
     static int WARNING_COUNT;
 
-    TimedLoadingOperation(const std::string& resource): resource_(resource)
+    TimedLoadingOperation(const Filename& resource): resource_(resource)
     {
         enter();
     }
@@ -73,7 +73,7 @@ private:
         if (duration > 80.0f && WARNING_COUNT < 5)
         {
             RPObject::global_warn("RPLoader",
-                fmt::format("Loading '{}' took {} ms", resource_, (std::round(duration * 100.0f) / 100.0f)));
+                fmt::format("Loading '{}' took {} ms", resource_.to_os_specific(), (std::round(duration * 100.0f) / 100.0f)));
             ++WARNING_COUNT;
             if (WARNING_COUNT == 5)
             {
@@ -83,7 +83,7 @@ private:
         }
     }
 
-    std::string resource_;
+    Filename resource_;
     std::chrono::system_clock::time_point start_time_;
 };
 
@@ -173,7 +173,7 @@ Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_siz
     // Construct a ramdisk to write the files to
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     PT(VirtualFileMountRamdisk) ramdisk = new VirtualFileMountRamdisk;
-    vfs->mount(ramdisk, tempfile_name, 0);
+    vfs->mount(ramdisk, Filename(tempfile_name), 0);
 
     // Extract all slices and write them to the virtual disk
     for (int z_slice=0; z_slice < num_tiles; ++z_slice)
@@ -181,11 +181,11 @@ Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_siz
         int slice_x = (z_slice % num_cols) * tile_size_x;
         int slice_y = (z_slice / num_cols) * tile_size_y;
         temp_img.copy_sub_image(source, 0, 0, slice_x, slice_y, tile_size_x, tile_size_y);
-        temp_img.write(tempfile_name + std::to_string(z_slice) + ".png");
+        temp_img.write(Filename(tempfile_name + std::to_string(z_slice) + ".png"));
     }
 
     // Load the de-sliced texture from the ramdisk
-    Texture* texture_handle = RPLoader::load_3d_texture(tempfile_name + "/#.png");
+    Texture* texture_handle = RPLoader::load_3d_texture(Filename(tempfile_name + "/#.png"));
     vfs->unmount(ramdisk);
 
     return texture_handle;

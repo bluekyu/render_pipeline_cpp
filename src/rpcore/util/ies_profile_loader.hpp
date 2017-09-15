@@ -48,7 +48,7 @@ public:
      * Loads a profile from a given filename and returns the internal
      * used index which can be assigned to a light.
      */
-    size_t load(const std::string& filename);
+    size_t load(const Filename& filename);
 
 private:
     /** Internal method to create the storage for the profile dataset textures. */

@@ -201,12 +201,12 @@ void RPModel::load_meta_file(const Filename& file_path)
         file_path_ = Filename(model_path.get_dirname()) / (model_path.get_basename_wo_extension() + ".meta.json");
     }
 
-    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read JSON meta file ({}).", file_path_.c_str()));
+    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read JSON meta file ({}).", file_path_.to_os_specific()));
 
     std::string file_contents;
     if (!vfs->read_file(file_path_, file_contents, false))
     {
-        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read JSON meta file ({}).", file_path_.c_str()));
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read JSON meta file ({}).", file_path_.to_os_specific()));
         return;
     }
 
@@ -219,12 +219,12 @@ void RPModel::load_meta_data(const std::string& json_string)
 
     const Filename schema_path = Filename("/$$rp/data/schema/model_root_schema.fbs");
 
-    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read schema file ({}).", schema_path.c_str()));
+    RPObject::global_debug(CONTEXT_NAME, fmt::format("Try to read schema file ({}).", schema_path.to_os_specific()));
 
     std::string schema_conents;
     if (!vfs->read_file(schema_path, schema_conents, false))
     {
-        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read schema file ({}).", schema_path.c_str()));
+        RPObject::global_error(CONTEXT_NAME, fmt::format("Failed to read schema file ({}).", schema_path.to_os_specific()));
         return;
     }
 
@@ -235,7 +235,7 @@ void RPModel::load_meta_data(const std::string& json_string)
     if (!parser.Parse(schema_conents.c_str(), include_directories))
     {
         RPObject::global_error(CONTEXT_NAME, fmt::format("Cannot parse schema file ({}): {}",
-            schema_path.c_str(), parser.error_));
+            schema_path.to_os_specific(), parser.error_));
         return;
     }
 
