@@ -46,7 +46,7 @@ class Effect::Impl
 public:
     using InjectionType = std::map<std::string, std::vector<std::string>>;
 
-    static std::string generate_hash(const std::string& filename, const OptionType& options);
+    static std::string generate_hash(const Filename& filename, const OptionType& options);
 
 public:
     /**
@@ -72,7 +72,7 @@ public:
      * Constructs an effect name from a filename, this is used for writing
      * out temporary files.
      */
-    std::string convert_filename_to_name(const std::string& filepath);
+    std::string convert_filename_to_name(const Filename& filepath);
 
     /** Internal method to construct the effect from a yaml object. */
     void parse_content(Effect& self, YAML::Node& parsed_yaml);
@@ -97,7 +97,7 @@ public:
 
 public:
     int this_effect_id_ = effect_id_;
-    std::string filename_;
+    Filename filename_;
     std::string effect_name_;
     std::string effect_hash_;
     OptionType options_;
@@ -123,7 +123,7 @@ const std::vector<Effect::Impl::PassType> Effect::Impl::passes_ = {{"gbuffer", t
 std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::global_cache_;
 int Effect::Impl::effect_id_ = 0;
 
-std::string Effect::Impl::generate_hash(const std::string& filename, const OptionType& options)
+std::string Effect::Impl::generate_hash(const Filename& filename, const OptionType& options)
 {
     // Set all options which are not present in the dict to its defaults
     OptionType opt = default_options_;
@@ -137,7 +137,7 @@ std::string Effect::Impl::generate_hash(const std::string& filename, const Optio
     // it to an absolute path, to make sure that relative paths are cached
     // correctly(otherwise, specifying a different path to the same file
     // will cause a cache miss)
-    Filename fname = Filename(filename);
+    Filename fname = filename;
     fname.make_absolute();
     const std::string& file_hash = std::to_string(fname.get_hash());
 
@@ -152,9 +152,9 @@ std::string Effect::Impl::generate_hash(const std::string& filename, const Optio
     return file_hash + "-" + options_hash;
 }
 
-std::string Effect::Impl::convert_filename_to_name(const std::string& filepath)
+std::string Effect::Impl::convert_filename_to_name(const Filename& filepath)
 {
-    std::string filename = Filename(filepath).get_basename_wo_extension();
+    std::string filename = filepath.get_basename_wo_extension();
     boost::replace_all(filename, "/", "_");
     boost::replace_all(filename, "\\", "_");
     boost::replace_all(filename, ".", "_");
@@ -386,7 +386,7 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 }
 
 // ************************************************************************************************
-std::shared_ptr<Effect> Effect::load(const std::string& filename, const OptionType& options)
+std::shared_ptr<Effect> Effect::load(const Filename& filename, const OptionType& options)
 {
     const std::string& effect_hash = Impl::generate_hash(filename, options);
     if (Impl::global_cache_.find(effect_hash) != Impl::global_cache_.end())
@@ -447,7 +447,7 @@ void Effect::set_options(const OptionType& options)
     }
 }
 
-bool Effect::do_load(const std::string& filename)
+bool Effect::do_load(const Filename& filename)
 {
     impl_->filename_ = filename;
     impl_->effect_name_ = impl_->convert_filename_to_name(filename);

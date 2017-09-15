@@ -42,10 +42,10 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL InstancingNode
 {
 public:
-    InstancingNode(NodePath np, const std::string& effect_path="",
+    InstancingNode(NodePath np, const Filename& effect_path="",
         GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
     InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
-        const std::string& effect_path="", GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
+        const Filename& effect_path="", GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
 
     ~InstancingNode();
 

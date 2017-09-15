@@ -29,6 +29,7 @@
 
 class PandaFramework;
 class NodePath;
+class Filename;
 
 namespace YAML {
 class Node;
@@ -76,7 +77,7 @@ public:
      * this is the 'config/pipeline.ini' file. If you call this more than once,
      * only the settings of the last file will be used.
      */
-    bool load_settings(const std::string& path);
+    bool load_settings(const Filename& path);
 
     /**
      * Reloads all shaders. This will reload the shaders of all plugins,
@@ -105,7 +106,7 @@ public:
      * of a simple loading image. The image source should be a fullscreen
      * 16:9 image, and not too small, to avoid being blurred out.
      */
-    void set_loading_screen_image(const std::string& image_source);
+    void set_loading_screen_image(const Filename& image_source);
 
     /**
      * Adds a new light to the rendered lights, check out the LightManager
@@ -129,7 +130,7 @@ public:
      * current effect sort is less than the new effect sort (passed by the
      * sort parameter).
      */
-    void set_effect(NodePath& nodepath, const std::string& effect_src,
+    void set_effect(NodePath& nodepath, const Filename& effect_src,
         const Effect::OptionType& options={}, int sort=30);
 
     /**

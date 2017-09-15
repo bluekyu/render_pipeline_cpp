@@ -24,6 +24,8 @@
 
 // XXX: fix compile error for std::vector<std::string>
 #include <vector_string.h>
+#include <filename.h>
+
 #include <numeric>
 #include <algorithm>
 

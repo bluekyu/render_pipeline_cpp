@@ -34,11 +34,17 @@ class Sprite;
 class LoadingScreen : public RPObject
 {
 public:
+    struct Default
+    {
+        static Filename image_source;
+    };
+
+public:
     /**
      * Inits the loading screen with a given image source. By default,
      * this is the pipeline loading screen, but it can be overridden.
      */
-    LoadingScreen(RenderPipeline* pipeline, const std::string& image_source="/$$rp/data/gui/loading_screen_bg.txo");
+    LoadingScreen(RenderPipeline* pipeline, const Filename& image_source=Default::image_source);
     ~LoadingScreen();
 
     /** Creates the gui components. */
@@ -49,7 +55,7 @@ public:
 
 private:
     RenderPipeline* pipeline;
-    const std::string image_source;
+    const Filename image_source_;
 
     NodePath fullscreen_node;
     Sprite* fullscreen_bg = nullptr;

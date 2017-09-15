@@ -30,8 +30,10 @@
 
 namespace rpcore {
 
-LoadingScreen::LoadingScreen(RenderPipeline* pipeline, const std::string& image_source): RPObject("LoadingScreen"),
-    pipeline(pipeline), image_source(image_source)
+Filename LoadingScreen::Default::image_source = "/$$rp/data/gui/loading_screen_bg.txo";
+
+LoadingScreen::LoadingScreen(RenderPipeline* pipeline, const Filename& image_source): RPObject("LoadingScreen"),
+    pipeline(pipeline), image_source_(image_source)
 {
 
 }
@@ -56,7 +58,7 @@ void LoadingScreen::create()
     const float image_h = 1080.0f;
     const float scale = (std::min)(screen_w / image_w, screen_h / image_h);
 
-    fullscreen_bg = new Sprite(image_source, int(image_w * scale), int(image_h * scale), fullscreen_node,
+    fullscreen_bg = new Sprite(image_source_, int(image_w * scale), int(image_h * scale), fullscreen_node,
         int(screen_w - image_w * scale) / 2, int(screen_h - image_h * scale) / 2, true, false);
 
     GraphicsEngine* graphics_engine = rppanda::ShowBase::get_global_ptr()->get_graphics_engine();

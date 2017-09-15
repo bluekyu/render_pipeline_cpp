@@ -45,9 +45,9 @@ public:
         bool transparent=true, bool near_filter=true, bool any_filter=true);
     Sprite(Texture* image, NodePath parent={}, float x=0.0f, float y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const std::string& image_path, int w, int h, NodePath parent={}, float x=0.0f,
+    Sprite(const Filename& image_path, int w, int h, NodePath parent={}, float x=0.0f,
         float y=0.0f, bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const std::string& image_path, NodePath parent={}, float x=0.0f, float y=0.0f,
+    Sprite(const Filename& image_path, NodePath parent={}, float x=0.0f, float y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
 
     /** Returns a pos interval, this is a wrapper around NodePath.posInterval. */

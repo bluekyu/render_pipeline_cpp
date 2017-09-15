@@ -28,6 +28,10 @@
 #include <filename.h>
 #include <virtualFileSystem.h>
 
+#include <spdlog/fmt/ostr.h>
+
+#include "render_pipeline/rpcore/rpobject.hpp"
+
 namespace rplibs {
 
 /** Internal method to flatten a dictionary. */
@@ -48,7 +52,7 @@ static void flatten(YamlFlatType& root, const YAML::Node& node, const std::strin
     }
 }
 
-bool load_yaml_file(const std::string& filename, YAML::Node& result)
+bool load_yaml_file(const Filename& filename, YAML::Node& result)
 {
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
 
@@ -63,7 +67,8 @@ bool load_yaml_file(const std::string& filename, YAML::Node& result)
     }
     catch (const std::exception& err)
     {
-        std::cout << "Failed to read file (" << filename << "): " << err.what();
+        rpcore::RPObject::global_error("rplibs",
+            fmt::format("Failed to read file ({}): {}", filename.to_os_specific(), err.what()));
         return false;
     }
 
@@ -73,7 +78,9 @@ bool load_yaml_file(const std::string& filename, YAML::Node& result)
     }
     catch (const std::exception& err)
     {
-        std::cout << "Failed to parse YAML file (" << filename << "): " << err.what();
+        rpcore::RPObject::global_error("rplibs",
+            fmt::format("Failed to parse YAML file ({}): {}", filename.to_os_specific(), err.what()));
+
         vfs->close_read_file(file);
         return false;
     }
@@ -88,7 +95,7 @@ bool load_yaml_file(const std::string& filename, YAML::Node& result)
     return true;
 }
 
-YamlFlatType load_yaml_file_flat(const std::string& filename)
+YamlFlatType load_yaml_file_flat(const Filename& filename)
 {
     YamlFlatType root;
 

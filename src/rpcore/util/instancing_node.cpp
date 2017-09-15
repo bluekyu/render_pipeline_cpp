@@ -33,7 +33,7 @@ static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeo
 class InstancingNode::Impl
 {
 public:
-    void initilize(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint);
+    void initilize(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint);
 
     void set_instance_count(int instance_count);
 
@@ -49,7 +49,7 @@ public:
     PT(Texture) buffer_texture_;
 };
 
-void InstancingNode::Impl::initilize(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint)
+void InstancingNode::Impl::initilize(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint)
 {
     instanced_np_ = np;
 
@@ -59,7 +59,7 @@ void InstancingNode::Impl::initilize(NodePath np, const std::string& effect_path
     buffer_texture_->setup_buffer_texture(4, Texture::T_float, Texture::F_rgba32, buffer_hint);
 
     // Load the effect
-    std::string epath = effect_path;
+    Filename epath = effect_path;
     if (epath.empty())
         epath = "/$$rp/effects/basic_instancing.yaml";
 
@@ -114,14 +114,14 @@ void InstancingNode::Impl::upload_transforms()
 
 // ************************************************************************************************
 
-InstancingNode::InstancingNode(NodePath np, const std::string& effect_path, GeomEnums::UsageHint buffer_hint):
+InstancingNode::InstancingNode(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint):
     impl_(std::make_unique<Impl>())
 {
     impl_->initilize(np, effect_path, buffer_hint);
 }
 
 InstancingNode::InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
-    const std::string& effect_path, GeomEnums::UsageHint buffer_hint): InstancingNode(np, effect_path, buffer_hint)
+    const Filename& effect_path, GeomEnums::UsageHint buffer_hint): InstancingNode(np, effect_path, buffer_hint)
 {
     set_transforms(transforms);
 }

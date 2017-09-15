@@ -28,6 +28,7 @@
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class Shader;
+class Filename;
 
 namespace rpcore {
 
@@ -41,7 +42,7 @@ public:
     using OptionType = std::map<std::string, bool>;
 
 public:
-    static std::shared_ptr<Effect> load(const std::string& filename, const OptionType& options);
+    static std::shared_ptr<Effect> load(const Filename& filename, const OptionType& options);
     static const OptionType& get_default_options();
 
     Effect();
@@ -64,7 +65,7 @@ public:
     /** Sets the effect options, overriding the default options. */
     void set_options(const OptionType& options);
 
-    bool do_load(const std::string& filename);
+    bool do_load(const Filename& filename);
 
     /** Returns a handle to the compiled shader object for a given render pass. */
     Shader* get_shader_obj(const std::string& pass_id) const;

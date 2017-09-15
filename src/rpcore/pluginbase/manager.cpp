@@ -89,7 +89,7 @@ public:
 
     void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
 
-    void load_setting_overrides(const std::string& override_path);
+    void load_setting_overrides(const Filename& override_path);
 
     void on_load();
     void on_stage_setup();
@@ -254,9 +254,9 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
     }
 }
 
-void PluginManager::Impl::load_setting_overrides(const std::string& override_path)
+void PluginManager::Impl::load_setting_overrides(const Filename& override_path)
 {
-    self_.trace(fmt::format("Loading setting overrides from '{}'", override_path));
+    self_.trace(fmt::format("Loading setting overrides from '{}'", override_path.to_os_specific()));
 
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
@@ -449,9 +449,9 @@ void PluginManager::load_plugin_settings(const std::string& plugin_id, const Fil
     impl_->load_plugin_settings(plugin_id, plugin_pth);
 }
 
-void PluginManager::load_daytime_overrides(const std::string& override_path)
+void PluginManager::load_daytime_overrides(const Filename& override_path)
 {
-    trace(fmt::format("Loading daytime overrides from '{}'", override_path));
+    trace(fmt::format("Loading daytime overrides from '{}'", override_path.to_os_specific()));
 
     YAML::Node overrides;
     if (!rplibs::load_yaml_file(override_path, overrides))
@@ -552,7 +552,7 @@ const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& Plugi
 }
 
 void PluginManager::unload() { impl_->unload(); }
-void PluginManager::load_setting_overrides(const std::string& override_path) { impl_->load_setting_overrides(override_path); }
+void PluginManager::load_setting_overrides(const Filename& override_path) { impl_->load_setting_overrides(override_path); }
 void PluginManager::on_load() { impl_->on_load(); }
 void PluginManager::on_stage_setup() { impl_->on_stage_setup(); }
 void PluginManager::on_post_stage_setup() { impl_->on_post_stage_setup(); }

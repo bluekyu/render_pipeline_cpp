@@ -32,13 +32,13 @@ Sprite::Sprite(Texture* image, int w, int h, NodePath parent, float x, float y,
     init(image, w, h, parent, x, y, transparent, near_filter, any_filter);
 }
 
-Sprite::Sprite(const std::string& image_path, int w, int h, NodePath parent, float x, float y,
+Sprite::Sprite(const Filename& image_path, int w, int h, NodePath parent, float x, float y,
     bool transparent, bool near_filter, bool any_filter):
     Sprite(RPLoader::load_texture(image_path), w, h, parent, x, y, transparent, near_filter, any_filter)
 {
 }
 
-Sprite::Sprite(const std::string& image_path, NodePath parent, float x, float y,
+Sprite::Sprite(const Filename& image_path, NodePath parent, float x, float y,
     bool transparent, bool near_filter, bool any_filter): RPObject("Sprite")
 {
     Texture* tex = RPLoader::load_texture(image_path);

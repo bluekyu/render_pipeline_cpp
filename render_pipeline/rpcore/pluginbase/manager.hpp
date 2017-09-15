@@ -95,13 +95,13 @@ public:
      * Loads an override file for the settings, which contains values to
      * override the settings with.
      */
-    void load_setting_overrides(const std::string& override_path);
+    void load_setting_overrides(const Filename& override_path);
 
     /**
      * Loads an override file for the daytime settings, which contains
      * values to override the settings with.
      */
-    void load_daytime_overrides(const std::string& override_path);
+    void load_daytime_overrides(const Filename& override_path);
 
     /** Returns whether a plugin is currently enabled and loaded. */
     bool is_plugin_enabled(const std::string& plugin_id) const;

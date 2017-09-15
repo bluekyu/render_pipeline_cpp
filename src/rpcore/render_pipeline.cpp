@@ -222,7 +222,7 @@ public:
      */
     NodePath create_default_skybox(float size=40000);
 
-    void internal_set_effect(NodePath nodepath, const std::string& effect_src,
+    void internal_set_effect(NodePath nodepath, const Filename& effect_src,
         const Effect::OptionType& options=Effect::OptionType(), int sort=30);
 
     void clear_effect(NodePath& nodepath);
@@ -243,7 +243,7 @@ public:
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
     std::chrono::system_clock::time_point* first_frame_ = nullptr;
-    std::vector<std::tuple<NodePath, std::string, Effect::OptionType, int>> applied_effects;
+    std::vector<std::tuple<NodePath, Filename, Effect::OptionType, int>> applied_effects;
 
     bool pre_showbase_initialized = false;
 
@@ -293,7 +293,7 @@ RenderPipeline::Impl::~Impl()
     global_ptr_ = nullptr;
 }
 
-void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const std::string& effect_src, const Effect::OptionType& options, int sort)
+void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
     const auto& effect = Effect::load(effect_src, options);
     if (!effect)
@@ -898,7 +898,7 @@ void RenderPipeline::run()
     }
 }
 
-bool RenderPipeline::load_settings(const std::string& path)
+bool RenderPipeline::load_settings(const Filename& path)
 {
     impl_->settings = rplibs::load_yaml_file_flat(path);
     if (impl_->settings.empty())
@@ -970,7 +970,7 @@ bool RenderPipeline::create()
     return impl_->create();
 }
 
-void RenderPipeline::set_loading_screen_image(const std::string& image_source)
+void RenderPipeline::set_loading_screen_image(const Filename& image_source)
 {
     impl_->loading_screen = new LoadingScreen(this, image_source);
 }
@@ -990,7 +990,7 @@ size_t RenderPipeline::load_ies_profile(const std::string& filename)
     return impl_->ies_loader_->load(filename);
 }
 
-void RenderPipeline::set_effect(NodePath& nodepath, const std::string& effect_src, const Effect::OptionType& options, int sort)
+void RenderPipeline::set_effect(NodePath& nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
     decltype(Impl::applied_effects)::value_type args(NodePath(nodepath), effect_src, options, sort);
     impl_->applied_effects.push_back(args);
