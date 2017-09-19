@@ -27,7 +27,9 @@
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
-class GenericAsyncTask;
+namespace rppanda {
+class FunctionalTask;
+}
 
 namespace rpcore {
 
@@ -56,7 +58,7 @@ private:
      * Gets called after the pipeline initialized, this extracts the
      * exposure texture from the stage manager.
      */
-    static AsyncTask::DoneStatus late_init(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus late_init(rppanda::FunctionalTask* task);
 
     RenderPipeline* _pipeline;
     NodePath _node;

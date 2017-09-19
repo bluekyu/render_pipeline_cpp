@@ -69,12 +69,13 @@ Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pip
 
     if (use_advanced_info())
     {
-        Globals::base->do_method_later(0.5f, [](GenericAsyncTask* task, void* user_data) -> AsyncTask::DoneStatus {
-            return reinterpret_cast<Debugger*>(user_data)->collect_scene_data(nullptr, user_data);
-            }, "RPDebugger_collectSceneData_initial", this);
+        Globals::base->do_method_later(0.5f, [this](rppanda::FunctionalTask* task) {
+            return collect_scene_data(nullptr);
+            }, "RPDebugger_collectSceneData_initial");
     }
 
-    Globals::base->do_method_later(0.1f, update_stats, "RPDebugger_updateStats", this);
+    Globals::base->do_method_later(0.1f, std::bind(&Debugger::update_stats, this, std::placeholders::_1),
+        "RPDebugger_updateStats");
 }
 
 Debugger::~Debugger()
@@ -136,7 +137,7 @@ void Debugger::update()
     _pixel_widget->update();
 }
 
-AsyncTask::DoneStatus Debugger::collect_scene_data(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus Debugger::collect_scene_data(rppanda::FunctionalTask* task)
 {
     _analyzer->clear();
     const auto& npc = Globals::base->get_render().find_all_matches("**/+GeomNode");
@@ -289,23 +290,20 @@ void Debugger::toggle_keybindings_visible()
     }
 }
 
-AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
 {
-    Debugger* debugger = reinterpret_cast<Debugger*>(user_data);
-    const RenderPipeline* pipeline = debugger->pipeline;
-
     const auto& clock = Globals::clock;
-    debugger->debug_lines[0]->set_text(fmt::format("{:3.0f} fps  |  {:3.1f} ms  |  {:3.1f} ms max",
+    debug_lines[0]->set_text(fmt::format("{:3.0f} fps  |  {:3.1f} ms  |  {:3.1f} ms max",
         clock->get_average_frame_rate(),
         (1000.0 / (std::max)(0.001, clock->get_average_frame_rate())),
         (clock->get_max_frame_duration() * 1000.0)));
 
-    if (!debugger->use_advanced_info())
+    if (!use_advanced_info())
         return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 
     const auto& light_mgr = pipeline->get_light_mgr();
 
-    debugger->debug_lines[1]->set_text(fmt::format(
+    debug_lines[1]->set_text(fmt::format(
         "{:4d} states |  {:4d} transforms |  {:4d} cmds |  {:4d} lights |  {:4d} shadow |  {:5.1f}% atlas usage",
 
         RenderState::get_num_states(),
@@ -315,7 +313,7 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
         light_mgr->get_num_shadow_sources(),
         light_mgr->get_shadow_atlas_coverage()));
 
-    const auto& tex_memory_count = debugger->_buffer_viewer->get_stage_information();
+    const auto& tex_memory_count = _buffer_viewer->get_stage_information();
 
     int views = 0;
     int active_views = 0;
@@ -337,7 +335,7 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
         }
     }
 
-    debugger->debug_lines[2]->set_text(fmt::format(
+    debug_lines[2]->set_text(fmt::format(
         "Internal:  {:3.0f} MB VRAM  |  {:5d} img |  {:5d} tex |  "
         "{:5d} fbos |  {:3d} plugins |  {:2d}  views  ({:2d} active)",
 
@@ -356,14 +354,14 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
     for (int k = 0; k < tex_count; ++k)
         scene_tex_size += texture_collection.get_texture(k)->estimate_texture_memory();
 
-    debugger->debug_lines[3]->set_text(fmt::format(
+    debug_lines[3]->set_text(fmt::format(
         "Scene:   {:4.0f} MB VRAM |  {:3d} tex |  {:4d} geoms |  {:4d} nodes |  {:7d} vertices",
 
         (scene_tex_size / (1024.0*1024.0)),
         tex_count,
-        debugger->_analyzer->get_num_geoms(),
-        debugger->_analyzer->get_num_nodes(),
-        debugger->_analyzer->get_num_vertices()
+        _analyzer->get_num_geoms(),
+        _analyzer->get_num_nodes(),
+        _analyzer->get_num_vertices()
         ));
 
     LVecBase3f sun_vector(0);
@@ -376,7 +374,7 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
     const NodePath& render = Globals::base->get_render();
     const LPoint3& camera_global_pos = camera.get_pos(render);
 
-    debugger->debug_lines[4]->set_text(fmt::format(
+    debug_lines[4]->set_text(fmt::format(
         "Time: {} ({:1.3f}) |  Sun  {:0.2f} {:0.2f} {:0.2f} |  X {:4.2f}  Y {:4.2f}  Z {:4.2f} |  {:2d} tasks |  scheduled: {:2d}",
 
         pipeline->get_daytime_mgr()->get_formatted_time(),
@@ -426,7 +424,7 @@ AsyncTask::DoneStatus Debugger::update_stats(GenericAsyncTask* task, void* user_
         Globals::resolution.get_y(),
         light_mgr->get_num_tiles().get_x(),
         light_mgr->get_num_tiles().get_y());
-    debugger->debug_lines[5]->set_text(debug_lines_5_text);
+    debug_lines[5]->set_text(debug_lines_5_text);
 
     return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 }

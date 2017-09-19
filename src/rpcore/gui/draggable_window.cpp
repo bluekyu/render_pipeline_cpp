@@ -22,7 +22,6 @@
 
 #include "render_pipeline/rpcore/gui/draggable_window.hpp"
 
-#include <genericAsyncTask.h>
 #include <graphicsWindow.h>
 
 #include "render_pipeline/rpcore/globals.hpp"
@@ -30,6 +29,7 @@
 #include "render_pipeline/rppanda/gui/direct_frame.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 #include "render_pipeline/rppanda/gui/direct_button.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 
 namespace rpcore {
@@ -111,8 +111,13 @@ void DraggableWindow::start_drag(const Event* ev, void* user_data)
     self->dragging_ = true;
     self->node_.detach_node();
     self->node_.reparent_to(self->parent_);
-    GenericAsyncTask* task = Globals::base->add_task(on_tick, self, "UIWindowDrag");
-    task->set_upon_death(stop_drag);
+
+    Globals::base->get_task_mgr()->add(
+        std::bind(&DraggableWindow::on_tick, self, std::placeholders::_1),
+        "UIWindowDrag", {}, {}, {},
+        [=](rppanda::FunctionalTask*, bool) {
+        stop_drag(nullptr, self);
+    });
 
     self->drag_offset_ = self->pos_ - self->get_mouse_pos();
 }
@@ -134,7 +139,7 @@ void DraggableWindow::request_close(const Event* ev, void* user_data)
 
 void DraggableWindow::stop_drag(const Event* ev, void* user_data)
 {
-    Globals::base->remove_task("UIWindowDrag");
+    Globals::base->get_task_mgr()->remove("UIWindowDrag");
     reinterpret_cast<DraggableWindow*>(user_data)->dragging_ = false;
 }
 
@@ -145,10 +150,9 @@ LVecBase2 DraggableWindow::get_mouse_pos() const
     return LVecBase2(mouse_x, mouse_y) * context_scale_;
 }
 
-AsyncTask::DoneStatus DraggableWindow::on_tick(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus DraggableWindow::on_tick(rppanda::FunctionalTask* task)
 {
-    DraggableWindow* self = reinterpret_cast<DraggableWindow*>(user_data);
-    self->set_pos(self->get_mouse_pos() + self->drag_offset_);
+    set_pos(get_mouse_pos() + drag_offset_);
     return AsyncTask::DS_cont;
 }
 

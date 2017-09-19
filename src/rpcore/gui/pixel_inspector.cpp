@@ -26,7 +26,7 @@
 #include <graphicsWindow.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
-
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
@@ -70,7 +70,8 @@ void PixelInspector::create_components()
     _zoomer = _node.attach_new_node(card_maker.generate());
 
     // Defer the further loading
-    Globals::base->do_method_later(1.0f, late_init, "PixelInspectorLateInit", this);
+    Globals::base->get_task_mgr()->do_method_later(1.0f, std::bind(&PixelInspector::late_init, this, std::placeholders::_1),
+        "PixelInspectorLateInit");
     Globals::base->accept("q",
         [](const Event* ev, void* data) {
         reinterpret_cast<PixelInspector*>(data)->show();
@@ -81,14 +82,13 @@ void PixelInspector::create_components()
     }, this);
 }
 
-AsyncTask::DoneStatus PixelInspector::late_init(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus PixelInspector::late_init(rppanda::FunctionalTask* task)
 {
-    PixelInspector* pixel_inspector = reinterpret_cast<PixelInspector*>(user_data);
-    PT(Texture) scene_tex = pixel_inspector->_pipeline->get_stage_mgr()->get_pipe("ShadedScene").get_texture();
-    pixel_inspector->_zoomer.set_shader(RPLoader::load_shader({
+    PT(Texture) scene_tex = _pipeline->get_stage_mgr()->get_pipe("ShadedScene").get_texture();
+    _zoomer.set_shader(RPLoader::load_shader({
             "/$$rp/shader/default_gui_shader.vert.glsl",
             "/$$rp/shader/pixel_inspector.frag.glsl"}));
-    pixel_inspector->_zoomer.set_shader_input("SceneTex", scene_tex);
+    _zoomer.set_shader_input("SceneTex", scene_tex);
 
     return AsyncTask::DS_done;
 }

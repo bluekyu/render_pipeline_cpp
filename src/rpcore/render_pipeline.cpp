@@ -27,7 +27,6 @@
 #include <cctype>
 #include <chrono>
 
-#include <asyncTask.h>
 #include <pandaFramework.h>
 #include <graphicsWindow.h>
 #include <pandaSystem.h>
@@ -37,11 +36,11 @@
 #include <pointLight.h>
 #include <spotlight.h>
 #include <materialAttrib.h>
-#include <genericAsyncTask.h>
 #include <geomTristrips.h>
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/mount_manager.hpp"
@@ -90,31 +89,31 @@ public:
      * state garbarge collector, which does a great job, but still cannot clear
      * up all states.
      */
-    static AsyncTask::DoneStatus clear_state_cache(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus clear_state_cache(rppanda::FunctionalTask* task);
 
     /** Update task which gets called before the rendering, and updates all managers. */
-    static AsyncTask::DoneStatus manager_update_task(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus manager_update_task(rppanda::FunctionalTask* task);
 
     /**
      * Updates the commonly used inputs each frame. This is a seperate
      * task to be able view detailed performance information in pstats, since
      * a lot of matrix calculations are involved here.
      */
-    static AsyncTask::DoneStatus update_inputs_and_stages(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus update_inputs_and_stages(rppanda::FunctionalTask* task);
 
     /**
      * Update task which gets called before the rendering, and updates the
      * plugins. This is a seperate task to split the work, and be able to do
      * better performance analysis in pstats later on.
      */
-    static AsyncTask::DoneStatus plugin_pre_render_update(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus plugin_pre_render_update(rppanda::FunctionalTask* task);
 
     /**
      * Update task which gets called after the rendering, and should cleanup
      * all unused states and objects. This also triggers the plugin post-render
      * update hook.
      */
-    static AsyncTask::DoneStatus plugin_post_render_update(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus plugin_post_render_update(rppanda::FunctionalTask* task);
 
     /**
      * Checks for window events. This mainly handles incoming resizes,
@@ -368,7 +367,7 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
     applied_effects.erase(iter);
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(rppanda::FunctionalTask* task)
 {
     task->set_delay(2.0f);
     TransformState::clear_cache();
@@ -376,51 +375,47 @@ AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(GenericAsyncTask* 
     return AsyncTask::DS_again;
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::manager_update_task(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus RenderPipeline::Impl::manager_update_task(rppanda::FunctionalTask* task)
 {
-    RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
-    rp->impl_->task_scheduler_->step();
+    task_scheduler_->step();
     // TODO: implements
     //self._listener.update()
-    if (rp->impl_->debugger)
-        rp->impl_->debugger->update();
-    rp->impl_->daytime_mgr_->update();
-    rp->impl_->light_mgr_->update();
+    if (debugger)
+        debugger->update();
+    daytime_mgr_->update();
+    light_mgr_->update();
 
     if (rpcore::Globals::clock->get_frame_count() == 10)
     {
-        rp->debug("Hiding loading screen after 10 pre-rendered frames.");
-        rp->impl_->loading_screen->remove();
+        self_.debug("Hiding loading screen after 10 pre-rendered frames.");
+        loading_screen->remove();
     }
 
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::update_inputs_and_stages(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus RenderPipeline::Impl::update_inputs_and_stages(rppanda::FunctionalTask* task)
 {
-    RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
-    rp->impl_->common_resources->update();
-    rp->impl_->stage_mgr_->update();
+    common_resources->update();
+    stage_mgr_->update();
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::plugin_pre_render_update(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus RenderPipeline::Impl::plugin_pre_render_update(rppanda::FunctionalTask* task)
 {
-    RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
-    rp->impl_->plugin_mgr_->on_pre_render_update();
+    plugin_mgr_->on_pre_render_update();
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::FunctionalTask* task)
 {
-    RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
-    rp->impl_->plugin_mgr_->on_post_render_update();
-    if (rp->impl_->first_frame_)
+    plugin_mgr_->on_post_render_update();
+    if (first_frame_)
     {
-        const std::chrono::duration<float>& duration = std::chrono::system_clock::now() - *rp->impl_->first_frame_;
-        rp->debug(fmt::format("Took {} s until first frame", duration.count()));
-        delete rp->impl_->first_frame_;
-        rp->impl_->first_frame_ = nullptr;
+        const std::chrono::duration<float>& duration = std::chrono::system_clock::now() - *first_frame_;
+        self_.debug(fmt::format("Took {} s until first frame", duration.count()));
+        delete first_frame_;
+        first_frame_ = nullptr;
     }
     return AsyncTask::DS_cont;
 }
@@ -455,12 +450,10 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
 
     // set lens parameter after window event.
     // and set highest priority for running first.
-    rp_impl->showbase_->add_task([](GenericAsyncTask* task, void* user_data) -> AsyncTask::DoneStatus
-    {
-        RenderPipeline::Impl* rp_impl = reinterpret_cast<RenderPipeline::Impl*>(user_data);
+    rp_impl->showbase_->get_task_mgr()->add([&](rppanda::FunctionalTask* task) {
         rp_impl->adjust_lens_setting();
         return AsyncTask::DS_done;
-    }, rp_impl.get(), "RP_HandleWindowResize", -100);
+    }, "RP_HandleWindowResize", -100);
 }
 
 void RenderPipeline::Impl::reload_shaders()
@@ -470,12 +463,8 @@ void RenderPipeline::Impl::reload_shaders()
         self_.debug("Reloading shaders ..");
         debugger->get_error_msg_handler()->clear_messages();
         debugger->set_reload_hint_visible(true);
-
-        for (int i = 0; i < 2; ++i)
-        {
-            showbase_->get_task_mgr()->poll();
-            showbase_->get_graphics_engine()->render_frame();
-        }
+        showbase_->get_graphics_engine()->render_frame();
+        showbase_->get_graphics_engine()->render_frame();
     }
 
     tag_mgr_->cleanup_states();
@@ -706,13 +695,13 @@ bool RenderPipeline::Impl::init_showbase()
 
 void RenderPipeline::Impl::init_bindings()
 {
-    showbase_->add_task(&Impl::manager_update_task, &self_, "RP_UpdateManagers", 10);
-    showbase_->add_task(&Impl::plugin_pre_render_update, &self_, "RP_Plugin_BeforeRender", 12);
-    showbase_->add_task(&Impl::update_inputs_and_stages, &self_, "RP_UpdateInputsAndStages", 18);
+    showbase_->add_task(std::bind(&Impl::manager_update_task, this, std::placeholders::_1), "RP_UpdateManagers", 10);
+    showbase_->add_task(std::bind(&Impl::plugin_pre_render_update, this, std::placeholders::_1), "RP_Plugin_BeforeRender", 12);
+    showbase_->add_task(std::bind(&Impl::update_inputs_and_stages, this, std::placeholders::_1), "RP_UpdateInputsAndStages", 18);
 
     // igloop has 50 sorting value.
-    showbase_->add_task(&Impl::plugin_post_render_update, &self_, "RP_Plugin_AfterRender", 51);
-    showbase_->do_method_later(0.5f, &Impl::clear_state_cache, "RP_ClearStateCache", nullptr);
+    showbase_->add_task(std::bind(&Impl::plugin_post_render_update, this, std::placeholders::_1), "RP_Plugin_AfterRender", 51);
+    showbase_->get_task_mgr()->do_method_later(0.5f, std::bind(&Impl::clear_state_cache, this, std::placeholders::_1), "RP_ClearStateCache");
     showbase_->accept("window-event", &Impl::handle_window_event, &self_);
 }
 

@@ -1,7 +1,6 @@
 /**
  * Render Pipeline C++
  *
- * Copyright (c) 2014-2016 tobspr <tobias.springer1@gmail.com>
  * Copyright (c) 2016-2017 Center of Human-centered Interaction for Coexistence.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -20,55 +19,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
-
-#include <nodePath.h>
-#include <asyncTask.h>
-
-#include <render_pipeline/rpcore/rpobject.hpp>
-
-class ComputeNode;
+#include "render_pipeline/rppanda/task/functional_task.hpp"
 
 namespace rppanda {
-class DirectFrame;
-class FunctionalTask;
-}
 
-namespace rpcore {
-
-class RenderPipeline;
-class Image;
-class Sprite;
-class Text;
-
-/** Widget to show the current exposure. */
-class ExposureWidget : public RPObject
-{
-public:
-    ExposureWidget(RenderPipeline* pipeline, NodePath parent);
-    ~ExposureWidget();
-
-private:
-    /** Internal method to init the widgets components. */
-    void create_components();
-
-    /**
-     * Gets called after the pipeline initialized, this extracts the
-     * exposure texture from the stage manager.
-     */
-    AsyncTask::DoneStatus late_init(rppanda::FunctionalTask* task);
-
-    RenderPipeline* _pipeline;
-    NodePath _parent;
-    NodePath _node;
-
-    std::shared_ptr<Image> _storage_tex = nullptr;
-    PT(rppanda::DirectFrame) _bg_frame = nullptr;
-    Sprite* _display_img = nullptr;
-    Text* _display_txt = nullptr;
-    PT(ComputeNode) _cshader_node = nullptr;
-    NodePath _cshader_np;
-    PT(Shader) _cshader;
-};
+TypeHandle FunctionalTask::type_handle_;
 
 }

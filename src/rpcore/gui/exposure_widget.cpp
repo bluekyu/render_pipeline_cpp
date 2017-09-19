@@ -26,7 +26,7 @@
 
 #include "render_pipeline/rppanda/gui/direct_frame.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
-
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
@@ -76,29 +76,29 @@ void ExposureWidget::create_components()
     _cshader_np = _node.attach_new_node(_cshader_node);
 
     // Defer the further loading
-    Globals::base->do_method_later(1.0f, &ExposureWidget::late_init, "ExposureLateInit", this);
+    Globals::base->get_task_mgr()->do_method_later(1.0f, std::bind(&ExposureWidget::late_init, this, std::placeholders::_1),
+        "ExposureLateInit");
 }
 
-AsyncTask::DoneStatus ExposureWidget::late_init(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus ExposureWidget::late_init(rppanda::FunctionalTask* task)
 {
-    ExposureWidget* ew = reinterpret_cast<ExposureWidget*>(user_data);
-    StageManager* stage_mgr = ew->_pipeline->get_stage_mgr();
+    StageManager* stage_mgr = _pipeline->get_stage_mgr();
 
     const auto& pipe = stage_mgr->get_pipe("Exposure");
     if (pipe == ShaderInput::get_blank())
     {
-        ew->debug("Disabling exposure widget, could not find the exposure data.");
-        ew->_node.remove_node();
+        debug("Disabling exposure widget, could not find the exposure data.");
+        _node.remove_node();
         return AsyncTask::DS_done;
     }
 
-    ew->_node.show();
+    _node.show();
 
     Texture* exposure_tex = pipe.get_texture();
-    ew->_cshader = RPLoader::load_shader({"/$$rp/shader/visualize_exposure.compute.glsl"});
-    ew->_cshader_np.set_shader(ew->_cshader);
-    ew->_cshader_np.set_shader_input("DestTex", ew->_storage_tex->get_texture());
-    ew->_cshader_np.set_shader_input("ExposureTex", exposure_tex);
+    _cshader = RPLoader::load_shader({"/$$rp/shader/visualize_exposure.compute.glsl"});
+    _cshader_np.set_shader(_cshader);
+    _cshader_np.set_shader_input("DestTex", _storage_tex->get_texture());
+    _cshader_np.set_shader_input("ExposureTex", exposure_tex);
 
     return AsyncTask::DS_done;
 }

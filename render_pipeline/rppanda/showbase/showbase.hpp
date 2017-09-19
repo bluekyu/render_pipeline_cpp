@@ -54,7 +54,6 @@ class GraphicsEngine;
 class PandaFramework;
 class WindowFramework;
 class MouseWatcher;
-class AsyncTaskManager;
 class AudioManager;
 class AudioSound;
 
@@ -62,6 +61,7 @@ namespace rppanda {
 
 class SfxPlayer;
 class Loader;
+class TaskManager;
 
 class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 {
@@ -86,6 +86,7 @@ public:
     WindowFramework* get_window_framework() const;
 
     rppanda::Loader* get_loader() const;
+    TaskManager* get_task_mgr() const;
     GraphicsEngine* get_graphics_engine() const;
     GraphicsWindow* get_win() const;
 
@@ -145,8 +146,6 @@ public:
 
     const NodePath& get_data_root() const;
     PandaNode* get_data_root_node() const;
-
-    AsyncTaskManager* get_task_mgr() const;
 
     bool open_default_window();
 

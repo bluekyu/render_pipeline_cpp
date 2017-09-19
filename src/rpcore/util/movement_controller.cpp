@@ -23,7 +23,6 @@
 #include "render_pipeline/rpcore/util/movement_controller.hpp"
 
 #include <parametricCurveCollection.h>
-#include <genericAsyncTask.h>
 #include <mouseWatcher.h>
 #include <buttonThrower.h>
 #include <asyncTaskManager.h>
@@ -33,6 +32,7 @@
 #include <boost/format.hpp>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
 
 namespace rpcore {
@@ -163,10 +163,9 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
         std::cout << (boost::format("Average frame time (ms): %4.1f") % (avg_ms * 1000.0)) << std::endl;
         std::cout << (boost::format("Average frame rate: %4.1f") % (1.0 / avg_ms)) << std::endl;
 
-        update_task_ = showbase_->add_task([](GenericAsyncTask* task, void* user_data) {
-            auto self = reinterpret_cast<MovementController*>(user_data);
-            return self->impl_->update(self);
-        }, self, "RP_UpdateMovementController", -50);
+        update_task_ = showbase_->add_task([this, self](rppanda::FunctionalTask* task) {
+            return update(self);
+        }, "RP_UpdateMovementController", -50);
         showbase_->get_render_2d().show();
         showbase_->get_aspect_2d().show();
 
@@ -221,7 +220,7 @@ void MovementController::reset_to_initial()
 
 ClockObject* MovementController::get_clock_obj() const
 {
-    return impl_->showbase_->get_task_mgr()->get_clock();
+    return impl_->showbase_->get_task_mgr()->get_global_clock();
 }
 
 void MovementController::setup()
@@ -358,10 +357,9 @@ void MovementController::setup()
     showbase->disable_mouse();
 
     // add ourself as an update task which gets executed very early before the rendering
-    impl_->update_task_ = showbase->add_task([](GenericAsyncTask* task, void* user_data) {
-        auto self = reinterpret_cast<MovementController*>(user_data);
-        return self->impl_->update(self);
-    }, this, "RP_UpdateMovementController", -40);
+    impl_->update_task_ = showbase->add_task([this](rppanda::FunctionalTask* task) {
+        return impl_->update(this);
+    }, "RP_UpdateMovementController", -40);
 
     // Hotkeys to connect to pstats and reset the initial position
     showbase->accept("1",
@@ -399,10 +397,9 @@ void MovementController::play_motion_path(const MotionPathType& points, float po
     impl_->curve_time_end_ = get_clock_obj()->get_frame_time() + points.size() * point_duration;
     impl_->delta_time_sum_ = 0;
     impl_->delta_time_count_ = 0;
-    impl_->showbase_->add_task([](GenericAsyncTask* task, void* user_data) {
-        auto self = reinterpret_cast<MovementController*>(user_data);
-        return self->impl_->camera_motion_update(self);
-    }, this, "RP_CameraMotionPath", -50);
+    impl_->showbase_->add_task([this](rppanda::FunctionalTask* task) {
+        return impl_->camera_motion_update(this);
+    }, "RP_CameraMotionPath", -50);
     impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
 }
 

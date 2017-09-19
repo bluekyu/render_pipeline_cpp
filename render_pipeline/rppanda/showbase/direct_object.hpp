@@ -40,12 +40,15 @@
 
 #pragma once
 
-#include <genericAsyncTask.h>
 #include <eventHandler.h>
 
 #include <string>
+#include <unordered_map>
+
+#include <boost/optional.hpp>
 
 #include <render_pipeline/rpcore/config.hpp>
+#include <render_pipeline/rppanda/task/functional_task.hpp>
 
 namespace rppanda {
 
@@ -60,12 +63,45 @@ public:
     bool ignore(const std::string& ev_name, EventHandler::EventFunction* func);
     bool ignore(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data);
 
-    GenericAsyncTask* add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name);
-    GenericAsyncTask* add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name, int sort);
+    /**
+     * @see TaskManager::add
+     */
+    AsyncTask* add_task(AsyncTask* task, const std::string& name = {},
+        boost::optional<int> sort = {}, boost::optional<int> priority = {},
+        const boost::optional<std::string>& task_chain = {});
 
-    int remove_task(const std::string& task_name);
+    /**
+     * @see TaskManager::add
+     */
+    FunctionalTask* add_task(const FunctionalTask::TaskFunc& func, const std::string& name = {},
+        boost::optional<int> sort = {}, boost::optional<int> priority = {},
+        const boost::optional<std::string>& task_chain = {},
+        const FunctionalTask::DeathFunc& upon_death = nullptr);
 
-    GenericAsyncTask* do_method_later(float delay, GenericAsyncTask::TaskFunc* func, const std::string& name, void* user_data);
+    /**
+     * @see TaskManager::do_method_later
+     */
+    AsyncTask* do_method_later(float delay_time,
+        AsyncTask* task, const std::string& name,
+        boost::optional<int> sort = {}, boost::optional<int> priority = {},
+        const boost::optional<std::string>& task_chain = {});
+
+    /**
+     * @see TaskManager::do_method_later
+     */
+    FunctionalTask* do_method_later(float delay_time,
+        const FunctionalTask::TaskFunc& func, const std::string& name,
+        boost::optional<int> sort = {}, boost::optional<int> priority = {},
+        const boost::optional<std::string>& task_chain = {},
+        const FunctionalTask::DeathFunc& upon_death = nullptr);
+
+    void remove_task(const std::string& task_name);
+    void remove_task(AsyncTask* task);
+
+private:
+    void do_add_task(AsyncTask* task);
+
+    std::unordered_map<AtomicAdjust::Integer, PT(AsyncTask)> task_list_;
 
 public:
     static TypeHandle get_class_type();

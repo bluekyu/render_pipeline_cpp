@@ -23,13 +23,17 @@
 #pragma once
 
 #include <nodePath.h>
-#include <genericAsyncTask.h>
+#include <AsyncTask.h>
 
 #include <vector>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class SceneGraphAnalyzer;
+
+namespace rppanda {
+class FunctionalTask;
+}
 
 namespace rpcore {
 
@@ -58,7 +62,7 @@ public:
     void update();
 
     /** Analyzes the scene graph to provide useful information. */
-    AsyncTask::DoneStatus collect_scene_data(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus collect_scene_data(rppanda::FunctionalTask* task);
 
     /** Creates the stats overlay. */
     void create_stats();
@@ -82,7 +86,7 @@ public:
     void toggle_keybindings_visible();
 
     /** Updates the stats overlay. */
-    static AsyncTask::DoneStatus update_stats(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus update_stats(rppanda::FunctionalTask* task);
 
     ErrorMessageDisplay* get_error_msg_handler() const;
 

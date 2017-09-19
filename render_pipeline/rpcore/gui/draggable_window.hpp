@@ -27,11 +27,10 @@
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
-class GenericAsyncTask;
-
 namespace rppanda {
 class DirectFrame;
 class DirectButton;
+class FunctionalTask;
 }
 
 namespace rpcore {
@@ -90,7 +89,6 @@ private:
 
     /** Gets called when the user stops dragging the window. */
     static void stop_drag(const Event* ev, void* user_data);
-    static void stop_drag(GenericAsyncTask* ev, bool clean_exit, void* user_data);
 
     /**
      * Internal helper function to get the mouse position, scaled by
@@ -99,7 +97,7 @@ private:
     LVecBase2 get_mouse_pos() const;
 
     /** Task which updates the window while being dragged. */
-    static AsyncTask::DoneStatus on_tick(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus on_tick(rppanda::FunctionalTask* task);
 
     void set_pos(const LVecBase2& pos);
 
@@ -135,11 +133,6 @@ inline void DraggableWindow::hide()
     visible_ = false;
     stop_drag(nullptr, this);
     node_.hide();
-}
-
-inline void DraggableWindow::stop_drag(GenericAsyncTask* ev, bool clean_exit, void* user_data)
-{
-    stop_drag(nullptr, user_data);
 }
 
 /** Moves the window to the specified position. */

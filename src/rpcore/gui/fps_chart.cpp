@@ -32,6 +32,7 @@
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 
 namespace rpcore {
 
@@ -72,63 +73,59 @@ void FPSChart::create_components()
     _display_img = new Sprite(_display_tex->get_texture(), 250, 120, _node, 10, 10);
 
     // Defer the further loading
-    Globals::base->do_method_later(0.3f, late_init, "FPSChartInit", this);
+    Globals::base->get_task_mgr()->do_method_later(0.3f, std::bind(&FPSChart::late_init, this, std::placeholders::_1), "FPSChartInit");
 }
 
-AsyncTask::DoneStatus FPSChart::late_init(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus FPSChart::late_init(rppanda::FunctionalTask* task)
 {
-    FPSChart* fc = reinterpret_cast<FPSChart*>(user_data);
-
-    fc->_display_txt = new Text("40 ms", fc->_node, 20, 25, 13, "left", LVecBase3f(1), true);
-    fc->_display_txt_bottom = new Text("0 ms", fc->_node, 20, 120, 13, "left", LVecBase3f(1), true);
+    _display_txt = new Text("40 ms", _node, 20, 25, 13, "left", LVecBase3f(1), true);
+    _display_txt_bottom = new Text("0 ms", _node, 20, 120, 13, "left", LVecBase3f(1), true);
 
     // Create the shader which generates the visualization texture
-    fc->_cshader_node = new ComputeNode("FPSChart");
-    fc->_cshader_node->add_dispatch(250 / 10, 120 / 4, 1);
-    fc->_cshader_np = fc->_node.attach_new_node(fc->_cshader_node);
+    _cshader_node = new ComputeNode("FPSChart");
+    _cshader_node->add_dispatch(250 / 10, 120 / 4, 1);
+    _cshader_np = _node.attach_new_node(_cshader_node);
 
-    fc->_cshader = RPLoader::load_shader({"/$$rp/shader/fps_chart.compute.glsl"});
-    fc->_cshader_np.set_shader(fc->_cshader);
-    fc->_cshader_np.set_shader_input("DestTex", fc->_display_tex->get_texture());
-    fc->_cshader_np.set_shader_input("FPSValues", fc->_storage_buffer->get_texture());
-    fc->_cshader_np.set_shader_input("index", fc->_store_index);
-    fc->_cshader_np.set_shader_input("maxMs", fc->_chart_ms_max);
+    _cshader = RPLoader::load_shader({"/$$rp/shader/fps_chart.compute.glsl"});
+    _cshader_np.set_shader(_cshader);
+    _cshader_np.set_shader_input("DestTex", _display_tex->get_texture());
+    _cshader_np.set_shader_input("FPSValues", _storage_buffer->get_texture());
+    _cshader_np.set_shader_input("index", _store_index);
+    _cshader_np.set_shader_input("maxMs", _chart_ms_max);
 
-    fc->_update_shader_node = new ComputeNode("FPSChart");
-    fc->_update_shader_node->add_dispatch(1, 1, 1);
-    fc->_update_shader_np = fc->_node.attach_new_node(fc->_update_shader_node);
+    _update_shader_node = new ComputeNode("FPSChart");
+    _update_shader_node->add_dispatch(1, 1, 1);
+    _update_shader_np = _node.attach_new_node(_update_shader_node);
 
-    fc->_ushader = RPLoader::load_shader({"/$$rp/shader/fps_chart_update.compute.glsl"});
-    fc->_update_shader_np.set_shader(fc->_ushader);
-    fc->_update_shader_np.set_shader_input("DestTex", fc->_storage_buffer->get_texture());
-    fc->_update_shader_np.set_shader_input("index", fc->_store_index);
-    fc->_update_shader_np.set_shader_input("currentData", fc->_current_ftime);
+    _ushader = RPLoader::load_shader({"/$$rp/shader/fps_chart_update.compute.glsl"});
+    _update_shader_np.set_shader(_ushader);
+    _update_shader_np.set_shader_input("DestTex", _storage_buffer->get_texture());
+    _update_shader_np.set_shader_input("index", _store_index);
+    _update_shader_np.set_shader_input("currentData", _current_ftime);
 
-    Globals::base->add_task(update, fc, "UpdateFPSChart", -50);
+    Globals::base->add_task(std::bind(&FPSChart::update, this, std::placeholders::_1), "UpdateFPSChart", -50);
 
     return AsyncTask::DS_done;
 }
 
-AsyncTask::DoneStatus FPSChart::update(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus FPSChart::update(rppanda::FunctionalTask* task)
 {
-    FPSChart* fc = reinterpret_cast<FPSChart*>(user_data);
-
-    fc->_store_index[0] = (fc->_store_index[0] + 1) % 250;
-    fc->_current_ftime[0] = Globals::clock->get_dt() * 1000.0f;
+    _store_index[0] = (_store_index[0] + 1) % 250;
+    _current_ftime[0] = Globals::clock->get_dt() * 1000.0f;
 
     double avg_fps = Globals::clock->get_average_frame_rate();
     if (avg_fps > 122.0)
-        fc->_chart_ms_max[0] = 10.0f;
+        _chart_ms_max[0] = 10.0f;
     else if (avg_fps > 62)
-        fc->_chart_ms_max[0] = 20.0f;
+        _chart_ms_max[0] = 20.0f;
     else if (avg_fps > 32)
-        fc->_chart_ms_max[0] = 40.0f;
+        _chart_ms_max[0] = 40.0f;
     else if (avg_fps > 15)
-        fc->_chart_ms_max[0] = 70.0f;
+        _chart_ms_max[0] = 70.0f;
     else
-        fc->_chart_ms_max[0] = 200.0f;
+        _chart_ms_max[0] = 200.0f;
 
-    fc->_display_txt->set_text(std::to_string(int(fc->_chart_ms_max[0])) + " ms");
+    _display_txt->set_text(std::to_string(int(_chart_ms_max[0])) + " ms");
 
     return AsyncTask::DS_cont;
 }

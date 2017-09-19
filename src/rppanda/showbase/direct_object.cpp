@@ -40,6 +40,7 @@
 #include <asyncTaskManager.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 
 namespace rppanda {
 
@@ -70,42 +71,65 @@ bool DirectObject::ignore(const std::string& ev_name, EventHandler::EventCallbac
     return EventHandler::get_global_event_handler()->remove_hook(ev_name, func, user_data);
 }
 
-GenericAsyncTask* DirectObject::add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name)
+AsyncTask* DirectObject::add_task(AsyncTask* task, const std::string& name,
+    boost::optional<int> sort, boost::optional<int> priority,
+    const boost::optional<std::string>& task_chain)
 {
-    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
-
-    assert(task->has_name());
-
-    AsyncTaskManager::get_global_ptr()->add(task);
-
-    return task;
+    auto new_task = TaskManager::get_global_ptr()->add(task, name, sort, priority, task_chain);
+    do_add_task(new_task);
+    return new_task;
 }
 
-GenericAsyncTask* DirectObject::add_task(GenericAsyncTask::TaskFunc* func, void* user_data, const std::string& name, int sort)
+FunctionalTask* DirectObject::add_task(const FunctionalTask::TaskFunc& func, const std::string& name,
+    boost::optional<int> sort, boost::optional<int> priority,
+    const boost::optional<std::string>& task_chain,
+    const FunctionalTask::DeathFunc& upon_death)
 {
-    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
-
-    assert(task->has_name());
-
-    task->set_sort(sort);
-
-    AsyncTaskManager::get_global_ptr()->add(task);
-
-    return task;
+    auto new_task = TaskManager::get_global_ptr()->add(func, name, sort, priority, task_chain, upon_death);
+    do_add_task(new_task);
+    return new_task;
 }
 
-int DirectObject::remove_task(const std::string& task_name)
+AsyncTask* DirectObject::do_method_later(float delay_time, AsyncTask* task,
+    const std::string& name,
+    boost::optional<int> sort, boost::optional<int> priority,
+    const boost::optional<std::string>& task_chain)
 {
-    return AsyncTaskManager::get_global_ptr()->remove(AsyncTaskManager::get_global_ptr()->find_tasks(task_name));
+    auto new_task = TaskManager::get_global_ptr()->do_method_later(delay_time, task, name, sort, priority, task_chain);
+    do_add_task(new_task);
+    return new_task;
 }
 
-GenericAsyncTask* DirectObject::do_method_later(float delay, GenericAsyncTask::TaskFunc* func, const std::string& name, void* user_data)
+FunctionalTask* DirectObject::do_method_later(float delay_time,
+    const FunctionalTask::TaskFunc& func, const std::string& name,
+    boost::optional<int> sort, boost::optional<int> priority,
+    const boost::optional<std::string>& task_chain,
+    const FunctionalTask::DeathFunc& upon_death)
 {
-    PT(GenericAsyncTask) task = new GenericAsyncTask(name, func, user_data);
-    task->set_delay(delay);
-    AsyncTaskManager::get_global_ptr()->add(task);
+    auto new_task = TaskManager::get_global_ptr()->do_method_later(delay_time, func, name, sort, priority, task_chain, upon_death);
+    do_add_task(new_task);
+    return new_task;
+}
 
-    return task;
+void DirectObject::remove_task(const std::string& task_name)
+{
+    for (const auto& task: task_list_)
+    {
+        if (task.second->get_name() == task_name)
+            remove_task(task.second);
+    }
+}
+
+void DirectObject::remove_task(AsyncTask* task)
+{
+    auto id = task->get_task_id();
+    task->remove();
+    task_list_.erase(id);
+}
+
+void DirectObject::do_add_task(AsyncTask* task)
+{
+    task_list_.insert_or_assign(task->get_task_id(), task);
 }
 
 }

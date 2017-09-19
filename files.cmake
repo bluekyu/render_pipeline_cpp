@@ -39,6 +39,11 @@ set(header_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/showbase/showbase.hpp"
 )
 
+set(header_rppanda_task
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/task/functional_task.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/task/task.hpp"
+)
+
 set(header_rpcore
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/config.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/effect.hpp"
@@ -138,6 +143,7 @@ set(render_pipeline_headers
     ${header_rppanda_gui}
     ${header_rppanda_interval}
     ${header_rppanda_showbase}
+    ${header_rppanda_task}
     ${header_rppanda_stdpy}
     ${header_rppanda_util}
     ${header_rpcore}
@@ -154,6 +160,7 @@ source_group("render_pipeline\\rppanda\\actor" FILES ${header_rppanda_actor})
 source_group("render_pipeline\\rppanda\\gui" FILES ${header_rppanda_gui})
 source_group("render_pipeline\\rppanda\\interval" FILES ${header_rppanda_interval})
 source_group("render_pipeline\\rppanda\\showbase" FILES ${header_rppanda_showbase})
+source_group("render_pipeline\\rppanda\\task" FILES ${header_rppanda_task})
 source_group("render_pipeline\\rppanda\\stdpy" FILES ${header_rppanda_stdpy})
 source_group("render_pipeline\\rppanda\\util" FILES ${header_rppanda_util})
 source_group("render_pipeline\\rpcore" FILES ${header_rpcore})
@@ -204,6 +211,13 @@ set(source_rppanda_showbase
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/loader.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/sfx_player.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/showbase/showbase.cpp"
+)
+
+set(source_rppanda_task
+    "${PROJECT_SOURCE_DIR}/src/rppanda/task/config_rppanda_task.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/task/config_rppanda_task.hpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/task/functional_task.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/task/task.cpp"
 )
 
 set(source_rppanda_util
@@ -331,6 +345,7 @@ set(render_pipeline_sources
     ${source_rppanda_gui}
     ${source_rppanda_interval}
     ${source_rppanda_showbase}
+    ${source_rppanda_task}
     ${source_rppanda_util}
     ${source_rpcore}
     ${source_rpcore_gui}
@@ -346,6 +361,7 @@ source_group("src\\rppanda\\actor" FILES ${source_rppanda_actor})
 source_group("src\\rppanda\\gui" FILES ${source_rppanda_gui})
 source_group("src\\rppanda\\interval" FILES ${source_rppanda_interval})
 source_group("src\\rppanda\\showbase" FILES ${source_rppanda_showbase})
+source_group("src\\rppanda\\task" FILES ${source_rppanda_task})
 source_group("src\\rppanda\\util" FILES ${source_rppanda_util})
 source_group("src\\rpcore" FILES ${source_rpcore})
 source_group("src\\rpcore\\gui" FILES ${source_rpcore_gui})

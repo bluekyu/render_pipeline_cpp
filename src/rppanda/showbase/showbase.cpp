@@ -44,7 +44,6 @@
 #include <depthTestAttrib.h>
 #include <depthWriteAttrib.h>
 #include <pgTop.h>
-#include <asyncTaskManager.h>
 #include <pgMouseWatcherBackground.h>
 #include <orthographicLens.h>
 #include <audioManager.h>
@@ -52,6 +51,7 @@
 
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 
 #include "rppanda/showbase/config_rppanda_showbase.hpp"
 
@@ -62,8 +62,8 @@ static ShowBase* global_showbase = nullptr;
 class ShowBase::Impl
 {
 public:
-    static AsyncTask::DoneStatus ival_loop(GenericAsyncTask *task, void *user_data);
-    static AsyncTask::DoneStatus audio_loop(GenericAsyncTask *task, void *user_data);
+    AsyncTask::DoneStatus ival_loop();
+    AsyncTask::DoneStatus audio_loop();
 
     void initailize(ShowBase* self);
 
@@ -83,6 +83,7 @@ public:
     WindowFramework* window_framework_ = nullptr;
 
     PT(rppanda::Loader) loader_ = nullptr;
+    TaskManager* task_mgr_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win_ = nullptr;
 
@@ -156,23 +157,21 @@ public:
     bool wireframe_enabled_;
 };
 
-AsyncTask::DoneStatus ShowBase::Impl::ival_loop(GenericAsyncTask *task, void *user_data)
+AsyncTask::DoneStatus ShowBase::Impl::ival_loop()
 {
     // Execute all intervals in the global ivalMgr.
     CIntervalManager::get_global_ptr()->step();
     return AsyncTask::DS_cont;
 }
 
-AsyncTask::DoneStatus ShowBase::Impl::audio_loop(GenericAsyncTask *task, void *user_data)
+AsyncTask::DoneStatus ShowBase::Impl::audio_loop()
 {
-    Impl* impl = reinterpret_cast<Impl*>(user_data);
-
-    if (impl->music_manager_)
+    if (music_manager_)
     {
-        impl->music_manager_->update();
+        music_manager_->update();
     }
 
-    for (auto& x: impl->sfx_manager_list_)
+    for (auto& x: sfx_manager_list_)
         x->update();
 
     return AsyncTask::DS_cont;
@@ -235,6 +234,8 @@ void ShowBase::Impl::initailize(ShowBase* self)
     self->use_trackball();
 
     loader_ = new rppanda::Loader(*self);
+
+    task_mgr_ = TaskManager::get_global_ptr();
 
     app_has_audio_focus_ = true;
 
@@ -532,6 +533,11 @@ rppanda::Loader* ShowBase::get_loader() const
     return impl_->loader_;
 }
 
+TaskManager* ShowBase::get_task_mgr() const
+{
+    return impl_->task_mgr_;
+}
+
 GraphicsEngine* ShowBase::get_graphics_engine() const
 {
     return impl_->graphics_engine_;
@@ -590,11 +596,6 @@ NodePath ShowBase::get_pixel_2dp() const
 float ShowBase::get_config_aspect_ratio() const
 {
     return impl_->config_aspect_ratio_;
-}
-
-AsyncTaskManager* ShowBase::get_task_mgr() const
-{
-    return AsyncTaskManager::get_global_ptr();
 }
 
 bool ShowBase::open_default_window()
@@ -849,24 +850,19 @@ void ShowBase::restart()
 
     shutdown();
 
-    add_task(Impl::ival_loop, nullptr, "ival_loop", 20);
+    add_task(std::bind(&Impl::ival_loop, impl_.get()), "ival_loop", 20);
 
     // the audioLoop updates the positions of 3D sounds.
     // as such, it needs to run after the cull traversal in the igLoop.
-    add_task(Impl::audio_loop, impl_.get(), "audio_loop", 60);
+    add_task(std::bind(&Impl::audio_loop, impl_.get()), "audio_loop", 60);
 }
 
 void ShowBase::shutdown()
 {
     rppanda_showbase_cat.debug() << "Shutdown ShowBase ..." << std::endl;
 
-    auto task_mgr = get_task_mgr();
-    AsyncTask* task = nullptr;
-
-    if (task = get_task_mgr()->find_task("audio_loop"))
-        task_mgr->remove(task);
-    if (task = get_task_mgr()->find_task("ival_loop"))
-        task_mgr->remove(task);
+    impl_->task_mgr_->remove("audio_loop");
+    impl_->task_mgr_->remove("ival_loop");
 }
 
 void ShowBase::disable_mouse()

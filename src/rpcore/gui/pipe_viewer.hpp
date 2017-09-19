@@ -26,8 +26,6 @@
 
 #include <render_pipeline/rpcore/gui/draggable_window.hpp>
 
-class GenericAsyncTask;
-
 namespace rppanda {
 class DirectScrolledFrame;
 }
@@ -46,7 +44,7 @@ public:
     void toggle();
 
 private:
-    static AsyncTask::DoneStatus update_task(GenericAsyncTask* task, void* user_data);
+    AsyncTask::DoneStatus update_task(rppanda::FunctionalTask* task);
 
     /**
      * Reads the pipes and stages from the stage manager and renders those

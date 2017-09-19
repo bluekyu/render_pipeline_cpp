@@ -25,6 +25,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
@@ -51,24 +52,26 @@ void PipeViewer::toggle()
 
     if (visible_)
     {
-        Globals::base->remove_task(task_name);
+        Globals::base->get_task_mgr()->remove(task_name);
         hide();
     }
     else
     {
-        Globals::base->add_task(update_task, this, task_name);
+        Globals::base->get_task_mgr()->add(
+            std::bind(&PipeViewer::update_task, this, std::placeholders::_1),
+            task_name);
+
         if (!_created)
             populate_content();
         show();
     }
 }
 
-AsyncTask::DoneStatus PipeViewer::update_task(GenericAsyncTask* task, void* user_data)
+AsyncTask::DoneStatus PipeViewer::update_task(rppanda::FunctionalTask* task)
 {
-    PipeViewer* pv = reinterpret_cast<PipeViewer*>(user_data);
-    float scroll_value = pv->_content_frame->get_horizontal_scroll()->get_value();
+    float scroll_value = _content_frame->get_horizontal_scroll()->get_value();
     scroll_value *= 2.45f;
-    pv->_pipe_descriptions.set_x(scroll_value * 2759.0f);
+    _pipe_descriptions.set_x(scroll_value * 2759.0f);
     return AsyncTask::DS_cont;
 }
 
