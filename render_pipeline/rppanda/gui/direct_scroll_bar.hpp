@@ -80,7 +80,7 @@ public:
     void set_manage_buttons(bool manage_buttons);
     void set_resize_thumb(bool resize_thumb);
 
-    static void command_func(const Event* ev, void* user_data);
+    void command_func();
 
 protected:
     DirectScrollBar(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);

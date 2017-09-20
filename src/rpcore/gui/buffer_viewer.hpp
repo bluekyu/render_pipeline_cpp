@@ -74,13 +74,13 @@ private:
     void perform_update();
 
     /** Internal method when a texture is hovered. */
-    static void on_texture_hovered(const Event* func, void* data);
+    void on_texture_hovered(rppanda::DirectFrame* hover_frame);
 
     /** Internal method when a texture is blurred. */
-    static void on_texture_blurred(const Event* func, void* data);
+    void on_texture_blurred(rppanda::DirectFrame* hover_frame);
 
     /** Internal method when a texture is clicked. */
-    static void on_texture_clicked(const Event* func, void* data);
+    void on_texture_clicked(Texture* tex_handle);
 
     /** Renders the stages to the window. */
     void render_stages();

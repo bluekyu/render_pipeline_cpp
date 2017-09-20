@@ -75,7 +75,7 @@ public:
 
     void remove_component(const std::string& name);
 
-    void bind(const std::string& event_name, EventHandler::EventCallbackFunction* func, void* user_data);
+    void bind(const std::string& event_name, const Messenger::EventFunction& func);
 
     void unbind(const std::string& event_name);
 
@@ -175,8 +175,8 @@ public:
     void enable_edit();
     void disable_edit();
 
-    static void edit_start(const Event* ev, void* user_data);
-    static void edit_stop(const Event* ev, void* user_data);
+    void edit_start();
+    void edit_stop();
 
     PGFrameStyle::Type get_relief() const;
     const LColor& get_frame_color() const;

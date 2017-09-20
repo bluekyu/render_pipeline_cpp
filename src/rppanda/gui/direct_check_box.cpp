@@ -54,8 +54,6 @@ DirectCheckBox::Options::Options()
     inverted_frames = { 1 };
 
     press_effect = true;
-
-    command_func = DirectCheckBox::command_func;
 }
 
 DirectCheckBox::DirectCheckBox(NodePath parent, const std::shared_ptr<Options>& options): DirectCheckBox(new PGButton(""), parent, options, get_class_type())
@@ -73,24 +71,24 @@ DirectCheckBox::DirectCheckBox(PGItem* gui_item, NodePath parent, const std::sha
     }
 }
 
-void DirectCheckBox::command_func(const Event* ev, void* user_data)
+void DirectCheckBox::command_func(const Event* ev)
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(reinterpret_cast<DirectCheckBox*>(user_data)->_options);
+    const auto& options = std::dynamic_pointer_cast<Options>(_options);
 
     options->is_checked = !options->is_checked;
 
     if (options->is_checked)
-        reinterpret_cast<DirectCheckBox*>(user_data)->set_image(options->checked_image);
+        set_image(options->checked_image);
     else
-        reinterpret_cast<DirectCheckBox*>(user_data)->set_image(options->unchecked_image);
+        set_image(options->unchecked_image);
 
     if (options->command)
     {
         // Pass any extra args to command
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-        options->command(std::shared_ptr<void>(user_data, [](auto){}));
+        options->command(std::shared_ptr<void>(this, [](auto) {}));
 #else
-        options->command(std::shared_ptr<void>(user_data, [](void*) {}));
+        options->command(std::shared_ptr<void>(this, [](void*) {}));
 #endif
     }
 }

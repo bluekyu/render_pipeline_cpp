@@ -119,7 +119,7 @@ public:
      * Checks for window events. This mainly handles incoming resizes,
      * and calls the required handlers.
      */
-    static void handle_window_event(const Event* ev, void* user_data);
+    void handle_window_event();
 
     void reload_shaders();
 
@@ -420,38 +420,35 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::F
     return AsyncTask::DS_cont;
 }
 
-void RenderPipeline::Impl::handle_window_event(const Event* ev, void* user_data)
+void RenderPipeline::Impl::handle_window_event()
 {
-    RenderPipeline* rp = reinterpret_cast<RenderPipeline*>(user_data);
-    const auto& rp_impl = rp->impl_;
-
     auto last_resolution = Globals::resolution;
 
-    LVecBase2i window_dims(rp_impl->showbase_->get_win()->get_size());
-    if (window_dims != rp_impl->last_window_dims && window_dims != Globals::native_resolution)
+    LVecBase2i window_dims(showbase_->get_win()->get_size());
+    if (window_dims != last_window_dims && window_dims != Globals::native_resolution)
     {
-        rp_impl->last_window_dims = window_dims;
+        last_window_dims = window_dims;
 
         // Ensure the dimensions are a multiple of 4, and if not, correct it
         if ((window_dims.get_x() & 0x3) != 0 || (window_dims.get_y() & 0x3) != 0)
         {
-            rp->debug(fmt::format("Correcting non-multiple of 4 window size: ({}, {})", window_dims.get_x(), window_dims.get_y()));
+            self_.debug(fmt::format("Correcting non-multiple of 4 window size: ({}, {})", window_dims.get_x(), window_dims.get_y()));
             window_dims.set_x(window_dims.get_x() - (window_dims.get_x() & 0x3));
             window_dims.set_y(window_dims.get_y() - (window_dims.get_y() & 0x3));
             WindowProperties props = WindowProperties::size(window_dims.get_x(), window_dims.get_y());
-            rp_impl->showbase_->get_win()->request_properties(props);
+            showbase_->get_win()->request_properties(props);
         }
 
-        rp->debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
+        self_.debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
         Globals::native_resolution = window_dims;
-        rp_impl->compute_render_resolution();
-        rp_impl->handle_window_resize();
+        compute_render_resolution();
+        handle_window_resize();
     }
 
     // set lens parameter after window event.
     // and set highest priority for running first.
-    rp_impl->showbase_->get_task_mgr()->add([&](rppanda::FunctionalTask* task) {
-        rp_impl->adjust_lens_setting();
+    showbase_->get_task_mgr()->add([this](rppanda::FunctionalTask* task) {
+        adjust_lens_setting();
         return AsyncTask::DS_done;
     }, "RP_HandleWindowResize", -100);
 }
@@ -702,7 +699,7 @@ void RenderPipeline::Impl::init_bindings()
     // igloop has 50 sorting value.
     showbase_->add_task(std::bind(&Impl::plugin_post_render_update, this, std::placeholders::_1), "RP_Plugin_AfterRender", 51);
     showbase_->get_task_mgr()->do_method_later(0.5f, std::bind(&Impl::clear_state_cache, this, std::placeholders::_1), "RP_ClearStateCache");
-    showbase_->accept("window-event", &Impl::handle_window_event, &self_);
+    showbase_->accept("window-event", [this](const Event*) { handle_window_event(); });
 }
 
 void RenderPipeline::Impl::create_common_defines()

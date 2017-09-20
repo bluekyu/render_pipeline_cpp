@@ -76,19 +76,19 @@ protected:
 
 private:
     /** Gets called when the user starts dragging the window. */
-    static void start_drag(const Event* ev, void* user_data);
+    void start_drag();
 
     /** Internal method when the close button got hovered. */
-    static void on_close_btn_hover(const Event* ev, void* user_data);
+    void on_close_btn_hover();
 
     /** Internal method when the close button is no longer hovered. */
-    static void on_close_btn_out(const Event* ev, void* user_data);
+    void on_close_btn_out();
 
     /** This method gets called when the close button gets clicked. */
-    static void request_close(const Event* ev, void* user_data);
+    void request_close();
 
     /** Gets called when the user stops dragging the window. */
-    static void stop_drag(const Event* ev, void* user_data);
+    void stop_drag();
 
     /**
      * Internal helper function to get the mouse position, scaled by
@@ -131,7 +131,7 @@ inline void DraggableWindow::show()
 inline void DraggableWindow::hide()
 {
     visible_ = false;
-    stop_drag(nullptr, this);
+    stop_drag();
     node_.hide();
 }
 

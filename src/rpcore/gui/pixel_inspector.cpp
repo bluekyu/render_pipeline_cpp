@@ -72,14 +72,8 @@ void PixelInspector::create_components()
     // Defer the further loading
     Globals::base->get_task_mgr()->do_method_later(1.0f, std::bind(&PixelInspector::late_init, this, std::placeholders::_1),
         "PixelInspectorLateInit");
-    Globals::base->accept("q",
-        [](const Event* ev, void* data) {
-        reinterpret_cast<PixelInspector*>(data)->show();
-    }, this);
-    Globals::base->accept("q-up",
-        [](const Event* ev, void* data) {
-        reinterpret_cast<PixelInspector*>(data)->hide();
-    }, this);
+    Globals::base->accept("q", [this](const Event*) { show(); });
+    Globals::base->accept("q-up", [this](const Event*) { hide(); });
 }
 
 AsyncTask::DoneStatus PixelInspector::late_init(rppanda::FunctionalTask* task)

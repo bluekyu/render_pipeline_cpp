@@ -46,31 +46,6 @@ namespace rppanda {
 
 TypeHandle DirectObject::type_handle_;
 
-bool DirectObject::accept(const std::string& ev_name, EventHandler::EventFunction* func)
-{
-    return EventHandler::get_global_event_handler()->add_hook(ev_name, func);
-}
-
-bool DirectObject::accept(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
-{
-    return EventHandler::get_global_event_handler()->add_hook(ev_name, func, user_data);
-}
-
-bool DirectObject::ignore(const std::string& ev_name)
-{
-    return EventHandler::get_global_event_handler()->remove_hooks(ev_name);
-}
-
-bool DirectObject::ignore(const std::string& ev_name, EventHandler::EventFunction* func)
-{
-    return EventHandler::get_global_event_handler()->remove_hook(ev_name, func);
-}
-
-bool DirectObject::ignore(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
-{
-    return EventHandler::get_global_event_handler()->remove_hook(ev_name, func, user_data);
-}
-
 AsyncTask* DirectObject::add_task(AsyncTask* task, const std::string& name,
     boost::optional<int> sort, boost::optional<int> priority,
     const boost::optional<std::string>& task_chain)
@@ -129,7 +104,11 @@ void DirectObject::remove_task(AsyncTask* task)
 
 void DirectObject::do_add_task(AsyncTask* task)
 {
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     task_list_.insert_or_assign(task->get_task_id(), task);
+#else
+    task_list_.insert({task->get_task_id(), task});
+#endif
 }
 
 }

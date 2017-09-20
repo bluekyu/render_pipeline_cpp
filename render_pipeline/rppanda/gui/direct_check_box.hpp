@@ -59,7 +59,7 @@ public:
 public:
     DirectCheckBox(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
-    static void command_func(const Event* ev, void* user_data);
+    void command_func(const Event* ev) override;
 
     bool is_checked() const;
     void set_checked(bool check);

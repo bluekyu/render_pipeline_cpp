@@ -62,6 +62,7 @@ namespace rppanda {
 class SfxPlayer;
 class Loader;
 class TaskManager;
+class Messenger;
 
 class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 {
@@ -86,6 +87,7 @@ public:
     WindowFramework* get_window_framework() const;
 
     rppanda::Loader* get_loader() const;
+    Messenger* get_messenger() const;
     TaskManager* get_task_mgr() const;
     GraphicsEngine* get_graphics_engine() const;
     GraphicsWindow* get_win() const;

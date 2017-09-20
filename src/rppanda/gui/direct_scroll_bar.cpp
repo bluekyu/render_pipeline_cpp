@@ -99,7 +99,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     item->set_right_button(_inc_button->get_gui_item());
 
     // Bind command function
-    this->bind(ADJUST, command_func, this);
+    this->bind(ADJUST, [this](const Event*){ command_func(); });
 
     // Call option initialization functions
     if (is_exact_type(type_handle))
@@ -163,12 +163,10 @@ void DirectScrollBar::set_resize_thumb(bool resize_thumb)
     get_gui_item()->set_resize_thumb(std::dynamic_pointer_cast<Options>(_options)->resize_thumb=resize_thumb);
 }
 
-void DirectScrollBar::command_func(const Event* ev, void* user_data)
+void DirectScrollBar::command_func()
 {
-    DirectScrollBar* self = reinterpret_cast<DirectScrollBar*>(user_data);
-
     // Store the updated value in self['value']
-    std::dynamic_pointer_cast<Options>(self->_options)->value = self->get_gui_item()->get_value();
+    std::dynamic_pointer_cast<Options>(_options)->value = get_gui_item()->get_value();
 
     // TODO: implements
 }

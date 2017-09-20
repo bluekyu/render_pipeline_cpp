@@ -54,8 +54,6 @@ DirectButton::Options::Options()
     inverted_frames = { 1 };
 
     command_buttons = { LMB, };
-
-    command_func = DirectButton::command_func;
 }
 
 DirectButton::DirectButton(NodePath parent, const std::shared_ptr<Options>& options): DirectButton(new PGButton(""), parent, options, get_class_type())
@@ -103,13 +101,12 @@ void DirectButton::set_command_buttons()
 {
     // Attach command function to specified buttons
     const auto& command_buttons = std::dynamic_pointer_cast<Options>(_options)->command_buttons;
-    const auto& command_func = std::dynamic_pointer_cast<Options>(_options)->command_func;
 
     // Left mouse button
     if (std::find(command_buttons.begin(), command_buttons.end(), LMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::one());
-        bind(B1CLICK, command_func, this);
+        bind(B1CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
@@ -121,7 +118,7 @@ void DirectButton::set_command_buttons()
     if (std::find(command_buttons.begin(), command_buttons.end(), MMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::two());
-        bind(B2CLICK, command_func, this);
+        bind(B2CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
@@ -133,7 +130,7 @@ void DirectButton::set_command_buttons()
     if (std::find(command_buttons.begin(), command_buttons.end(), RMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::three());
-        bind(B3CLICK, command_func, this);
+        bind(B3CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
@@ -142,9 +139,9 @@ void DirectButton::set_command_buttons()
     }
 }
 
-void DirectButton::command_func(const Event* ev, void* user_data)
+void DirectButton::command_func(const Event*)
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(reinterpret_cast<DirectButton*>(user_data)->_options);
+    const auto& options = std::dynamic_pointer_cast<Options>(_options);
     if (options->command)
         options->command(options->extra_args);
 }

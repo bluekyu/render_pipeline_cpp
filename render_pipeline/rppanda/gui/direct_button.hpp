@@ -67,11 +67,6 @@ public:
          * Do the text/graphics appear to move when the button is clicked
          */
         bool press_effect = true;
-
-    protected:
-        friend class DirectButton;
-
-        void (*command_func)(const Event*, void*) = nullptr;
     };
 
 public:
@@ -81,7 +76,7 @@ public:
 
     void set_command_buttons();
 
-    static void command_func(const Event* ev, void* user_data);
+    virtual void command_func(const Event*);
 
     void set_click_sound();
 

@@ -98,49 +98,46 @@ void DraggableWindow::create_components()
 
     // Init bindings
     btn_close_->set_transparency(TransparencyAttrib::M_alpha);
-    btn_close_->bind(rppanda::B1CLICK, request_close, this);
-    btn_close_->bind(rppanda::WITHIN, on_close_btn_hover, this);
-    btn_close_->bind(rppanda::WITHOUT, on_close_btn_out, this);
-    title_bar_->bind(rppanda::B1PRESS, start_drag, this);
-    title_bar_->bind(rppanda::B1RELEASE, stop_drag, this);
+    btn_close_->bind(rppanda::B1CLICK, [this](const Event*) { request_close(); });
+    btn_close_->bind(rppanda::WITHIN, [this](const Event*) { on_close_btn_hover(); });
+    btn_close_->bind(rppanda::WITHOUT, [this](const Event*) { on_close_btn_out(); });
+    title_bar_->bind(rppanda::B1PRESS, [this](const Event*) { start_drag(); });
+    title_bar_->bind(rppanda::B1RELEASE, [this](const Event*) { stop_drag(); });
 }
 
-void DraggableWindow::start_drag(const Event* ev, void* user_data)
+void DraggableWindow::start_drag()
 {
-    DraggableWindow* self = reinterpret_cast<DraggableWindow*>(user_data);
-    self->dragging_ = true;
-    self->node_.detach_node();
-    self->node_.reparent_to(self->parent_);
+    dragging_ = true;
+    node_.detach_node();
+    node_.reparent_to(parent_);
 
     Globals::base->get_task_mgr()->add(
-        std::bind(&DraggableWindow::on_tick, self, std::placeholders::_1),
+        [this](rppanda::FunctionalTask* task) { return on_tick(task); },
         "UIWindowDrag", {}, {}, {},
-        [=](rppanda::FunctionalTask*, bool) {
-        stop_drag(nullptr, self);
-    });
+        [this](rppanda::FunctionalTask*, bool) { stop_drag(); });
 
-    self->drag_offset_ = self->pos_ - self->get_mouse_pos();
+    drag_offset_ = pos_ - get_mouse_pos();
 }
 
-void DraggableWindow::on_close_btn_hover(const Event* ev, void* user_data)
+void DraggableWindow::on_close_btn_hover()
 {
-    reinterpret_cast<DraggableWindow*>(user_data)->btn_close_->set_image(std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window_hover.png")));
+    btn_close_->set_image(std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window_hover.png")));
 }
 
-void DraggableWindow::on_close_btn_out(const Event* ev, void* user_data)
+void DraggableWindow::on_close_btn_out()
 {
-    reinterpret_cast<DraggableWindow*>(user_data)->btn_close_->set_image(std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window.png")));
+    btn_close_->set_image(std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window.png")));
 }
 
-void DraggableWindow::request_close(const Event* ev, void* user_data)
+void DraggableWindow::request_close()
 {
-    reinterpret_cast<DraggableWindow*>(user_data)->hide();
+    hide();
 }
 
-void DraggableWindow::stop_drag(const Event* ev, void* user_data)
+void DraggableWindow::stop_drag()
 {
     Globals::base->get_task_mgr()->remove("UIWindowDrag");
-    reinterpret_cast<DraggableWindow*>(user_data)->dragging_ = false;
+    dragging_ = false;
 }
 
 LVecBase2 DraggableWindow::get_mouse_pos() const

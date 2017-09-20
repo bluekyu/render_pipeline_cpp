@@ -49,24 +49,22 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
 
     if (enabled)
     {
-        checkbox_->get_node()->bind(rppanda::WITHIN, on_node_enter, this);
-        checkbox_->get_node()->bind(rppanda::WITHOUT, on_node_leave, this);
+        checkbox_->get_node()->bind(rppanda::WITHIN, [this](const Event*) { on_node_enter(); });
+        checkbox_->get_node()->bind(rppanda::WITHOUT, [this](const Event*) { on_node_leave(); });
     }
 }
 
 LabeledCheckbox::~LabeledCheckbox() = default;
 
-void LabeledCheckbox::on_node_enter(const Event* ev, void* user_data)
+void LabeledCheckbox::on_node_enter()
 {
-    LabeledCheckbox* lc = reinterpret_cast<LabeledCheckbox*>(user_data);
-    lc->text_->get_node().set_fg(LColorf(lc->text_color_[0] + 0.1f, lc->text_color_[1] + 0.1f,
-        lc->text_color_[2] + 0.1f, 1.0f));
+    text_->get_node().set_fg(LColorf(text_color_[0] + 0.1f, text_color_[1] + 0.1f,
+        text_color_[2] + 0.1f, 1.0f));
 }
 
-void LabeledCheckbox::on_node_leave(const Event* ev, void* user_data)
+void LabeledCheckbox::on_node_leave()
 {
-    LabeledCheckbox* lc = reinterpret_cast<LabeledCheckbox*>(user_data);
-    lc->text_->get_node().set_fg(LColorf(lc->text_color_[0], lc->text_color_[1], lc->text_color_[2], 1.0f));
+    text_->get_node().set_fg(LColorf(text_color_[0], text_color_[1], text_color_[2], 1.0f));
 }
 
 }

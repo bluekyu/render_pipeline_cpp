@@ -210,20 +210,19 @@ void BufferViewer::perform_update()
     render_stages();
 }
 
-void BufferViewer::on_texture_hovered(const Event* func, void* data)
+void BufferViewer::on_texture_hovered(rppanda::DirectFrame* hover_frame)
 {
-    reinterpret_cast<rppanda::DirectFrame*>(data)->set_frame_color(LColorf(0, 0, 0, 0.1f));
+    hover_frame->set_frame_color(LColorf(0, 0, 0, 0.1f));
 }
 
-void BufferViewer::on_texture_blurred(const Event* func, void* data)
+void BufferViewer::on_texture_blurred(rppanda::DirectFrame* hover_frame)
 {
-    reinterpret_cast<rppanda::DirectFrame*>(data)->set_frame_color(LColorf(0, 0, 0, 0.0f));
+    hover_frame->set_frame_color(LColorf(0, 0, 0, 0.0f));
 }
 
-void BufferViewer::on_texture_clicked(const Event* func, void* data)
+void BufferViewer::on_texture_clicked(Texture* tex_handle)
 {
-    FrameClickDataType* self_tex = reinterpret_cast<FrameClickDataType*>(data);
-    self_tex->self->_tex_preview->present(self_tex->tex);
+    _tex_preview->present(tex_handle);
 }
 
 void BufferViewer::render_stages()
@@ -284,11 +283,11 @@ void BufferViewer::render_stages()
         frame_hover_options->state = rppanda::NORMAL;
         PT(rppanda::DirectFrame) frame_hover = new rppanda::DirectFrame(node, frame_hover_options);
         frame_hovers_.push_back(frame_hover);
-        frame_hover->bind(rppanda::ENTER, on_texture_hovered, frame_hover.p());
-        frame_hover->bind(rppanda::EXIT, on_texture_blurred, frame_hover.p());
+        frame_hover->bind(rppanda::ENTER, [frame_hover, this](const Event*) { on_texture_hovered(frame_hover); });
+        frame_hover->bind(rppanda::EXIT, [frame_hover, this](const Event*) { on_texture_blurred(frame_hover); });
         
-        frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
-        frame_hover->bind(rppanda::B1PRESS, on_texture_clicked, frame_click_data.back().get());
+        //frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
+        frame_hover->bind(rppanda::B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
 
         Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3f(0.8f));
 

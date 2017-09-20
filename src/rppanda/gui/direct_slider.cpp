@@ -78,7 +78,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     get_gui_item()->set_thumb_button(thumb_->get_gui_item());
 
     // Bind command function
-    this->bind(ADJUST, command_func, this);
+    this->bind(ADJUST, [this](const Event*) { command_func(); });
 
     // Call option initialization functions
     if (is_exact_type(type_handle))
@@ -163,13 +163,12 @@ const std::shared_ptr<DirectSlider::Options>& DirectSlider::define_options(const
     return options;
 }
 
-void DirectSlider::command_func(const Event* ev, void* user_data)
+void DirectSlider::command_func()
 {
-    const DirectSlider* self = reinterpret_cast<DirectSlider*>(user_data);
-    const auto& options = std::dynamic_pointer_cast<Options>(self->_options);
+    const auto& options = std::dynamic_pointer_cast<Options>(_options);
 
     // Store the updated value in self['value']
-    options->value = self->get_gui_item()->get_value();
+    options->value = get_gui_item()->get_value();
     if (options->command)
         options->command(options->extra_args);
 }

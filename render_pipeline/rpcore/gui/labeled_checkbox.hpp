@@ -70,10 +70,10 @@ public:
 
 private:
     /** Internal callback when the node gets hovered. */
-    static void on_node_enter(const Event* ev, void* user_data);
+    void on_node_enter();
 
     /** Internal callback when the node gets no longer hovered. */
-    static void on_node_leave(const Event* ev, void* user_data);
+    void on_node_leave();
 
     std::unique_ptr<Checkbox> checkbox_;
     std::unique_ptr<Text> text_;

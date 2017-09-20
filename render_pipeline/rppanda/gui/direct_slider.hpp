@@ -84,7 +84,7 @@ public:
     void set_page_size(float page_size);
     void set_orientation(const std::string& orientation);
 
-    static void command_func(const Event* ev, void* user_data);
+    void command_func();
 
 protected:
     DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle);

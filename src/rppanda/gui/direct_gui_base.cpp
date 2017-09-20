@@ -41,7 +41,6 @@
 #include <dconfig.h>
 #include <texturePool.h>
 #include <nodePathCollection.h>
-#include <throw_event.h>
 
 #include <spdlog/fmt/fmt.h>
 
@@ -97,7 +96,7 @@ void DirectGuiBase::remove_component(const std::string& name)
     component_info_.erase(name);
 }
 
-void DirectGuiBase::bind(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data)
+void DirectGuiBase::bind(const std::string& ev_name, const Messenger::EventFunction& func)
 {
     const std::string& gEvent = ev_name + get_gui_id();
     if (ConfigVariableBool("debug-directgui-msgs", false).get_value())
@@ -105,7 +104,7 @@ void DirectGuiBase::bind(const std::string& ev_name, EventHandler::EventCallback
         std::cout << gEvent << std::endl;
     }
 
-    this->accept(gEvent, func, user_data);
+    this->accept(gEvent, func);
 }
 
 void DirectGuiBase::unbind(const std::string& ev_name)
@@ -197,14 +196,14 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
 
 void DirectGuiWidget::enable_edit()
 {
-    this->bind(B2PRESS, edit_start, this);
-    this->bind(B2RELEASE, edit_stop, this);
-    this->bind(PRINT, [](const Event* ev, void* user_data) {
+    this->bind(B2PRESS, [this](const Event*) { edit_start(); });
+    this->bind(B2RELEASE, [this](const Event*) { edit_stop(); });
+    this->bind(PRINT, [this](const Event* ev) {
         int indent = 0;
         if (ev->get_num_parameters() >= 1 && ev->get_parameter(0).is_int())
             indent = ev->get_parameter(0).get_int_value();
-        reinterpret_cast<DirectGuiWidget*>(user_data)->print_config(indent);
-    }, this);
+        print_config(indent);
+    });
 }
 
 void DirectGuiWidget::disable_edit()
@@ -214,9 +213,8 @@ void DirectGuiWidget::disable_edit()
     this->unbind(PRINT);
 }
 
-void DirectGuiWidget::edit_start(const Event* ev, void* user_data)
+void DirectGuiWidget::edit_start()
 {
-    DirectGuiWidget* dgw = reinterpret_cast<DirectGuiWidget*>(user_data);
     ShowBase* base = ShowBase::get_global_ptr();
 
     // TODO: implement
@@ -225,10 +223,9 @@ void DirectGuiWidget::edit_start(const Event* ev, void* user_data)
     //LPoint3f mouse2_render2d(
 }
 
-void DirectGuiWidget::edit_stop(const Event* ev, void* user_data)
+void DirectGuiWidget::edit_stop()
 {
     // TODO: implement
-    DirectGuiWidget* dgw = reinterpret_cast<DirectGuiWidget*>(user_data);
     //dgw->remove_task("guiEditTask");
 }
 
@@ -458,7 +455,7 @@ void DirectGuiWidget::print_config(int indent)
     // Print out children info
     const auto& npc = get_children();
     for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-        throw_event_directly(*EventHandler::get_global_event_handler(), PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
+        Messenger::get_global_ptr()->send(PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
 }
 
 const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options(const std::shared_ptr<Options>& options)

@@ -49,6 +49,7 @@
 
 #include <render_pipeline/rpcore/config.hpp>
 #include <render_pipeline/rppanda/task/functional_task.hpp>
+#include <render_pipeline/rppanda/showbase/messenger.hpp>
 
 namespace rppanda {
 
@@ -56,12 +57,15 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 {
 public:
-    bool accept(const std::string& ev_name, EventHandler::EventFunction* func);
-    bool accept(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data);
+    ~DirectObject();
 
-    bool ignore(const std::string& ev_name);
-    bool ignore(const std::string& ev_name, EventHandler::EventFunction* func);
-    bool ignore(const std::string& ev_name, EventHandler::EventCallbackFunction* func, void* user_data);
+    void accept(const std::string& ev_name, const Messenger::EventFunction& func);
+
+    void accept_once(const std::string& ev_name, const Messenger::EventFunction& func);
+
+    void ignore(const std::string& ev_name);
+
+    void ignore_all();
 
     /**
      * @see TaskManager::add
@@ -114,6 +118,31 @@ private:
 };
 
 // ************************************************************************************************
+
+inline DirectObject::~DirectObject()
+{
+    ignore_all();
+}
+
+inline void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
+{
+    Messenger::get_global_ptr()->accept(ev_name, func, this, true);
+}
+
+inline void DirectObject::accept_once(const std::string& ev_name, const Messenger::EventFunction& func)
+{
+    Messenger::get_global_ptr()->accept(ev_name, func, this, false);
+}
+
+inline void DirectObject::ignore(const std::string& ev_name)
+{
+    Messenger::get_global_ptr()->ignore(ev_name, this);
+}
+
+inline void DirectObject::ignore_all()
+{
+    Messenger::get_global_ptr()->ignore_all(this);
+}
 
 inline TypeHandle DirectObject::get_class_type()
 {

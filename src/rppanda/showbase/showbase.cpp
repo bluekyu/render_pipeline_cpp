@@ -47,10 +47,10 @@
 #include <pgMouseWatcherBackground.h>
 #include <orthographicLens.h>
 #include <audioManager.h>
-#include <throw_event.h>
 
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
+#include "render_pipeline/rppanda/showbase/messenger.hpp"
 #include "render_pipeline/rppanda/task/task.hpp"
 
 #include "rppanda/showbase/config_rppanda_showbase.hpp"
@@ -83,6 +83,7 @@ public:
     WindowFramework* window_framework_ = nullptr;
 
     PT(rppanda::Loader) loader_ = nullptr;
+    Messenger* messenger_ = nullptr;
     TaskManager* task_mgr_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win_ = nullptr;
@@ -235,6 +236,7 @@ void ShowBase::Impl::initailize(ShowBase* self)
 
     loader_ = new rppanda::Loader(*self);
 
+    messenger_ = Messenger::get_global_ptr();
     task_mgr_ = TaskManager::get_global_ptr();
 
     app_has_audio_focus_ = true;
@@ -437,7 +439,7 @@ void ShowBase::Impl::enable_music(bool enable)
     {
         // This is useful when we want to play different music
         // from what the manager has queued
-        throw_event_directly(*EventHandler::get_global_event_handler(), "MusicEnabled");
+        messenger_->send("MusicEnabled");
         rppanda_showbase_cat.debug() << "Enabling music" << std::endl;
     }
     else
@@ -457,7 +459,7 @@ Filename ShowBase::Impl::get_screenshot_filename(const std::string& name_prefix,
 void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
 {
     // Announce to anybody that a screenshot has been taken
-    throw_event_directly(*EventHandler::get_global_event_handler(), "screenshot", EventParameter(filename));
+    messenger_->send("screenshot", EventParameter(filename));
 }
 
 // ************************************************************************************************
@@ -531,6 +533,11 @@ WindowFramework* ShowBase::get_window_framework() const
 rppanda::Loader* ShowBase::get_loader() const
 {
     return impl_->loader_;
+}
+
+Messenger* ShowBase::get_messenger() const
+{
+    return impl_->messenger_;
 }
 
 TaskManager* ShowBase::get_task_mgr() const

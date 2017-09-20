@@ -238,30 +238,30 @@ void Debugger::handle_window_resize()
 
 void Debugger::init_keybindings()
 {
-    Globals::base->accept("v", [](const Event* ev, void* data) {
+    Globals::base->accept("v", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
             Globals::base->get_render_2d().show();
-        reinterpret_cast<Debugger*>(data)->_buffer_viewer->toggle();
-    }, this);
-    Globals::base->accept("c", [](const Event* ev, void* data) {
+        _buffer_viewer->toggle();
+    });
+    Globals::base->accept("c", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
             Globals::base->get_render_2d().show();
-        reinterpret_cast<Debugger*>(data)->_pipe_viewer->toggle();
-    }, this);
+        _pipe_viewer->toggle();
+    });
 
     // TODO: implement
     //Globals.base.accept("z", self.rm_selector.toggle)
-    Globals::base->accept("f5", [](const Event* ev, void* data) {
-        reinterpret_cast<Debugger*>(data)->toggle_gui_visible();
-    }, this);
-    Globals::base->accept("f6", [](const Event* ev, void* data) {
+    Globals::base->accept("f5", [this](const Event* ev) {
+        toggle_gui_visible();
+    });
+    Globals::base->accept("f6", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
             Globals::base->get_render_2d().show();
-        reinterpret_cast<Debugger*>(data)->toggle_keybindings_visible();
-    }, this);
-    Globals::base->accept("r", [](const Event* ev, void* data) {
-        reinterpret_cast<Debugger*>(data)->pipeline->reload_shaders();
-    }, this);
+        toggle_keybindings_visible();
+    });
+    Globals::base->accept("r", [this](const Event* ev) {
+        pipeline->reload_shaders();
+    });
 }
 
 void Debugger::toggle_gui_visible()

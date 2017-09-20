@@ -50,7 +50,7 @@ namespace rpplugins {
 class PSSMPlugin::Impl
 {
 public:
-    static void toggle_update_enabled(const Event* ev, void* user_data);
+    void toggle_update_enabled();
 
     Impl(PSSMPlugin& self);
 
@@ -80,11 +80,10 @@ PSSMPlugin::Impl::Impl(PSSMPlugin& self): self_(self)
 {
 }
 
-void PSSMPlugin::Impl::toggle_update_enabled(const Event* ev, void* user_data)
+void PSSMPlugin::Impl::toggle_update_enabled()
 {
-    PSSMPlugin* plugin = reinterpret_cast<PSSMPlugin*>(user_data);
-    plugin->impl_->update_enabled_ = !plugin->impl_->update_enabled_;
-    plugin->debug(std::string("Update enabled: ") + (plugin->impl_->update_enabled_ ? "True" : "False"));
+    update_enabled_ = !update_enabled_;
+    self_.debug(std::string("Update enabled: ") + (update_enabled_ ? "True" : "False"));
 }
 
 void PSSMPlugin::Impl::on_pre_render_update()
@@ -216,7 +215,7 @@ void PSSMPlugin::on_pipeline_created()
     }
 
     // Accept a shortcut to enable / disable the update of PSSM
-    rpcore::Globals::base->accept("u", Impl::toggle_update_enabled, this);
+    rpcore::Globals::base->accept("u", [this](const Event*) { impl_->toggle_update_enabled(); });
 
     // Set inputs
     impl_->pssm_stage_->set_shader_input(ShaderInput("pssm_mvps", impl_->camera_rig_->get_mvp_array()));
