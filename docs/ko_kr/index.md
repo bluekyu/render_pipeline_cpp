@@ -6,11 +6,12 @@
 
 ## 시스템
 - [설정](configuration.md)
-- [Render Pipeline Structures](structures.md)
-- [Virtual File System](virtual_filesystem.md)
+- [Render Pipeline 구조](structures.md)
+- [가상 파일 시스템](virtual_filesystem.md)
 
 ## 렌더링
 - [모델](rendering/model.md)  
+- [물리 기반 쉐이딩 모델](rendering/pbs-model.md)
 - [스테레오 및 가상현실](rendering/stereo-and-vr.md)
 
 ## 기타
@@ -18,7 +19,8 @@
 
 ## 코드 스니펫
 - [Panda3D 수학](../snippets/math.md)
-- [Panda3D Event 및 Task](../snippets/event_and_task.md)
+- [Task](../snippets/task.md)
+- [Event](../snippets/event.md)
 - [모델](../snippets/model.md)
 - [Render Pipeline Material](../snippets/rpmaterial.md)
 - [텍스처](../snippets/texture.md)

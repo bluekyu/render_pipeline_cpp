@@ -19,7 +19,8 @@
 
 ## Code Snippets
 - [Panda3D Math](snippets/math.md)
-- [Panda3D Event and Task](snippets/event_and_task.md)
+- [Task](snippets/task.md)
+- [Event](snippets/event.md)
 - [Model](snippets/model.md)
 - [Render Pipeline Material](snippets/rpmaterial.md)
 - [Texture](snippets/texture.md)
