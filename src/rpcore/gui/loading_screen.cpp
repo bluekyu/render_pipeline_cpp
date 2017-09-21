@@ -61,7 +61,7 @@ void LoadingScreen::create()
     fullscreen_bg = new Sprite(image_source_, int(image_w * scale), int(image_h * scale), fullscreen_node,
         int(screen_w - image_w * scale) / 2, int(screen_h - image_h * scale) / 2, true, false);
 
-    GraphicsEngine* graphics_engine = rppanda::ShowBase::get_global_ptr()->get_graphics_engine();
+    GraphicsEngine* graphics_engine = Globals::base->get_graphics_engine();
     graphics_engine->render_frame();
     graphics_engine->render_frame();
 }

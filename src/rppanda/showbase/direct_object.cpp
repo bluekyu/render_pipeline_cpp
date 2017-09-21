@@ -50,7 +50,7 @@ AsyncTask* DirectObject::add_task(AsyncTask* task, const std::string& name,
     boost::optional<int> sort, boost::optional<int> priority,
     const boost::optional<std::string>& task_chain)
 {
-    auto new_task = TaskManager::get_global_ptr()->add(task, name, sort, priority, task_chain);
+    auto new_task = TaskManager::get_global_instance()->add(task, name, sort, priority, task_chain);
     do_add_task(new_task);
     return new_task;
 }
@@ -60,7 +60,7 @@ FunctionalTask* DirectObject::add_task(const FunctionalTask::TaskFunc& func, con
     const boost::optional<std::string>& task_chain,
     const FunctionalTask::DeathFunc& upon_death)
 {
-    auto new_task = TaskManager::get_global_ptr()->add(func, name, sort, priority, task_chain, upon_death);
+    auto new_task = TaskManager::get_global_instance()->add(func, name, sort, priority, task_chain, upon_death);
     do_add_task(new_task);
     return new_task;
 }
@@ -70,7 +70,7 @@ AsyncTask* DirectObject::do_method_later(float delay_time, AsyncTask* task,
     boost::optional<int> sort, boost::optional<int> priority,
     const boost::optional<std::string>& task_chain)
 {
-    auto new_task = TaskManager::get_global_ptr()->do_method_later(delay_time, task, name, sort, priority, task_chain);
+    auto new_task = TaskManager::get_global_instance()->do_method_later(delay_time, task, name, sort, priority, task_chain);
     do_add_task(new_task);
     return new_task;
 }
@@ -81,7 +81,7 @@ FunctionalTask* DirectObject::do_method_later(float delay_time,
     const boost::optional<std::string>& task_chain,
     const FunctionalTask::DeathFunc& upon_death)
 {
-    auto new_task = TaskManager::get_global_ptr()->do_method_later(delay_time, func, name, sort, priority, task_chain, upon_death);
+    auto new_task = TaskManager::get_global_instance()->do_method_later(delay_time, func, name, sort, priority, task_chain, upon_death);
     do_add_task(new_task);
     return new_task;
 }

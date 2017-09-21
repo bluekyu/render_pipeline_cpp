@@ -455,7 +455,7 @@ void DirectGuiWidget::print_config(int indent)
     // Print out children info
     const auto& npc = get_children();
     for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-        Messenger::get_global_ptr()->send(PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
+        Messenger::get_global_instance()->send(PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
 }
 
 const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options(const std::shared_ptr<Options>& options)

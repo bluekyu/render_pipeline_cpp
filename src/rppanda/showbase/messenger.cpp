@@ -39,22 +39,10 @@
 
 namespace rppanda {
 
-Messenger* Messenger::get_global_ptr()
+Messenger* Messenger::get_global_instance()
 {
     static Messenger instance;
     return &instance;
-}
-
-Messenger::~Messenger()
-{
-    clear();
-}
-
-void Messenger::clear()
-{
-    for (auto& hook: hooks_)
-        handler_->remove_hook(hook.first, process_event, this);
-    hooks_.clear();
 }
 
 void Messenger::process_event(const Event* ev, void* user_data)
@@ -90,10 +78,6 @@ void Messenger::process_event(const Event* ev, void* user_data)
 
     if (hook.empty())
         self->remove_hook(event_name);
-}
-
-Messenger::Messenger(): handler_(EventHandler::get_global_event_handler())
-{
 }
 
 }

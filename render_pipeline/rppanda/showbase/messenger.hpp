@@ -55,8 +55,9 @@ public:
     using EventFunction = std::function<void(const Event*)>;
 
 public:
-    static Messenger* get_global_ptr();
+    static Messenger* get_global_instance();
 
+    Messenger();
     ~Messenger();
 
     size_t get_num_listners() const;
@@ -93,8 +94,6 @@ private:
 
     static void process_event(const Event* ev, void* user_data);
 
-    Messenger();
-
     void add_hook(const EventName& event_name);
     void remove_hook(const EventName& event_name);
 
@@ -103,6 +102,15 @@ private:
 };
 
 // ************************************************************************************************
+
+inline Messenger::Messenger() : handler_(EventHandler::get_global_event_handler())
+{
+}
+
+inline Messenger::~Messenger()
+{
+    clear();
+}
 
 inline size_t Messenger::get_num_listners() const
 {
@@ -133,9 +141,17 @@ inline void Messenger::accept(const EventName& event_name, const EventFunction& 
         add_hook(event_name);
 
     if (object)
+    {
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
         hooks_[event_name].object_callbacks.insert_or_assign(object, AcceptorType{ method, persistent });
+#else
+        hooks_[event_name].object_callbacks.insert({ object, AcceptorType{ method, persistent }});
+#endif
+    }
     else
+    {
         hooks_[event_name].callbacks.push_back(AcceptorType{ method, persistent });
+    }
 }
 
 inline void Messenger::ignore(const EventName& event_name, DirectObject* object)
@@ -236,6 +252,13 @@ inline void Messenger::remove_hook(const EventName& event_name)
 {
     handler_->remove_hook(event_name, process_event, this);
     hooks_.erase(event_name);
+}
+
+inline void Messenger::clear()
+{
+    for (auto& hook : hooks_)
+        handler_->remove_hook(hook.first, process_event, this);
+    hooks_.clear();
 }
 
 }

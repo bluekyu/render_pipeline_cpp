@@ -21,8 +21,6 @@
 
 #include "rppanda/gui/config_rppanda_gui.hpp"
 
-#include "dconfig.h"
-
 #include "render_pipeline/rppanda/gui/direct_button.hpp"
 #include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 #include "render_pipeline/rppanda/gui/direct_frame.hpp"
@@ -32,7 +30,7 @@
 #include "render_pipeline/rppanda/gui/direct_slider.hpp"
 #include "render_pipeline/rppanda/gui/onscreen_image.hpp"
 
-Configure(config_rppanda_gui);
+ConfigureDef(config_rppanda_gui);
 NotifyCategoryDef(rppanda_gui, "");
 
 ConfigureFn(config_rppanda_gui)
@@ -43,10 +41,8 @@ ConfigureFn(config_rppanda_gui)
 void init_librppanda_gui()
 {
     static bool initialized = false;
-    if (initialized) {
+    if (initialized)
         return;
-    }
-
     initialized = true;
 
     rppanda::DirectGuiBase::init_type();

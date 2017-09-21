@@ -57,8 +57,6 @@
 
 namespace rppanda {
 
-static ShowBase* global_showbase = nullptr;
-
 class ShowBase::Impl
 {
 public:
@@ -79,6 +77,8 @@ public:
     void send_screenshot_event(const Filename& filename) const;
 
 public:
+    static ShowBase* global_ptr;
+
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
@@ -158,6 +158,8 @@ public:
     bool wireframe_enabled_;
 };
 
+ShowBase* ShowBase::Impl::global_ptr = nullptr;
+
 AsyncTask::DoneStatus ShowBase::Impl::ival_loop()
 {
     // Execute all intervals in the global ivalMgr.
@@ -180,11 +182,13 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop()
 
 void ShowBase::Impl::initailize(ShowBase* self)
 {
-    if (global_showbase)
+    if (Impl::global_ptr)
     {
         rppanda_showbase_cat.error() << "ShowBase was already created!" << std::endl;
         return;
     }
+
+    Impl::global_ptr = self;
 
     rppanda_showbase_cat.debug() << "Creating ShowBase ..." << std::endl;
 
@@ -236,14 +240,12 @@ void ShowBase::Impl::initailize(ShowBase* self)
 
     loader_ = new rppanda::Loader(*self);
 
-    messenger_ = Messenger::get_global_ptr();
-    task_mgr_ = TaskManager::get_global_ptr();
+    messenger_ = Messenger::get_global_instance();
+    task_mgr_ = TaskManager::get_global_instance();
 
     app_has_audio_focus_ = true;
 
     self->create_base_audio_managers();
-
-    global_showbase = self;
 
     self->restart();
 }
@@ -466,6 +468,11 @@ void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
 
 TypeHandle ShowBase::type_handle_;
 
+ShowBase* ShowBase::get_global_ptr()
+{
+    return Impl::global_ptr;
+}
+
 ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>())
 {
     impl_->panda_framework_ = std::make_shared<PandaFramework>();
@@ -505,7 +512,7 @@ ShowBase::~ShowBase()
     // will remove in PandaFramework::~PandaFramework
     //impl_->graphics_engine_->remove_all_windows();
 
-    global_showbase = nullptr;
+    Impl::global_ptr = nullptr;
 }
 
 void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
@@ -514,11 +521,6 @@ void ShowBase::setup_mouse() { impl_->setup_mouse(this); }
 void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
-
-ShowBase* ShowBase::get_global_ptr()
-{
-    return global_showbase;
-}
 
 PandaFramework* ShowBase::get_panda_framework() const
 {

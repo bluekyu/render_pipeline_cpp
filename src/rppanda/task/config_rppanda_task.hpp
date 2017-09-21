@@ -21,8 +21,10 @@
 
 #pragma once
 
+#include <dconfig.h>
 #include <notifyCategoryProxy.h>
 
+ConfigureDecl(config_rppanda_task, EXPORT_CLASS, EXPORT_TEMPL);
 NotifyCategoryDecl(rppanda_task, EXPORT_CLASS, EXPORT_TEMPL);
 
-extern void init_librppanda_task();
+extern EXPORT_CLASS void init_librppanda_task();

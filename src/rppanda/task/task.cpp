@@ -45,20 +45,15 @@
 
 namespace rppanda {
 
-TaskManager* TaskManager::get_global_ptr()
+TaskManager* TaskManager::get_global_instance()
 {
     static TaskManager instance;
     return &instance;
 }
 
-AsyncTaskManager* TaskManager::get_mgr() const
+TaskManager::TaskManager() : mgr_(AsyncTaskManager::get_global_ptr()),
+    global_clock_(mgr_->get_clock())
 {
-    return mgr_;
-}
-
-ClockObject* TaskManager::get_global_clock() const
-{
-    return global_clock_;
 }
 
 bool TaskManager::has_task_named(const std::string& task_name) const
@@ -139,11 +134,6 @@ int TaskManager::remove(const std::string& task_name)
 int TaskManager::remove(AsyncTask* task)
 {
     return mgr_->remove(task);
-}
-
-TaskManager::TaskManager(): mgr_(AsyncTaskManager::get_global_ptr()),
-    global_clock_(mgr_->get_clock())
-{
 }
 
 AsyncTask* TaskManager::setup_task(AsyncTask* task, const std::string& name,

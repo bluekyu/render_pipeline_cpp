@@ -21,14 +21,12 @@
 
 #include "rppanda/showbase/config_rppanda_showbase.hpp"
 
-#include "dconfig.h"
-
 #include "render_pipeline/rppanda/showbase/direct_object.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 
-Configure(config_rppanda_showbase);
+ConfigureDef(config_rppanda_showbase);
 NotifyCategoryDef(rppanda_showbase, "");
 
 ConfigureFn(config_rppanda_showbase)
@@ -39,10 +37,8 @@ ConfigureFn(config_rppanda_showbase)
 void init_librppanda_showbase()
 {
     static bool initialized = false;
-    if (initialized) {
+    if (initialized)
         return;
-    }
-
     initialized = true;
 
     rppanda::DirectObject::init_type();

@@ -21,12 +21,10 @@
 
 #include "rppanda/task/config_rppanda_task.hpp"
 
-#include "dconfig.h"
-
 #include "render_pipeline/rppanda/task/task.hpp"
 #include "render_pipeline/rppanda/task/functional_task.hpp"
 
-Configure(config_rppanda_task);
+ConfigureDef(config_rppanda_task);
 NotifyCategoryDef(rppanda_task, "");
 
 ConfigureFn(config_rppanda_task)
@@ -37,10 +35,8 @@ ConfigureFn(config_rppanda_task)
 void init_librppanda_task()
 {
     static bool initialized = false;
-    if (initialized) {
+    if (initialized)
         return;
-    }
-
     initialized = true;
 
     rppanda::FunctionalTask::init_type();

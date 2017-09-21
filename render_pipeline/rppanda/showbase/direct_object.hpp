@@ -126,22 +126,22 @@ inline DirectObject::~DirectObject()
 
 inline void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
 {
-    Messenger::get_global_ptr()->accept(ev_name, func, this, true);
+    Messenger::get_global_instance()->accept(ev_name, func, this, true);
 }
 
 inline void DirectObject::accept_once(const std::string& ev_name, const Messenger::EventFunction& func)
 {
-    Messenger::get_global_ptr()->accept(ev_name, func, this, false);
+    Messenger::get_global_instance()->accept(ev_name, func, this, false);
 }
 
 inline void DirectObject::ignore(const std::string& ev_name)
 {
-    Messenger::get_global_ptr()->ignore(ev_name, this);
+    Messenger::get_global_instance()->ignore(ev_name, this);
 }
 
 inline void DirectObject::ignore_all()
 {
-    Messenger::get_global_ptr()->ignore_all(this);
+    Messenger::get_global_instance()->ignore_all(this);
 }
 
 inline TypeHandle DirectObject::get_class_type()

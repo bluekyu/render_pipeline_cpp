@@ -67,6 +67,8 @@ class Messenger;
 class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 {
 public:
+    static ShowBase* get_global_ptr();
+
     /** Create PandaFramework and open main window, and then initialize ShowBase. */
     ShowBase(int& argc, char**& argv);
 
@@ -80,8 +82,6 @@ public:
 
     ShowBase& operator=(const ShowBase&) = delete;
     ShowBase& operator=(ShowBase&&) = delete;
-
-    static ShowBase* get_global_ptr();
 
     PandaFramework* get_panda_framework() const;
     WindowFramework* get_window_framework() const;

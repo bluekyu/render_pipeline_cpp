@@ -50,7 +50,9 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL TaskManager
 {
 public:
-    static TaskManager* get_global_ptr();
+    static TaskManager* get_global_instance();
+
+    TaskManager();
 
     AsyncTaskManager* get_mgr() const;
     ClockObject* get_global_clock() const;
@@ -128,8 +130,6 @@ public:
     int remove(AsyncTask* task);
 
 private:
-    TaskManager();
-
     AsyncTask* setup_task(AsyncTask* task, const std::string& name = {},
         boost::optional<int> sort = {}, boost::optional<int> priority = {},
         const boost::optional<std::string>& task_chain = {});
@@ -137,5 +137,17 @@ private:
     AsyncTaskManager* mgr_;
     ClockObject* global_clock_;
 };
+
+// ************************************************************************************************
+
+inline AsyncTaskManager* TaskManager::get_mgr() const
+{
+    return mgr_;
+}
+
+inline ClockObject* TaskManager::get_global_clock() const
+{
+    return global_clock_;
+}
 
 }
