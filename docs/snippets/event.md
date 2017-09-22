@@ -90,7 +90,7 @@ class A
     void g()
     {
         auto messenger = rpcore::Globasl::base->get_messenger();
-        // OR, Messenger::get_global_ptr();
+        // OR, Messenger::get_global_instance();
 
         // using bind
         messenger->accept(EVENT_NAME, std::bind(&A::f, this, std::placeholders::_1));
@@ -99,10 +99,10 @@ class A
     void h()
     {
         // using lambda
-        Messenger::get_global_ptr()->accept(EVENT_NAME, [](const Event* ev) { ... });
+        Messenger::get_global_instance()->accept(EVENT_NAME, [](const Event* ev) { ... });
 
         // using lambda with 'this' pointer
-        Messenger::get_global_ptr()->accept(EVENT_NAME, [this](const Event* ev) { g(); });
+        Messenger::get_global_instance()->accept(EVENT_NAME, [this](const Event* ev) { g(); });
     }
 
     void i()
@@ -125,11 +125,11 @@ You need to use all EVENT_NAME
 - Send event
 ```cpp
 // queuing
-Messenger::get_global_ptr()->send(EVENT_NAME, true);
-Messenger::get_global_ptr()->send(EVENT_NAME, PARAM1, true);
+Messenger::get_global_instance()->send(EVENT_NAME, true);
+Messenger::get_global_instance()->send(EVENT_NAME, PARAM1, true);
 
 // run immediately
-Messenger::get_global_ptr()->send(EVENT_NAME);
-Messenger::get_global_ptr()->send(EVENT_NAME, PARAM1);
+Messenger::get_global_instance()->send(EVENT_NAME);
+Messenger::get_global_instance()->send(EVENT_NAME, PARAM1);
 ...
 ```
