@@ -2,22 +2,15 @@
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
 if(MSVC)
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-        PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>
-    )
+    target_compile_features(${PROJECT_NAME} PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/std:c++14>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/utf-8 /std:c++14>
     )
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    if(CMAKE_VERSION VERSION_LESS 3.8)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -std=c++1z)
-    else()
-        target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-            PRIVATE cxx_std_17)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
-    endif()
+    target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
