@@ -32,7 +32,7 @@
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
-#include "render_pipeline/rppanda/task/task.hpp"
+#include "render_pipeline/rppanda/task/task_manager.hpp"
 
 namespace rpcore {
 

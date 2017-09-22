@@ -51,7 +51,7 @@
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
 #include "render_pipeline/rppanda/showbase/messenger.hpp"
-#include "render_pipeline/rppanda/task/task.hpp"
+#include "render_pipeline/rppanda/task/task_manager.hpp"
 
 #include "rppanda/showbase/config_rppanda_showbase.hpp"
 

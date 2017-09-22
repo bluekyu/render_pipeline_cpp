@@ -29,7 +29,7 @@
 #include "render_pipeline/rppanda/gui/direct_frame.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 #include "render_pipeline/rppanda/gui/direct_button.hpp"
-#include "render_pipeline/rppanda/task/task.hpp"
+#include "render_pipeline/rppanda/task/task_manager.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"
 
 namespace rpcore {

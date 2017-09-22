@@ -21,7 +21,7 @@
 
 #include "rppanda/task/config_rppanda_task.hpp"
 
-#include "render_pipeline/rppanda/task/task.hpp"
+#include "render_pipeline/rppanda/task/task_manager.hpp"
 #include "render_pipeline/rppanda/task/functional_task.hpp"
 
 ConfigureDef(config_rppanda_task);

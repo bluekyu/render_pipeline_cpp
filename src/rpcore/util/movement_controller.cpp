@@ -32,7 +32,7 @@
 #include <boost/format.hpp>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
-#include "render_pipeline/rppanda/task/task.hpp"
+#include "render_pipeline/rppanda/task/task_manager.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
 
 namespace rpcore {

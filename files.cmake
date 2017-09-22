@@ -42,7 +42,7 @@ set(header_rppanda_showbase
 
 set(header_rppanda_task
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/task/functional_task.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/task/task.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/task/task_manager.hpp"
 )
 
 set(header_rpcore
@@ -219,7 +219,7 @@ set(source_rppanda_task
     "${PROJECT_SOURCE_DIR}/src/rppanda/task/config_rppanda_task.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/task/config_rppanda_task.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/task/functional_task.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rppanda/task/task.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/task/task_manager.cpp"
 )
 
 set(source_rppanda_util
