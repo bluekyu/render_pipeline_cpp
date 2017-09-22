@@ -269,7 +269,7 @@ RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 
 RenderPipeline::Impl::~Impl()
 {
-    self_.debug("Destructing RenderPipeline.");
+    self_.debug("Destructing RenderPipeline");
 
     delete first_frame_;
 
@@ -280,12 +280,13 @@ RenderPipeline::Impl::~Impl()
     delete stage_mgr_;
     delete tag_mgr_;
     delete task_scheduler_;
-    showbase_.clear();
     delete debugger;
+    delete loading_screen;
+
+    showbase_.clear();
 
     // should delete at last to delete resources in DLL module.
     delete plugin_mgr_;
-    delete loading_screen;
 
     delete mount_mgr_;
 

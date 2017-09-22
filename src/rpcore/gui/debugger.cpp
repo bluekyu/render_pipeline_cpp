@@ -80,6 +80,8 @@ Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pip
 
 Debugger::~Debugger()
 {
+    trace("Destructing Debugger");
+
     for (auto& tn: debug_lines)
         delete tn;
     delete _hint_reloading;

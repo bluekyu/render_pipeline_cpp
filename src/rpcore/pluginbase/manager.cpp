@@ -379,6 +379,8 @@ PluginManager::PluginManager(RenderPipeline& pipeline): RPObject("PluginManager"
 
 PluginManager::~PluginManager()
 {
+    trace("Destructing PluginManager");
+
     unload();
 }
 

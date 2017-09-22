@@ -425,7 +425,10 @@ StageManager::StageManager(RenderPipeline& pipeline): RPObject("StageManager"), 
     impl_->load_stage_order();
 }
 
-StageManager::~StageManager() = default;
+StageManager::~StageManager()
+{
+    trace("Destructing StageManager");
+}
 
 StageManager::DefinesType& StageManager::get_defines()
 {
