@@ -23,9 +23,10 @@
 #pragma once
 
 #include <nodePath.h>
-#include <textFont.h>
 
 #include <render_pipeline/rpcore/config.hpp>
+
+class TextFont;
 
 namespace rppanda {
 class ShowBase;
@@ -47,7 +48,7 @@ public:
     static rppanda::ShowBase* base;
     static NodePath render;
     static ClockObject* clock;
-    static PT(TextFont) font;
+    static TextFont* font;
     static LVecBase2i resolution;
     static LVecBase2i native_resolution;
 };

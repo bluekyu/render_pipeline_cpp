@@ -33,7 +33,7 @@ NodePath Globals::render;
 ClockObject* Globals::clock = nullptr;
 LVecBase2i Globals::resolution;
 LVecBase2i Globals::native_resolution;
-PT(TextFont) Globals::font = nullptr;
+TextFont* Globals::font = nullptr;
 
 void Globals::load(rppanda::ShowBase* showbase)
 {
