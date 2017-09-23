@@ -40,6 +40,10 @@ environment:
     PATH: C:\Python36-x64;%PATH%
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
 
+# this is how to allow failing jobs in the matrix
+matrix:
+    fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
+
 # scripts that run after cloning repository
 install:
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
@@ -84,6 +88,7 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Release
+- RelWithDebInfo
 
 build:
     parallel: true                  # enable MSBuild parallel builds
@@ -94,7 +99,6 @@ build_script:
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
-    -DBoost_USE_STATIC_LIBS:BOOL=ON
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Dyaml-cpp_DIR:PATH="C:/projects/_cache/yaml-cpp/CMake"
     -DFlatBuffers_ROOT:PATH="C:/projects/_cache/flatbuffers"
@@ -125,7 +129,9 @@ artifacts:
 # on successful build
 on_success:
 - ps: >-
-    Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp-plugins' -EnvironmentVariables @{
-        TRIGGER_NAME = $env:TRIGGER_NAME
-        TRIGGER_COMMIT = $env:TRIGGER_COMMIT
+    if ($env:CONFIGURATION -eq "RelWithDebInfo") {
+        Start-AppveyorBuild -ApiKey $env:api_key -ProjectSlug 'rpcpp-plugins' -EnvironmentVariables @{
+            TRIGGER_NAME = $env:TRIGGER_NAME
+            TRIGGER_COMMIT = $env:TRIGGER_COMMIT
+        }
     }
