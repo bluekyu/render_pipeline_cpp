@@ -2,13 +2,15 @@
 **Translation**: [한국어](ko_kr/build_rpcpp.md)
 
 ## Requirements
-- Panda3D
-- FreeType2 (included in Panda3D third-party)
-- Boost
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-- [spdlog](https://github.com/gabime/spdlog)
-- [flatbuffers](https://github.com/google/flatbuffers)
-- CMake (build tool)
+The **Versions** are used by a build system and does **NOT** need to match.
+
+- CMake (build tool): 3.8
+- [(Patched) Panda3D](https://github.com/bluekyu/panda3d): develop branch
+- FreeType2: 2.5.2 (included in Panda3D third-party)
+- Boost: 1.64.0
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): master branch
+- [spdlog](https://github.com/gabime/spdlog): 0.14.0
+- [flatbuffers](https://github.com/google/flatbuffers): 1.7.1
 
 ### Optional
 - Doxygen (to create doxygen documents)
@@ -36,14 +38,16 @@ Therefore, use system environment variable OR set it in CMake (see Integration w
 Install Boost library and set `BOOST_ROOT` to installed directory (For details, see FindBoost usage in CMake)
 
 #### YAML-CPP
-Just build the repository with CMake, except install. CMake will find it automatically by 'User Package Registry'
-of FindPackage.
+Build and install the repository with CMake.
+And set `yaml-cpp_DIR` to CMake directory in installed directory.
 
 #### spdlog
-Build and install the repository with CMake. And set `spdlog_DIR` to installed directory.
+Build and install the repository with CMake.
+And set `spdlog_DIR` to CMake directory in installed directory.
 
 #### flatbuffers
-Build and install the repository with CMake. And set `FlatBuffers_ROOT` to installed directory.
+Build and install the repository with CMake.
+And set `FlatBuffers_ROOT` to installed directory.
 
 
 
@@ -64,7 +68,7 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 1. Directory Structure
 ```
-─ ROOT_DIR
+─ PROJECT_DIR
   ├ build                   # CMake build directory
   ├ render_pipeline_cpp     # Render Pipeline C++ project
   ├ rpcpp_plugins           # Plugin project
@@ -74,18 +78,21 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 2. CMakeLists.txt File
 ```
+cmake_minimum_required(VERSION 3.8)
 project(render_pipeline_projects)
 
-# write paths on your system
-set(BOOST_ROOT "......" CACHE PATH "" FORCE)
-set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)
-set(panda3d_ROOT "......" CACHE PATH "" FORCE)
-set(ENV{FREETYPE_DIR} "......")
-set(FlatBuffers_ROOT "......" CACHE PATH "" FORCE)
+# write paths and use options on your system
+set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)
+#set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)    # Use static library for boost
+set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
+set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
+set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
+set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
+set(FlatBuffers_ROOT "R:/usr/lib/flatbuffers" CACHE PATH "" FORCE)
 
 # optional paths
-set(NvFlex_ROOT "......" CACHE PATH "" FORCE)
-set(OpenVR_ROOT "......" CACHE PATH "" FORCE)
+set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)
+set(OpenVR_ROOT "R:/usr/lib/openvr" CACHE PATH "" FORCE)
 
 add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")

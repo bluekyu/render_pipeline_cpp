@@ -37,8 +37,8 @@ environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     BOOST_ROOT: C:\Libraries\boost_1_64_0
-    FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
     PATH: C:\Python36-x64;%PATH%
+    FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
 
 # scripts that run after cloning repository
 install:
@@ -92,13 +92,12 @@ build:
 build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev
+    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -DBoost_USE_STATIC_LIBS:BOOL=ON
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Dyaml-cpp_DIR:PATH="C:/projects/_cache/yaml-cpp/CMake"
     -DFlatBuffers_ROOT:PATH="C:/projects/_cache/flatbuffers"
-    ..
 - cmake --build . --config %CONFIGURATION% --target install
 - ps: popd
 
