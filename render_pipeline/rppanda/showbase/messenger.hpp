@@ -80,7 +80,7 @@ public:
 
     void clear();
 
-private:
+protected:
     using AcceptorType = std::pair<EventFunction, bool>;
 
     struct CallbackData
@@ -92,6 +92,7 @@ private:
         std::unordered_map<DirectObject*, AcceptorType> object_callbacks;
     };
 
+private:
     static void process_event(const Event* ev, void* user_data);
 
     void add_hook(const EventName& event_name);
@@ -137,8 +138,7 @@ inline bool Messenger::is_empty() const
 inline void Messenger::accept(const EventName& event_name, const EventFunction& method,
     DirectObject* object, bool persistent)
 {
-    if (hooks_.find(event_name) == hooks_.end())
-        add_hook(event_name);
+    add_hook(event_name);
 
     if (object)
     {
@@ -245,7 +245,8 @@ inline bool Messenger::CallbackData::empty() const
 
 inline void Messenger::add_hook(const EventName& event_name)
 {
-    handler_->add_hook(event_name, process_event, this);
+    if (!handler_->has_hook(event_name, &Messenger::process_event, this))
+        handler_->add_hook(event_name, &Messenger::process_event, this);
 }
 
 inline void Messenger::remove_hook(const EventName& event_name)
