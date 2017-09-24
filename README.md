@@ -1,10 +1,20 @@
 # Render Pipeline C++
 
-[![Build status](https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master)
-
 This project is C++ ported version of [Render Pipeline](https://github.com/tobspr/RenderPipeline).
 
 And I am developing the project and new features for CR Software Framework (...).
+
+#### Build Status
+| OS       | Build Status             | Latest Build                                                |
+| :------: | :----------------------: | :---------------------------------------------------------: |
+| Windows  | [![win-badge]][win-link] | vc14 ([Release][win-release], [RelWithDebInfo][win-reldeb]) |
+
+[win-badge]: https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true "AppVeyor build status"
+[win-link]: https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master "AppVeyor build link"
+[win-release]: https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Configuration%3A+Release "Download latest build (Release)"
+[win-reldeb]: https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Configuration%3A+RelWithDebInfo "Download latest build (RelWithDebInfo)"
+
+**Note**: These builds are built with *patched* [Panda3D](https://github.com/bluekyu/panda3d).
 
 
 
