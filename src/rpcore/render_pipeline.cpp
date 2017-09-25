@@ -49,7 +49,7 @@
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 #include "render_pipeline/rpcore/image.hpp"
-#include "render_pipeline/rpcore/logger.hpp"
+#include "render_pipeline/rpcore/logger_manager.hpp"
 
 #include "render_pipeline/rpcore/stages/ambient_stage.hpp"
 #include "render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
@@ -289,6 +289,8 @@ RenderPipeline::Impl::~Impl()
     delete plugin_mgr_;
 
     delete mount_mgr_;
+
+    LoggerManager::get_instance().clear();
 
     global_ptr_ = nullptr;
 }
@@ -826,8 +828,8 @@ RenderPipeline* RenderPipeline::get_global_ptr()
 
 RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
-    if (!RPLogger::get_instance().is_created())
-        RPLogger::get_instance().create("render_pipeline.log");
+    if (!LoggerManager::get_instance().is_created())
+        LoggerManager::get_instance().create("render_pipeline.log");
 
     global_ptr_ = this;
 
@@ -845,8 +847,8 @@ RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipelin
 
 RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
-    if (!RPLogger::get_instance().is_created())
-        RPLogger::get_instance().create("render_pipeline.log");
+    if (!LoggerManager::get_instance().is_created())
+        LoggerManager::get_instance().create("render_pipeline.log");
 
     if (!framework)
     {
@@ -895,28 +897,28 @@ bool RenderPipeline::load_settings(const Filename& path)
     const auto& level = get_setting<std::string>("pipeline.logging_level", "debug");
     if (level == "trace")
     {
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::trace);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::trace);
     }
     else if (level == "debug")
     {
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::debug);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::debug);
     }
     else if (level == "info")
     {
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::info);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::info);
     }
     else if (level == "warn")
     {
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::warn);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::warn);
     }
     else if (level == "error")
     {
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::err);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::err);
     }
     else
     {
         error(fmt::format("Invalid logging level: {}. Fallback to debug level", level));
-        RPLogger::get_instance().get_internal_logger()->set_level(spdlog::level::debug);
+        LoggerManager::get_instance().get_logger()->set_level(spdlog::level::debug);
     }
 
     return true;

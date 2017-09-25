@@ -32,10 +32,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
 
-#include <spdlog/fmt/ostr.h>
-
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rppanda/util/filesystem.hpp"
+#include "render_pipeline/rpcore/logger_manager.hpp"
 
 namespace rpcore {
 
@@ -246,6 +245,9 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
 
 MountManager::MountManager(): RPObject("MountManager"), impl_(std::make_unique<Impl>())
 {
+    // create logger manager if MountManager is created without RenderPipeline instance.
+    LoggerManager::get_instance();
+
     set_base_path(impl_->find_basepath());
 
     debug(fmt::format("Auto-Detected base path to {}", impl_->base_path_.to_os_specific()));

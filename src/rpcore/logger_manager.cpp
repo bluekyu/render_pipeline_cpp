@@ -19,32 +19,40 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "render_pipeline/rpcore/logger.hpp"
+#include "render_pipeline/rpcore/logger_manager.hpp"
 
 #include <spdlog/spdlog.h>
 
 namespace rpcore {
 
-std::shared_ptr<spdlog::logger> global_logger_ = spdlog::stdout_color_mt("rpcpp_default_logger");
+spdlog::logger* global_logger_ = nullptr;
 
-class RPLogger::Impl
+LoggerManager& LoggerManager::get_instance()
 {
-public:
-    ~Impl();
-
-    void create(const std::string& file_path);
-
-public:
-    std::shared_ptr<spdlog::logger> logger_;
-};
-
-RPLogger::Impl::~Impl()
-{
-    global_logger_.reset();
+    static LoggerManager instance;
+    return instance;
 }
 
-void RPLogger::Impl::create(const std::string& file_path)
+LoggerManager::LoggerManager()
 {
+    logger_ = spdlog::stdout_color_mt("rpcpp_default_logger");
+    global_logger_ = logger_.get();
+}
+
+LoggerManager::~LoggerManager()
+{
+    clear();
+}
+
+spdlog::logger* LoggerManager::get_logger() const
+{
+    return logger_.get();
+}
+
+void LoggerManager::create(const std::string& file_path)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
     if (logger_)
         return;
 
@@ -61,36 +69,26 @@ void RPLogger::Impl::create(const std::string& file_path)
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
     logger_->flush_on(spdlog::level::err);
 
-    global_logger_ = logger_;
+    logger_->debug("LoggerManager created logger");
 }
 
-// ************************************************************************************************
-
-RPLogger& RPLogger::get_instance()
+bool LoggerManager::is_created() const
 {
-    static RPLogger instance;
-    return instance;
+    return logger_ != nullptr;
 }
 
-RPLogger::RPLogger(): impl_(std::make_unique<Impl>())
+void LoggerManager::clear()
 {
-}
+    std::lock_guard<std::mutex> lock(mutex_);
 
-RPLogger::~RPLogger() = default;
+    if (logger_)
+    {
+        logger_->debug("LoggerManager will drop logger");
 
-std::shared_ptr<spdlog::logger> RPLogger::get_internal_logger()
-{
-    return impl_->logger_;
-}
-
-void RPLogger::create(const std::string& file_path)
-{
-    impl_->create(file_path);
-}
-
-bool RPLogger::is_created() const
-{
-    return impl_->logger_ != nullptr;
+        logger_.reset();
+        logger_ = spdlog::get("rpcpp_default_logger");
+        global_logger_ = logger_.get();
+    }
 }
 
 }

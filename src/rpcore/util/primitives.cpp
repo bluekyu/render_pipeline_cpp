@@ -31,8 +31,7 @@
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
 #include "render_pipeline/rpcore/util/rpgeomnode.hpp"
-
-#include "render_pipeline/rpcore/logger.hpp"
+#include "render_pipeline/rpcore/logger_manager.hpp"
 
 namespace rpcore {
 
@@ -67,7 +66,7 @@ NodePath create_points(const std::string& name, const std::vector<LPoint3f>& pos
 {
     if (positions.size() > (std::numeric_limits<int>::max)())
     {
-        RPLogger::get_instance().get_internal_logger()->error(
+        LoggerManager::get_instance().get_logger()->error(
             "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
         return {};
     }
@@ -88,7 +87,7 @@ bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions, 
 {
     if (positions.size() > (std::numeric_limits<int>::max)())
     {
-        RPLogger::get_instance().get_internal_logger()->error(
+        LoggerManager::get_instance().get_logger()->error(
             "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
         return false;
     }
