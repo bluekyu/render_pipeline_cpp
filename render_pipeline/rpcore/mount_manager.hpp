@@ -46,9 +46,39 @@ public:
     void set_write_path(const Filename& pth);
 
     const Filename& get_base_path() const;
+
+    /**
+     * Sets the path where the base shaders and models on are contained. This
+     * is usually "share/render_pipeline" folder in install prefix.
+     *
+     * @param[in]   pth     Path of base directory. Relative path is based on
+     *                      the current working directory.
+     */
     void set_base_path(const Filename& pth);
 
     const Filename& get_config_dir() const;
+
+    /**
+     * Sets the path to the config directory. Usually this is the config/
+     * directory located in base directory. However, if you want
+     * to load your own configuration files, you can specify a custom config
+     * directory here. Your configuration directory should contain the
+     * pipeline.yaml, plugins.yaml, daytime.yaml and configuration.prc.
+     *
+     * It is highly recommended you use the pipeline provided config files, modify
+     * them to your needs, and as soon as you think they are in a final version,
+     * copy them over. Please also notice that you should keep your config files
+     * up-to-date, e.g. when new configuration variables are added.
+     *
+     * Also, specifying a custom configuration_dir disables the functionality
+     * of the PluginConfigurator and DayTime editor, since they operate on the
+     * pipelines default config files.
+     *
+     * Set the directory to empty to use the default directory.
+     *
+     * @param[in]   pth     Path of config directory. Relative path is based on
+     *                      the current working directory.
+     */
     void set_config_dir(const Filename& pth);
 
     bool get_do_cleanup() const;

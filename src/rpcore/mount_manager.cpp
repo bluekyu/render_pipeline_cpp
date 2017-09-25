@@ -168,7 +168,10 @@ void MountManager::Impl::mount(MountManager& self)
 
 Filename MountManager::Impl::find_basepath() const
 {
-    Filename pth = rppanda::join(rppanda::convert_path(boost::dll::program_location()), "..");
+    // NOTE: Render Pipeline C++ will install resources directory into "share/render_pipeline"
+    Filename pth = rppanda::join(rppanda::convert_path(
+        boost::dll::this_line_location().parent_path()),
+        "../share/render_pipeline");
     pth.make_absolute();
     return pth;
 }
