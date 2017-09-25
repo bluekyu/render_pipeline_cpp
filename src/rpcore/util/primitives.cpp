@@ -106,10 +106,10 @@ NodePath create_plane(const std::string& name)
 {
     CardMaker card(name);
     card.set_frame(
-        LVertex(-0.5f, 0.0f, -0.5f),
-        LVertex(0.5f, 0.0f, -0.5f),
-        LVertex(0.5f, 0.0f, 0.5f),
-        LVertex(-0.5f, 0.0f, 0.5f));
+        LVertex(-0.5f, -0.5f, 0.0f),
+        LVertex( 0.5f, -0.5f, 0.0f),
+        LVertex( 0.5f,  0.5f, 0.0f),
+        LVertex(-0.5f,  0.5f, 0.0f));
     card.set_has_normals(true);
     card.set_has_uvs(true);
 

@@ -39,7 +39,7 @@ RENDER_PIPELINE_DECL bool modify_points(GeomNode* geom_node, const std::vector<L
 /**
  * Create 2D plane primitive.
  *
- * left-bottom is (-0.5, 0, -0.5) and right-top is (0.5, 0, 0.5).
+ * left-bottom is (-0.5, -0.5, 0) and right-top is (0.5, 0.5, 0).
  */
 RENDER_PIPELINE_DECL NodePath create_plane(const std::string& name);
 
