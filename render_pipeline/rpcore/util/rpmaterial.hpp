@@ -26,7 +26,7 @@
 namespace rpcore {
 
 /**
- * Wrapper class of Panda3D Material for physically based material.
+ * Decorator of Panda3D Material for physically based material.
  */
 class RPMaterial
 {

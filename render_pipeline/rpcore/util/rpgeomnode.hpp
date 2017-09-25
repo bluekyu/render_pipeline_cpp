@@ -31,7 +31,7 @@ class Texture;
 namespace rpcore {
 
 /**
- * Wrapper class of GeomNode.
+ * Decorator of GeomNode.
  */
 class RENDER_PIPELINE_DECL RPGeomNode
 {

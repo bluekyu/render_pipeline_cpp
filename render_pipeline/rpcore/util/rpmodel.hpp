@@ -32,7 +32,7 @@ class Node;
 namespace rpcore {
 
 /**
- * Wrapper class of Panda3D model node.
+ * Decorator of Panda3D model node.
  */
 class RENDER_PIPELINE_DECL RPModel
 {

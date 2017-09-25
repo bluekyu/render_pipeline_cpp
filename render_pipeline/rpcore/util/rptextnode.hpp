@@ -25,12 +25,14 @@
 
 #include <render_pipeline/rpcore/config.hpp>
 
+class TextNode;
+
 namespace rpcore {
 
 /**
- * Interface for the Panda3D TextNode.
+ * Decorator for the Panda3D TextNode.
  */
-class RENDER_PIPELINE_DECL Text3D
+class RENDER_PIPELINE_DECL RPTextNode
 {
 public:
     struct RENDER_PIPELINE_DECL Default
@@ -46,14 +48,18 @@ public:
      * Constructs a new text node, forwaring the parameters to the internal
      * panda3d implementation
      */
-    Text3D(const std::string& node_name="", NodePath parent={}, float pixel_size=Default::pixel_size,
+    RPTextNode(const std::string& node_name="", NodePath parent={}, float pixel_size=Default::pixel_size,
         const LVecBase3& pos=LVecBase3(0), const LColor& color=Default::color,
         const std::string& align=Default::align, const Filename& font=Default::font,
         const std::string& text="");
-    ~Text3D();
+
+    /** Use with existing text node */
+    RPTextNode(NodePath np);
 
     /** Returns the node path of the text. */
     NodePath get_np() const;
+
+    TextNode* get_text_node() const;
 
     /** Returns the current text. */
     std::string get_text() const;
@@ -62,10 +68,10 @@ public:
     void set_text(const std::string& text);
 
     /** Returns the current text color. */
-    LColor get_color() const;
+    LColor get_text_color() const;
 
     /** Sets the current text color. */
-    void set_color(const LColor& color);
+    void set_text_color(const LColor& color);
 
     /** Sets the text size in pixels. */
     void set_pixel_size(const LVecBase3& size);
@@ -77,8 +83,20 @@ public:
     void set_pixel_size(PN_stdfloat size);
 
 private:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
+    NodePath nodepath_;
+    TextNode* node_;
 };
+
+// ************************************************************************************************
+
+inline NodePath RPTextNode::get_np() const
+{
+    return nodepath_;
+}
+
+inline TextNode* RPTextNode::get_text_node() const
+{
+    return node_;
+}
 
 }

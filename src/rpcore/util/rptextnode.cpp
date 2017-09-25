@@ -19,7 +19,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "render_pipeline/rpcore/util/text3d.hpp"
+#include "render_pipeline/rpcore/util/rptextnode.hpp"
 
 #include <map>
 
@@ -45,21 +45,14 @@ static const std::map<std::string, ::TextNode::Alignment> text_align_map ={
     {"boxed_center", ::TextNode::Alignment::A_boxed_center},
 };
 
-class Text3D::Impl
-{
-public:
-    ::TextNode* node_;
-    NodePath nodepath_;
-};
+const float RPTextNode::Default::pixel_size = 16;
+const LColor RPTextNode::Default::color(1);
+const std::string RPTextNode::Default::align("left");
+const Filename RPTextNode::Default::font = "/$$rp/data/font/Roboto-Bold.ttf";
 
-const float Text3D::Default::pixel_size = 16;
-const LColor Text3D::Default::color(1);
-const std::string Text3D::Default::align("left");
-const Filename Text3D::Default::font = "/$$rp/data/font/Roboto-Bold.ttf";
-
-Text3D::Text3D(const std::string& node_name, NodePath parent, float pixel_size,
+RPTextNode::RPTextNode(const std::string& node_name, NodePath parent, float pixel_size,
     const LVecBase3& pos, const LColor& color, const std::string& align, const Filename& font,
-    const std::string& text): impl_(std::make_unique<Impl>())
+    const std::string& text)
 {
     PT(::TextNode) node = new ::TextNode(node_name);
     node->set_text(text);
@@ -69,50 +62,54 @@ Text3D::Text3D(const std::string& node_name, NodePath parent, float pixel_size,
     }
     catch (...)
     {
-        RPObject::global_error("Text3D", fmt::format("Invalid align ({}).", align));
+        RPObject::global_error("RPTextNode", fmt::format("Invalid align ({}).", align));
         node->set_align(text_align_map.at("left"));
     }
 
     if (parent.is_empty())
         parent = Globals::base->get_render();
 
-    impl_->nodepath_ = parent.attach_new_node(node);
-    impl_->nodepath_.set_pos(pos);
+    nodepath_ = parent.attach_new_node(node);
+    nodepath_.set_pos(pos);
 
     DynamicTextFont* dfont = DCAST(DynamicTextFont, RPLoader::load_font(font));
-    //dfont->set_outline(LColor(0, 0, 0, 0.78), 1.6, 0.37);
-    dfont->set_outline(LColor(0, 0, 0, 1), 1.6, 0.37);
+    dfont->set_outline(LColor(0, 0, 0, 1), 0.05f, 0.5f);
     dfont->set_scale_factor(1.0);
-    dfont->set_texture_margin(int(pixel_size / 4.0 * 2.0));
     dfont->set_bg(LColor(0, 0, 0, 0));
     node->set_font(dfont);
     set_pixel_size(pixel_size);
 
-    impl_->node_ = node;
+    node_ = node;
 
-    set_color(color);
+    set_text_color(color);
 }
 
-Text3D::~Text3D() = default;
-
-NodePath Text3D::get_np() const
+RPTextNode::RPTextNode(NodePath np)
 {
-    return impl_->nodepath_;
+    if (np.node()->is_of_type(::TextNode::get_class_type()))
+    {
+        nodepath_ = np;
+        node_ = DCAST(TextNode, nodepath_.node());
+    }
+    else
+    {
+        RPObject::global_error("RPTextNode", "NodePath is not TextNode type");
+    }
 }
 
-std::string Text3D::get_text() const
+std::string RPTextNode::get_text() const
 {
-    return impl_->node_->get_text();
+    return node_->get_text();
 }
 
-void Text3D::set_text(const std::string& text)
+void RPTextNode::set_text(const std::string& text)
 {
-    return impl_->node_->set_text(text);
+    return node_->set_text(text);
 }
 
-LColor Text3D::get_color() const
+LColor RPTextNode::get_text_color() const
 {
-    CPT(RenderState) state = impl_->node_->get_state();
+    CPT(RenderState) state = node_->get_state();
 
     if (state->has_attrib(MaterialAttrib::get_class_slot()))
     {
@@ -124,31 +121,31 @@ LColor Text3D::get_color() const
     }
 }
 
-void Text3D::set_color(const LColor& color)
+void RPTextNode::set_text_color(const LColor& color)
 {
-    CPT(RenderState) state = impl_->node_->get_state();
+    CPT(RenderState) state = node_->get_state();
 
     RPMaterial mat;
     if (state->has_attrib(MaterialAttrib::get_class_slot()))
         mat = RPMaterial(DCAST(MaterialAttrib, state->get_attrib(MaterialAttrib::get_class_slot()))->get_material());
 
     mat.set_base_color(color);
-    impl_->node_->set_state(state->set_attrib(MaterialAttrib::make(mat.get_material())));
+    node_->set_state(state->set_attrib(MaterialAttrib::make(mat.get_material())));
 }
 
-void Text3D::set_pixel_size(const LVecBase3& size)
+void RPTextNode::set_pixel_size(const LVecBase3& size)
 {
-    impl_->nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
 }
 
-void Text3D::set_pixel_size(PN_stdfloat sx, PN_stdfloat sy, PN_stdfloat sz)
+void RPTextNode::set_pixel_size(PN_stdfloat sx, PN_stdfloat sy, PN_stdfloat sz)
 {
-    impl_->nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / float(Globals::native_resolution.get_y()));
 }
 
-void Text3D::set_pixel_size(PN_stdfloat size)
+void RPTextNode::set_pixel_size(PN_stdfloat size)
 {
-    impl_->nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
 }
 
-}   // namespace rpcore
+}
