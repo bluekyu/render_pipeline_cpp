@@ -235,9 +235,8 @@ public:
     void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
 
     /**
-     * Captures a screenshot from the main window or from the
-     * specified window and writes it to a filename in the
-     * current directory (or to a specified directory).
+     * Captures a screenshot from the main window and writes it to a filename
+     * in the current directory (or to a specified directory).
      *
      * If @p default_filename is true, the filename is synthesized by
      * appending @p name_prefix to a default filename suffix (including
@@ -250,14 +249,23 @@ public:
      *
      * @return value is the filename if successful, or empty if there is a problem.
      */
-    Filename screenshot(GraphicsOutput* source=nullptr, const std::string& name_prefix="screenshot", bool default_filename=true,
+    Filename screenshot(const std::string& name_prefix = "screenshot", bool default_filename = true,
+        const std::string& image_comment = "");
+
+    /**
+     * Captures a screenshot from the specified window and writes it to a filename
+     * in the current directory (or to a specified directory).
+     *
+     * @override screenshot(const std::string&, bool, const std::string&)
+     */
+    Filename screenshot(GraphicsOutput* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
 
     /**
      * Captures a screenshot from Texture and writes it to a filename in the
      * current directory (or to a specified directory).
      *
-     * @override screenshot(GraphicsOutput*, const std::string&, bool, const std::string&)
+     * @override screenshot(const std::string&, bool, const std::string&)
      */
     Filename screenshot(Texture* source, const std::string& name_prefix="screenshot", bool default_filename=true, 
         const std::string& image_comment="");
@@ -266,7 +274,7 @@ public:
      * Captures a screenshot from DispayRegion and writes it to a filename in the
      * current directory (or to a specified directory).
      *
-     * @override screenshot(GraphicsOutput*, const std::string&, bool, const std::string&)
+     * @override screenshot(const std::string&, bool, const std::string&)
      */
     Filename screenshot(DisplayRegion* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");

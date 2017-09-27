@@ -949,11 +949,29 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
     }
 }
 
+Filename ShowBase::screenshot(const std::string& name_prefix, bool default_filename,
+    const std::string& image_comment)
+{
+    Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
+
+    bool saved = impl_->win_->save_screenshot(filename, image_comment);
+    if (saved)
+    {
+        impl_->send_screenshot_event(filename);
+        return filename;
+    }
+
+    return "";
+}
+
 Filename ShowBase::screenshot(GraphicsOutput* source, const std::string& name_prefix, bool default_filename,
     const std::string& image_comment)
 {
     if (!source)
-        source = impl_->win_;
+    {
+        rppanda_showbase_cat.error() << "ShowBase::screenshot source is nullptr." << std::endl;
+        return "";
+    }
 
     Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
 
