@@ -56,6 +56,8 @@ public:
     /** Use with existing text node */
     RPTextNode(NodePath np);
 
+    TextNode* operator->() const;
+
     /** Returns the node path of the text. */
     NodePath get_np() const;
 
@@ -88,6 +90,11 @@ private:
 };
 
 // ************************************************************************************************
+
+inline TextNode* RPTextNode::operator->() const
+{
+    return node_;
+}
 
 inline NodePath RPTextNode::get_np() const
 {

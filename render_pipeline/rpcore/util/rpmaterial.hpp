@@ -48,6 +48,8 @@ public:
     /** Wrapping given material. */
     RPMaterial(Material* material);
 
+    Material* operator->() const;
+
     Material* get_material() const;
 
     const LColor& get_base_color() const;
@@ -87,6 +89,11 @@ inline RPMaterial::RPMaterial(): material_(new Material)
 
 inline RPMaterial::RPMaterial(Material* material): material_(material)
 {
+}
+
+inline Material* RPMaterial::operator->() const
+{
+    return material_.p();
 }
 
 inline Material* RPMaterial::get_material() const

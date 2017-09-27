@@ -38,6 +38,8 @@ class RENDER_PIPELINE_DECL RPGeomNode
 public:
     RPGeomNode(NodePath nodepath);
 
+    GeomNode* operator->() const;
+
     NodePath get_nodepath() const;
 
     int get_num_geoms() const;
