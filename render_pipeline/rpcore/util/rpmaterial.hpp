@@ -48,7 +48,10 @@ public:
     /** Wrapping given material. */
     RPMaterial(Material* material);
 
+    Material& operator*() const;
     Material* operator->() const;
+    explicit operator bool() const;
+    bool operator!() const;
 
     Material* get_material() const;
 
@@ -91,9 +94,24 @@ inline RPMaterial::RPMaterial(Material* material): material_(material)
 {
 }
 
+inline Material& RPMaterial::operator*() const
+{
+    return *material_;
+}
+
 inline Material* RPMaterial::operator->() const
 {
     return material_.p();
+}
+
+inline RPMaterial::operator bool() const
+{
+    return material_ != nullptr;
+}
+
+inline bool RPMaterial::operator!() const
+{
+    return material_ == nullptr;
 }
 
 inline Material* RPMaterial::get_material() const
@@ -204,6 +222,38 @@ inline void RPMaterial::set_alpha(float alpha)
 {
     if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
         set_arbitrary0(alpha);
+}
+
+// ************************************************************************************************
+
+inline bool operator==(const RPMaterial& a, const RPMaterial& b)
+{
+    return a.get_material() == b.get_material();
+}
+
+inline bool operator!=(const RPMaterial& a, const RPMaterial& b)
+{
+    return a.get_material() != b.get_material();
+}
+
+inline bool operator==(const RPMaterial& m, std::nullptr_t)
+{
+    return m.get_material() == nullptr;
+}
+
+inline bool operator==(std::nullptr_t, const RPMaterial& m)
+{
+    return m.get_material() == nullptr;
+}
+
+inline bool operator!=(const RPMaterial& m, std::nullptr_t)
+{
+    return m.get_material() != nullptr;
+}
+
+inline bool operator!=(std::nullptr_t, const RPMaterial& m)
+{
+    return m.get_material() != nullptr;
 }
 
 }

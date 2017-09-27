@@ -21,7 +21,7 @@
 
 #include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 
-#include <geomNode.h>
+#include <nodePath.h>
 #include <materialAttrib.h>
 #include <textureAttrib.h>
 
@@ -31,7 +31,7 @@
 
 namespace rpcore {
 
-RPGeomNode::RPGeomNode(NodePath nodepath)
+RPGeomNode::RPGeomNode(const NodePath& nodepath)
 {
     if (!nodepath.node()->is_geom_node())
     {
@@ -39,28 +39,17 @@ RPGeomNode::RPGeomNode(NodePath nodepath)
         return;
     }
 
-    nodepath_ = nodepath;
-}
-
-GeomNode* RPGeomNode::operator->() const
-{
-    return DCAST(GeomNode, nodepath_.node());
-}
-
-int RPGeomNode::get_num_geoms() const
-{
-    return DCAST(GeomNode, nodepath_.node())->get_num_geoms();
+    node_ = DCAST(GeomNode, nodepath.node());
 }
 
 bool RPGeomNode::has_material(int geom_index) const
 {
-    return DCAST(GeomNode, nodepath_.node())->get_geom_state(geom_index)->has_attrib(MaterialAttrib::get_class_type());
+    return node_->get_geom_state(geom_index)->has_attrib(MaterialAttrib::get_class_type());
 }
 
 RPMaterial RPGeomNode::get_material(int geom_index) const
 {
-    GeomNode* geom_node = DCAST(GeomNode, nodepath_.node());
-    const RenderState* state = geom_node->get_geom_state(geom_index);
+    const RenderState* state = node_->get_geom_state(geom_index);
 
     if (!state->has_attrib(MaterialAttrib::get_class_type()))
         return RPMaterial(nullptr);
@@ -70,24 +59,22 @@ RPMaterial RPGeomNode::get_material(int geom_index) const
 
 void RPGeomNode::set_material(int geom_index, const RPMaterial& material)
 {
-    GeomNode* geom_node = DCAST(GeomNode, nodepath_.node());
-    const RenderState* state = geom_node->get_geom_state(geom_index);
-    geom_node->set_geom_state(geom_index, state->set_attrib(MaterialAttrib::make(material.get_material())));
+    const RenderState* state = node_->get_geom_state(geom_index);
+    node_->set_geom_state(geom_index, state->set_attrib(MaterialAttrib::make(material.get_material())));
 }
 
 bool RPGeomNode::has_texture(int geom_index) const
 {
-    return DCAST(GeomNode, nodepath_.node())->get_geom_state(geom_index)->has_attrib(TextureAttrib::get_class_type());
+    return node_->get_geom_state(geom_index)->has_attrib(TextureAttrib::get_class_type());
 }
 
 Texture* RPGeomNode::get_texture(int geom_index) const
 {
-    GeomNode* geom_node = DCAST(GeomNode, nodepath_.node());
-    const RenderState* state = geom_node->get_geom_state(geom_index);
+    const RenderState* state = node_->get_geom_state(geom_index);
 
     if (!state->has_attrib(TextureAttrib::get_class_type()))
     {
-        RPObject::global_warn("RPGeomNode", fmt::format("Geom {} has no texture!", geom_node->get_name()));
+        RPObject::global_warn("RPGeomNode", fmt::format("Geom {} has no texture!", node_->get_name()));
         return nullptr;
     }
 
@@ -96,8 +83,7 @@ Texture* RPGeomNode::get_texture(int geom_index) const
 
 void RPGeomNode::set_texture(int geom_index, Texture* texture)
 {
-    GeomNode* geom_node = DCAST(GeomNode, nodepath_.node());
-    const RenderState* state = geom_node->get_geom_state(geom_index);
+    const RenderState* state = node_->get_geom_state(geom_index);
 
     CPT(RenderAttrib) new_attrib;
     if (state->has_attrib(TextureAttrib::get_class_type()))
@@ -110,7 +96,7 @@ void RPGeomNode::set_texture(int geom_index, Texture* texture)
     {
         new_attrib = TextureAttrib::make(texture);
     }
-    geom_node->set_geom_state(geom_index, state->set_attrib(new_attrib));
+    node_->set_geom_state(geom_index, state->set_attrib(new_attrib));
 }
 
 }

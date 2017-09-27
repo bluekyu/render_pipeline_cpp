@@ -21,12 +21,13 @@
 
 #pragma once
 
-#include <nodePath.h>
+#include <geomNode.h>
 
 #include <render_pipeline/rpcore/config.hpp>
 #include <render_pipeline/rpcore/util/rpmaterial.hpp>
 
 class Texture;
+class NodePath;
 
 namespace rpcore {
 
@@ -36,11 +37,15 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPGeomNode
 {
 public:
-    RPGeomNode(NodePath nodepath);
+    RPGeomNode(const NodePath& nodepath);
+    RPGeomNode(GeomNode* geomnode);
 
+    GeomNode& operator*() const;
     GeomNode* operator->() const;
+    explicit operator bool() const;
+    bool operator!() const;
 
-    NodePath get_nodepath() const;
+    GeomNode* get_node() const;
 
     int get_num_geoms() const;
 
@@ -55,14 +60,75 @@ public:
     void set_texture(int geom_index, Texture* texture);
 
 private:
-    NodePath nodepath_;
+    GeomNode* node_ = nullptr;
 };
 
 // ************************************************************************************************
 
-inline NodePath RPGeomNode::get_nodepath() const
+inline RPGeomNode::RPGeomNode(GeomNode* geomnode): node_(geomnode)
 {
-    return nodepath_;
+}
+
+inline GeomNode& RPGeomNode::operator*() const
+{
+    return *node_;
+}
+
+inline GeomNode* RPGeomNode::operator->() const
+{
+    return node_;
+}
+
+inline RPGeomNode::operator bool() const
+{
+    return node_ != nullptr;
+}
+
+inline bool RPGeomNode::operator!() const
+{
+    return node_ == nullptr;
+}
+
+inline GeomNode* RPGeomNode::get_node() const
+{
+    return node_;
+}
+
+inline int RPGeomNode::get_num_geoms() const
+{
+    return node_->get_num_geoms();
+}
+
+// ************************************************************************************************
+
+inline bool operator==(const RPGeomNode& a, const RPGeomNode& b)
+{
+    return a.get_node() == b.get_node();
+}
+
+inline bool operator!=(const RPGeomNode& a, const RPGeomNode& b)
+{
+    return a.get_node() != b.get_node();
+}
+
+inline bool operator==(const RPGeomNode& m, std::nullptr_t)
+{
+    return m.get_node() == nullptr;
+}
+
+inline bool operator==(std::nullptr_t, const RPGeomNode& m)
+{
+    return m.get_node() == nullptr;
+}
+
+inline bool operator!=(const RPGeomNode& m, std::nullptr_t)
+{
+    return m.get_node() != nullptr;
+}
+
+inline bool operator!=(std::nullptr_t, const RPGeomNode& m)
+{
+    return m.get_node() != nullptr;
 }
 
 }

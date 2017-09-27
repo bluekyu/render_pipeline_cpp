@@ -56,7 +56,10 @@ public:
     /** Use with existing text node */
     RPTextNode(NodePath np);
 
+    TextNode& operator*() const;
     TextNode* operator->() const;
+    explicit operator bool() const;
+    bool operator!() const;
 
     /** Returns the node path of the text. */
     NodePath get_np() const;
@@ -91,9 +94,24 @@ private:
 
 // ************************************************************************************************
 
+inline TextNode& RPTextNode::operator*() const
+{
+    return *node_;
+}
+
 inline TextNode* RPTextNode::operator->() const
 {
     return node_;
+}
+
+inline RPTextNode::operator bool() const
+{
+    return node_ != nullptr;
+}
+
+inline bool RPTextNode::operator!() const
+{
+    return node_ == nullptr;
 }
 
 inline NodePath RPTextNode::get_np() const
@@ -104,6 +122,38 @@ inline NodePath RPTextNode::get_np() const
 inline TextNode* RPTextNode::get_text_node() const
 {
     return node_;
+}
+
+// ************************************************************************************************
+
+inline bool operator==(const RPTextNode& a, const RPTextNode& b)
+{
+    return a.get_text_node() == b.get_text_node();
+}
+
+inline bool operator!=(const RPTextNode& a, const RPTextNode& b)
+{
+    return a.get_text_node() != b.get_text_node();
+}
+
+inline bool operator==(const RPTextNode& m, std::nullptr_t)
+{
+    return m.get_text_node() == nullptr;
+}
+
+inline bool operator==(std::nullptr_t, const RPTextNode& m)
+{
+    return m.get_text_node() == nullptr;
+}
+
+inline bool operator!=(const RPTextNode& m, std::nullptr_t)
+{
+    return m.get_text_node() != nullptr;
+}
+
+inline bool operator!=(std::nullptr_t, const RPTextNode& m)
+{
+    return m.get_text_node() != nullptr;
 }
 
 }
