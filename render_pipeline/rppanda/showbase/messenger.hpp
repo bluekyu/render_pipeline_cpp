@@ -71,12 +71,12 @@ public:
     void ignore(const EventName& event_name, DirectObject* object = nullptr);
     void ignore_all(DirectObject* object = nullptr);
 
-    void send(const EventName& event_name, bool queuing = false);
-    void send(const EventName& event_name, const EventParameter& p1, bool queuing = false);
+    void send(const EventName& event_name, bool queuing = true);
+    void send(const EventName& event_name, const EventParameter& p1, bool queuing = true);
     void send(const EventName& event_name, const EventParameter& p1,
-        const EventParameter& p2, bool queuing = false);
+        const EventParameter& p2, bool queuing = true);
     void send(const EventName& event_name, const EventParameter& p1,
-        const EventParameter& p2, const EventParameter& p3, bool queuing = false);
+        const EventParameter& p2, const EventParameter& p3, bool queuing = true);
 
     void clear();
 
