@@ -246,7 +246,8 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
 MountManager::MountManager(): RPObject("MountManager"), impl_(std::make_unique<Impl>())
 {
     // create logger manager if MountManager is created without RenderPipeline instance.
-    LoggerManager::get_instance();
+    if (!LoggerManager::get_instance().is_created())
+        LoggerManager::get_instance().create("");
 
     set_base_path(impl_->find_basepath());
 

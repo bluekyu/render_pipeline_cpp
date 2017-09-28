@@ -35,8 +35,6 @@ LoggerManager& LoggerManager::get_instance()
 
 LoggerManager::LoggerManager()
 {
-    logger_ = spdlog::stdout_color_mt("rpcpp_default_logger");
-    global_logger_ = logger_.get();
 }
 
 LoggerManager::~LoggerManager()
@@ -65,7 +63,9 @@ void LoggerManager::create(const std::string& file_path)
     if (!file_path.empty())
         sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(file_path, true));
 
-    logger_ = std::make_shared<spdlog::logger>("rpcpp_logger", std::begin(sinks), std::end(sinks));
+    logger_ = std::make_shared<spdlog::logger>("render_pipeline", std::begin(sinks), std::end(sinks));
+    global_logger_ = logger_.get();
+
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
     logger_->flush_on(spdlog::level::err);
 
@@ -86,8 +86,7 @@ void LoggerManager::clear()
         logger_->debug("LoggerManager will drop logger");
 
         logger_.reset();
-        logger_ = spdlog::get("rpcpp_default_logger");
-        global_logger_ = logger_.get();
+        global_logger_ = nullptr;
     }
 }
 
