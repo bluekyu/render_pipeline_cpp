@@ -48,11 +48,30 @@ namespace rppanda {
 
 class DirectObject;
 
+/**
+ * Wrapper of Panda3D EventHandler.
+ *
+ * This is used to accept std::function as hook or hook with DirectObject.
+ * Messenger is NOT thread-safe except send() functions with queuing.
+ */
 class RENDER_PIPELINE_DECL Messenger
 {
 public:
     using EventName = std::string;
     using EventFunction = std::function<void(const Event*)>;
+
+    using AcceptorType = std::pair<EventFunction, bool>;
+    using AcceptorList = std::list<AcceptorType>;
+    using AcceptorMap = std::unordered_map<DirectObject*, AcceptorType>;
+
+    struct CallbackData
+    {
+        size_t size() const;
+        bool empty() const;
+
+        AcceptorList callbacks;
+        AcceptorMap object_callbacks;
+    };
 
 public:
     static Messenger* get_global_instance();
@@ -65,32 +84,42 @@ public:
 
     bool is_empty() const;
 
-    void accept(const EventName& event_name, const EventFunction& method, DirectObject* object=nullptr,
-        bool persistent=true);
+    /**
+     * Add the method to hook with given event name.
+     *
+     * @return Iterator of callbacks.
+     */
+    AcceptorList::const_iterator accept(const EventName& event_name, const EventFunction& method, bool persistent=true);
+    AcceptorMap::const_iterator accept(const EventName& event_name, const EventFunction& method, DirectObject* object,
+        bool persistent = true);
 
-    void ignore(const EventName& event_name, DirectObject* object = nullptr);
-    void ignore_all(DirectObject* object = nullptr);
+    /** Ignore the event has @event_name. */
+    void ignore(const EventName& event_name, const AcceptorList::const_iterator& iter);
 
-    void send(const EventName& event_name, bool queuing = true);
-    void send(const EventName& event_name, const EventParameter& p1, bool queuing = true);
+    /** Ignore the event has @event_name binding to DirectObject. */
+    void ignore(const EventName& event_name, const AcceptorMap::const_iterator& object);
+
+    /** Ignore the event has @event_name binding to DirectObject. */
+    void ignore(const EventName& event_name, DirectObject* object);
+
+    /**
+     * Ignore all events has @event_name.
+     *
+     * If @include_object is false, only events not binded to DirectObject will be ignored.
+     */
+    void ignore_all(const EventName& event_name, bool include_object=true);
+
+    /** Ignore all events binding to DirectObject. */
+    void ignore_all(DirectObject* object);
+
+    void send(const EventName& event_name, bool queuing = false);
+    void send(const EventName& event_name, const EventParameter& p1, bool queuing = false);
     void send(const EventName& event_name, const EventParameter& p1,
-        const EventParameter& p2, bool queuing = true);
+        const EventParameter& p2, bool queuing = false);
     void send(const EventName& event_name, const EventParameter& p1,
-        const EventParameter& p2, const EventParameter& p3, bool queuing = true);
+        const EventParameter& p2, const EventParameter& p3, bool queuing = false);
 
     void clear();
-
-protected:
-    using AcceptorType = std::pair<EventFunction, bool>;
-
-    struct CallbackData
-    {
-        size_t size() const;
-        bool empty() const;
-
-        std::vector<AcceptorType> callbacks;
-        std::unordered_map<DirectObject*, AcceptorType> object_callbacks;
-    };
 
 private:
     static void process_event(const Event* ev, void* user_data);
@@ -135,23 +164,24 @@ inline bool Messenger::is_empty() const
     return get_num_listners() == 0;
 }
 
-inline void Messenger::accept(const EventName& event_name, const EventFunction& method,
-    DirectObject* object, bool persistent)
+inline auto Messenger::accept(const EventName& event_name, const EventFunction& method,
+    bool persistent) -> AcceptorList::const_iterator
 {
     add_hook(event_name);
+    hooks_[event_name].callbacks.push_back(AcceptorType{ method, persistent });
+    return --hooks_[event_name].callbacks.end();
+}
 
-    if (object)
-    {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-        hooks_[event_name].object_callbacks.insert_or_assign(object, AcceptorType{ method, persistent });
-#else
-        hooks_[event_name].object_callbacks.insert({ object, AcceptorType{ method, persistent }});
-#endif
-    }
-    else
-    {
-        hooks_[event_name].callbacks.push_back(AcceptorType{ method, persistent });
-    }
+inline void Messenger::ignore(const EventName& event_name, const AcceptorList::const_iterator& iter)
+{
+    auto found = hooks_.find(event_name);
+    if (found == hooks_.end())
+        return;
+
+    found->second.callbacks.erase(iter);
+
+    if (found->second.empty())
+        remove_hook(event_name);
 }
 
 inline void Messenger::ignore(const EventName& event_name, DirectObject* object)
@@ -169,9 +199,22 @@ inline void Messenger::ignore(const EventName& event_name, DirectObject* object)
     }
     else
     {
-        if (found != hooks_.end())
-            found->second.callbacks.clear();
+        found->second.callbacks.clear();
     }
+
+    if (found->second.empty())
+        remove_hook(event_name);
+}
+
+inline void Messenger::ignore_all(const EventName& event_name, bool include_object)
+{
+    auto found = hooks_.find(event_name);
+    if (found == hooks_.end())
+        return;
+
+    found->second.callbacks.clear();
+    if (include_object)
+        found->second.object_callbacks.clear();
 
     if (found->second.empty())
         remove_hook(event_name);
@@ -235,6 +278,7 @@ inline void Messenger::send(const EventName& event_name, const EventParameter& p
 
 inline size_t Messenger::CallbackData::size() const
 {
+    // NOTE: std::list::size has O(1) in C++11
     return callbacks.size() + object_callbacks.size();
 }
 
