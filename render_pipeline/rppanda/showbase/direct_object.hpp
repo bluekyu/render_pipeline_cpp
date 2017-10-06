@@ -59,6 +59,8 @@ class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 public:
     ~DirectObject();
 
+    ALLOC_DELETED_CHAIN(DirectObject);
+
     void accept(const std::string& ev_name, const Messenger::EventFunction& func);
 
     void accept_once(const std::string& ev_name, const Messenger::EventFunction& func);

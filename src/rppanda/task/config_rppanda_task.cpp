@@ -39,5 +39,6 @@ void init_librppanda_task()
         return;
     initialized = true;
 
+    rppanda::TaskManager::init_type();
     rppanda::FunctionalTask::init_type();
 }

@@ -59,6 +59,8 @@ public:
 public:
     DirectFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
+    ALLOC_DELETED_CHAIN(DirectFrame);
+
     void set_text(const std::string& text);
     void set_text(const std::vector<std::string>& text_list);
 

@@ -103,6 +103,8 @@ public:
     Actor& operator=(Actor&&);
 #endif
 
+    ALLOC_DELETED_CHAIN(Actor);
+
     /**
      * Handy utility function to list the joint hierarchy of the actor.
      */

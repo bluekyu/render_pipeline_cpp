@@ -68,6 +68,8 @@ public:
 public:
     DirectScrollBar(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
+    ALLOC_DELETED_CHAIN(DirectScrollBar);
+
     PGSliderBar* get_gui_item() const;
 
     float get_value() const;

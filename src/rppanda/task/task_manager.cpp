@@ -45,6 +45,8 @@
 
 namespace rppanda {
 
+TypeHandle TaskManager::type_handle_;
+
 TaskManager* TaskManager::get_global_instance()
 {
     static TaskManager instance;

@@ -80,6 +80,8 @@ public:
 
     ~ShowBase();
 
+    ALLOC_DELETED_CHAIN(ShowBase);
+
     ShowBase& operator=(const ShowBase&) = delete;
     ShowBase& operator=(ShowBase&&) = delete;
 

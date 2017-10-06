@@ -25,6 +25,7 @@
 #include "render_pipeline/rppanda/showbase/loader.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
+#include "render_pipeline/rppanda/showbase/messenger.hpp"
 
 ConfigureDef(config_rppanda_showbase);
 NotifyCategoryDef(rppanda_showbase, "");
@@ -43,6 +44,7 @@ void init_librppanda_showbase()
 
     rppanda::DirectObject::init_type();
     rppanda::Loader::init_type();
+    rppanda::Messenger::init_type();
     rppanda::ShowBase::init_type();
     rppanda::SfxPlayer::init_type();
 }

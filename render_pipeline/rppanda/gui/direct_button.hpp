@@ -72,6 +72,8 @@ public:
 public:
     DirectButton(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
+    ALLOC_DELETED_CHAIN(DirectButton);
+
     PGButton* get_gui_item() const;
 
     void set_command_buttons();

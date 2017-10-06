@@ -60,6 +60,8 @@ class RENDER_PIPELINE_DECL DirectGuiBase : public DirectObject
 public:
     DirectGuiBase() = default;
 
+    ALLOC_DELETED_CHAIN(DirectGuiBase);
+
     const std::string& get_gui_id() const;
 
     /** Create a component (during construction or later) for this widget. */
@@ -171,6 +173,8 @@ public:
     static std::string inactive_init_state;
 
     DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
+
+    ALLOC_DELETED_CHAIN(DirectGuiWidget);
 
     void enable_edit();
     void disable_edit();

@@ -72,6 +72,8 @@ public:
 public:
     DirectSlider(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
 
+    ALLOC_DELETED_CHAIN(DirectSlider);
+
     PGSliderBar* get_gui_item() const;
 
     void set_range(LVecBase2 range);

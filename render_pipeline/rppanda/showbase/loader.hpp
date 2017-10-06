@@ -66,6 +66,8 @@ public:
     Loader& operator=(Loader&&);
 #endif
 
+    ALLOC_DELETED_CHAIN(Loader);
+
     NodePath load_model(const Filename& model_path, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache={}, bool allow_instance=false, boost::optional<bool> ok_missing={});
 

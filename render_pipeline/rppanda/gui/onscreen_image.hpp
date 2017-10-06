@@ -50,6 +50,8 @@ public:
     OnscreenImage(NodePath parent={}, int sort=0);
     OnscreenImage(const std::shared_ptr<ImageInput>& image, NodePath parent={}, int sort=0);
 
+    ALLOC_DELETED_CHAIN(OnscreenImage);
+
     void set_image(const std::shared_ptr<ImageInput>& image, NodePath parent={}, const TransformState* transform=nullptr, int sort=0);
 
     void destroy();
