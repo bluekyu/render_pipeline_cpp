@@ -5,6 +5,7 @@
 
 Panda3D 에서는 PRC 파일들을 사용해서 라이브러리의 설정을 조절할 수 있다. 자세한 내용은 아래 문서를 참조.
 - https://github.com/panda3d/panda3d/blob/master/panda/src/doc/howto.use_config.txt
+- https://www.panda3d.org/manual/index.php/Configuring_Panda3D
 - https://www.panda3d.org/manual/index.php/Accessing_Config_Vars_in_a_Program
 
 ### 요약

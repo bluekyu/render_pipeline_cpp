@@ -3,10 +3,12 @@
 
 ## Getting Started
 - [Build Render Pipeline C++](build_rpcpp.md)
+- [Using Render Pipeline C++](using_rpcpp.md)
 
 ## System
 - [Configuration](configuration.md)
 - [Render Pipeline Structures](structures.md)
+- [Panda3D Math](math.md)
 - [Virtual File System](virtual_filesystem.md)
 
 ## Rendering
@@ -16,6 +18,7 @@
 
 ## Others
 - [Issues and Solutions](issues_and_solutions.md)
+- [Cheet Sheets](http://www.panda3d.org/manual/index.php/Cheat_Sheets)
 
 ## Code Snippets
 - [Panda3D Math](snippets/math.md)
