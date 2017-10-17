@@ -56,22 +56,19 @@ install:
 - ps: Start-FileDownload 'https://raw.githubusercontent.com/bluekyu/render_pipeline_cpp_ci/master/builder.py'
 - cmd: >-
     python .\builder.py "https://github.com/jbeder/yaml-cpp.git"
-    --branch "master"
+    --commit "beb44b87"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/yaml-cpp"
-    --hash-path "C:/projects/_cache/yaml-cpp.hash"
 - cmd: >-
     python .\builder.py "https://github.com/gabime/spdlog.git"
     --branch "v0.14.0"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/spdlog"
-    --hash-path "C:/projects/_cache/spdlog.hash"
 - cmd: >-
     python .\builder.py "https://github.com/google/flatbuffers.git"
     --branch "v1.7.1"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/flatbuffers"
-    --hash-path "C:/projects/_cache/flatbuffers.hash"
 - ps: popd
 
 # build cache to preserve files/folders between builds
@@ -112,7 +109,6 @@ after_build:
 #       tests configuration       #
 #---------------------------------#
 
-# to disable automatic tests
 test: off
 
 #---------------------------------#
@@ -121,6 +117,12 @@ test: off
 
 artifacts:
 - path: render_pipeline_cpp.7z
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+deploy: off
 
 #---------------------------------#
 #        global handlers          #
