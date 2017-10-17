@@ -94,6 +94,7 @@ RPTextNode::RPTextNode(NodePath np)
     else
     {
         RPObject::global_error("RPTextNode", "NodePath is not TextNode type");
+        node_ = nullptr;
     }
 }
 
@@ -135,17 +136,17 @@ void RPTextNode::set_text_color(const LColor& color)
 
 void RPTextNode::set_pixel_size(const LVecBase3& size)
 {
-    nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(size * 2.0f / Globals::native_resolution.get_y());
 }
 
 void RPTextNode::set_pixel_size(PN_stdfloat sx, PN_stdfloat sy, PN_stdfloat sz)
 {
-    nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / Globals::native_resolution.get_y());
 }
 
 void RPTextNode::set_pixel_size(PN_stdfloat size)
 {
-    nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    nodepath_.set_scale(size * 2.0f / Globals::native_resolution.get_y());
 }
 
 }

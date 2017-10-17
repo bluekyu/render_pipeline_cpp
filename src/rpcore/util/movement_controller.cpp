@@ -72,7 +72,7 @@ public:
     PT(ParametricCurveCollection) curve_;
     double curve_time_start_;
     double curve_time_end_;
-    double delta_time_sum_;
+    double delta_time_sum_ = 0;
     double delta_time_count_;
 };
 
@@ -135,8 +135,8 @@ AsyncTask::DoneStatus MovementController::Impl::update(MovementController* self)
     velocity_ = velocity_ * (std::max)(0.0, 1.0f - delta * 60.0f / (std::max)(0.01f, smoothness_));
 
     // bobbing
-    double ftime = self->get_clock_obj()->get_frame_time();
-    float rotation = rplibs::py_fmod(float(ftime), bobbing_speed_) / bobbing_speed_;
+    const float ftime = static_cast<float>(self->get_clock_obj()->get_frame_time());
+    float rotation = rplibs::py_fmod(ftime, bobbing_speed_) / bobbing_speed_;
     rotation = ((std::min)(rotation, 1.0f - rotation) * 2.0f - 0.5f) * 2.0f;
     if (velocity_.length_squared() > 1e-5 && speed_ > 1e-5)
     {
@@ -159,7 +159,7 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
         std::cout << "Camera motion path finished" << std::endl;
 
         // Print performance stats
-        double avg_ms = delta_time_sum_ / delta_time_count_;
+        const double avg_ms = delta_time_sum_ / delta_time_count_;
         std::cout << (boost::format("Average frame time (ms): %4.1f") % (avg_ms * 1000.0)) << std::endl;
         std::cout << (boost::format("Average frame rate: %4.1f") % (1.0 / avg_ms)) << std::endl;
 

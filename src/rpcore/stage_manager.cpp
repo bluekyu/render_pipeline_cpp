@@ -476,7 +476,6 @@ void StageManager::add_stage(const std::shared_ptr<RenderStage>& stage)
 {
     trace(fmt::format("Adding stage ({}) ...", stage->get_debug_name()));
 
-    bool found = false;
     if (std::find(impl_->stage_order_.begin(), impl_->stage_order_.end(), stage->get_stage_id()) == std::end(impl_->stage_order_))
     {
         error(fmt::format("The stage type {} is not registered yet! Please add it to the StageManager!", stage->get_debug_name()));
@@ -550,13 +549,13 @@ void StageManager::setup()
 void StageManager::reload_shaders()
 {
     write_autoconfig();
-    for (auto& stage: impl_->stages_)
+    for (const auto& stage: impl_->stages_)
         stage->reload_shaders();
 }
 
 void StageManager::update()
 {
-    for (auto& stage: impl_->stages_)
+    for (const auto& stage: impl_->stages_)
     {
         if (stage->get_active())
             stage->update();
@@ -565,7 +564,7 @@ void StageManager::update()
 
 void StageManager::handle_window_resize()
 {
-    for (auto& stage: impl_->stages_)
+    for (const auto& stage: impl_->stages_)
         stage->handle_window_resize();
 }
 

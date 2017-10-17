@@ -161,7 +161,7 @@ inline size_t Messenger::get_num_listners() const
 
 inline size_t Messenger::get_num_listners(const EventName& event_name) const
 {
-    auto found = hooks_.find(event_name);
+    const auto found = hooks_.find(event_name);
     if (found != hooks_.end())
         return found->second.size();
     else

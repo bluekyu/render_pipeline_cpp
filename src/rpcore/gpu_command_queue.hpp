@@ -41,7 +41,6 @@ class GPUCommandQueue : public RPObject
 {
 public:
     GPUCommandQueue(RenderPipeline& pipeline);
-    ~GPUCommandQueue();
 
     GPUCommandList* get_command_list() const;
 
@@ -73,7 +72,7 @@ private:
 
     RenderPipeline& pipeline_;
     int _commands_per_frame = 1024;
-    GPUCommandList* _command_list;
+    std::unique_ptr<GPUCommandList> command_list_;
     PTA_int _pta_num_commands;
     RenderTarget* _command_target = nullptr;
     std::shared_ptr<Image> _data_texture = nullptr;
@@ -82,7 +81,7 @@ private:
 // ************************************************************************************************
 inline GPUCommandList* GPUCommandQueue::get_command_list() const
 {
-    return _command_list;
+    return command_list_.get();
 }
 
 inline int GPUCommandQueue::get_num_processed_commands() const

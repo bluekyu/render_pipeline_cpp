@@ -266,9 +266,9 @@ void CommonResources::update()
     }
 
     // Store the frame delta
-    input_ubo_->update_input("frame_delta", float(Globals::clock->get_dt()));
-    input_ubo_->update_input("smooth_frame_delta", float(1.0 / (std::max)(1e-5, Globals::clock->get_average_frame_rate())));
-    input_ubo_->update_input("frame_time", float(Globals::clock->get_frame_time()));
+    input_ubo_->update_input("frame_delta", static_cast<float>(Globals::clock->get_dt()));
+    input_ubo_->update_input("smooth_frame_delta", static_cast<float>(1.0 / (std::max)(1e-5, Globals::clock->get_average_frame_rate())));
+    input_ubo_->update_input("frame_time", static_cast<float>(Globals::clock->get_frame_time()));
 
     // Store the current film offset, we use this to compute the pixel-perfect
     // velocity, which is otherwise not possible.Usually this is always 0
