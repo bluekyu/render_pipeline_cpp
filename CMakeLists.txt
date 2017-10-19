@@ -201,7 +201,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "share/${PROJECT_NAME}/"
 )
 
-install_debugging_information(${PROJECT_NAME})
+install_debugging_information(${PROJECT_NAME} "bin")
 
 # documents
 if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
