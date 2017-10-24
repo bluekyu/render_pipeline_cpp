@@ -43,7 +43,7 @@ void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution)
 {
     auto _mvp = mvp;
     const LVecBase4f& base_point = _mvp.xform(LPoint4f(0, 0, 0, 1)) * 0.5f + 0.5f;
-    float texel_size = 1.0f / float(resolution);
+    float texel_size = 1.0f / static_cast<float>(resolution);
     float offset_x = rplibs::py_fmod(base_point.get_x(), texel_size);
     float offset_y = rplibs::py_fmod(base_point.get_y(), texel_size);
     _mvp.invert_in_place();

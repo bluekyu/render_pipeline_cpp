@@ -142,8 +142,8 @@ void DraggableWindow::stop_drag()
 
 LVecBase2 DraggableWindow::get_mouse_pos() const
 {
-    float mouse_x = (float)Globals::base->get_win()->get_pointer(0).get_x();
-    float mouse_y = (float)Globals::base->get_win()->get_pointer(0).get_y();
+    float mouse_x = static_cast<float>(Globals::base->get_win()->get_pointer(0).get_x());
+    float mouse_y = static_cast<float>(Globals::base->get_win()->get_pointer(0).get_y());
     return LVecBase2(mouse_x, mouse_y) * context_scale_;
 }
 

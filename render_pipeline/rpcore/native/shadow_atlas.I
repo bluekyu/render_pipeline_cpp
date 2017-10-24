@@ -136,7 +136,7 @@ inline int ShadowAtlas::get_required_tiles(size_t resolution) const {
  */
 inline LVecBase4f ShadowAtlas::region_to_uv(const LVecBase4i& region) {
     LVecBase4f flt = LVecBase4f(region.get_x(), region.get_y(), region.get_z(), region.get_w());
-    return flt * ((float)_tile_size / (float)_size);
+    return flt * (static_cast<float>(_tile_size) / static_cast<float>(_size));
 }
 
 /**

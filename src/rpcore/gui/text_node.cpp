@@ -78,7 +78,7 @@ TextNode::TextNode(
     //dfont->set_outline(LColor(0, 0, 0, 0.78), 1.6, 0.37);
     dfont->set_outline(LColor(0, 0, 0, 1), 1.6, 0.37);
     dfont->set_scale_factor(1.0);
-    dfont->set_texture_margin(int(pixel_size / 4.0 * 2.0));
+    dfont->set_texture_margin(static_cast<int>(pixel_size / 4.0 * 2.0));
     dfont->set_bg(LColor(0, 0, 0, 0));
     node->set_font(dfont);
     set_pixel_size(pixel_size);
@@ -115,17 +115,17 @@ void TextNode::set_color(const LColor& color)
 
 void TextNode::set_pixel_size(const LVecBase3& size)
 {
-    impl_->nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    impl_->nodepath_.set_scale(size * 2.0f / static_cast<float>(Globals::native_resolution.get_y()));
 }
 
 void TextNode::set_pixel_size(PN_stdfloat sx, PN_stdfloat sy, PN_stdfloat sz)
 {
-    impl_->nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / float(Globals::native_resolution.get_y()));
+    impl_->nodepath_.set_scale(LVecBase3(sx, sy, sz) * 2.0f / static_cast<float>(Globals::native_resolution.get_y()));
 }
 
 void TextNode::set_pixel_size(PN_stdfloat size)
 {
-    impl_->nodepath_.set_scale(size * 2.0f / float(Globals::native_resolution.get_y()));
+    impl_->nodepath_.set_scale(size * 2.0f / static_cast<float>(Globals::native_resolution.get_y()));
 }
 
 }   // namespace rpcore

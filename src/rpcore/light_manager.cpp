@@ -52,9 +52,8 @@ LightManager::LightManager(RenderPipeline& pipeline): RPObject("LightManager"), 
 
 LightManager::~LightManager()
 {
-    delete cmd_queue_;
-    delete shadow_manager_;
-    delete internal_mgr_;
+    internal_mgr_.reset();
+    shadow_manager_.reset();
 }
 
 int LightManager::get_total_tiles() const
@@ -77,7 +76,7 @@ float LightManager::get_shadow_atlas_coverage() const
     return internal_mgr_->get_shadow_manager()->get_atlas()->get_coverage() * 100.0f;
 }
 
-void LightManager::add_light(RPLight* light)
+void LightManager::add_light(PT(RPLight) light)
 {
     internal_mgr_->add_light(light);
     pta_max_light_index_[0] = internal_mgr_->get_max_light_index();
@@ -108,8 +107,8 @@ void LightManager::compute_tile_size()
         pipeline_.get_setting<int>("lighting.culling_grid_size_x"),
         pipeline_.get_setting<int>("lighting.culling_grid_size_y"));
 
-    int num_tiles_x = int(std::ceil(Globals::resolution.get_x() / float(tile_size_.get_x())));
-    int num_tiles_y = int(std::ceil(Globals::resolution.get_y() / float(tile_size_.get_y())));
+    int num_tiles_x = static_cast<int>(std::ceil(Globals::resolution.get_x() / static_cast<float>(tile_size_.get_x())));
+    int num_tiles_y = static_cast<int>(std::ceil(Globals::resolution.get_y() / static_cast<float>(tile_size_.get_y())));
     debug(std::string("Tile size = ") + std::to_string(tile_size_.get_x()) + "x" + std::to_string(tile_size_.get_y()) +
         ", Num tiles = " + std::to_string(num_tiles_x) + "x" + std::to_string(num_tiles_y));
     num_tiles_ = LVecBase2i(num_tiles_x, num_tiles_y);
@@ -117,7 +116,7 @@ void LightManager::compute_tile_size()
 
 void LightManager::init_command_queue()
 {
-    cmd_queue_ = new GPUCommandQueue(pipeline_);
+    cmd_queue_ = std::make_unique<GPUCommandQueue>(pipeline_);
     cmd_queue_->register_input("LightData", img_light_data_->get_texture());
     cmd_queue_->register_input("SourceData", img_source_data_->get_texture());
     internal_mgr_->set_command_list(cmd_queue_->get_command_list());
@@ -125,12 +124,12 @@ void LightManager::init_command_queue()
 
 void LightManager::initshadow_manager()
 {
-    shadow_manager_ = new ShadowManager;
+    shadow_manager_ = std::make_unique<ShadowManager>();
     shadow_manager_->set_max_updates(pipeline_.get_setting<size_t>("shadows.max_updates"));
     shadow_manager_->set_scene(Globals::base->get_render());
     shadow_manager_->set_tag_state_manager(pipeline_.get_tag_mgr());
     shadow_manager_->set_atlas_size(pipeline_.get_setting<size_t>("shadows.atlas_size"));
-    internal_mgr_->set_shadow_manager(shadow_manager_);
+    internal_mgr_->set_shadow_manager(shadow_manager_.get());
 }
 
 void LightManager::init_shadows()
@@ -141,7 +140,7 @@ void LightManager::init_shadows()
 
 void LightManager::init_internal_manager()
 {
-    internal_mgr_ = new InternalLightManager;
+    internal_mgr_ = std::make_unique<InternalLightManager>();
     internal_mgr_->set_shadow_update_distance(pipeline_.get_setting<float>("shadows.max_update_distance"));
     
     // Storage for the Lights

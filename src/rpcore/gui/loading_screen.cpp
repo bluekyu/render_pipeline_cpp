@@ -58,8 +58,10 @@ void LoadingScreen::create()
     const float image_h = 1080.0f;
     const float scale = (std::min)(screen_w / image_w, screen_h / image_h);
 
-    fullscreen_bg = new Sprite(image_source_, int(image_w * scale), int(image_h * scale), fullscreen_node,
-        int(screen_w - image_w * scale) / 2, int(screen_h - image_h * scale) / 2, true, false);
+    fullscreen_bg = new Sprite(image_source_, static_cast<int>(image_w * scale),
+        static_cast<int>(image_h * scale), fullscreen_node,
+        static_cast<int>(screen_w - image_w * scale) / 2,
+        static_cast<int>(screen_h - image_h * scale) / 2, true, false);
 
     GraphicsEngine* graphics_engine = Globals::base->get_graphics_engine();
     graphics_engine->render_frame();

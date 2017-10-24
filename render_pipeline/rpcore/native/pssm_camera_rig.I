@@ -195,7 +195,7 @@ inline NodePath PSSMCameraRig::get_camera(size_t index) {
  * @return Distance of the split, ranging from 0 .. 1
  */
 inline float PSSMCameraRig::get_split_start(size_t split_index) {
-    float x = (float)split_index / (float)_cam_nodes.size();
+    float x = static_cast<float>(split_index) / static_cast<float>(_cam_nodes.size());
     return (exp(_logarithmic_factor*x)-1) / (exp(_logarithmic_factor)-1);
 }
 

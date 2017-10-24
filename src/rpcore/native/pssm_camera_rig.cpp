@@ -86,7 +86,7 @@ void PSSMCameraRig::init_cam_nodes() {
         lens->set_near_far(1, 1000);
 
         // Construct a new camera
-        _cameras[i] = new Camera("pssm-cam-" + to_string(((long long)i)), lens);
+        _cameras[i] = new Camera("pssm-cam-" + to_string(static_cast<long long>(i)), lens);
         _cam_nodes.push_back(NodePath(_cameras[i]));
         _max_film_sizes[i].fill(0);
     }
@@ -143,7 +143,7 @@ LVecBase3f PSSMCameraRig::get_snap_offset(const LMatrix4f& mat, size_t resolutio
     const LPoint4f& base_point = mat.get_row(3) * 0.5 + 0.5;
 
     // Compute the snap offset
-    float texel_size = 1.0 / (float)(resolution);
+    float texel_size = 1.0 / static_cast<float>(resolution);
     float offset_x = fmod(base_point.get_x(), texel_size);
     float offset_y = fmod(base_point.get_y(), texel_size);
 
@@ -284,8 +284,8 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
 
         // Get split bounding box, and collect all points which define the frustum
         for (size_t k = 0; k < 4; ++k) {
-            start_points[k] = get_interpolated_point((CoordinateOrigin)k, split_start);
-            end_points[k] = get_interpolated_point((CoordinateOrigin)k, split_end);
+            start_points[k] = get_interpolated_point(static_cast<CoordinateOrigin>(k), split_start);
+            end_points[k] = get_interpolated_point(static_cast<CoordinateOrigin>(k), split_end);
             proj_points[k] = start_points[k];
             proj_points[k + 4] = end_points[k];
         }

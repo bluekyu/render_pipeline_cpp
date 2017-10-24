@@ -103,7 +103,7 @@ std::pair<size_t, int> BufferViewer::get_stage_information() const
         }
         else
         {
-            warn(std::string("Unkown type: ") + std::to_string(int(entry.second)));
+            warn(std::string("Unkown type: ") + std::to_string(static_cast<int>(entry.second)));
         }
     }
 

@@ -211,10 +211,10 @@ void Debugger::handle_window_resize()
     if (use_advanced_info())
     {
         exposure_node.set_pos(
-            int(Globals::native_resolution.get_x() / gui_scale) - 200,
-            1, int(-Globals::native_resolution.get_y() / gui_scale) + 120);
+            static_cast<int>(Globals::native_resolution.get_x() / gui_scale) - 200,
+            1, static_cast<int>(-Globals::native_resolution.get_y() / gui_scale) + 120);
     }
-    _hint_reloading->set_pos(float((Globals::native_resolution.get_x()) / 2) / gui_scale - 465 / 2, 220);
+    _hint_reloading->set_pos((Globals::native_resolution.get_x() / 2.0f) / gui_scale - 465 / 2, 220);
     keybinding_instructions_->set_pos(30, Globals::native_resolution.get_y() / gui_scale - 510.0);
     keybinding_text_->get_np().set_pos(-Globals::base->get_aspect_ratio() + 0.07, 0, -0.9);
     keybinding_text_->set_pixel_size(16 * (std::max)(0.8f, gui_scale));

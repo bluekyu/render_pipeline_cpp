@@ -222,10 +222,10 @@ void IESDataset::generate_dataset_texture_into(Texture* dest_tex, size_t z) cons
 
     for (size_t vert = 0; vert < resolution_vertical; ++vert) {
         for (size_t horiz = 0; horiz < resolution_horizontal; ++horiz) {
-            float vert_angle = (float)vert / (float)(resolution_vertical-1);
-            vert_angle = cos(vert_angle * M_PI) * 90.0 + 90.0;
-            float horiz_angle = (float)horiz / (float)(resolution_horizontal-1) * 360.0;
-            float candela = get_candela_value(vert_angle, horiz_angle);
+            double vert_angle = static_cast<double>(vert) / static_cast<double>(resolution_vertical-1);
+            vert_angle = std::cos(vert_angle * M_PI) * 90.0 + 90.0;
+            double horiz_angle = static_cast<double>(horiz) / static_cast<double>(resolution_horizontal-1) * 360.0;
+            float candela = get_candela_value(static_cast<float>(vert_angle), static_cast<float>(horiz_angle));
             dest.set_xel(vert, horiz, candela);
         }
     }

@@ -92,7 +92,7 @@ void SoundInterval::loop(double start_t, double end_t, double play_rate, bool st
     f_loop_ = true;
     CInterval::loop(start_t, end_t, play_rate);
     if (stagger)
-        set_t(double(std::rand()) / double(RAND_MAX) * get_duration());
+        set_t(static_cast<double>(std::rand()) / static_cast<double>(RAND_MAX) * get_duration());
 }
 
 void SoundInterval::finish()

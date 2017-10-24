@@ -173,7 +173,7 @@ void RPModel::Impl::MetaData::load_material(RPMaterial& material, const RPMateri
         break;
 
     default:
-        material.set_shading_model(RPMaterial::ShadingModel(shading_model));
+        material.set_shading_model(static_cast<RPMaterial::ShadingModel>(shading_model));
     }
 
     if (const auto& f = rpmaterial_data->normal_factor())

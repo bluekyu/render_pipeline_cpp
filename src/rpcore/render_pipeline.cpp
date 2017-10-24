@@ -241,7 +241,7 @@ public:
 
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
-    std::chrono::system_clock::time_point* first_frame_ = nullptr;
+    std::unique_ptr<std::chrono::system_clock::time_point> first_frame_;
     std::vector<std::tuple<NodePath, Filename, Effect::OptionType, int>> applied_effects;
 
     bool pre_showbase_initialized = false;
@@ -270,8 +270,6 @@ RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 RenderPipeline::Impl::~Impl()
 {
     self_.debug("Destructing RenderPipeline");
-
-    delete first_frame_;
 
     delete common_resources;
     delete ies_loader_;
@@ -417,8 +415,7 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::F
     {
         const std::chrono::duration<float>& duration = std::chrono::system_clock::now() - *first_frame_;
         self_.debug(fmt::format("Took {} s until first frame", duration.count()));
-        delete first_frame_;
-        first_frame_ = nullptr;
+        first_frame_.reset();
     }
     return AsyncTask::DS_cont;
 }
@@ -518,7 +515,7 @@ bool RenderPipeline::Impl::create()
     // when we finished, so we can measure how long it took to render the
     // first frame (where the shaders are actually compiled)
     const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
-    first_frame_ = new auto(std::chrono::system_clock::now());
+    first_frame_ = std::make_unique<decltype(first_frame_)::element_type>(std::chrono::system_clock::now());
     self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
 
     return true;
@@ -652,8 +649,8 @@ void RenderPipeline::Impl::compute_render_resolution()
     }
     else
     {
-        resolution_width = int(float(Globals::native_resolution.get_x()) * scale_factor);
-        resolution_height = int(float(Globals::native_resolution.get_y()) * scale_factor);
+        resolution_width = static_cast<int>(Globals::native_resolution.get_x() * scale_factor);
+        resolution_height = static_cast<int>(Globals::native_resolution.get_y() * scale_factor);
     }
 
     // Make sure the resolution is a multiple of 4
@@ -712,8 +709,8 @@ void RenderPipeline::Impl::create_common_defines()
     self_.trace("Creating common defines ...");
 
     auto& defines = stage_mgr_->get_defines();
-    defines["CAMERA_NEAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_near()) * round_ratio) / round_ratio);
-    defines["CAMERA_FAR"] = std::to_string(std::round(double(Globals::base->get_cam_lens()->get_far()) * round_ratio) / round_ratio);
+    defines["CAMERA_NEAR"] = std::to_string(std::round(static_cast<double>(Globals::base->get_cam_lens()->get_near()) * round_ratio) / round_ratio);
+    defines["CAMERA_FAR"] = std::to_string(std::round(static_cast<double>(Globals::base->get_cam_lens()->get_far()) * round_ratio) / round_ratio);
 
     // Work arround buggy nvidia driver, which expects arrays to be const
     if (showbase_->get_win()->get_gsg()->get_driver_version().find("NVIDIA 361.43") != std::string::npos)
@@ -1003,7 +1000,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
         NodePath light = pl_npc[k];
 
         PointLight* light_node = DCAST(PointLight, light.node());
-        RPPointLight* rp_light = new RPPointLight;
+        PT(RPPointLight) rp_light = new RPPointLight;
         rp_light->set_pos(light.get_pos(Globals::base->get_render()));
         rp_light->set_radius(light_node->get_max_distance());
         rp_light->set_energy(20.0f * light_node->get_color().get_w());
@@ -1025,7 +1022,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
         NodePath light = sp_npc[k];
 
         Spotlight* light_node = DCAST(Spotlight, light.node());
-        RPSpotLight* rp_light = new RPSpotLight;
+        PT(RPSpotLight) rp_light = new RPSpotLight;
         rp_light->set_pos(light.get_pos(Globals::base->get_render()));
         rp_light->set_radius(light_node->get_max_distance());
         rp_light->set_energy(20.0f * light_node->get_color().get_w());

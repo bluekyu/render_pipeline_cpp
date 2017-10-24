@@ -125,7 +125,7 @@ AsyncTask::DoneStatus FPSChart::update(rppanda::FunctionalTask* task)
     else
         _chart_ms_max[0] = 200.0f;
 
-    _display_txt->set_text(std::to_string(int(_chart_ms_max[0])) + " ms");
+    _display_txt->set_text(std::to_string(static_cast<int>(_chart_ms_max[0])) + " ms");
 
     return AsyncTask::DS_cont;
 }
