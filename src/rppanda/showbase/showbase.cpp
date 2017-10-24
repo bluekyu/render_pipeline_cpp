@@ -754,7 +754,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 
     if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
-        aspect_ratio = float(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
+        aspect_ratio = static_cast<float>(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
     }
     else
     {
@@ -771,7 +771,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
         }
 
         if (props.has_size() && props.get_y_size() != 0)
-            aspect_ratio = float(props.get_x_size()) / props.get_y_size();
+            aspect_ratio = static_cast<float>(props.get_x_size()) / props.get_y_size();
     }
 
     return aspect_ratio == 0 ? 1 : aspect_ratio;

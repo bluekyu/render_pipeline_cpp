@@ -163,7 +163,7 @@ void PipeViewer::populate_content()
             }
 
             const float w = 160;
-            const float h =  Globals::native_resolution.get_y() / float(Globals::native_resolution.get_x()) * w;
+            const float h =  Globals::native_resolution.get_y() / static_cast<float>(Globals::native_resolution.get_x()) * w;
 
             auto df_options = std::make_shared<rppanda::DirectFrame::Options>();
             df_options->frame_size = LVecBase4(-pipe_pixel_size, w + pipe_pixel_size,
@@ -195,7 +195,7 @@ void PipeViewer::populate_content()
                 Sprite preview(pipe_texture, w, h, node, 0, 50 + pipe_idx * pipe_height, false, true, false);
                 auto preview_np = preview.get_node();
 
-                PT(Shader) preview_shader = DisplayShaderBuilder::build(pipe_texture, int(w), int(h));
+                PT(Shader) preview_shader = DisplayShaderBuilder::build(pipe_texture, static_cast<int>(w), static_cast<int>(h));
                 preview_np->set_shader(preview_shader);
 
                 preview_np->set_shader_input("mipmap", 0);
@@ -262,7 +262,7 @@ void PipeViewer::populate_content()
         auto df_options = std::make_shared<rppanda::DirectFrame::Options>();
         df_options->frame_size = LVecBase4(0, 180, -95, -135);
         df_options->frame_color = LColor(rgb, 1.0);
-        df_options->pos = LVecBase3(0, 1, -(long long)(idx) * pipe_height);
+        df_options->pos = LVecBase3(0, 1, -static_cast<long long>(idx) * pipe_height);
         rppanda::DirectFrame pipe_desc_df(_pipe_descriptions, df_options);
 
         Text pipe_text(current_pipes[idx], _pipe_descriptions, 42, 121 + idx * pipe_height,

@@ -186,7 +186,7 @@ void RenderTarget::Impl::remove()
     }
 
     active_ = false;
-    for (auto& target: targets_)
+    for (const auto& target: targets_)
         target.second->release_all();
     targets_.clear();
 }
@@ -250,7 +250,7 @@ void RenderTarget::Impl::setup_textures()
         targets_[std::string("aux_") + std::to_string(k)] = new Texture(self_.get_debug_name() + "_aux_" + std::to_string(k));
     }
 
-    for (auto& tex: targets_)
+    for (const auto& tex: targets_)
     {
         if (layers_ > 1)
             tex.second->setup_2d_texture_array(layers_);
@@ -364,7 +364,7 @@ bool RenderTarget::Impl::create()
             GraphicsOutput::RTP_color);
     }
 
-    int aux_prefix =
+    const int aux_prefix =
         aux_bits_ == 8 ? int(GraphicsOutput::RTP_aux_rgba_0) : (
         aux_bits_ == 16 ? int(GraphicsOutput::RTP_aux_hrgba_0) : int(GraphicsOutput::RTP_aux_float_0));
 

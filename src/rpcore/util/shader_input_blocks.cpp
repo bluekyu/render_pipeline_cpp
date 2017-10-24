@@ -120,7 +120,7 @@ const std::string& GroupedInputBlock::pta_to_glsl_type(PTA_ID which) const
 {
     try
     {
-        return GroupedInputBlock::PTA_MAPPINGS.at(int(which));
+        return GroupedInputBlock::PTA_MAPPINGS.at(static_cast<int>(which));
     }
     catch (const std::out_of_range&)
     {
@@ -133,10 +133,11 @@ const std::string& GroupedInputBlock::pta_to_glsl_type(PTA_ID which) const
 
 GroupedInputBlock::PTA_ID GroupedInputBlock::glsl_type_to_pta(const std::string& glsl_type) const
 {
-    for (int i=0,i_end=int(PTA_MAPPINGS.size()); i < i_end; ++i)
+    const int i_end = static_cast<int>(PTA_MAPPINGS.size());
+    for (int i = 0; i < i_end; ++i)
     {
         if (PTA_MAPPINGS.at(i) == glsl_type)
-            return PTA_ID(i);
+            return static_cast<PTA_ID>(i);
     }
     error(std::string("Could not resolve GLSL type: ") + glsl_type);
     return PTA_ID::INVALID;
@@ -207,7 +208,7 @@ std::string GroupedInputBlock::generate_shader_code() const
         const auto& handle = key_val.second;
         int array_size = 1;
 
-        switch (PTA_ID(handle.which()))
+        switch (static_cast<PTA_ID>(handle.which()))
         {
         case PTA_ID::PTA_int:
             array_size = boost::get<const PTA_int&>(handle).size();
@@ -244,9 +245,9 @@ std::string GroupedInputBlock::generate_shader_code() const
         if (parts.size() == 1)
         {
             if (array_size == 1)
-                inputs.push_back(pta_to_glsl_type(PTA_ID(handle.which())) + " " + input_name + ";");
+                inputs.push_back(pta_to_glsl_type(static_cast<PTA_ID>(handle.which())) + " " + input_name + ";");
             else
-                inputs.push_back(pta_to_glsl_type(PTA_ID(handle.which())) + " " + input_name + "[" + std::to_string(array_size) + "];");
+                inputs.push_back(pta_to_glsl_type(static_cast<PTA_ID>(handle.which())) + " " + input_name + "[" + std::to_string(array_size) + "];");
         }
         // Nested input, like scattering.sun_color
         else if (parts.size() == 2)
@@ -262,9 +263,9 @@ std::string GroupedInputBlock::generate_shader_code() const
             //else    Struct is already defined, add member definition
             
             if (array_size == 1)
-                structs[struct_name].push_back(pta_to_glsl_type(PTA_ID(handle.which())) + " " + actual_input_name + ";");
+                structs[struct_name].push_back(pta_to_glsl_type(static_cast<PTA_ID>(handle.which())) + " " + actual_input_name + ";");
             else
-                structs[struct_name].push_back(pta_to_glsl_type(PTA_ID(handle.which())) + " " + actual_input_name + "[" + std::to_string(array_size) + "];");
+                structs[struct_name].push_back(pta_to_glsl_type(static_cast<PTA_ID>(handle.which())) + " " + actual_input_name + "[" + std::to_string(array_size) + "];");
         }
         // Nested input, like scattering.some_setting.sun_color, not supported yet
         else

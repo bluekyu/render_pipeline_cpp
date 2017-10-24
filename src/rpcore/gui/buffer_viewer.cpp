@@ -103,7 +103,7 @@ std::pair<size_t, int> BufferViewer::get_stage_information() const
         }
         else
         {
-            warn(std::string("Unkown type: ") + std::to_string(int(entry.second)));
+            warn(std::string("Unkown type: ") + std::to_string(static_cast<int>(entry.second)));
         }
     }
 
@@ -229,7 +229,7 @@ void BufferViewer::render_stages()
 {
     remove_components();
     const int entries_per_row = 6;
-    const float aspect = Globals::native_resolution.get_y() / float(Globals::native_resolution.get_x());
+    const float aspect = Globals::native_resolution.get_y() / static_cast<float>(Globals::native_resolution.get_x());
     const int entry_width = 235;
     const int entry_height = (entry_width - 20) * aspect + 55;
 

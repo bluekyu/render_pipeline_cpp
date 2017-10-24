@@ -105,7 +105,7 @@ void RPModel::Impl::MetaData::load_panda_node(NodePath nodepath, const PandaNode
     const auto& children_node = panda_node_data->children();
     if (children_node)
     {
-        for (size_t k=0,k_end=children_node->size(); k < k_end; ++k)
+        for (size_t k=0, k_end=children_node->size(); k < k_end; ++k)
             load_panda_node(nodepath.get_child(k), (*children_node)[k]);
     }
 }
@@ -173,7 +173,7 @@ void RPModel::Impl::MetaData::load_material(RPMaterial& material, const RPMateri
         break;
 
     default:
-        material.set_shading_model(RPMaterial::ShadingModel(shading_model));
+        material.set_shading_model(static_cast<RPMaterial::ShadingModel>(shading_model));
     }
 
     if (const auto& f = rpmaterial_data->normal_factor())

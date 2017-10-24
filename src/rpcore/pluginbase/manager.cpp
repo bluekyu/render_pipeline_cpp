@@ -135,9 +135,9 @@ void PluginManager::Impl::unload()
 
     self_.on_unload();
 
-    for (auto& id_handle: instances_)
+    for (auto&& id_handle: instances_)
     {
-        auto count = id_handle.second.use_count();
+        const auto count = id_handle.second.use_count();
         if (count != 1)
             self_.warn(fmt::format("Plugin ({}) is used as {} on somewhere before unloading.", id_handle.first, count));
 
@@ -417,7 +417,7 @@ void PluginManager::disable_plugin(const std::string& plugin_id)
     if (impl_->enabled_plugins_.find(plugin_id) != impl_->enabled_plugins_.end())
         impl_->enabled_plugins_.erase(plugin_id);
 
-    for (auto& id_handle: impl_->instances_)
+    for (const auto& id_handle: impl_->instances_)
     {
         const auto& plugins = id_handle.second->get_required_plugins();
         if (std::find(plugins.begin(), plugins.end(), plugin_id) != plugins.end())

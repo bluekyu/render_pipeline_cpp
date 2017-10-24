@@ -57,8 +57,8 @@ void TexturePreview::present(Texture* tex)
     int display_h = height_ - 110.0f;
     if (h > 1)
     {
-        float scale_x = display_w / float(w);
-        float scale_y = display_h / float(h);
+        float scale_x = display_w / static_cast<float>(w);
+        float scale_y = display_h / static_cast<float>(h);
         float scale_f = (std::min)(scale_x, scale_y);
         display_w = scale_f * w;
         display_h = scale_f * h;
@@ -152,14 +152,14 @@ void TexturePreview::present(Texture* tex)
 
 void TexturePreview::set_slice(const std::shared_ptr<void>&)
 {
-    int idx = int(_slice_slider->get_value());
+    int idx = static_cast<int>(_slice_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("slice", LVecBase4i(idx, 0, 0, 0)));
     _slice_text->set_text(std::string("Z: ") + std::to_string(idx));
 }
 
 void TexturePreview::set_mip(const std::shared_ptr<void>&)
 {
-    int idx = int(_mip_slider->get_value());
+    int idx = static_cast<int>(_mip_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("mipmap", LVecBase4i(idx, 0, 0, 0)));
     _mip_text->set_text(std::string("MIP: ") + std::to_string(idx));
 }

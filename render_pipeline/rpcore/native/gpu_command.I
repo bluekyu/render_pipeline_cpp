@@ -53,7 +53,7 @@ inline float GPUCommand::convert_int_to_float(int v) const {
 
     #if !PACK_INT_AS_FLOAT
         // Just round to float, can cause rounding issues tho
-        return (float)v;
+        return static_cast<float>(v);
 
     #else
         assert(sizeof(float) == 4); // We really need this for packing! Better

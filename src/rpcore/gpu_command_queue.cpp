@@ -34,27 +34,22 @@ namespace rpcore {
 
 GPUCommandQueue::GPUCommandQueue(RenderPipeline& pipeline): RPObject("GPUCommandQueue"), pipeline_(pipeline)
 {
-    _command_list = new GPUCommandList;
+    command_list_ = std::make_unique<GPUCommandList>();
     _pta_num_commands = PTA_int::empty_array(1);
     create_data_storage();
     create_command_target();
     register_defines();
 }
 
-GPUCommandQueue::~GPUCommandQueue()
-{
-    delete _command_list;
-}
-
 size_t GPUCommandQueue::get_num_queued_commands() const
 {
-    return _command_list->get_num_commands();
+    return command_list_->get_num_commands();
 }
 
 void GPUCommandQueue::process_queue()
 {
     PTA_uchar pointer = _data_texture->get_texture()->modify_ram_image();
-    size_t num_commands_exec = _command_list->write_commands_to(pointer, _commands_per_frame);
+    size_t num_commands_exec = command_list_->write_commands_to(pointer, _commands_per_frame);
     _pta_num_commands[0] = num_commands_exec;
 }
 

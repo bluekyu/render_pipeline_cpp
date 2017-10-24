@@ -205,10 +205,10 @@ NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned 
     const double pi = std::acos(-1);
     for (unsigned int i = 0; i <= latitude; ++i)
     {
-        const double theta = i * pi / double(latitude);
+        const double theta = i * pi / static_cast<double>(latitude);
         for (unsigned int j = 0; j <= longitude; ++j)
         {
-            const double phi = j * 2.0 * pi / double(longitude);
+            const double phi = j * 2.0 * pi / static_cast<double>(longitude);
             const double sin_theta = std::sin(theta);
             const double x = std::cos(phi) * sin_theta;
             const double y = std::sin(phi) * sin_theta;
@@ -216,7 +216,7 @@ NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned 
 
             vertex.add_data3f(x, y, z);
             normal.add_data3f(x, y, z);
-            texcoord.add_data2f(j / double(longitude), 1.0 - i / double(latitude));
+            texcoord.add_data2f(j / static_cast<double>(longitude), 1.0 - i / static_cast<double>(latitude));
         }
     }
 

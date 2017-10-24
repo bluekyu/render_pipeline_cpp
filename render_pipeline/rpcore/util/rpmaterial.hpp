@@ -141,17 +141,17 @@ inline float RPMaterial::get_roughness() const
 
 inline RPMaterial::ShadingModel RPMaterial::get_shading_model() const
 {
-    return ShadingModel(int(material_->get_emission().get_x()));
+    return static_cast<ShadingModel>(static_cast<int8_t>(material_->get_emission().get_x()));
 }
 
 inline float RPMaterial::get_normal_factor() const
 {
-    return int(material_->get_emission().get_y());
+    return material_->get_emission().get_y();
 }
 
 inline float RPMaterial::get_arbitrary0() const
 {
-    return int(material_->get_emission().get_z());
+    return material_->get_emission().get_z();
 }
 
 inline float RPMaterial::get_alpha() const
@@ -200,7 +200,7 @@ inline void RPMaterial::set_roughness(float roughness)
 inline void RPMaterial::set_shading_model(ShadingModel shading_model)
 {
     LColor e = material_->get_emission();
-    e.set_x(float(shading_model));
+    e.set_x(static_cast<int8_t>(shading_model));
     material_->set_emission(e);
 }
 

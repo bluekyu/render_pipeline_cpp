@@ -54,7 +54,7 @@ static void flatten(YamlFlatType& root, const YAML::Node& node, const std::strin
 
 bool load_yaml_file(const Filename& filename, YAML::Node& result)
 {
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+    const VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
 
     const std::chrono::system_clock::time_point& start = std::chrono::system_clock::now();
 
@@ -87,7 +87,7 @@ bool load_yaml_file(const Filename& filename, YAML::Node& result)
 
     vfs->close_read_file(file);
 
-    float duration = (std::chrono::system_clock::now() - start).count();
+    const float duration = (std::chrono::system_clock::now() - start).count();
 
     // Optionally print out profiling information
     //std::cout << "Took " << duration << " ms to load " << filename << std::endl;

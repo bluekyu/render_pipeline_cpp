@@ -114,8 +114,8 @@ void CullLightsStage::update()
 void CullLightsStage::set_dimensions()
 {
     int max_cells = pipeline_.get_light_mgr()->get_total_tiles();
-    int num_rows_threaded = int(std::ceil((max_cells * cull_threads_) / float(slice_width_)));
-    int num_rows = int(std::ceil(max_cells / float(slice_width_)));
+    int num_rows_threaded = static_cast<int>(std::ceil((max_cells * cull_threads_) / static_cast<float>(slice_width_)));
+    int num_rows = static_cast<int>(std::ceil(max_cells / static_cast<float>(slice_width_)));
     per_cell_lights_->set_x_size(max_cells * max_lights_per_cell_);
     per_cell_light_counts_->set_x_size(max_cells);
     grouped_cell_lights_->set_x_size(max_cells * (max_lights_per_cell_ + num_light_classes_));

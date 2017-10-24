@@ -74,7 +74,7 @@ public:
     float get_shadow_atlas_coverage() const;
 
     /** Adds a new light. */
-    void add_light(RPLight* light);
+    void add_light(PT(RPLight) light);
 
     /** Removes a light. */
     void remove_light(RPLight* light);
@@ -117,16 +117,16 @@ private:
     RenderPipeline& pipeline_;
     LVecBase2i tile_size_;
     LVecBase2i num_tiles_;
-    InternalLightManager* internal_mgr_ = nullptr;
-    ShadowManager* shadow_manager_ = nullptr;
-    GPUCommandQueue* cmd_queue_ = nullptr;
+    std::unique_ptr<InternalLightManager> internal_mgr_;
+    std::unique_ptr<ShadowManager> shadow_manager_;
+    std::unique_ptr<GPUCommandQueue> cmd_queue_;
 
-    std::shared_ptr<Image> img_light_data_ = nullptr;
-    std::shared_ptr<Image> img_source_data_ = nullptr;
+    std::shared_ptr<Image> img_light_data_;
+    std::shared_ptr<Image> img_source_data_;
 
     PTA_int pta_max_light_index_;
 
-    std::shared_ptr<ShadowStage> shadow_stage_ = nullptr;
+    std::shared_ptr<ShadowStage> shadow_stage_;
 };
 
 // ************************************************************************************************
@@ -137,7 +137,7 @@ inline const LVecBase2i& LightManager::get_num_tiles() const
 
 inline GPUCommandQueue* LightManager::get_cmd_queue() const
 {
-    return cmd_queue_;
+    return cmd_queue_.get();
 }
 
 }
