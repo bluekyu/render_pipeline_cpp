@@ -20,19 +20,3 @@ Blender 에서 Physically Based Shading 속성을 보기 위해서는 아래 플
 4. **Save User Settings** 클릭하여 설정을 저장한다.
 5. **File - Export - Panda3d (.bam)** 를 메뉴가 생성되고, 이를 이용하여 PBS 속성을 포함한 Bam 포맷으로 내보낼 수 있다.
 6. Egg 포맷에서는 **File - Export - Panda3d (.egg)** 메뉴에서 **Export PBS** 옵션을 선택하면 된다.
-
-
-
-## 모델 메타 데이터
-Render Pipeline 에서 모델의 속성 및 상태 값들을 오버라이드 할 수 있는 방법을 제공한다.
-이는 모델을 직접 수정하지 않고 메타 데이터를 이용하여 값을 변경한다.
-
-이는 모델링 프로그램에서 Render Pipeline 의 Material 형식을 지원하지 않을 경우 유용한데,
-메타 데이터를 이용하여 모델에 Render Pipeline Material 을 정의할 수 있으며,
-모델을 변경하더라도 Material 데이터를 유지할 수 있다.
-
-
-
-### 메타 데이터 포맷
-메타 데이터 포맷은 JSON 형식을 사용하고, 데이터 구조는 "data/schema" 폴더 안에 있는
-fbs 파일에 정의되어 있다.

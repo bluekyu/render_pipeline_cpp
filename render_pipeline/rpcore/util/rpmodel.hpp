@@ -25,10 +25,6 @@
 
 #include <render_pipeline/rpcore/config.hpp>
 
-namespace YAML {
-class Node;
-}
-
 namespace rpcore {
 
 /**

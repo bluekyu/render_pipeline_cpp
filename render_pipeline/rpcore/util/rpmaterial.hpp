@@ -57,7 +57,7 @@ public:
 
     const LColor& get_base_color() const;
     float get_specular_ior() const;
-    float get_metallic() const;
+    bool get_metallic() const;
     float get_roughness() const;
     ShadingModel get_shading_model() const;
     float get_normal_factor() const;
@@ -70,14 +70,27 @@ public:
 
     void set_default();
     void set_base_color(const LColor& color);
+
+    /** @param[in]  specular_ior    [1.0, 2.51] */
     void set_specular_ior(float specular_ior);
-    void set_metallic(float metallic);
+
+    void set_metallic(bool metallic);
+
+    /** @param[in]  roughness   [0, 1] */
     void set_roughness(float roughness);
+
     void set_shading_model(ShadingModel shading_model);
+
+    /** @param[in]  normal_factor [0, 1] */
     void set_normal_factor(float normal_factor);
+
+    /** @param[in]   arbitrary0 [0, 1] */
     void set_arbitrary0(float arbitrary0);
 
-    /** Used in only TRANSPARENT_MODEL mode. */
+    /**
+     * Used in only TRANSPARENT_MODEL mode.
+     * @param[in]   alpha   [0, 1]
+     */
     void set_alpha(float alpha);
 
 private:
@@ -129,9 +142,9 @@ inline float RPMaterial::get_specular_ior() const
     return material_->get_refractive_index();
 }
 
-inline float RPMaterial::get_metallic() const
+inline bool RPMaterial::get_metallic() const
 {
-    return material_->get_metallic();
+    return material_->get_metallic() > 0.5f;
 }
 
 inline float RPMaterial::get_roughness() const
@@ -173,7 +186,7 @@ inline void RPMaterial::set_default()
     set_normal_factor(0.0f);
     set_roughness(0.3f);
     set_specular_ior(1.51f);
-    set_metallic(0.0f);
+    set_metallic(false);
     set_arbitrary0(0.0f);
 }
 
@@ -184,17 +197,17 @@ inline void RPMaterial::set_base_color(const LColor& color)
 
 inline void RPMaterial::set_specular_ior(float specular_ior)
 {
-    material_->set_refractive_index(specular_ior);
+    material_->set_refractive_index((std::max)(1.0f, (std::min)(2.51f, specular_ior)));
 }
 
-inline void RPMaterial::set_metallic(float metallic)
+inline void RPMaterial::set_metallic(bool metallic)
 {
-    material_->set_metallic(metallic);
+    material_->set_metallic(metallic ? 1.0f : 0.0f);
 }
 
 inline void RPMaterial::set_roughness(float roughness)
 {
-    material_->set_roughness(roughness);
+    material_->set_roughness((std::max)(0.0f, (std::min)(1.0f, roughness)));
 }
 
 inline void RPMaterial::set_shading_model(ShadingModel shading_model)
@@ -207,14 +220,14 @@ inline void RPMaterial::set_shading_model(ShadingModel shading_model)
 inline void RPMaterial::set_normal_factor(float normal_factor)
 {
     LColor e = material_->get_emission();
-    e.set_y(normal_factor);
+    e.set_y((std::max)(0.0f, (std::min)(1.0f, normal_factor)));
     material_->set_emission(e);
 }
 
 inline void RPMaterial::set_arbitrary0(float arbitrary0)
 {
     LColor e = material_->get_emission();
-    e.set_z(arbitrary0);
+    e.set_z((std::max)(0.0f, (std::min)(1.0f, arbitrary0)));
     material_->set_emission(e);
 }
 
