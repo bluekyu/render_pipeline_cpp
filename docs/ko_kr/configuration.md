@@ -62,8 +62,8 @@ base 경로로 설정한다. 그리고 base 경로를 기준으로 `config` 폴�
 - render_pipeline_cpp
   ├ bin
   ├ etc
-  | └ rpsamples
-  |   └ default
+  │ └ rpsamples
+  │   └ default
   ├ ...
   └ share
     └ render_pipeline
