@@ -65,6 +65,7 @@ public:
 
     /** Used in only TRANSPARENT_MODEL mode. */
     float get_alpha() const;
+    bool is_alpha_texture_mode() const;
 
     void set_material(Material* mat);
 
@@ -84,14 +85,23 @@ public:
     /** @param[in]  normal_factor [0, 1] */
     void set_normal_factor(float normal_factor);
 
-    /** @param[in]   arbitrary0 [0, 1] */
     void set_arbitrary0(float arbitrary0);
 
     /**
-     * Used in only TRANSPARENT_MODEL mode.
+     * Set alpha value.
+     *
+     * This is used in only TRANSPARENT_MODEL mode.
+     *
      * @param[in]   alpha   [0, 1]
      */
     void set_alpha(float alpha);
+
+    /**
+     * Use alpha texture.
+     *
+     * This is used in only TRANSPARENT_MODEL mode.
+     */
+    void set_alpha_texture_mode();
 
 private:
     PT(Material) material_;
@@ -174,6 +184,13 @@ inline float RPMaterial::get_alpha() const
     return 1.0f;
 }
 
+inline bool RPMaterial::is_alpha_texture_mode() const
+{
+    if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
+        return get_arbitrary0() == 2.0f;
+    return false;
+}
+
 inline void RPMaterial::set_material(Material* mat)
 {
     material_ = mat;
@@ -227,14 +244,20 @@ inline void RPMaterial::set_normal_factor(float normal_factor)
 inline void RPMaterial::set_arbitrary0(float arbitrary0)
 {
     LColor e = material_->get_emission();
-    e.set_z((std::max)(0.0f, (std::min)(1.0f, arbitrary0)));
+    e.set_z(arbitrary0);
     material_->set_emission(e);
 }
 
 inline void RPMaterial::set_alpha(float alpha)
 {
     if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
-        set_arbitrary0(alpha);
+        set_arbitrary0((std::max)(0.0f, (std::min)(1.0f, alpha)));
+}
+
+inline void RPMaterial::set_alpha_texture_mode()
+{
+    if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
+        set_arbitrary0(2.0f);
 }
 
 // ************************************************************************************************
