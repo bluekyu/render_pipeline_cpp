@@ -1,11 +1,10 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-07-28
 
-# configure_debugging_information(target, [private_debinfo_postfix])
-#
+
 # Configure dubugging information for the target.
 #
-# If you want to strip private debugging information (ex, sources), you can set 'private_debinfo_postfix' string.
+# If you want to strip private debugging information (ex, sources), you can set 'postfix' string.
 # Then, you will get stripped debugging information and a full debugging file.
 #
 # configure_debugging_information(<target> [<postfix>])
@@ -24,12 +23,13 @@ function(configure_debugging_information target)
             BRIEF_DOCS "The path of FULL debugging information file."
             FULL_DOCS "The path of FULL debugging information file."
         )
-        define_property(TARGET PROPERTY DEBINFO_STRIP_PATH_${config_upper}
-            BRIEF_DOCS "The path of STRIPPED debugging information file."
-            FULL_DOCS "The path of STRIPPED debugging information file."
-        )
 
         if(MSVC)
+            define_property(TARGET PROPERTY DEBINFO_STRIP_PATH_${config_upper}
+                BRIEF_DOCS "The path of STRIPPED debugging information file."
+                FULL_DOCS "The path of STRIPPED debugging information file."
+            )
+
             get_target_property(LIBRARY_OUTPUT_DIRECTORY ${target} LIBRARY_OUTPUT_DIRECTORY_${config_upper})
             if(NOT LIBRARY_OUTPUT_DIRECTORY)
                 set(LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${config}")
@@ -65,10 +65,20 @@ function(configure_debugging_information target)
     endforeach()
 endfunction()
 
-# install_debugging_information(target destination)
-#
+
 # Install debugging information files for the target.
+#
+# install_debugging_information(target destination [install_only_strip])
+# @param    target              Target variable
+# @param    destination         Installed destination
+# @param    install_only_strip  Set FALSE to install including full debugging information. Default is TRUE.
 function(install_debugging_information target destination)
+    if(DEFINED ARGV2)
+        set(install_only_strip ${ARGV2})
+    else()
+        set(install_only_strip TRUE)
+    endif()
+
     foreach(config "Debug" "RelWithDebInfo")
         if(MSVC)
             string(TOUPPER ${config} config_upper)
@@ -80,9 +90,13 @@ function(install_debugging_information target destination)
                 return()
             endif()
 
-            install(FILES "${DEBINFO_PATH}" DESTINATION "${destination}" CONFIGURATIONS ${config})
             if(DEBINFO_STRIP_PATH)
                 install(FILES "${DEBINFO_STRIP_PATH}" DESTINATION "${destination}" CONFIGURATIONS ${config})
+                if(NOT install_only_strip)
+                    install(FILES "${DEBINFO_PATH}" DESTINATION "${destination}" CONFIGURATIONS ${config})
+                endif()
+            else()
+                install(FILES "${DEBINFO_PATH}" DESTINATION "${destination}" CONFIGURATIONS ${config})
             endif()
         endif()
     endforeach()
