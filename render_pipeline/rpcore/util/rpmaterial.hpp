@@ -57,7 +57,7 @@ public:
 
     const LColor& get_base_color() const;
     float get_specular_ior() const;
-    bool get_metallic() const;
+    float get_metallic() const;
     float get_roughness() const;
     ShadingModel get_shading_model() const;
     float get_normal_factor() const;
@@ -75,7 +75,8 @@ public:
     /** @param[in]  specular_ior    [1.0, 2.51] */
     void set_specular_ior(float specular_ior);
 
-    void set_metallic(bool metallic);
+    /** @param[in]  metallic    [0, 1] */
+    void set_metallic(float metallic);
 
     /** @param[in]  roughness   [0, 1] */
     void set_roughness(float roughness);
@@ -97,7 +98,7 @@ public:
     void set_alpha(float alpha);
 
     /**
-     * Use alpha texture.
+     * Use a texture (RGBA, alaph texture) for alpha value.
      *
      * This is used in only TRANSPARENT_MODEL mode.
      */
@@ -152,9 +153,9 @@ inline float RPMaterial::get_specular_ior() const
     return material_->get_refractive_index();
 }
 
-inline bool RPMaterial::get_metallic() const
+inline float RPMaterial::get_metallic() const
 {
-    return material_->get_metallic() > 0.5f;
+    return material_->get_metallic();
 }
 
 inline float RPMaterial::get_roughness() const
@@ -203,7 +204,7 @@ inline void RPMaterial::set_default()
     set_normal_factor(0.0f);
     set_roughness(0.3f);
     set_specular_ior(1.51f);
-    set_metallic(false);
+    set_metallic(0.0f);
     set_arbitrary0(0.0f);
 }
 
@@ -217,9 +218,9 @@ inline void RPMaterial::set_specular_ior(float specular_ior)
     material_->set_refractive_index((std::max)(1.0f, (std::min)(2.51f, specular_ior)));
 }
 
-inline void RPMaterial::set_metallic(bool metallic)
+inline void RPMaterial::set_metallic(float metallic)
 {
-    material_->set_metallic(metallic ? 1.0f : 0.0f);
+    material_->set_metallic((std::max)(0.0f, (std::min)(1.0f, metallic)));
 }
 
 inline void RPMaterial::set_roughness(float roughness)
