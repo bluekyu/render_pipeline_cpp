@@ -218,6 +218,7 @@ public:
     void set_frame_visible_scale(const LVecBase2& scale);
     void set_border_width(const LVecBase2& border_width);
     void set_border_uv_width(const LVecBase2& border_uv_width);
+    void set_pad(const LVecBase2& pad);
 
     void print_config(int indent=0);
 
@@ -304,6 +305,12 @@ inline LVecBase2 DirectGuiWidget::get_center() const
     PN_stdfloat x = _bounds[0] + (_bounds[1] - _bounds[0]) / 2.0f;
     PN_stdfloat y = _bounds[2] + (_bounds[3] + _bounds[2]) / 2.0f;
     return LVecBase2(x, y);
+}
+
+inline void DirectGuiWidget::set_pad(const LVecBase2& pad)
+{
+    _options->pad = pad;
+    reset_frame_size();
 }
 
 inline PGItem* DirectGuiWidget::get_gui_item() const

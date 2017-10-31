@@ -312,9 +312,9 @@ LVecBase4 DirectGuiWidget::get_bounds(int state)
     _ur = LPoint3(right, 0.0f, top);
     _bounds = LVecBase4(
         _ll[0] - _options->pad[0],
-        _ur[0] - _options->pad[0],
+        _ur[0] + _options->pad[0],
         _ll[2] - _options->pad[1],
-        _ur[2] - _options->pad[1]);
+        _ur[2] + _options->pad[1]);
     return _bounds;
 }
 
@@ -477,7 +477,7 @@ void DirectGuiWidget::initialise_options(const std::shared_ptr<Options>& options
     set_frame_color(options->frame_color);
     set_frame_texture(options->frame_texture);
     set_frame_visible_scale(options->frame_visible_scale.get());
-    reset_frame_size();
+    set_pad(options->pad);
     f_init_ = false;
 }
 
