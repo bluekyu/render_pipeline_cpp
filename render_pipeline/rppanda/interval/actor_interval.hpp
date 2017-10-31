@@ -37,6 +37,8 @@
 
 #include <boost/optional.hpp>
 
+class AnimControl;
+
 namespace rppanda {
 
 class Actor;
@@ -48,12 +50,33 @@ public:
     static int anim_num_;
 
 public:
-    ActorInterval(Actor* actor, const std::string& anim_name, bool loop=false, bool constrained_loop=false,
-        boost::optional<double> duration={}
-    );
+    ActorInterval(Actor* actor, const std::vector<std::string>& anim_name, bool loop=false,
+        bool constrained_loop=false, boost::optional<double> duration={},
+        boost::optional<double> start_time={}, boost::optional<double> end_time={},
+        boost::optional<double> start_frame={}, boost::optional<double> end_frame={},
+        double play_rate=1.0, const boost::optional<std::string> name={}, bool force_update=false,
+        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name={});
+
+    void priv_step(double t) override;
+    void priv_finalize() override;
 
 private:
     WPT(Actor) actor_;
+    std::vector<std::string> anim_name_;
+    std::vector<AnimControl*> controls_;
+    bool loop_anim_;
+    bool constrained_loop_;
+    bool force_update_;
+
+    double frame_rate_;
+    double start_frame_;
+    double end_frame_;
+
+    bool reverse_;
+
+    double num_frames_;
+
+    bool implicit_duration_;
 
 public:
     static TypeHandle get_class_type();

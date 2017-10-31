@@ -51,6 +51,8 @@ class Loader;
 
 namespace rppanda {
 
+class ActorInterval;
+
 /**
  * Actor class: Contains methods for creating, manipulating
  * and playing animations on characters.
@@ -143,6 +145,20 @@ public:
     bool has_LOD() const;
 
     /**
+     * Updates all of the Actor's joints in the indicated LOD.
+     * The LOD may be specified by name, or by number, where 0 is the
+     * highest level of detail, 1 is the next highest, and so on.
+     * 
+     * If force is True, this will update every joint, even if we
+     * don't believe it's necessary.
+     * 
+     * Returns True if any joint has changed as a result of this,
+     * False otherwise.
+     */
+    bool update(int lod=0, const boost::optional<std::string>& part_name={},
+        const boost::optional<std::string>& lod_name={}, bool force=false);
+
+    /**
      * Return actual frame rate of given anim name and given part.
      * If no anim specified, use the currently playing anim.
      * If no part specified, return anim durations of first part.
@@ -230,6 +246,8 @@ public:
      * anims in the form animName:animPath{}
      */
     void load_anims(const AnimsType& anims, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
+
+    PartBundle* get_part_bundle(const std::string& part_name, const std::string& lod_name="lodRoot") const;
 
     /**
      * exposeJoint(self, NodePath, string, string, key="lodRoot")
@@ -343,6 +361,13 @@ public:
 
     /** Hide the bounds of all actor geoms. */
     void hide_all_bounds();
+
+    PT(ActorInterval) actor_interval(const std::vector<std::string>& anim_name, bool loop=false,
+        bool constrained_loop=false, boost::optional<double> duration={},
+        boost::optional<double> start_time={}, boost::optional<double> end_time={},
+        boost::optional<double> start_frame={}, boost::optional<double> end_frame={},
+        double play_rate=1.0, const boost::optional<std::string> name={}, bool force_update=false,
+        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name={});
 
 protected:
     Loader* loader_;

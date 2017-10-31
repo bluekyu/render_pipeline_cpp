@@ -48,6 +48,8 @@
 
 #include <spdlog/fmt/ostr.h>
 
+#include <render_pipeline/rppanda/interval/actor_interval.hpp>
+
 #include "rppanda/actor/config_rppanda_actor.hpp"
 
 namespace rppanda {
@@ -398,6 +400,55 @@ inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<st
     return bundles;
 }
 
+bool Actor::update(int lod, const boost::optional<std::string>& part_name,
+    const boost::optional<std::string>& lod_name, bool force)
+{
+    std::vector<std::string> lod_names;
+    if (lod_name)
+        lod_names.push_back(lod_name.get());
+    else
+        lod_names = get_LOD_names();
+
+    bool any_changed = false;
+    if (lod < static_cast<int>(lod_names.size()))
+    {
+        const auto& curr_lod_name = lod_names[lod];
+        std::vector<std::string> part_names;
+        if (part_name)
+        {
+            part_names.push_back(part_name.get());
+        }
+        else
+        {
+            const auto& part_bundle_dict = part_bundle_dict_.at(curr_lod_name);
+            part_names.reserve(part_bundle_dict.size());
+            for (const auto& part_bundle: part_bundle_dict)
+                part_names.push_back(part_bundle.first);
+        }
+
+        for (const auto& part_name: part_names)
+        {
+            auto part_bundle = get_part_bundle(part_name, lod_names[lod]);
+            if (force)
+            {
+                if (part_bundle->force_update())
+                    any_changed = true;
+            }
+            else
+            {
+                if (part_bundle->update())
+                    any_changed = true;
+            }
+        }
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "update() - no lod: " << lod << std::endl;
+    }
+
+    return any_changed;
+}
+
 boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
     const std::string& lod_name = anim_control_dict_.begin()->first;
@@ -730,6 +781,31 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     }
 }
 
+PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::string& lod_name) const
+{
+    const auto& found = part_bundle_dict_.find(lod_name);
+    if (found == part_bundle_dict_.end())
+    {
+        rppanda_actor_cat.warning() << "No lod named: " << lod_name << std::endl;
+        return nullptr;
+    }
+
+    const auto& part_bundle_dict = found->second;
+
+    std::string true_name;
+    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
+    if (subpart_dict_iter != subpart_dict_.end())
+        true_name = subpart_dict_iter->second.true_part_name;
+    else
+        true_name = part_name;
+
+    const auto& part_def_found = part_bundle_dict.find(true_name);
+    if (part_def_found != part_bundle_dict.end())
+        return part_def_found->second.get_bundle();
+
+    return nullptr;
+}
+
 NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name, bool local_transform)
 {
     const auto& part_bundle_dict_iter = part_bundle_dict_.find(lod_name);
@@ -819,6 +895,18 @@ void Actor::hide_all_bounds()
     const auto& geom_nodes = geom_node_.find_all_matches("**/+GeomNode");
     for (int k=0, k_end=geom_nodes.get_num_paths(); k < k_end; ++k)
         geom_nodes.get_path(k).hide_bounds();
+}
+
+PT(ActorInterval) Actor::actor_interval(const std::vector<std::string>& anim_name, bool loop,
+    bool constrained_loop, boost::optional<double> duration,
+    boost::optional<double> start_time, boost::optional<double> end_time,
+    boost::optional<double> start_frame, boost::optional<double> end_frame,
+    double play_rate, const boost::optional<std::string> name, bool force_update,
+    const std::vector<std::string>& part_name, const boost::optional<std::string>& lod_name)
+{
+    return new ActorInterval(this, anim_name, loop, constrained_loop, duration,
+        start_time, end_time, start_frame, end_frame, play_rate, name, force_update,
+        part_name, lod_name);
 }
 
 // ************************************************************************************************
