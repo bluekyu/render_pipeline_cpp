@@ -89,7 +89,7 @@ void PointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
 
 void PointsNode::Impl::set_radius(float radius)
 {
-    points_np_.set_shader_input("point_radius", radius);
+    points_np_.set_shader_input("point_radius", LVecBase4(radius));
 }
 
 void PointsNode::Impl::upload_positions()

@@ -198,10 +198,10 @@ void PipeViewer::populate_content()
                 PT(Shader) preview_shader = DisplayShaderBuilder::build(pipe_texture, static_cast<int>(w), static_cast<int>(h));
                 preview_np->set_shader(preview_shader);
 
-                preview_np->set_shader_input("mipmap", 0);
-                preview_np->set_shader_input("slice", 0);
-                preview_np->set_shader_input("brightness", 1);
-                preview_np->set_shader_input("tonemap", false);
+                preview_np->set_shader_input("mipmap", LVecBase4i(0));
+                preview_np->set_shader_input("slice", LVecBase4i(0));
+                preview_np->set_shader_input("brightness", LVecBase4i(1));
+                preview_np->set_shader_input("tonemap", LVecBase4i(0));
             }
 
             if (!icon_file.empty())

@@ -310,10 +310,10 @@ void BufferViewer::render_stages()
         Sprite preview(stage_tex, scale_factor * w, scale_factor * h, node, 7, 40, false, true, false);
 
         auto preview_node = preview.get_node();
-        preview_node->set_shader_input("mipmap", 0);
-        preview_node->set_shader_input("slice", 0);
-        preview_node->set_shader_input("brightness", 1);
-        preview_node->set_shader_input("tonemap", false);
+        preview_node->set_shader_input("mipmap", LVecBase4i(0));
+        preview_node->set_shader_input("slice", LVecBase4i(0));
+        preview_node->set_shader_input("brightness", LVecBase4i(1));
+        preview_node->set_shader_input("tonemap", LVecBase4i(0));
         preview_node->set_shader(DisplayShaderBuilder::build(stage_tex, scale_factor * w, scale_factor * h));
     }
 
