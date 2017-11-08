@@ -77,9 +77,10 @@ class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount {
         inline void remove_slot();
         inline void assign_slot(int slot);
 
-        inline void invalidate_shadows();
 
     PUBLISHED:
+
+        inline void invalidate_shadows();
 
         inline void set_pos(const LVecBase3f &pos);
         inline void set_pos(float x, float y, float z);
