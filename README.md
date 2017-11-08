@@ -57,5 +57,8 @@ See [docs/build_rpcpp.md](docs/build_rpcpp.md) document.
 ## License
 See `LICENSE.md` file.
 
+And license of original (python based) [Render Pipeline](https://github.com/tobspr/RenderPipeline)
+is `LICENSE-RenderPipeline.md` file.
+
 ### Third-party Licenses
 See `thirdparty-licenses` directory.
