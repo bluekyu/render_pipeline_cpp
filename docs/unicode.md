@@ -57,7 +57,8 @@ boost::filesystem::exists(hangul_utf16_conv_path);
     //auto previous_locale = boost::filesystem::path::imbue(std::locale("ko-KR"));  // set locale to ko-KR. See MSDN page
 
     // filesystem to MBCS (cp949) string
-    auto hangul_utf16_path_string = hangul_utf16_path.string();         // NOTE: old creation.
+    // NOTE: use the variable before imbue.
+    auto hangul_utf16_path_string = hangul_utf16_path.string();
 
     boost::filesystem::path::imbue(previous_locale);                    // restore
 }
@@ -70,10 +71,12 @@ boost::filesystem::exists(hangul_utf16_conv_path);
     auto previous_locale = boost::filesystem::path::imbue(boost::locale::generator().generate(""));
 
     // filesystem to UTF8 string
-    auto hangul_utf16_path_string = hangul_utf16_path.string();         // NOTE: old creation.
+    // NOTE: use the variable before imbue.
+    auto hangul_utf16_path_string = hangul_utf16_path.string();
 
     // filesystem to UTF16 wstring
-    boost::filesystem::path new_hangul_utf8_path(hangul_utf8);          // WARN: new creation. (the old generates wrong result)
+    // WARN: use the new variable after imbue. (the old variable generates wrong result)
+    boost::filesystem::path new_hangul_utf8_path(hangul_utf8);
     auto hangul_utf16_path_wstring = new_hangul_utf8_path.wstring();
 
     // True (filesystem from UTF8)
