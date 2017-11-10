@@ -10,7 +10,8 @@ Windows 에서 일반적인 경로 길이는 `MAX_PATH` 값인 260자이다. 이
 다른 하나는 "Win32 긴 경로 정책" 을 활성화 하는 것이다.
 
 #### Extended-length Path
-Extended-length path 는 `\\?\` 를 경로 앞에 추가해주면 된다. 예를 들면 `\\?\C:\very long path` 와 같이 사용한다.
+Extended-length path 는 `\\?\` 를 경로 앞에 추가해주면 된다.
+예를 들면 `\\?\C:\very long path` 와 같이 사용한다.
 이를 사용하면 최대 32,767 자 까지 인식할 수 있다.
 
 #### Win32 긴 경로 정책

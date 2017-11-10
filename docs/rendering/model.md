@@ -1,2 +1,26 @@
-# Panda3D 모델
+# Panda3D Model
 **Translation**: [한국어](../ko_kr/rendering/model.md)
+
+## Generating Egg format
+
+
+
+### Blender
+
+
+
+
+
+#### Summary
+
+
+
+
+
+
+
+
+
+
+
+## Bam 포맷 생성

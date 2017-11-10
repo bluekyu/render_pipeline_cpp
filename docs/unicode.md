@@ -1,9 +1,15 @@
 # Unicode
 **Translation**: [Korean](ko_kr/unicode.md)
 
+
+
+
+
+
+
 ## Source Code Example
 
-Note that, on Windows, if the encoding of source codes is UTF8 (not UTF8-BOM),
+Note that, on Visual Studio, if the encoding of source codes is UTF8 (not UTF8-BOM),
 you may need to add `/utf-8` compiler option.
 
 ### String Literals

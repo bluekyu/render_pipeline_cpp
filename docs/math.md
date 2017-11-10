@@ -15,11 +15,11 @@ LVecBase3f translation = translate_mat.get_row3(3);
 The order of matrix multiplication is v*S*R*T and the order of quaternion multiplication is
 Q(R1 * R2 * R3) = Q(R1) * Q(R2) * Q(R3)
 
-자세한 설명은 다음을 참고.
+For details, refer to the following:
 - https://www.panda3d.org/manual/index.php/Matrix_Representation
 
 ## Quaternion
-`LQuaternion(real, i, j, k)` 를 사용함.
+`LQuaternion(real, i, j, k)` is used.
 
 ## Projection Matrix
 ```cpp

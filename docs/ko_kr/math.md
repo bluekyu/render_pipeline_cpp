@@ -15,11 +15,11 @@ LVecBase3f translation = translate_mat.get_row3(3);
 Matrix 곱셈 순서는 v*S*R*T 이고, Quaternion 곱 순서는
 Q(R1 * R2 * R3) = Q(R1) * Q(R2) * Q(R3) 이다.
 
-For details, refer to the following:
+자세한 설명은 다음을 참고.
 - https://www.panda3d.org/manual/index.php/Matrix_Representation
 
 ## Quaternion
-`LQuaternion(real, i, j, k)` is used.
+`LQuaternion(real, i, j, k)` 를 사용함.
 
 ## Projection Matrix
 ```cpp

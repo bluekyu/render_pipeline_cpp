@@ -2,13 +2,13 @@
 **Translation**: [English](../build_rpcpp.md)
 
 ## 요구사항
-명시된 버전은 빌드 시스템에서 사용되는 것이며, 일치할 필요는 없다.
+명시된 **버전** 은 빌드 시스템에서 사용되는 것이며, 일치할 필요는 없다.
 
 - CMake (빌드 도구): 3.8
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): develop branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.64.0
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): master branch
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): beb44b87 commit
 - [spdlog](https://github.com/gabime/spdlog): 0.14.0
 - [flatbuffers](https://github.com/google/flatbuffers): 1.7.1
 
