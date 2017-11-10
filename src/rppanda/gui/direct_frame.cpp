@@ -68,17 +68,27 @@ DirectFrame::DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_pt
     }
 }
 
-void DirectFrame::set_text(const std::string& text)
+const std::vector<std::string>& DirectFrame::get_text() const
 {
-    set_text(std::vector<std::string>({ text }));
+    return std::dynamic_pointer_cast<Options>(_options)->text;
 }
 
-void DirectFrame::set_text(const std::vector<std::string>& text_list)
+void DirectFrame::prepare_text(const std::string& text)
+{
+    std::dynamic_pointer_cast<Options>(_options)->text = std::vector<std::string>({ text });
+}
+
+void DirectFrame::prepare_text(const std::vector<std::string>& text_list)
 {
     std::dynamic_pointer_cast<Options>(_options)->text = text_list;
+}
+
+void DirectFrame::set_text()
+{
+    const auto& text_list = std::dynamic_pointer_cast<Options>(_options)->text;
 
     // Create/destroy components
-    for (int i=0; i < _options->num_states; ++i)
+    for (int i = 0; i < _options->num_states; ++i)
     {
         const std::string& component_name = "text" + std::to_string(i);
 
@@ -122,8 +132,25 @@ void DirectFrame::set_text(const std::vector<std::string>& text_list)
     }
 }
 
-void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& images)
+const std::vector<std::shared_ptr<ImageInput>>& DirectFrame::get_image() const
 {
+    return std::dynamic_pointer_cast<Options>(_options)->image;
+}
+
+void DirectFrame::prepare_image(const std::shared_ptr<ImageInput>& image)
+{
+    std::dynamic_pointer_cast<Options>(_options)->image = std::vector<std::shared_ptr<ImageInput>>({ image });
+}
+
+void DirectFrame::prepare_image(const std::vector<std::shared_ptr<ImageInput>>& images)
+{
+    std::dynamic_pointer_cast<Options>(_options)->image = images;
+}
+
+void DirectFrame::set_image()
+{
+    const auto& images = std::dynamic_pointer_cast<Options>(_options)->image;
+
     std::vector<std::shared_ptr<ImageInput>> image_list;
 
     // Passed in None
@@ -182,11 +209,6 @@ void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& imag
             }
         }
     }
-
-    const auto& opt = std::dynamic_pointer_cast<Options>(_options);
-    opt->image.clear();
-    for (auto image: images)
-        opt->image.push_back(image);
 }
 
 const std::shared_ptr<DirectFrame::Options>& DirectFrame::define_options(const std::shared_ptr<Options>& options)

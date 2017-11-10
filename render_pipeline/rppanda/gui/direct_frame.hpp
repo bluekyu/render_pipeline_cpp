@@ -61,9 +61,29 @@ public:
 
     ALLOC_DELETED_CHAIN(DirectFrame);
 
+    const std::vector<std::string>& get_text() const;
+
+    /** Prepare to change text. */
+    void prepare_text(const std::string& text);
+    void prepare_text(const std::vector<std::string>& text_list);
+
+    /** Apply text changes. */
+    void set_text();
+
+    /** Change text directly. */
     void set_text(const std::string& text);
     void set_text(const std::vector<std::string>& text_list);
 
+    const std::vector<std::shared_ptr<ImageInput>>& get_image() const;
+
+    /** Prepare to change image. */
+    void prepare_image(const std::shared_ptr<ImageInput>& image);
+    void prepare_image(const std::vector<std::shared_ptr<ImageInput>>& images);
+
+    /** Apply image changes. */
+    void set_image();
+
+    /** Change image directly. */
     void set_image(const std::shared_ptr<ImageInput>& image);
     void set_image(const std::vector<std::shared_ptr<ImageInput>>& images);
 
@@ -86,9 +106,29 @@ private:
 };
 
 // ************************************************************************************************
+
+inline void DirectFrame::set_text(const std::string& text)
+{
+    prepare_text(text);
+    set_text();
+}
+
+inline void DirectFrame::set_text(const std::vector<std::string>& text_list)
+{
+    prepare_text(text_list);
+    set_text();
+}
+
 inline void DirectFrame::set_image(const std::shared_ptr<ImageInput>& image)
 {
-    set_image(std::vector<std::shared_ptr<ImageInput>>({image}));
+    prepare_image(image);
+    set_image();
+}
+
+inline void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& images)
+{
+    prepare_image(images);
+    set_image();
 }
 
 inline TypeHandle DirectFrame::get_class_type()
