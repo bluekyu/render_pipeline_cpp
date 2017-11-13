@@ -1,5 +1,5 @@
 # Pipeline
-**Translation**: [Korean](../ko_kr/framework/pipeline.md)
+**Translation**: [English](../../framework/pipeline.md)
 
 ## Panda3D Pipeline
 
