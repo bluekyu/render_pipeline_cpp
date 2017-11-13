@@ -17,6 +17,10 @@
 - [Render Pipeline Material](rendering/rpmaterial.md)
 - [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
 
+## Framework
+- [Pipeline](framework/pipeline.md)
+  - [Data Loop and Node](framework/data_loop_and_node.md)
+
 ## Others
 - [Issues and Solutions](issues_and_solutions.md)
 - [Cheet Sheets](http://www.panda3d.org/manual/index.php/Cheat_Sheets)

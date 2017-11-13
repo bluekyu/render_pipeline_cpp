@@ -2,6 +2,8 @@
 **Translation**: [Korean](../ko_kr/framework/pipeline.md)
 
 ## Panda3D Pipeline
+See also:
+- [Data Loop and Node](data_loop_and_node.md).
 
 ### Call Tree
 #### main_loop

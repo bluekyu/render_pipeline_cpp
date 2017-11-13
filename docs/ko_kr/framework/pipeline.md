@@ -1,7 +1,9 @@
-# Pipeline
+# 파이프라인
 **Translation**: [English](../../framework/pipeline.md)
 
-## Panda3D Pipeline
+## Panda3D 파이프라인
+참고 사항:
+- [Data Loop 및 Node](data_loop_and_node.md).
 
 ### Call Tree
 #### main_loop
