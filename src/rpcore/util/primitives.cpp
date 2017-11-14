@@ -35,7 +35,7 @@
 
 namespace rpcore {
 
-static NodePath create_geom_node(const std::string& name, Geom* geom)
+static NodePath create_geom_node(const std::string& name, PT(Geom) geom)
 {
     PT(GeomNode) geom_node = new GeomNode(name);
     geom_node->add_geom(geom);
@@ -46,6 +46,61 @@ static NodePath create_geom_node(const std::string& name, Geom* geom)
     gn.set_material(0, RPMaterial());
 
     return np;
+}
+
+NodePath create_triangle_mesh(
+    const std::string& name,
+    const std::vector<LVecBase3>& vertices,
+    const std::vector<LVecBase3>& normals,
+    const std::vector<LVecBase2>& texcoords,
+    const std::vector<int>& indices)
+{
+    const size_t indices_per_triangle = 3;
+
+    if (indices.size() % indices_per_triangle != 0)
+    {
+        LoggerManager::get_instance().get_logger()->error("The count of indices is NOT a multiple of 3.");
+        return NodePath();
+    }
+
+    if (!(vertices.size() == normals.size() && normals.size() == texcoords.size()))
+    {
+        LoggerManager::get_instance().get_logger()->error("The counts of vertices, normal, texcoords is NOT same.");
+        return NodePath();
+    }
+
+    // Add vertices
+    int vertices_count = static_cast<int>(vertices.size());
+
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3n3t2(), Geom::UsageHint::UH_static);
+    vdata->unclean_set_num_rows(vertices_count);
+
+    GeomVertexWriter geom_vertices(vdata, InternalName::get_vertex());
+    GeomVertexWriter geom_normals(vdata, InternalName::get_normal());
+    GeomVertexWriter geom_texcoord0(vdata, InternalName::get_texcoord());
+
+    for (int k = 0, k_end = vertices_count; k < k_end; ++k)
+    {
+        const auto& v = vertices[k];
+        const auto& n = normals[k];
+        const auto& t = texcoords[k];
+
+        geom_vertices.add_data3(v[0], v[1], v[2]);
+        geom_normals.add_data3(n[0], n[1], n[2]);
+        geom_texcoord0.add_data2(t[0], t[1]);
+    }
+
+    // Add indices
+    PT(GeomTriangles) prim = new GeomTriangles(Geom::UsageHint::UH_static);
+    prim->reserve_num_vertices(indices.size());
+    for (size_t k = 0, k_end = indices.size(); k < k_end; k += 3)
+        prim->add_vertices(indices[k], indices[k+1], indices[k+2]);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    return create_geom_node(name, geom);
 }
 
 void modify_points(GeomVertexData* vdata, GeomPrimitive* prim, const std::vector<LPoint3f>& positions)

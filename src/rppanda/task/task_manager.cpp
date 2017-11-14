@@ -146,7 +146,10 @@ AsyncTask* TaskManager::setup_task(AsyncTask* task, const std::string& name,
         task->set_name(name);
 
     if (!task->has_name())
+    {
+        rppanda_task_cat.error() << "setup_task: Task has NO name." << std::endl;
         throw std::runtime_error("Task has NO name.");
+    }
 
     if (sort)
         task->set_sort(sort.get());

@@ -28,7 +28,18 @@
 namespace rpcore {
 
 /**
- * Create points primitive.
+ * Create a mesh has a general geometry using triangle primitive.
+ *
+ * @return  NodePath of GeomNode. If failed, return empty NodePath.
+ */
+RENDER_PIPELINE_DECL NodePath create_triangle_mesh(const std::string& name,
+    const std::vector<LVecBase3>& vertices,
+    const std::vector<LVecBase3>& normals,
+    const std::vector<LVecBase2>& texcoords,
+    const std::vector<int>& indices);
+
+/**
+ * Create a mesh has points geometry.
  */
 RENDER_PIPELINE_DECL NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions,
     GeomEnums::UsageHint buffer_hint=Geom::UsageHint::UH_static);
@@ -37,21 +48,21 @@ RENDER_PIPELINE_DECL bool modify_points(GeomNode* geom_node, const std::vector<L
     int geom_index=0, int primitive_index=0);
 
 /**
- * Create 2D plane primitive.
+ * Create a mesh has a 2D plane geometry.
  *
  * left-bottom is (-0.5, -0.5, 0) and right-top is (0.5, 0.5, 0).
  */
 RENDER_PIPELINE_DECL NodePath create_plane(const std::string& name);
 
 /**
- * Create cube (box) primitive.
+ * Create a mesh has a cube (box) geometry.
  *
  * min bound is (-0.5, -0.5, -0.5) and max bound is (0.5, 0.5, 0.5).
  */
 RENDER_PIPELINE_DECL NodePath create_cube(const std::string& name);
 
 /**
- * Create sphere primitiv.e
+ * Create a mesh has a sphere geometry.
  *
  * Center is (0, 0, 0) and radius 1.0.
  */
