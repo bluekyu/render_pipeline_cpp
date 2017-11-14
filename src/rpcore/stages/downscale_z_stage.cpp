@@ -39,7 +39,7 @@ DownscaleZStage::ProduceType DownscaleZStage::get_produced_pipes() const
 
 void DownscaleZStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     target_ = create_target("DownscaleDepth");
     target_->add_color_attachment(LVecBase4i(16, 0, 0, 0));

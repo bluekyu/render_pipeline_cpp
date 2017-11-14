@@ -40,7 +40,7 @@ PSSMStage::ProduceType PSSMStage::get_produced_pipes() const
 
 void PSSMStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     _enabled = true;
     _target_shadows = create_target("FilterPSSM");

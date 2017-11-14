@@ -54,7 +54,7 @@ std::shared_ptr<SimpleInputBlock> GBufferStage::make_gbuffer_ubo() const
 
 void GBufferStage::create()
 {
-    const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    const bool stereo_mode = pipeline_.is_stereo_mode();
 
     target_ = create_target("GBuffer");
     target_->add_color_attachment(16, true);

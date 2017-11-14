@@ -39,7 +39,7 @@ ColorCorrectionStage::ProduceType ColorCorrectionStage::get_produced_pipes() con
 
 void ColorCorrectionStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     target_ = create_target("PostFX");
     target_->add_color_attachment(16);

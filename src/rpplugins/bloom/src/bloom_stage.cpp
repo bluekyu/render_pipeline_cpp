@@ -40,7 +40,7 @@ BloomStage::ProduceType BloomStage::get_produced_pipes() const
 
 void BloomStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     if (_remove_fireflies)
     {

@@ -39,7 +39,11 @@ out vec4 result;
 // This shader just passes through the input texture
 
 void main() {
-#if STEREO_MODE
+#if STEREO_MODE == 1
+    vec3 texcoord = vec3((ivec2(gl_FragCoord.xy) + 0.5) / NATIVE_SCREEN_SIZE, 0);
+#elif STEREO_MODE == 2
+    vec3 texcoord = vec3((ivec2(gl_FragCoord.xy) + 0.5) / NATIVE_SCREEN_SIZE, 1);
+#elif STEREO_MODE == 3
     vec3 texcoord = vec3((ivec2(gl_FragCoord.xy) + 0.5) / NATIVE_SCREEN_SIZE, 0);
     if (texcoord.x < 0.5)
     {

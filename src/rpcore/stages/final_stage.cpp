@@ -41,7 +41,7 @@ FinalStage::ProduceType FinalStage::get_produced_pipes() const
 
 void FinalStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     target_ = create_target("FinalStage");
     target_->add_color_attachment(16);

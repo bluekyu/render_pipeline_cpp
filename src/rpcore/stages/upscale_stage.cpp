@@ -40,7 +40,7 @@ UpscaleStage::ProduceType UpscaleStage::get_produced_pipes() const
 
 void UpscaleStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     target_ = create_target("Upscale");
     target_->set_size(Globals::native_resolution);

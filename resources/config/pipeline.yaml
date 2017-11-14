@@ -43,7 +43,9 @@ pipeline:
 
     # Whether use stereoscopic rendering. When stereo mode is enabled,
     # supproted stages (and plugins) draw 2 layered textures.
-    stereo_mode: false
+    # The value is one of "none", "left", "right" or "stereo".
+    # Left and right means that the final screen shows only left or right view.
+    stereo_mode: none
 
     # Whether use nvidia extension for stereoscopic rendering.
     nvidia_stereo_view: false

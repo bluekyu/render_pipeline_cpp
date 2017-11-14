@@ -178,7 +178,7 @@ void Effect::Impl::parse_content(Effect& self, YAML::Node& parsed_yaml)
 void Effect::Impl::parse_shader_template(Effect& self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
 {
     const std::string& pass_id = pass_id_multiview.first;
-    bool stereo_mode = RenderPipeline::get_global_ptr()->get_setting<bool>("pipeline.stereo_mode", false) && pass_id_multiview.second;
+    bool stereo_mode = RenderPipeline::get_global_ptr()->is_stereo_mode() && pass_id_multiview.second;
 
     std::string template_src;
     if (stage == "fragment")

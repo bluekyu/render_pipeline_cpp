@@ -39,7 +39,7 @@ SkyAOStage::ProduceType SkyAOStage::get_produced_pipes() const
 
 void SkyAOStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     target_ = create_target("ComputeSkyAO");
     target_->set_size(-2);

@@ -243,6 +243,7 @@ public:
     LVecBase2i last_window_dims;
     std::unique_ptr<std::chrono::system_clock::time_point> first_frame_;
     std::vector<std::tuple<NodePath, Filename, Effect::OptionType, int>> applied_effects;
+    StereoMode stereo_mode_;
 
     bool pre_showbase_initialized = false;
 
@@ -600,10 +601,27 @@ void RenderPipeline::Impl::init_globals()
     // TODO: implement
     RenderTarget::USE_R11G11B10 = self_.get_setting<bool>("pipeline.use_r11_g11_b10", false);
 
-    if (settings.find("pipeline.stereo_mode") == settings.end())
+    const auto& stereo_mode = get_setting<std::string>("pipeline.stereo_mode", std::string(""));
+    if (stereo_mode == "none")
     {
-        self_.warn("Cannot find 'pipeline.stereo_mode' setting, so set to default (false).");
-        settings.insert({"pipeline.stereo_mode", YAML::Node(false)});
+        stereo_mode_ = StereoMode::none;
+    }
+    else if (stereo_mode == "left")
+    {
+        stereo_mode_ = StereoMode::left;
+    }
+    else if (stereo_mode == "right")
+    {
+        stereo_mode_ = StereoMode::right;
+    }
+    else if (stereo_mode == "stereo")
+    {
+        stereo_mode_ = StereoMode::stereo;
+    }
+    else
+    {
+        stereo_mode_ = StereoMode::none;
+        self_.warn("In pipeline.yaml, 'stereo_mode' is invalid, so set to default (none).");
     }
 }
 
@@ -616,7 +634,7 @@ void RenderPipeline::Impl::adjust_camera_settings()
 {
     adjust_lens_setting();
 
-    if (self_.get_setting<bool>("pipeline.stereo_mode"))
+    if (self_.is_stereo_mode())
     {
         NodePath cam = showbase_->get_cam();
 
@@ -727,11 +745,10 @@ void RenderPipeline::Impl::create_common_defines()
 
     defines["REFERENCE_MODE"] = std::string(self_.get_setting<bool>("pipeline.reference_mode", false) ? "1" : "0");
 
-    bool stereo_mode = self_.get_setting<bool>("pipeline.stereo_mode");
     bool has_nv_stereo_view = rpcore::Globals::base->get_win()->get_gsg()->has_extension("GL_NV_stereo_view_rendering") &&
         self_.get_setting<bool>("pipeline.nvidia_stereo_view", false);
 
-    defines["STEREO_MODE"] = std::string(stereo_mode ? "1" : "0");
+    defines["STEREO_MODE"] = std::to_string(static_cast<int>(self_.get_stereo_mode()));
     defines["NVIDIA_STEREO_VIEW"] = std::string(has_nv_stereo_view ? "1" : "0");
 
     light_mgr_->init_defines();
@@ -1130,6 +1147,11 @@ void RenderPipeline::compute_render_resolution(int width, int height)
     impl_->compute_render_resolution();
     if (Globals::resolution != last_resolution)
         impl_->handle_window_resize();
+}
+
+RenderPipeline::StereoMode RenderPipeline::get_stereo_mode() const
+{
+    return impl_->stereo_mode_;
 }
 
 const YAML::Node& RenderPipeline::get_setting(const std::string& setting_path) const

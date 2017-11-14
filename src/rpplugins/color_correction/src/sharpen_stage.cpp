@@ -49,7 +49,7 @@ SharpenStage::ProduceType SharpenStage::get_produced_pipes() const
 
 void SharpenStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     _target = create_target("Sharpen");
     _target->add_color_attachment(16);

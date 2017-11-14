@@ -80,7 +80,7 @@ NodePath CommonResources::load_default_skybox()
 
 void CommonResources::update()
 {
-    const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    const bool stereo_mode = pipeline_.is_stereo_mode();
     const Lens* cam_lens = showbase_->get_cam_lens();
     static const LVecBase2i points[4] ={ LVecBase2i(-1, -1), LVecBase2i(1, -1), LVecBase2i(-1, 1), LVecBase2i(1, 1) };
 
@@ -343,7 +343,7 @@ void CommonResources::load_prefilter_brdf()
 
 void CommonResources::setup_inputs()
 {
-    const bool stereo_mode = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    const bool stereo_mode = pipeline_.is_stereo_mode();
 
     input_ubo_ = std::make_shared<GroupedInputBlock>("MainSceneData");
 

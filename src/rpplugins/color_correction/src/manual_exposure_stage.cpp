@@ -39,7 +39,7 @@ ManualExposureStage::ProduceType ManualExposureStage::get_produced_pipes() const
 
 void ManualExposureStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     _target = create_target("ManualExposure");
     _target->add_color_attachment(16);

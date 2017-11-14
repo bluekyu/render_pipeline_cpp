@@ -42,7 +42,7 @@ AutoExposureStage::ProduceType AutoExposureStage::get_produced_pipes() const
 
 void AutoExposureStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     // Create the target which converts the scene color to a luminance
     _target_lum = create_target("GetLuminance");

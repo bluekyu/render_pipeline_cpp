@@ -55,6 +55,15 @@ class PluginManager;
 class RENDER_PIPELINE_DECL RenderPipeline : public RPObject
 {
 public:
+    enum class StereoMode : int
+    {
+        none = 0,
+        left = 1,
+        right = 2,
+        stereo = 3
+    };
+
+public:
     static const std::string& get_version(void);
     static const std::string& get_build_data(void);
     static const std::string& get_git_commit(void);
@@ -164,6 +173,9 @@ public:
     void compute_render_resolution(float resolution_scale);
     void compute_render_resolution(int width, int height);
 
+    bool is_stereo_mode() const;
+    StereoMode get_stereo_mode() const;
+
     /** Get setting value iun pipeline setting. */
     ///@{
     /** Get YAML node from given flatten path in pipeline setting. */
@@ -190,6 +202,11 @@ private:
 };
 
 // ************************************************************************************************
+
+inline bool RenderPipeline::is_stereo_mode() const
+{
+    return get_stereo_mode() != StereoMode::none;
+}
 
 /** Get bool value from given flatten path in pipeline setting. */
 template <> RENDER_PIPELINE_DECL bool RenderPipeline::get_setting(const std::string& setting_path) const;

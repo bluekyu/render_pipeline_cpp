@@ -42,7 +42,7 @@ ForwardStage::ProduceType ForwardStage::get_produced_pipes() const
 
 void ForwardStage::create()
 {
-    stereo_mode_ = pipeline_.get_setting<bool>("pipeline.stereo_mode");
+    stereo_mode_ = pipeline_.is_stereo_mode();
 
     _forward_cam = new Camera("ForwardShadingCam");
     _forward_cam->set_lens(rpcore::Globals::base->get_cam_lens());

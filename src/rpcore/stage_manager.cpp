@@ -261,7 +261,7 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
 
     std::vector<std::string> common_inputs = { "MainSceneData", "TimeOfDay" };
 
-    if (!pipeline_.get_setting<bool>("pipeline.stereo_mode"))
+    if (!pipeline_.is_stereo_mode())
     {
         common_inputs.insert(common_inputs.begin(), "mainRender");
         common_inputs.insert(common_inputs.begin(), "mainCam");
