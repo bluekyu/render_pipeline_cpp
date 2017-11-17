@@ -1,10 +1,12 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.9)
 
 get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(rpplugin_${RPPLUGIN_ID})
+project(rpplugin_${RPPLUGIN_ID}
+    DESCRIPTION "Atmospheric Scattering plugin"
+)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
