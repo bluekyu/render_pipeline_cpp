@@ -10,7 +10,7 @@
 - Boost: 1.64.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): beb44b87 commit
 - [spdlog](https://github.com/gabime/spdlog): 0.14.0
-- [flatbuffers](https://github.com/google/flatbuffers): 1.7.1
+- [flatbuffers](https://github.com/google/flatbuffers): 0cf04ad commit
 
 ### 선택사항
 - Doxygen (Doxygen 문서 생성)

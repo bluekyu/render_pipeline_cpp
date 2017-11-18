@@ -33,15 +33,3 @@ if(NOT TARGET panda3d::panda3d)
     set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
     find_package(panda3d REQUIRED)
 endif()
-
-# find doxygen
-option(render_pipeline_BUILD_DOCUMENTS "Build doxygen documents" OFF)
-if(render_pipeline_BUILD_DOCUMENTS)
-    option(render_pipeline_DOXYGEN_SKIP_DOT "Skip to find Dot for Doxygen" ON)
-
-    find_package(doxygen REQUIRED)
-    set(DOXYGEN_HAVE_DOT "NO")
-    if(NOT render_pipeline_DOXYGEN_SKIP_DOT)
-        set(DOXYGEN_HAVE_DOT "YES")
-    endif()
-endif()

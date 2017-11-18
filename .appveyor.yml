@@ -66,7 +66,7 @@ install:
     --install-prefix "C:/projects/_cache/spdlog"
 - cmd: >-
     python .\builder.py "https://github.com/google/flatbuffers.git"
-    --branch "v1.7.1"
+    --commit "0cf04ad"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/flatbuffers"
 - ps: popd

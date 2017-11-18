@@ -8,6 +8,7 @@ project(render_pipeline
 
 # === configure ====================================================================================
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(GNUInstallDirs)
 include(debugging-information)
 include(git-utils)
 
@@ -52,8 +53,18 @@ if(FREETYPE_FOUND)
 endif()
 
 # find flatbuffers
-if(NOT TARGET flatbuffers)
-    find_package(FlatBuffers REQUIRED)
+if(NOT TARGET flatbuffers::flatbuffers)
+    find_package(flatbuffers REQUIRED)
+    set_target_properties(flatbuffers::flatbuffers PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${flatbuffers_DIR}/../../../include"
+    )
+    include(${flatbuffers_DIR}/FlatcTargets.cmake)
+    if(TARGET flatbuffers::flatc)
+        get_target_property(flatbuffers_flatc_executable flatbuffers::flatc IMPORTED_LOCATION_RELEASE)
+        message(STATUS "Found flatc: ${flatbuffers_flatc_executable}")
+    else()
+        message(FATAL_ERROR "Cannot find flatc program.")
+    endif()
 endif()
 
 set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
@@ -63,10 +74,6 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
 # ==================================================================================================
 function(render_pipeline_generate_schema_headers target_)
     # generate schema headers
-    if(NOT FlatBuffers_flatc)
-        message(FATAL_ERROR "Cannot find flatc program.")
-    endif()
-
     set(schema_output_dir "${PROJECT_BINARY_DIR}/rpcore/schema")
     file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
     foreach(input_file ${flatc_input_files})
@@ -74,7 +81,7 @@ function(render_pipeline_generate_schema_headers target_)
 
         set(schema_header_file "${schema_output_dir}/${input_file_name}_generated.h")
         add_custom_command(OUTPUT ${schema_header_file}
-            COMMAND ${FlatBuffers_flatc} -c --scoped-enums -o "${schema_output_dir}" "${input_file}"
+            COMMAND ${flatbuffers_flatc_executable} -c --scoped-enums -o "${schema_output_dir}" "${input_file}"
             DEPENDS "${input_file}"
         )
 
@@ -122,7 +129,7 @@ target_compile_definitions(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 
     PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/src"
     ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
@@ -133,7 +140,7 @@ target_link_libraries(${PROJECT_NAME}
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
-    FlatBuffers::FlatBuffers
+    flatbuffers::flatbuffers
 
     $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )
@@ -155,7 +162,7 @@ set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-ve
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
 set(${PROJECT_NAME}_TARGET_NAMESPACE "render_pipeline::")
 set(${PROJECT_NAME}_TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
-set(PACKAGE_CMAKE_INSTALL_DIR "lib/cmake/${PACKAGE_NAME}")
+set(PACKAGE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PACKAGE_NAME}")
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
@@ -176,16 +183,16 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
-    RUNTIME DESTINATION "bin"
-    LIBRARY DESTINATION "lib"
-    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
 export(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
     NAMESPACE ${${PROJECT_NAME}_TARGET_NAMESPACE}
     FILE "${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_TARGET_EXPORT_NAME}.cmake"
 )
 
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "include/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}/")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}/")
@@ -200,27 +207,10 @@ install(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
 )
 
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-    DESTINATION "share/${PROJECT_NAME}/"
+    DESTINATION "${DATAROOTDIR}/${PROJECT_NAME}/"
 )
 
-install_debugging_information(${PROJECT_NAME} "bin")
-
-# documents
-if(render_pipeline_BUILD_DOCUMENTS AND DOXYGEN_FOUND)
-    set(DOCUMENTS_TARGET "doxygen")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Doxyfile.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-        @ONLY
-    )
-
-    add_custom_target(${DOCUMENTS_TARGET} ALL
-        ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-    set_target_properties(${DOCUMENTS_TARGET} PROPERTIES FOLDER "render_pipeline")
-
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTS_TARGET}/" DESTINATION "share/${PROJECT_NAME}/documents/")
-endif()
+install_debugging_information(${PROJECT_NAME} "${CMAKE_INSTALL_BINDIR}")
 # ==================================================================================================
 
 # === subdirectory =================================================================================

@@ -27,10 +27,9 @@
 
 cmake_minimum_required(VERSION 3.6)
 
-find_path(panda3d_INCLUDE_DIR
-    NAMES "pandaFramework.h"
-    HINTS "${panda3d_ROOT}/include"
-)
+if(NOT panda3d_ROOT_RELEASE)
+    set(panda3d_ROOT_RELEASE "${panda3d_ROOT}")
+endif()
 
 set(panda3d_DEFAULT_COMPONENTS p3framework panda pandaexpress p3dtool p3dtoolconfig p3direct p3interrogatedb)
 
@@ -50,15 +49,25 @@ set(panda3d_lib_suffix_DEBUG "_d")
 set(panda3d_configurations "DEBUG" "RELEASE")
 
 foreach(configuration ${panda3d_configurations})
+    find_path(panda3d_INCLUDE_DIR_${configuration}
+        NAMES "pandaFramework.h"
+        HINTS "${panda3d_ROOT_${configuration}}/include"
+    )
+
     foreach(component_name ${panda3d_FIND_COMPONENTS})
         find_library(panda3d_${component_name}_LIBRARY_${configuration}
             NAMES ${panda3d_lib_prefix}${component_name}${panda3d_lib_suffix_${configuration}}
-            HINTS "${panda3d_ROOT_${configuration}}" "${panda3d_ROOT}"
+            HINTS "${panda3d_ROOT_${configuration}}"
             PATH_SUFFIXES "lib"
         )
-        list(APPEND panda3d_LIBRARY_${configuration} ${panda3d_${component_name}_LIBRARY_${configuration}})
     endforeach()
 endforeach()
+
+if(panda3d_INCLUDE_DIR_RELEASE)
+    set(panda3d_INCLUDE_DIR ${panda3d_INCLUDE_DIR_RELEASE})
+else()
+    set(panda3d_INCLUDE_DIR ${panda3d_INCLUDE_DIR_DEBUG})
+endif()
 
 # Set panda3d_FOUND
 include(FindPackageHandleStandardArgs)
@@ -121,9 +130,21 @@ if(panda3d_FOUND)
         endforeach()
 
         set_target_properties(panda3d::panda3d PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${panda3d_INCLUDE_DIR}"
             INTERFACE_LINK_LIBRARIES "${_panda3d_DEFAULT_TARGET_DEPENDENCIES}"
         )
+
+        if(panda3d_INCLUDE_DIR_DEBUG AND panda3d_INCLUDE_DIR_RELEASE)
+            set_target_properties(panda3d::panda3d PROPERTIES
+                INTERFACE_INCLUDE_DIRECTORIES $<IF:$<CONFIG:DEBUG>,${panda3d_INCLUDE_DIR_DEBUG},${panda3d_INCLUDE_DIR_RELEASE}>
+            )
+        else()
+            set_target_properties(panda3d::panda3d PROPERTIES
+                INTERFACE_INCLUDE_DIRECTORIES ${panda3d_INCLUDE_DIR}
+            )
+        endif()
+
+        mark_as_advanced(panda3d_INCLUDE_DIR)
+        mark_as_advanced(panda3d_INCLUDE_DIR_DEBUG)
+        mark_as_advanced(panda3d_INCLUDE_DIR_RELEASE)
     endif()
-    mark_as_advanced(panda3d_INCLUDE_DIR)
 endif()
