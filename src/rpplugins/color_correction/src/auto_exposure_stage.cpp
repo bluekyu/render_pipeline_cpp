@@ -83,7 +83,7 @@ void AutoExposureStage::create()
 
 void AutoExposureStage::set_dimensions()
 {
-    for (auto& old_target: _mip_targets)
+    for (auto&& old_target: _mip_targets)
         remove_target(old_target);
 
     int wsize_x = (rpcore::Globals::resolution.get_x() + 3) / 4;
@@ -114,7 +114,7 @@ void AutoExposureStage::set_dimensions()
     // Shaders might not have been loaded at this point
     if (!_mip_shader.is_null())
     {
-        for (auto& target: _mip_targets)
+        for (auto&& target: _mip_targets)
             target->set_shader(_mip_shader);
     }
 }
@@ -127,7 +127,7 @@ void AutoExposureStage::reload_shaders()
 
     // Keep shader as reference, required when resizing
     _mip_shader = load_plugin_shader({"downscale_luminance.frag.glsl"}, stereo_mode_);
-    for (auto& target: _mip_targets)
+    for (auto&& target: _mip_targets)
         target->set_shader(_mip_shader);
 }
 

@@ -131,7 +131,7 @@ void VoxelizationStage::update()
     _voxel_target->set_active(true);
     _copy_target->set_active(false);
 
-    for (auto& target: _mip_targets)
+    for (auto&& target: _mip_targets)
         target->set_active(false);
 
     switch (_state)
@@ -177,7 +177,7 @@ void VoxelizationStage::update()
             _copy_target->set_active(true);
             _voxel_cam_np.hide();
 
-            for (auto& target: _mip_targets)
+            for (auto&& target: _mip_targets)
                 target->set_active(true);
 
             // As soon as we generate the mipmaps, we need to update the grid position as well
@@ -192,7 +192,7 @@ void VoxelizationStage::reload_shaders()
     _copy_target->set_shader(load_plugin_shader({ "/$$rp/shader/default_post_process_instanced.vert.glsl", "copy_voxels.frag.glsl" }));
 
     PT(Shader) mip_shader = load_plugin_shader({"/$$rp/shader/default_post_process_instanced.vert.glsl", "generate_mipmaps.frag.glsl"});
-    for (auto& target: _mip_targets)
+    for (auto&& target: _mip_targets)
         target->set_shader(mip_shader);
 }
 

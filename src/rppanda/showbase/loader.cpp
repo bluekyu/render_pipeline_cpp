@@ -203,7 +203,7 @@ std::vector<PT(AudioSound)> Loader::load_sound(AudioManager* manager,
     std::vector<PT(AudioSound)> result;
     result.reserve(sound_path.size());
 
-    for (auto& path: sound_path)
+    for (auto&& path: sound_path)
         result.push_back(manager->get_sound(path, positional));
 
     return result;

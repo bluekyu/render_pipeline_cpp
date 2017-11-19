@@ -165,7 +165,7 @@ void ActorInterval::priv_step(double t)
     // We use our pre-computed list of animControls for
     // efficiency's sake, rather than going through the relatively
     // expensive Actor interface every frame.
-    for (auto& control: controls_)
+    for (auto&& control: controls_)
     {
         // Each animControl might have a different number of frames.
         auto num_frames = control->get_num_frames();
@@ -199,12 +199,12 @@ void ActorInterval::priv_finalize()
         // the next cycle.
         if (reverse_)
         {
-            for (auto& control: controls_)
+            for (auto&& control: controls_)
                 control->pose(start_frame_);
         }
         else
         {
-            for (auto& control: controls_)
+            for (auto&& control: controls_)
                 control->pose(end_frame_);
         }
         if (force_update_)

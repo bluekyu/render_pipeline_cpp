@@ -120,11 +120,11 @@ void BloomStage::reload_shaders()
     _target_apply->set_shader(load_plugin_shader({"apply_bloom.frag.glsl"}, stereo_mode_));
 
     PT(Shader) downsample_shader = load_plugin_shader({"bloom_downsample.frag.glsl"});
-    for (auto& target: _downsample_targets)
+    for (auto&& target: _downsample_targets)
         target->set_shader(downsample_shader);
 
     PT(Shader) upsample_shader = load_plugin_shader({"bloom_upsample.frag.glsl"});
-    for (auto& target: _upsample_targets)
+    for (auto&& target: _upsample_targets)
         target->set_shader(upsample_shader);
 }
 

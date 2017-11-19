@@ -67,7 +67,7 @@ void SkinShadingStage::create()
 void SkinShadingStage::reload_shaders()
 {
     PT(Shader) blur_shader = load_plugin_shader({"sssss_blur.frag.glsl"});
-    for (auto& target: _blur_targets)
+    for (auto&& target: _blur_targets)
         target->set_shader(blur_shader);
 }
 

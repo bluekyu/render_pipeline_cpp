@@ -104,7 +104,7 @@ DayBaseType::DayBaseType(YAML::Node& data, const std::string& id): RPObject(id)
 
 DayBaseType::~DayBaseType()
 {
-    for (auto& c: _curves)
+    for (auto&& c: _curves)
         delete c;
 }
 

@@ -82,7 +82,7 @@ Debugger::~Debugger()
 {
     trace("Destructing Debugger");
 
-    for (auto& tn: debug_lines)
+    for (auto&& tn: debug_lines)
         delete tn;
     delete _hint_reloading;
     delete keybinding_instructions_;

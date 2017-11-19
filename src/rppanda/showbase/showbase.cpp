@@ -174,7 +174,7 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop()
         music_manager_->update();
     }
 
-    for (auto& x: sfx_manager_list_)
+    for (auto&& x: sfx_manager_list_)
         x->update();
 
     return AsyncTask::DS_cont;
@@ -498,7 +498,7 @@ ShowBase::~ShowBase()
     {
         impl_->music_manager_->shutdown();
         impl_->music_manager_.clear();
-        for (auto& manager: impl_->sfx_manager_list_)
+        for (auto&& manager: impl_->sfx_manager_list_)
             manager->shutdown();
         impl_->sfx_manager_list_.clear();
         impl_->sfx_manager_is_valid_list_.clear();

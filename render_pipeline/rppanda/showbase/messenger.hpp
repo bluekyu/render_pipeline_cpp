@@ -231,7 +231,7 @@ inline void Messenger::ignore_all(const EventName& event_name, bool include_obje
 
 inline void Messenger::ignore_all(DirectObject* object)
 {
-    for (auto& hook : hooks_)
+    for (auto&& hook : hooks_)
     {
         if (object)
         {
@@ -310,7 +310,7 @@ inline void Messenger::remove_hook(const EventName& event_name)
 
 inline void Messenger::clear()
 {
-    for (auto& hook : hooks_)
+    for (auto&& hook : hooks_)
         handler_->remove_hook(hook.first, process_event, this);
     hooks_.clear();
 }

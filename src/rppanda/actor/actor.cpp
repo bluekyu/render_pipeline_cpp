@@ -556,7 +556,7 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
         else
         {
             // get the named animation(s) only.
-            for (auto& iter: anim_dict_items)
+            for (auto&& iter: anim_dict_items)
             {
                 auto& anim_dict = iter->second;
 
@@ -595,14 +595,14 @@ std::vector<AnimControl*> Actor::get_anim_controls(bool anim_name, const std::ve
         build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
 
         // get the named animation(s) only.
-        for (auto& iter: anim_dict_items)
+        for (auto&& iter: anim_dict_items)
         {
             auto& anim_dict = iter->second;
 
             // anim_name: True to indicate all anims.
             std::vector<std::string> names;
             names.reserve(anim_dict.size());
-            for (auto& key_val: anim_dict)
+            for (auto&& key_val: anim_dict)
                 names.push_back(key_val.first);
 
             if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
@@ -1263,7 +1263,7 @@ void Actor::update_sorted_LOD_names()
 
     sorted_LOD_names_.clear();
     sorted_LOD_names_.reserve(part_bundle_dict_.size());
-    for (auto& bundle: part_bundle_dict_)
+    for (auto&& bundle: part_bundle_dict_)
         sorted_LOD_names_.push_back(bundle.first);
 
     std::sort(sorted_LOD_names_.begin(), sorted_LOD_names_.end(),

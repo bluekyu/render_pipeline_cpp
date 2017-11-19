@@ -525,7 +525,7 @@ bool RenderPipeline::Impl::create()
 void RenderPipeline::Impl::apply_custom_shaders()
 {
     self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects.size()));
-    for (auto& args: applied_effects)
+    for (auto&& args: applied_effects)
         internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
 }
 

@@ -249,12 +249,12 @@ std::vector<std::string> SampleSequenceType::get_sequences() const
     std::vector<std::string> result;
     if (dimension_ == 2)
     {
-        for (auto dim: POISSON_2D_SIZES)
+        for (const auto& dim: POISSON_2D_SIZES)
             result.push_back("poisson_2D_" + std::to_string(dim));
     }
     else
     {
-        for (auto dim: POISSON_3D_SIZES)
+        for (const auto& dim: POISSON_3D_SIZES)
             result.push_back("poisson_3D_" + std::to_string(dim));
     }
 

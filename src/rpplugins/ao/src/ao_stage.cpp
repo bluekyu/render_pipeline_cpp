@@ -142,7 +142,7 @@ void AOStage::reload_shaders()
         blur_shader = load_plugin_shader({"/$$rp/shader/bilateral_blur_stereo.frag.glsl"}, stereo_mode_);
     else
         blur_shader = load_plugin_shader({"/$$rp/shader/bilateral_blur.frag.glsl"});
-    for (auto& target: blur_targets_)
+    for (auto&& target: blur_targets_)
         target->set_shader(blur_shader);
     target_detail_ao_->set_shader(load_plugin_shader({"small_scale_ao.frag.glsl"}, stereo_mode_));
     target_resolve_->set_shader(load_plugin_shader({"resolve_ao.frag.glsl"}, stereo_mode_));

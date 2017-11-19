@@ -58,7 +58,7 @@ void UpdatePreviousPipesStage::create()
 
 void UpdatePreviousPipesStage::set_dimensions()
 {
-    for (auto& from_to: transfers_)
+    for (auto&& from_to: transfers_)
     {
         from_to.second->set_x_size(Globals::resolution.get_x());
         from_to.second->set_y_size(Globals::resolution.get_y());

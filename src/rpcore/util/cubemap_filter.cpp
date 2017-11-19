@@ -47,7 +47,7 @@ void CubemapFilter::reload_shaders()
 
     // Set specular prefilter shaders
     PT(Shader) mip_shader = _stage->load_shader({"ibl/cubemap_specular_prefilter.frag.glsl"});
-    for (auto& target: _targets_spec)
+    for (auto&& target: _targets_spec)
         target->set_shader(mip_shader);
 
     // Special shader for the first prefilter target
@@ -55,7 +55,7 @@ void CubemapFilter::reload_shaders()
 
     // Set specular filter sampling shaders
     PT(Shader) mip_filter_shader = _stage->load_shader({"ibl/cubemap_specular_filter.frag.glsl"});
-    for (auto& target: _targets_spec_filter)
+    for (auto&& target: _targets_spec_filter)
         target->set_shader(mip_filter_shader);
 
     // Special shader for the first filter target
@@ -71,7 +71,7 @@ void CubemapFilter::make_maps()
     _specular_map = Image::create_cube(_name + "IBLSpec", _size, "R11G11B10");
 
     // Set the correct filtering modes
-    for (auto& tex: {_diffuse_map, _specular_map, _prefilter_map, _spec_pref_map})
+    for (auto&& tex: {_diffuse_map, _specular_map, _prefilter_map, _spec_pref_map})
     {
         tex->set_minfilter(SamplerState::FT_linear);
         tex->set_magfilter(SamplerState::FT_linear);

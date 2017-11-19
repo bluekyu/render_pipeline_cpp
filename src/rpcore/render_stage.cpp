@@ -60,7 +60,7 @@ RenderStage::DefinesType RenderStage::get_produced_defines() const
 
 void RenderStage::set_shader_input(const ShaderInput& inp)
 {
-    for (auto& target: targets_)
+    for (auto&& target: targets_)
         target.second->set_shader_input(inp);
 }
 
@@ -69,7 +69,7 @@ void RenderStage::set_active(bool state)
     if (active_ != state)
     {
         active_ = state;
-        for (auto& target: targets_)
+        for (auto&& target: targets_)
             target.second->set_active(active_);
     }
 }
@@ -94,7 +94,7 @@ std::shared_ptr<RenderTarget> RenderStage::create_target(const std::string& name
 void RenderStage::remove_target(const std::shared_ptr<RenderTarget>& target)
 {
     target->remove();
-    for (auto& key_value: targets_)
+    for (auto&& key_value: targets_)
     {
         if (target == key_value.second)
         {
@@ -118,7 +118,7 @@ PT(Shader) RenderStage::load_plugin_shader(const std::vector<Filename>& args, bo
 void RenderStage::handle_window_resize()
 {
     set_dimensions();
-    for (auto& target: targets_)
+    for (auto&& target: targets_)
         target.second->consider_resize();
 }
 

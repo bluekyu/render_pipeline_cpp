@@ -167,7 +167,7 @@ void StageManager::Impl::prepare_stages()
 
     // Remove all disabled stages
     std::vector<std::shared_ptr<RenderStage>> enabled_stages;
-    for (auto& stage: stages_)
+    for (auto&& stage: stages_)
     {
         if (!stage->disabled_)
             enabled_stages.push_back(stage);
@@ -525,7 +525,7 @@ void StageManager::setup()
 
     impl_->prepare_stages();
 
-    for (auto& stage: impl_->stages_)
+    for (auto&& stage: impl_->stages_)
     {
         debug(fmt::format("Creating stage ({}) ...", stage->get_debug_name()));
         stage->create();

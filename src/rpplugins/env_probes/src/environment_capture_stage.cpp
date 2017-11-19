@@ -153,7 +153,7 @@ void EnvironmentCaptureStage::create_filter_targets()
 void EnvironmentCaptureStage::update()
 {
     // First, disable all targets
-    for (auto& id_target: targets_)
+    for (auto&& id_target: targets_)
         id_target.second->set_active(false);
 
     // Check for updated faces
@@ -168,7 +168,7 @@ void EnvironmentCaptureStage::update()
         _target_store_diff->set_active(true);
         _filter_diffuse_target->set_active(true);
 
-        for (auto& target: _filter_targets)
+        for (auto&& target: _filter_targets)
             target->set_active(true);
     }
 }

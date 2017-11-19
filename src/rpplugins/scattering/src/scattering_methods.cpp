@@ -65,7 +65,7 @@ void ScatteringMethodEricBruneton::exec_compute_shader(const Shader* shader_obj,
 
     NodePath nodepath("shader");
     nodepath.set_shader(shader_obj);
-    for (auto& input: shader_inputs)
+    for (auto&& input: shader_inputs)
         nodepath.set_shader_input(input);
 
     const ShaderAttrib* attr = DCAST(ShaderAttrib, nodepath.get_attrib(ShaderAttrib::get_class_type()));
@@ -154,7 +154,7 @@ void ScatteringMethodEricBruneton::compute()
     }
 
     // Make stages available
-    for (auto& stage: std::vector<std::shared_ptr<rpcore::RenderStage>>({handle_.get_display_stage(), handle_.get_envmap_stage()}))
+    for (auto&& stage: std::vector<std::shared_ptr<rpcore::RenderStage>>({handle_.get_display_stage(), handle_.get_envmap_stage()}))
     {
         stage->set_shader_input(ShaderInput("InscatterSampler", _textures.at("inscatter")->get_texture()));
         stage->set_shader_input(ShaderInput("transmittanceSampler", _textures.at("transmittance")->get_texture()));
@@ -176,7 +176,7 @@ void ScatteringMethodEricBruneton::create_textures()
         { "delta_j", rpcore::Image::create_3d("scat-dx-j", _res_mu_s_nu, _res_mu, _res_r, tex_format) },
     });
 
-    for (auto& key_img: _textures)
+    for (auto&& key_img: _textures)
     {
         key_img.second->set_minfilter(SamplerState::FT_linear);
         key_img.second->set_magfilter(SamplerState::FT_linear);
