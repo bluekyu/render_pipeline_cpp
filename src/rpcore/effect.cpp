@@ -301,14 +301,14 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 
     for (const auto& line: shader_lines)
     {
-        const std::string& stripped_line = boost::to_lower_copy(boost::trim_copy(line));
+        const std::string stripped_line(boost::to_lower_copy(boost::trim_copy(line)));
 
         // Check if we are already in the main function
         if (stripped_line.find("void main()") != std::string::npos)
             in_main = true;
 
         // Check if the current line is a hook
-        if (stripped_line.front() == '%' && stripped_line.back() == '%')
+        if (!stripped_line.empty() && stripped_line.front() == '%' && stripped_line.back() == '%')
         {
             // If the line is a hook, get the hook name and save the
             // indent so we can indent all injected lines properly.
