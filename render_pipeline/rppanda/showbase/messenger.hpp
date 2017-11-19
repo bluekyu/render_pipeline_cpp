@@ -231,22 +231,27 @@ inline void Messenger::ignore_all(const EventName& event_name, bool include_obje
 
 inline void Messenger::ignore_all(DirectObject* object)
 {
-    for (auto&& hook : hooks_)
+    auto iter = hooks_.begin();
+    const auto iter_end = hooks_.end();
+    while (iter != iter_end)
     {
         if (object)
         {
-            auto& object_callbacks = hook.second.object_callbacks;
+            auto& object_callbacks = iter->second.object_callbacks;
             auto found = object_callbacks.find(object);
             if (found != object_callbacks.end())
                 object_callbacks.erase(found);
         }
         else
         {
-            hook.second.callbacks.clear();
+            iter->second.callbacks.clear();
         }
 
-        if (hook.second.empty())
-            remove_hook(hook.first);
+        // iterator becomes invalidated after erase.
+        auto iter_tmp = iter;
+        ++iter;
+        if (iter_tmp->second.empty())
+            remove_hook(iter_tmp->first);
     }
 }
 

@@ -46,6 +46,26 @@ namespace rppanda {
 
 TypeHandle DirectObject::type_handle_;
 
+void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
+{
+    Messenger::get_global_instance()->accept(ev_name, func, this, true);
+}
+
+void DirectObject::accept_once(const std::string& ev_name, const Messenger::EventFunction& func)
+{
+    Messenger::get_global_instance()->accept(ev_name, func, this, false);
+}
+
+void DirectObject::ignore(const std::string& ev_name)
+{
+    Messenger::get_global_instance()->ignore(ev_name, this);
+}
+
+void DirectObject::ignore_all()
+{
+    Messenger::get_global_instance()->ignore_all(this);
+}
+
 AsyncTask* DirectObject::add_task(AsyncTask* task, const std::string& name,
     boost::optional<int> sort, boost::optional<int> priority,
     const boost::optional<std::string>& task_chain)
