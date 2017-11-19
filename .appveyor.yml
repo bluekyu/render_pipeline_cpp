@@ -62,18 +62,33 @@ install:
 - cmd: >-
     python .\builder.py "https://github.com/jbeder/yaml-cpp.git"
     --commit "beb44b87"
+    --config "%CONFIGURATION%"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/yaml-cpp"
 - cmd: >-
     python .\builder.py "https://github.com/gabime/spdlog.git"
     --branch "v0.14.0"
+    --config "%CONFIGURATION%"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/spdlog"
 - cmd: >-
     python .\builder.py "https://github.com/google/flatbuffers.git"
     --commit "0cf04ad"
+    --config "%CONFIGURATION%"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/flatbuffers"
+- cmd: >-
+    if not "%CONFIGURATION%"=="Release" (
+        python .\builder.py "https://github.com/google/flatbuffers.git"
+        --commit "0cf04ad"
+        --config "Release"
+        --cmake-generator "%CMAKE_GENERATOR%"
+        --install-prefix "C:/projects/_build_cache/flatbuffers_release"
+    )
+- cmd: >-
+    if not "%CONFIGURATION%"=="Release" (
+        xcopy /I C:\projects\_build_cache\flatbuffers_release\bin C:\projects\_cache\flatbuffers\bin
+    )
 - ps: popd
 
 # build cache to preserve files/folders between builds
@@ -104,7 +119,6 @@ build_script:
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Dyaml-cpp_DIR:PATH="C:/projects/_cache/yaml-cpp/CMake"
-    -DFlatBuffers_ROOT:PATH="C:/projects/_cache/flatbuffers"
 - cmake --build . --config %CONFIGURATION% --target install
 - ps: popd
 
