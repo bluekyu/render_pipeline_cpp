@@ -6,6 +6,19 @@ include(${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_NAME@-macro.cmake)
 set(@PACKAGE_NAME@_VERSION "@PACKAGE_VERSION@")
 set(@PACKAGE_NAME@_INSTALL_DIR ${PACKAGE_PREFIX_DIR})
 
+get_target_property(render_pipeline_IMPORTED_CONFIGURATIONS render_pipeline::render_pipeline IMPORTED_CONFIGURATIONS)
+if(NOT RELWITHDEBINFO IN_LIST render_pipeline_IMPORTED_CONFIGURATIONS)
+    set_target_properties(render_pipeline::render_pipeline PROPERTIES
+        MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE
+    )
+endif()
+
+if(NOT MINSIZEREL IN_LIST render_pipeline_IMPORTED_CONFIGURATIONS)
+    set_target_properties(render_pipeline::render_pipeline PROPERTIES
+        MAP_IMPORTED_CONFIG_MINSIZEREL RELEASE
+    )
+endif()
+
 message(STATUS "@PACKAGE_NAME@ version: ${@PACKAGE_NAME@_VERSION}")
 
 check_required_components(@PACKAGE_NAME@)

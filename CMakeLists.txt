@@ -55,9 +55,17 @@ endif()
 # find flatbuffers
 if(NOT TARGET flatbuffers::flatbuffers)
     find_package(flatbuffers REQUIRED)
+
+    get_target_property(flatbuffers_IMPORTED_CONFIGURATIONS flatbuffers::flatbuffers IMPORTED_CONFIGURATIONS)
+    if(NOT RELWITHDEBINFO IN_LIST flatbuffers_IMPORTED_CONFIGURATIONS)
+        set_target_properties(flatbuffers::flatbuffers PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
+    endif()
+
     set_target_properties(flatbuffers::flatbuffers PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES "${flatbuffers_DIR}/../../../include"
     )
+
+    # find flatc
     include(${flatbuffers_DIR}/FlatcTargets.cmake)
     if(TARGET flatbuffers::flatc)
         get_target_property(flatbuffers_flatc_executable flatbuffers::flatc IMPORTED_LOCATION_RELEASE)
