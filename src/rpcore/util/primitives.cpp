@@ -158,21 +158,30 @@ bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions, 
 
 NodePath create_plane(const std::string& name)
 {
-    CardMaker card(name);
-    card.set_frame(
-        LVertex(-0.5f, -0.5f, 0.0f),
-        LVertex( 0.5f, -0.5f, 0.0f),
-        LVertex( 0.5f,  0.5f, 0.0f),
-        LVertex(-0.5f,  0.5f, 0.0f));
-    card.set_has_normals(true);
-    card.set_has_uvs(true);
+    // create vertices
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3n3t2(), Geom::UsageHint::UH_static);
+    vdata->unclean_set_num_rows(4);
 
-    // default material
-    NodePath np(card.generate());
-    RPGeomNode gn(np);
-    gn.set_material(0, RPMaterial());
+    GeomVertexWriter vertex(vdata, InternalName::get_vertex());
+    GeomVertexWriter normal(vdata, InternalName::get_normal());
+    GeomVertexWriter texcoord(vdata, InternalName::get_texcoord());
 
-    return np;
+    vertex.add_data3f(-0.5f, -0.5f, 0.0f);     normal.add_data3f(0.0f, 0.0f, 1.0f);     texcoord.add_data2f(0, 0);  // 0
+    vertex.add_data3f(+0.5f, -0.5f, 0.0f);     normal.add_data3f(0.0f, 0.0f, 1.0f);     texcoord.add_data2f(1, 0);  // 1
+    vertex.add_data3f(+0.5f, +0.5f, 0.0f);     normal.add_data3f(0.0f, 0.0f, 1.0f);     texcoord.add_data2f(1, 1);  // 2
+    vertex.add_data3f(-0.5f, +0.5f, 0.0f);     normal.add_data3f(0.0f, 0.0f, 1.0f);     texcoord.add_data2f(0, 1);  // 3
+
+    // create indices
+    PT(GeomTriangles) prim = new GeomTriangles(Geom::UsageHint::UH_static);
+    prim->reserve_num_vertices(6);
+    prim->add_vertices(0, 1, 2);
+    prim->add_vertices(2, 3, 0);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    return create_geom_node(name, geom);
 }
 
 NodePath create_cube(const std::string& name)
