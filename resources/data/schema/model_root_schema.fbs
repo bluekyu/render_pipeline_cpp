@@ -1,9 +1,0 @@
-include "panda_node_schema.fbs";
-
-namespace rpcore;
-
-table ModelRootSchema {
-    root_node:PandaNodeSchema;
-}
-
-root_type ModelRootSchema;

@@ -71,24 +71,6 @@ install:
     --config "%CONFIGURATION%"
     --cmake-generator "%CMAKE_GENERATOR%"
     --install-prefix "C:/projects/_cache/spdlog"
-- cmd: >-
-    python .\builder.py "https://github.com/google/flatbuffers.git"
-    --commit "0cf04ad"
-    --config "%CONFIGURATION%"
-    --cmake-generator "%CMAKE_GENERATOR%"
-    --install-prefix "C:/projects/_cache/flatbuffers"
-- cmd: >-
-    if not "%CONFIGURATION%"=="Release" (
-    python .\builder.py "https://github.com/google/flatbuffers.git"
-    --commit "0cf04ad"
-    --config "Release"
-    --cmake-generator "%CMAKE_GENERATOR%"
-    --install-prefix "C:/projects/_build_cache/flatbuffers_release"
-    )
-- cmd: >-
-    if not "%CONFIGURATION%"=="Release" (
-    xcopy /I C:\projects\_build_cache\flatbuffers_release\bin C:\projects\_cache\flatbuffers\bin
-    )
 - ps: popd
 
 # build cache to preserve files/folders between builds

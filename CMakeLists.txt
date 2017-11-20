@@ -52,51 +52,11 @@ if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
 
-# find flatbuffers
-if(NOT TARGET flatbuffers::flatbuffers)
-    find_package(flatbuffers REQUIRED)
-
-    get_target_property(flatbuffers_IMPORTED_CONFIGURATIONS flatbuffers::flatbuffers IMPORTED_CONFIGURATIONS)
-    if(NOT RELWITHDEBINFO IN_LIST flatbuffers_IMPORTED_CONFIGURATIONS)
-        set_target_properties(flatbuffers::flatbuffers PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
-    endif()
-
-    set_target_properties(flatbuffers::flatbuffers PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${flatbuffers_DIR}/../../../include"
-    )
-
-    # find flatc
-    include(${flatbuffers_DIR}/FlatcTargets.cmake)
-    if(TARGET flatbuffers::flatc)
-        get_target_property(flatbuffers_flatc_executable flatbuffers::flatc IMPORTED_LOCATION_RELEASE)
-        message(STATUS "Found flatc: ${flatbuffers_flatc_executable}")
-    else()
-        message(FATAL_ERROR "Cannot find flatc program.")
-    endif()
-endif()
-
 set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
 include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
 # ==================================================================================================
 
 # ==================================================================================================
-function(render_pipeline_generate_schema_headers target_)
-    # generate schema headers
-    set(schema_output_dir "${PROJECT_BINARY_DIR}/rpcore/schema")
-    file(GLOB flatc_input_files "${PROJECT_SOURCE_DIR}/resources/data/schema/*.fbs")
-    foreach(input_file ${flatc_input_files})
-        get_filename_component(input_file_name ${input_file} NAME_WE)
-
-        set(schema_header_file "${schema_output_dir}/${input_file_name}_generated.h")
-        add_custom_command(OUTPUT ${schema_header_file}
-            COMMAND ${flatbuffers_flatc_executable} -c --scoped-enums -o "${schema_output_dir}" "${input_file}"
-            DEPENDS "${input_file}"
-        )
-
-        target_sources(${target_} PRIVATE ${schema_header_file})
-    endforeach()
-endfunction()
-
 function(render_pipeline_generate_version_hpp)
     configure_file("${PROJECT_SOURCE_DIR}/src/rpcore/version.hpp.in"
         "${PROJECT_BINARY_DIR}/rpcore/version.hpp"
@@ -109,7 +69,6 @@ endfunction()
 # === target =======================================================================================
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
-render_pipeline_generate_schema_headers(${PROJECT_NAME})
 render_pipeline_generate_version_hpp()
 
 if(MSVC)
@@ -148,7 +107,6 @@ target_link_libraries(${PROJECT_NAME}
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp spdlog::spdlog
-    flatbuffers::flatbuffers
 
     $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )

@@ -10,7 +10,6 @@ The **Versions** are used by a build system and does **NOT** need to match.
 - Boost: 1.64.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): beb44b87 commit
 - [spdlog](https://github.com/gabime/spdlog): 0.14.0
-- [flatbuffers](https://github.com/google/flatbuffers): 0cf04ad commit
 
 ### Optional
 - Doxygen (to create doxygen documents)
@@ -44,10 +43,6 @@ And set `yaml-cpp_DIR` to CMake directory in installed directory.
 #### spdlog
 Build and install the repository with CMake.
 And set `spdlog_DIR` to CMake directory in installed directory.
-
-#### flatbuffers
-Build and install the repository with CMake.
-And set `FlatBuffers_ROOT` to installed directory.
 
 
 
@@ -88,7 +83,6 @@ set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
 set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
 set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
 set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
-set(FlatBuffers_ROOT "R:/usr/lib/flatbuffers" CACHE PATH "" FORCE)
 
 # optional paths
 set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)

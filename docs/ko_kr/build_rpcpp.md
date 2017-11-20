@@ -10,7 +10,6 @@
 - Boost: 1.64.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): beb44b87 commit
 - [spdlog](https://github.com/gabime/spdlog): 0.14.0
-- [flatbuffers](https://github.com/google/flatbuffers): 0cf04ad commit
 
 ### 선택사항
 - Doxygen (Doxygen 문서 생성)
@@ -44,10 +43,6 @@ Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정�
 #### spdlog
 라이브러리 저장소를 CMake 로 빌드 및 설치한다.
 그리고 `spdlog_DIR` 을 설치 폴더 안에 있는 CMake 폴더로 지정한다.
-
-#### flatbuffers
-라이브러리 저장소를 CMake 로 빌드 및 설치한다.
-그리고 `FlatBuffers_ROOT` 를 설치 폴더로 설정한다.
 
 
 
@@ -88,7 +83,6 @@ set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
 set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
 set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
 set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
-set(FlatBuffers_ROOT "R:/usr/lib/flatbuffers" CACHE PATH "" FORCE)
 
 # 선택사항
 set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)
