@@ -27,8 +27,12 @@
 
 cmake_minimum_required(VERSION 3.6)
 
-if(NOT panda3d_ROOT_RELEASE)
+if(panda3d_ROOT AND NOT panda3d_ROOT_RELEASE)
     set(panda3d_ROOT_RELEASE "${panda3d_ROOT}")
+endif()
+
+if(panda3d_ROOT AND NOT panda3d_ROOT_DEBUG)
+    set(panda3d_ROOT_DEBUG "${panda3d_ROOT}")
 endif()
 
 set(panda3d_DEFAULT_COMPONENTS p3framework panda pandaexpress p3dtool p3dtoolconfig p3direct p3interrogatedb)
