@@ -28,8 +28,6 @@ endfunction()
 
 _find_boost("filesystem")
 
-if(NOT TARGET panda3d::panda3d)
-    # find panda3d
-    set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
-    find_package(panda3d REQUIRED)
-endif()
+# find panda3d
+set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
+find_package(panda3d REQUIRED p3framework p3direct)

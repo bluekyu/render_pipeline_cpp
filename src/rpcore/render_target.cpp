@@ -313,7 +313,6 @@ void RenderTarget::Impl::make_properties(WindowProperties& window_props, FrameBu
     buffer_props.set_multisamples(0);
     buffer_props.set_srgb_color(false);
     buffer_props.set_stereo(false);
-    buffer_props.set_stencil_bits(0);
 
     if (aux_bits_ == 8)
         buffer_props.set_aux_rgba(aux_count_);
