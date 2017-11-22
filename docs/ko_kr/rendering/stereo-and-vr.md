@@ -3,7 +3,9 @@
 
 ## 스테레오 렌더링
 Render Pipeline 에서 스테레오 렌더링을 사용하려면 stereo 옵션을 활성화 해야 한다.
-Render Pipeline 의 설정 파일 중 `pipeline.yaml` 파일을 열어서 `stereo_mode` 옵션을 `true` 로 변경한다.
+Render Pipeline 의 설정 파일 중 `pipeline.yaml` 파일을 열어서 `stereo_mode` 옵션을 `left`, `right`, `stereo` 중
+하나로 변경한다. `left` 는 스테레오 모드 렌더링이지만 최종 화면은 왼쪽 뷰에서 본 것만 나오고, `right` 는 오른쪽 뷰에서 본 것만
+나온다. `stereo` 는 왼쪽 및 오른쪽 뷰를 side-by-side 형태로 나타낸다.
 
 ### Panda3D 방식과의 차이점
 Panda3D 에서도 자체적으로 스테레오 렌더링을 지원한다. 그러나 Panda3D 에서 지원하는 방식은 렌더링하는 디스플레이와
@@ -23,7 +25,7 @@ Render Pipeline 에서 가상현실을 위한 Head Mount Display (HMD) 렌더링
     Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
 
 OpenVR 플러그인을 설치한 후, OpenVR 플러그인을 `plugins.yaml` 에서 활성화 시킨다.
-그리고 `pipeline.yaml` 파일에서 `stereo_mode` 옵션을 `true` 로 변경한다.
+그리고 `pipeline.yaml` 파일에서 `stereo_mode` 옵션을 위에서 언급된 값으로 변경한다.
 
 추가적으로, 렌더링 버퍼 크기를 설정해줘야 한다. 기본적인 OpenVR 렌더링 `넓이 x 높이` 는 `1512 x 1680` 이다.
 이를 `Config.prc` 파일에서 창크기 설정인 `win-size` 에 반영해도 된다.
@@ -38,7 +40,7 @@ OpenVR 플러그인을 설치한 후, OpenVR 플러그인을 `plugins.yaml` 에�
 ### 요약
 1. `plugins.yaml`: 플러그인 활성화 (예, `openvr`)
 2. 스테레오 모드 활성화(`pipeline.yaml`)
-   - `stereo_mode`: true
+   - `stereo_mode`: `left`, `right`, `stereo` 중 하나
 3. 렌더링 크기 조절
    - 창크기 변경(`Config.prc`)
      - `win-size` 에서 `width x height` 에 HMD 해상도 적용
