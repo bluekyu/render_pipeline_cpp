@@ -52,7 +52,12 @@ matrix:
 # scripts that run after cloning repository
 install:
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
-- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=develop'
+- ps: >-
+    if ($env:CONFIGURATION -eq "Debug") {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=develop&job=Configuration%3A+MixForDebug'
+    } else {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=develop&job=Configuration%3A+Release'
+    }
 - 7z x -y panda3d-thirdparty.7z > nul
 - ps: >-
     if ($env:CONFIGURATION -eq "Debug") {

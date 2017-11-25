@@ -14,10 +14,6 @@ include(git-utils)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
-if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
-    message(STATUS "Windows 10 Target Platform: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
-endif()
-
 # version
 set(render_pipeline_VERSION "0.3.1")
 set(render_pipeline_SEMANTIC_VERSION "${render_pipeline_VERSION}")
