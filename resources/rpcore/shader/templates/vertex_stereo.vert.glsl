@@ -43,6 +43,7 @@ in vec3 p3d_Normal;
 in vec2 p3d_MultiTexCoord0;
 
 uniform mat4 p3d_ViewProjectionMatrix;
+uniform mat4 p3d_TextureMatrix;
 
 #if EXPERIMENTAL_PREV_TRANSFORM
     uniform mat4 p3d_PrevModelMatrix;
@@ -65,7 +66,7 @@ void main() {
 
     %main_begin%
 
-    vOutput.texcoord = p3d_MultiTexCoord0;
+    vOutput.texcoord = (p3d_TextureMatrix * vec4(p3d_MultiTexCoord0, 0, 1)).xy;
     vOutput.normal = normalize(tpose_world_to_model * p3d_Normal).xyz;
     vOutput.position = (p3d_ModelMatrix * p3d_Vertex).xyz;
 
