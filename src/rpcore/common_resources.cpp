@@ -97,8 +97,23 @@ void CommonResources::update()
             cam_lens->get_projection_mat(Lens::StereoChannel::SC_right),
         };
 
+        // Panda3D stereoscopic rendering
+        if (cam_lens->get_interocular_distance() != 0)
+        {
+            // see: PerspectiveLens::do_compute_projection_mat
+            const LVector3& iod = cam_lens->get_interocular_distance() * 0.5f * LVector3::left(cam_lens->get_coordinate_system());
+
+            eye_path[0].set_mat(Globals::render, LMatrix4::translate_mat(iod) * showbase_->get_cam().get_mat(Globals::render));
+            eye_path[1].set_mat(Globals::render, LMatrix4::translate_mat(-iod) * showbase_->get_cam().get_mat(Globals::render));
+
+            // Panda3D stereo projection matrix is already applied for IOD. We need to fix this.
+            // see: PerspectiveLens::do_compute_projection_mat
+            stereo_proj_mat[0] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(iod) * cam_lens->get_lens_mat() * stereo_proj_mat[0];        // for left camera
+            stereo_proj_mat[1] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(-iod) * cam_lens->get_lens_mat() * stereo_proj_mat[1];        // for right camera
+        }
+
         // Get the current transform matrix of the camera
-        const LMatrix4f view_mat[2] = { 
+        const LMatrix4f view_mat[2] = {
             Globals::render.get_transform(eye_path[0])->get_mat(),
             Globals::render.get_transform(eye_path[1])->get_mat(),
         };
@@ -121,21 +136,6 @@ void CommonResources::update()
 
         input_ubo_->update_input("stereo_view_mat_billboard", view_mat_billboard[0], 0);
         input_ubo_->update_input("stereo_view_mat_billboard", view_mat_billboard[1], 1);
-
-        // Panda3D stereoscopic rendering
-        if (cam_lens->get_interocular_distance() != 0)
-        {
-            // see: PerspectiveLens::do_compute_projection_mat
-            const LVector3& iod = cam_lens->get_interocular_distance() * 0.5f * LVector3::left(cam_lens->get_coordinate_system());
-
-            eye_path[0].set_mat(Globals::render, LMatrix4::translate_mat(iod) * showbase_->get_cam().get_mat(Globals::render));
-            eye_path[1].set_mat(Globals::render, LMatrix4::translate_mat(-iod) * showbase_->get_cam().get_mat(Globals::render));
-
-            // Panda3D stereo projection matrix is already applied for IOD. We need to remove this.
-            // see: PerspectiveLens::do_compute_projection_mat
-            stereo_proj_mat[0] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(iod) * cam_lens->get_lens_mat() * stereo_proj_mat[0];        // for left camera
-            stereo_proj_mat[1] = cam_lens->get_lens_mat_inv() * LMatrix4::translate_mat(-iod) * cam_lens->get_lens_mat() * stereo_proj_mat[1];        // for right camera
-        }
 
         input_ubo_->update_input("stereo_camera_pos", eye_path[0].get_pos(Globals::render), 0);
         input_ubo_->update_input("stereo_camera_pos", eye_path[1].get_pos(Globals::render), 1);
