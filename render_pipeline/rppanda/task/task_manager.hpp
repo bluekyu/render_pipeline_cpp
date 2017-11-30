@@ -89,6 +89,7 @@ public:
      *
      * @param   task        AsyncTask pointer.
      * @param   name        the name to assign to the Task.
+     *                      This is required unless the task has already name.
      *
      * @param   sort        the sort value to assign the task.  The default sort is 0.
      *                      Within a particular task chain, it is guaranteed that the
@@ -121,7 +122,7 @@ public:
      *
      * @return  pointer of a new task object
      */
-    FunctionalTask* add(const FunctionalTask::TaskFunc& func, const std::string& name = {},
+    FunctionalTask* add(const FunctionalTask::TaskFunc& func, const std::string& name,
         boost::optional<int> sort = {}, boost::optional<int> priority = {},
         const boost::optional<std::string>& task_chain = {},
         const FunctionalTask::DeathFunc& upon_death = nullptr);
