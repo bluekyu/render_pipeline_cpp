@@ -42,71 +42,73 @@
 
 namespace rppanda {
 
-static const LVecBase2f SHADOW_OFFSET(0.04f);
 static const float MARGIN = 0.1f;
 
-OnscreenText::OnscreenText(const Parameters& params)
+const LVecBase2 OnscreenText::Default::shadow_offset(0.04f, 0.04f);
+const OnscreenText::Style OnscreenText::Default::style = Style::plain;
+
+OnscreenText::OnscreenText(const std::string& text, Style style,
+    const LVecBase2& pos, float roll, boost::optional<LVecBase2> scale,
+    boost::optional<LColor> fg, boost::optional<LColor> bg, boost::optional<LColor> shadow,
+    const LVecBase2& shadow_offset, boost::optional<LColor> frame,
+    boost::optional<TextNode::Alignment> align, boost::optional<float> wordwrap,
+    boost::optional<int> draw_order, bool decal, TextFont* font,
+    NodePath parent, int sort, bool may_change,
+    boost::optional<TextProperties::Direction> direction)
 {
-    NodePath parent = params.parent;
     if (parent.is_empty())
         parent = rppanda::ShowBase::get_global_ptr()->get_aspect_2d();
 
     // make a text node
     PT(TextNode) text_node = new TextNode("");
-    _text_node = text_node;
+    text_node_ = text_node;
 
     // Choose the default parameters according to the selected style.
-    LColorf fg;
-    LColorf bg;
-    LColorf shadow;
-    LColorf frame;
-    boost::optional<TextNode::Alignment> align = params.align;
-
-    switch (params.style)
+    switch (style)
     {
     case Style::plain:
-        _scale = params.scale ? params.scale.get() : 0.07f;
-        fg = params.fg ? params.fg.get() : LColorf(0, 0, 0, 1);
-        bg = params.bg ? params.bg.get() : LColorf(0, 0, 0, 0);
-        shadow = params.shadow ? params.shadow.get() : LColorf(0, 0, 0, 0);
-        frame = params.frame ? params.frame.get() : LColorf(0, 0, 0, 0);
+        scale_ = scale.value_or(0.07f);
+        fg = fg.value_or(LColorf(0, 0, 0, 1));
+        bg = bg.value_or(LColorf(0, 0, 0, 0));
+        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
+        frame = frame.value_or(LColorf(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::screen_title:
-        _scale = params.scale ? params.scale.get() : 0.15f;
-        fg = params.fg ? params.fg.get() : LColorf(1.0f, 0.2f, 0.2f, 1.0f);
-        bg = params.bg ? params.bg.get() : LColorf(0, 0, 0, 0);
-        shadow = params.shadow ? params.shadow.get() : LColorf(0, 0, 0, 1);
-        frame = params.frame ? params.frame.get() : LColorf(0, 0, 0, 0);
+        scale_ = scale.value_or(0.15f);
+        fg = fg.value_or(LColorf(1.0f, 0.2f, 0.2f, 1.0f));
+        bg = bg.value_or(LColorf(0, 0, 0, 0));
+        shadow = shadow.value_or(LColorf(0, 0, 0, 1));
+        frame = frame.value_or(LColorf(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::screen_prompt:
-        _scale = params.scale ? params.scale.get() : 0.1f;
-        fg = params.fg ? params.fg.get() : LColorf(1, 1, 0, 1);
-        bg = params.bg ? params.bg.get() : LColorf(0, 0, 0, 0);
-        shadow = params.shadow ? params.shadow.get() : LColorf(0, 0, 0, 1);
-        frame = params.frame ? params.frame.get() : LColorf(0, 0, 0, 0);
+        scale_ = scale.value_or(0.1f);
+        fg = fg.value_or(LColorf(1, 1, 0, 1));
+        bg = bg.value_or(LColorf(0, 0, 0, 0));
+        shadow = shadow.value_or(LColorf(0, 0, 0, 1));
+        frame = frame.value_or(LColorf(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::name_confirm:
-        _scale = params.scale ? params.scale.get() : 0.1f;
-        fg = params.fg ? params.fg.get() : LColorf(0, 1, 0, 1);
-        bg = params.bg ? params.bg.get() : LColorf(0, 0, 0, 0);
-        shadow = params.shadow ? params.shadow.get() : LColorf(0, 0, 0, 0);
-        frame = params.frame ? params.frame.get() : LColorf(0, 0, 0, 0);
+        scale_ = scale.value_or(0.1f);
+        fg = fg.value_or(LColorf(0, 1, 0, 1));
+        bg = bg.value_or(LColorf(0, 0, 0, 0));
+        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
+        frame = frame.value_or(LColorf(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
 
     case Style::black_on_white:
-        _scale = params.scale ? params.scale.get() : 0.1f;
-        fg = params.fg ? params.fg.get() : LColorf(0, 0, 0, 1);
-        bg = params.bg ? params.bg.get() : LColorf(1, 1, 1, 0);
-        shadow = params.shadow ? params.shadow.get() : LColorf(0, 0, 0, 0);
-        frame = params.frame ? params.frame.get() : LColorf(0, 0, 0, 0);
+        scale_ = scale.value_or(0.1f);
+        fg = fg.value_or(LColorf(0, 0, 0, 1));
+        bg = bg.value_or(LColorf(1, 1, 1, 0));
+        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
+        frame = frame.value_or(LColorf(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
@@ -117,41 +119,43 @@ OnscreenText::OnscreenText(const Parameters& params)
     }
 
     // Save some of the parameters for posterity.
-    _pos = params.pos;
-    _roll = params.roll;
+    pos_ = pos;
+    roll_ = roll;
 
-    if (params.decal)
+    if (decal)
         text_node->set_card_decal(true);
 
-    text_node->set_font(params.font ? params.font : get_default_font());
-    text_node->set_text_color(fg);
-    text_node->set_align(align.get());
+    text_node->set_font(font ? font : get_default_font());
+    text_node->set_text_color(fg.value());
+    text_node->set_align(align.value());
 
-    if (params.wordwrap)
-        text_node->set_wordwrap(params.wordwrap.get());
+    if (wordwrap)
+        text_node->set_wordwrap(wordwrap.value());
 
-    if (bg[3] != 0)
+    if (bg.value()[3] != 0)
     {
         // If we have a background color, create a card.
-        text_node->set_card_color(bg);
+        text_node->set_card_color(bg.value());
         text_node->set_card_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
     }
 
-    if (shadow[3] != 0)
+    if (shadow.value()[3] != 0)
     {
         // If we have a shadow color, create a shadow.
         // Can't use the *shadow interface because it might be a VBase4.
-        // textNode.setShadowColor(*shadow)
-        text_node->set_shadow_color(shadow);
-        text_node->set_shadow(params.shadow_offset);
+        text_node->set_shadow_color(shadow.value());
+        text_node->set_shadow(shadow_offset);
     }
 
-    if (frame[3] != 0)
+    if (frame.value()[3] != 0)
     {
         // If we have a frame color, create a frame.
-        text_node->set_frame_color(frame);
+        text_node->set_frame_color(frame.value());
         text_node->set_frame_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
     }
+
+    if (direction)
+        text_node->set_direction(direction.value());
 
     // Create a transform for the text for our scale and position.
     // We'd rather do it here, on the text itself, rather than on
@@ -159,111 +163,111 @@ OnscreenText::OnscreenText(const Parameters& params)
     // graph.
     update_transform_mat();
 
-    if (params.draw_order)
+    if (draw_order)
     {
         text_node->set_bin("fixed");
-        text_node->set_draw_order(params.draw_order.get());
+        text_node->set_draw_order(draw_order.value());
     }
 
-    set_text(params.text);
-    if (!params.text.empty())
-        _may_change = true;
+    set_text(text);
+    if (!text.empty())
+        may_change_ = true;
     else
-        _may_change = params.may_change;
+        may_change_ = may_change;
 
     // Ok, now update the node.
-    if (!_may_change)
-        _text_node = text_node->generate();
+    if (!may_change_)
+        text_node_ = text_node->generate();
 
-    _is_clean = false;
+    is_clean_ = false;
 
     // Set ourselves up as the NodePath that points to this node.
-    NodePath::operator=(std::move(parent.attach_new_node(_text_node, params.sort)));
+    NodePath::operator=(std::move(parent.attach_new_node(text_node_, sort)));
 }
 
 void OnscreenText::cleanup()
 {
-    _text_node = nullptr;
-    if (!_is_clean)
+    text_node_ = nullptr;
+    if (!is_clean_)
     {
-        _is_clean = true;
+        is_clean_ = true;
         remove_node();
     }
 }
 
 void OnscreenText::set_decal(bool decal)
 {
-    DCAST(TextNode, _text_node)->set_card_decal(decal);
+    DCAST(TextNode, text_node_)->set_card_decal(decal);
 }
 
 bool OnscreenText::get_decal() const
 {
-    return DCAST(TextNode, _text_node)->get_card_decal();
+    return DCAST(TextNode, text_node_)->get_card_decal();
 }
 
 // Reimplementation of TextNode::set_font.
 // fontPtr: the font to use for the text.
 void OnscreenText::set_font(TextFont* fontPtr)
 {
-    DCAST(TextNode, _text_node)->set_font(fontPtr);
+    DCAST(TextNode, text_node_)->set_font(fontPtr);
 }
 
 // Reimplementation of TextNode::get_font.
 TextFont* OnscreenText::get_font() const
 {
-    return DCAST(TextNode, _text_node)->get_font();
+    return DCAST(TextNode, text_node_)->get_font();
 }
 
 // Reimplementation of TextNode::clear_text.
 void OnscreenText::clear_text()
 {
-    DCAST(TextNode, _text_node)->clear_text();
+    DCAST(TextNode, text_node_)->clear_text();
 }
 
 // Reimplementation of TextNode::set_text.
 // text: the actual text to display.
 void OnscreenText::set_text(const string& text)
 {
-    DCAST(TextNode, _text_node)->set_text(text);
+    DCAST(TextNode, text_node_)->set_text(text);
 }
 
 // Reimplementation of TextNode::append_text.
 void OnscreenText::append_text(const string& text)
 {
-    DCAST(TextNode, _text_node)->append_text(text);
+    DCAST(TextNode, text_node_)->append_text(text);
 }
 
 // Reimplementation of TextNode::get_text.
 string OnscreenText::get_text() const
 {
-    return DCAST(TextNode, _text_node)->get_text();
+    return DCAST(TextNode, text_node_)->get_text();
 }
 
 // Position the onscreen text in 2d screen space.
 // pos: the x, y position of the text on the screen.
 void OnscreenText::set_pos(const LVecBase2f& pos)
 {
-    _pos = pos;
+    pos_ = pos;
     update_transform_mat();
 }
 
 // Rotate the onscreen text around the screen's normal
 void OnscreenText::set_roll(float roll)
 {
-    _roll = roll;
+    roll_ = roll;
     update_transform_mat();
 }
 
 void OnscreenText::set_scale(const LVecBase2f& scale)
 {
-    _scale = scale;
+    scale_ = scale;
     update_transform_mat();
 }
 
 // Returns the scale of the text in 2d space.
 const LVecBase2f& OnscreenText::get_scale() const
 {
-    return _scale;
+    return scale_;
 }
 
 
@@ -272,14 +276,14 @@ const LVecBase2f& OnscreenText::get_scale() const
 //           to specify no automatic word wrapping.
 void OnscreenText::set_wordwrap(float wordwrap)
 {
-    _wordwrap = wordwrap;
+    wordwrap_ = wordwrap;
     if (wordwrap != 0)
     {
-        DCAST(TextNode, _text_node)->set_wordwrap(wordwrap);
+        DCAST(TextNode, text_node_)->set_wordwrap(wordwrap);
     }
     else
     {
-        DCAST(TextNode, _text_node)->clear_wordwrap();
+        DCAST(TextNode, text_node_)->clear_wordwrap();
     }
 }
 
@@ -287,7 +291,7 @@ void OnscreenText::set_wordwrap(float wordwrap)
 // fg: the (r, g, b, a) foreground color of the text.
 void OnscreenText::set_fg(const LColor& fg)
 {
-    DCAST(TextNode, _text_node)->set_text_color(fg);
+    DCAST(TextNode, text_node_)->set_text_color(fg);
 }
 
 // Reimplementation of TextNode::set_card_color
@@ -299,13 +303,13 @@ void OnscreenText::set_bg(const LColor& bg)
     if (bg[3] != 0)
     {
         // If we have a background color, create a card.
-        DCAST(TextNode, _text_node)->set_card_color(bg);
-        DCAST(TextNode, _text_node)->set_card_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
+        DCAST(TextNode, text_node_)->set_card_color(bg);
+        DCAST(TextNode, text_node_)->set_card_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
     }
     else
     {
         // Otherwise, remove the card.
-        DCAST(TextNode, _text_node)->clear_card();
+        DCAST(TextNode, text_node_)->clear_card();
     }
 }
 
@@ -318,20 +322,20 @@ void OnscreenText::set_shadow(const LColor& shadow)
     if (shadow[3] != 0)
     {
         // If we have a shadow color, create a shadow.
-        DCAST(TextNode, _text_node)->set_shadow_color(shadow);
-        DCAST(TextNode, _text_node)->set_shadow(SHADOW_OFFSET);
+        DCAST(TextNode, text_node_)->set_shadow_color(shadow);
+        DCAST(TextNode, text_node_)->set_shadow(Default::shadow_offset);
     }
     else
     {
         // Otherwise, remove the shadow.
-        DCAST(TextNode, _text_node)->clear_shadow();
+        DCAST(TextNode, text_node_)->clear_shadow();
     }
 }
 
 // Reimplementation of TextNode::set_shadow.
 void OnscreenText::set_shadow_offset(const LVecBase2& offset)
 {
-    DCAST(TextNode, _text_node)->set_shadow(offset);
+    DCAST(TextNode, text_node_)->set_shadow(offset);
 }
 
 // Reimplementation of TextNode::set_frame_color
@@ -343,13 +347,13 @@ void OnscreenText::set_frame(const LColor& frame)
     if (frame[3] != 0)
     {
         // If we have a frame color, create a frame.
-        DCAST(TextNode, _text_node)->set_frame_color(frame);
-        DCAST(TextNode, _text_node)->set_frame_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
+        DCAST(TextNode, text_node_)->set_frame_color(frame);
+        DCAST(TextNode, text_node_)->set_frame_as_margin(MARGIN, MARGIN, MARGIN, MARGIN);
     }
     else
     {
         // Otherwise, remove the frame.
-        DCAST(TextNode, _text_node)->clear_frame();
+        DCAST(TextNode, text_node_)->clear_frame();
     }
 }
 
@@ -357,7 +361,7 @@ void OnscreenText::set_frame(const LColor& frame)
 // align: one of TextNode::A_Left, TextNode::A_right, or TextNode::A_center.
 void OnscreenText::set_align(TextNode::Alignment align)
 {
-    return DCAST(TextNode, _text_node)->set_align(align);
+    return DCAST(TextNode, text_node_)->set_align(align);
 }
 
 }

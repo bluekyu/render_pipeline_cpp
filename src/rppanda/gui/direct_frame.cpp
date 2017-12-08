@@ -119,14 +119,11 @@ void DirectFrame::set_text()
                 return;
             else
             {
-                OnscreenText::Parameters params;
-                params.text = text;
-                params.style = OnscreenText::Style::plain;
-                params.parent = _state_node_path.at(i);
-                params.scale = 1;
-                params.may_change = std::dynamic_pointer_cast<Options>(_options)->text_may_change;
-                params.sort = TEXT_SORT_INDEX;
-                create_component(component_name, boost::any(OnscreenText(params)));
+                create_component(component_name, boost::any(OnscreenText(
+                    text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
+                    {}, {}, {}, OnscreenText::Default::shadow_offset, {},
+                    {}, {}, {}, false, nullptr, _state_node_path.at(i), TEXT_SORT_INDEX,
+                    std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
             }
         }
     }

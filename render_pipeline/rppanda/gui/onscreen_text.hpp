@@ -67,27 +67,10 @@ public:
         black_on_white
     };
 
-    struct Parameters
+    struct RENDER_PIPELINE_DECL Default
     {
-        Parameters() {}
-        std::string text = "";
-        Style style = Style::plain;
-        LVecBase2 pos = LVecBase2(0);
-        float roll = 0.0f;
-        boost::optional<LVecBase2> scale;
-        boost::optional<LColor> fg;
-        boost::optional<LColor> bg;
-        boost::optional<LColor> shadow;
-        LVecBase2 shadow_offset = LVecBase2(0.04f, 0.04f);
-        boost::optional<LColor> frame;
-        boost::optional<TextNode::Alignment> align;
-        boost::optional<float> wordwrap;
-        boost::optional<int> draw_order;
-        bool decal = false;
-        TextFont* font = nullptr;
-        NodePath parent = NodePath();
-        int sort = 0;
-        bool may_change = true;
+        static const LVecBase2 shadow_offset;
+        static const Style style;
     };
 
 public:
@@ -101,7 +84,14 @@ public:
      *                     head of this file.  This sets up the default values for
      *                     many parameters.
      */
-    OnscreenText(const Parameters& params=Parameters());
+    OnscreenText(const std::string& text = "", Style style = Default::style,
+        const LVecBase2& pos = LVecBase2(0), float roll = 0, boost::optional<LVecBase2> scale = {},
+        boost::optional<LColor> fg = {}, boost::optional<LColor> bg = {}, boost::optional<LColor> shadow = {},
+        const LVecBase2& shadow_offset = Default::shadow_offset, boost::optional<LColor> frame = {},
+        boost::optional<TextNode::Alignment> align = {}, boost::optional<float> wordwrap = {},
+        boost::optional<int> draw_order = {}, bool decal = false, TextFont* font = nullptr,
+        NodePath parent = {}, int sort = 0, bool may_change = true,
+        boost::optional<TextProperties::Direction> direction = {});
 
     void cleanup();
 
@@ -160,25 +150,25 @@ public:
     void set_align(TextNode::Alignment align);
 
 private:
-    LVecBase2f _scale;
-    LVecBase2f _pos;
-    float _roll;
-    float _wordwrap;
-    bool _may_change = true;
-    bool _is_clean = false;
+    LVecBase2f scale_;
+    LVecBase2f pos_;
+    float roll_;
+    float wordwrap_;
+    bool may_change_;
+    bool is_clean_;
 
-    PandaNode* _text_node;        ///< This is just for access.
+    PandaNode* text_node_;        ///< This is just for access.
 };
 
 // ************************************************************************************************
 inline void OnscreenText::set_x(float x)
 {
-    set_pos(LVecBase2f(x, _pos[1]));
+    set_pos(LVecBase2f(x, pos_[1]));
 }
 
 inline void OnscreenText::set_y(float y)
 {
-    set_pos(_pos[0], y);
+    set_pos(pos_[0], y);
 }
 
 inline void OnscreenText::set_pos(float x, float y)
@@ -188,12 +178,12 @@ inline void OnscreenText::set_pos(float x, float y)
 
 inline const LVecBase2f& OnscreenText::get_pos() const
 {
-    return _pos;
+    return pos_;
 }
 
 inline float OnscreenText::get_roll() const
 {
-    return _roll;
+    return roll_;
 }
 
 inline void OnscreenText::set_scale(float scale)
@@ -208,16 +198,16 @@ inline void OnscreenText::set_scale(float scaleX, float scaleY)
 
 inline float OnscreenText::get_wordwrap() const
 {
-    return _wordwrap;
+    return wordwrap_;
 }
 
 inline void OnscreenText::update_transform_mat()
 {
     const LMatrix4f& mat =
-        LMatrix4f::scale_mat(_scale.get_x(), 1, _scale.get_y()) *
-        LMatrix4f::rotate_mat(_roll, LVector3f::back()) *
-        LMatrix4f::translate_mat(_pos.get_x(), 0, _pos.get_y());
-    DCAST(TextNode, _text_node)->set_transform(mat);
+        LMatrix4f::scale_mat(scale_.get_x(), 1, scale_.get_y()) *
+        LMatrix4f::rotate_mat(roll_, LVector3f::back()) *
+        LMatrix4f::translate_mat(pos_.get_x(), 0, pos_.get_y());
+    DCAST(TextNode, text_node_)->set_transform(mat);
 }
 
 }

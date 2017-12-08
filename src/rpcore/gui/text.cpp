@@ -53,16 +53,9 @@ Text::Text(const std::string& text, NodePath parent, float x, float y, float siz
 
     initial_pos_ = LVecBase2f(x, -y);
 
-    rppanda::OnscreenText::Parameters node_params;
-    node_params.text = text;
-    node_params.parent = parent;
-    node_params.pos = initial_pos_;
-    node_params.scale = size;
-    node_params.align = align_mode;
-    node_params.fg = LColorf(color, 1.0f);
-    node_params.font = font;
-    node_params.may_change = may_change;
-    node_ = rppanda::OnscreenText(node_params);
+    node_ = rppanda::OnscreenText(text, rppanda::OnscreenText::Default::style, initial_pos_, 0.0f,
+        LVecBase2f(size), LColorf(color, 1.0f), {}, {}, rppanda::OnscreenText::Default::shadow_offset,
+        {}, align_mode, {}, {}, false, font, parent, 0, may_change);
 }
 
 }
