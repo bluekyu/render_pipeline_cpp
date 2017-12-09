@@ -4,10 +4,10 @@ You can see full source codes in https://github.com/bluekyu/rpcpp_snippets/tree/
 
 ## Text
 ```cpp
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
+
 MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
-    // ...
-    
     // create OnscreenText using constructor
     button_text_ = rppanda::OnscreenText(
         "Button Pressed: 0", rppanda::OnscreenText::Default::style, LVecBase2(1.0, 0.07f), 0,
@@ -15,8 +15,6 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
         LColor(0, 0, 0, 1), rppanda::OnscreenText::Default::shadow_offset, {},
         {}, {}, {}, false,
         {}, ui_root_);
-
-    // ...
 
     // create OnscreenText using methods
     checkbox_text_ = rppanda::OnscreenText("CheckBox Status: Off");
@@ -26,17 +24,15 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     checkbox_text_.set_fg(LColor(1, 1, 1, 1));
     checkbox_text_.set_shadow(LColor(0, 0, 0, 1));
     checkbox_text_.set_align(TextProperties::A_left);
-
-    // ...
 }
 ```
 
 ## Button
 ```cpp
+#include <render_pipeline/rppanda/gui/direct_button.hpp>
+
 MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
-    // ...
-
     // create button
     auto button_options = std::make_shared<rppanda::DirectButton::Options>();
     button_options->pos = LVecBase3(1.0f, 0.0f, 0.0f);
@@ -45,8 +41,6 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     button_options->pad = LVecBase2(0.2f, 0.2f);
     button_options->command = std::bind(&MainUI::button_on_clicked, this, std::placeholders::_1);
     button_ = new rppanda::DirectButton(ui_root_, button_options);
-
-    // ...
 }
 
 void MainUI::button_on_clicked(const std::shared_ptr<void>& param)
@@ -58,10 +52,10 @@ void MainUI::button_on_clicked(const std::shared_ptr<void>& param)
 
 ## Slider
 ```cpp
+#include <render_pipeline/rppanda/gui/direct_slider.hpp>
+
 MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
-    // ...
-
     // create slider
     auto slider_options = std::make_shared<rppanda::DirectSlider::Options>();
     slider_options->pos = LVecBase3(1.0f, 0.0f, -0.07f);
@@ -69,8 +63,6 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     slider_options->value = pipeline_.get_daytime_mgr()->get_time();
     slider_options->command = std::bind(&MainUI::slider_on_changed, this, std::placeholders::_1);
     slider_ = new rppanda::DirectSlider(ui_root_, slider_options);
-
-    // ...
 }
 
 void MainUI::slider_on_changed(const std::shared_ptr<void>& param)
@@ -81,10 +73,10 @@ void MainUI::slider_on_changed(const std::shared_ptr<void>& param)
 
 ## Check Box
 ```cpp
+#include <render_pipeline/rppanda/gui/direct_check_box.hpp>
+
 MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
-    // ...
-
     // create checkbox
     auto checked_img = rpcore::RPLoader::load_texture("/$$rp/data/gui/checkbox_checked.png");
     auto unchecked_img = rpcore::RPLoader::load_texture("/$$rp/data/gui/checkbox_default.png");
@@ -105,5 +97,34 @@ void MainUI::checkbox_on_clicked(const std::shared_ptr<void>& param)
         checkbox_text_.set_text("CheckBox Status: On");
     else
         checkbox_text_.set_text("CheckBox Status: Off");
+}
+```
+
+## Text Entry
+```cpp
+#include <render_pipeline/rppanda/gui/direct_entry.hpp>
+
+MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
+{
+    // create OnscreenText using methods
+    entry_text_ = rppanda::OnscreenText("Entry: ");
+    entry_text_.reparent_to(ui_root_);
+    entry_text_.set_pos(LVecBase2(0.8f, -0.24f));
+    entry_text_.set_scale(LVecBase2(0.04f));
+    entry_text_.set_fg(LColor(1, 1, 1, 1));
+    entry_text_.set_shadow(LColor(0, 0, 0, 1));
+    entry_text_.set_align(TextProperties::A_left);
+
+    auto entry_options = std::make_shared<rppanda::DirectEntry::Options>();
+    entry_options->initial_text = "Text Entry";
+    entry_options->command = std::bind(&MainUI::entry_on_changed, this, std::placeholders::_1);
+    entry_options->pos = LVecBase3(0.8f, 0, -0.32f);
+    entry_options->scale = LVecBase3(0.04f);
+    entry_ = new rppanda::DirectEntry(ui_root_, entry_options);
+}
+
+void MainUI::entry_on_changed(const std::string& text)
+{
+    entry_text_.set_text("Entry: " + text);
 }
 ```
