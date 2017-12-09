@@ -39,11 +39,11 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     button_options->text ={ "Button" };
     button_options->scale = 0.05f;
     button_options->pad = LVecBase2(0.2f, 0.2f);
-    button_options->command = std::bind(&MainUI::button_on_clicked, this, std::placeholders::_1);
+    button_options->command = std::bind(&MainUI::button_on_clicked, this);
     button_ = new rppanda::DirectButton(ui_root_, button_options);
 }
 
-void MainUI::button_on_clicked(const std::shared_ptr<void>& param)
+void MainUI::button_on_clicked()
 {
     static size_t count = 0;
     button_text_.set_text("Button Pressed: " + std::to_string(++count));
@@ -61,11 +61,11 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     slider_options->pos = LVecBase3(1.0f, 0.0f, -0.07f);
     slider_options->scale = 0.4f;
     slider_options->value = pipeline_.get_daytime_mgr()->get_time();
-    slider_options->command = std::bind(&MainUI::slider_on_changed, this, std::placeholders::_1);
+    slider_options->command = std::bind(&MainUI::slider_on_changed, this);
     slider_ = new rppanda::DirectSlider(ui_root_, slider_options);
 }
 
-void MainUI::slider_on_changed(const std::shared_ptr<void>& param)
+void MainUI::slider_on_changed()
 {
     pipeline_.get_daytime_mgr()->set_time(slider_->get_value());
 }
@@ -87,13 +87,13 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     checkbox_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     checkbox_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
     checkbox_options->image ={ std::make_shared<rppanda::ImageInput>(unchecked_img) };
-    checkbox_options->command = std::bind(&MainUI::checkbox_on_clicked, this, std::placeholders::_1);
+    checkbox_options->checkbox_command = std::bind(&MainUI::checkbox_on_clicked, this, std::placeholders::_1);
     checkbox_ = new rppanda::DirectCheckBox(ui_root_, checkbox_options);
 }
 
-void MainUI::checkbox_on_clicked(const std::shared_ptr<void>& param)
+void MainUI::checkbox_on_clicked(bool status)
 {
-    if (checkbox_->is_checked())
+    if (status)
         checkbox_text_.set_text("CheckBox Status: On");
     else
         checkbox_text_.set_text("CheckBox Status: Off");
