@@ -67,6 +67,7 @@ public:
 
 public:
     DirectScrollBar(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    ~DirectScrollBar();
 
     ALLOC_DELETED_CHAIN(DirectScrollBar);
 

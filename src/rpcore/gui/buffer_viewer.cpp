@@ -27,9 +27,7 @@
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
-#include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
-#include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/gui/text.hpp"

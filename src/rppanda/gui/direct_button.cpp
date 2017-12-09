@@ -92,6 +92,8 @@ DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_
     }
 }
 
+DirectButton::~DirectButton() = default;
+
 PGButton* DirectButton::get_gui_item() const
 {
     return DCAST(PGButton, _gui_item);

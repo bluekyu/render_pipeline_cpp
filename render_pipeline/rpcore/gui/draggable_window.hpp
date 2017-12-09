@@ -113,10 +113,10 @@ private:
     LVecBase2 set_pos_;
 
     std::unique_ptr<Text> window_title_;
-    PT(rppanda::DirectFrame) border_frame_ = nullptr;
-    PT(rppanda::DirectFrame) background_ = nullptr;
-    PT(rppanda::DirectFrame) title_bar_ = nullptr;
-    PT(rppanda::DirectButton) btn_close_ = nullptr;
+    PT(rppanda::DirectFrame) border_frame_;
+    PT(rppanda::DirectFrame) background_;
+    PT(rppanda::DirectFrame) title_bar_;
+    PT(rppanda::DirectButton) btn_close_;
 };
 
 // ************************************************************************************************

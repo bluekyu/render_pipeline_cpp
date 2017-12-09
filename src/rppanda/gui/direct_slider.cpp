@@ -88,6 +88,8 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     }
 }
 
+DirectSlider::~DirectSlider() = default;
+
 PGSliderBar* DirectSlider::get_gui_item() const
 {
     return DCAST(PGSliderBar, _gui_item);

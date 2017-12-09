@@ -68,6 +68,8 @@ DirectFrame::DirectFrame(PGItem* gui_item, NodePath parent, const std::shared_pt
     }
 }
 
+DirectFrame::~DirectFrame() = default;
+
 const std::vector<std::string>& DirectFrame::get_text() const
 {
     return std::dynamic_pointer_cast<Options>(_options)->text;

@@ -89,6 +89,8 @@ DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, cons
     }
 }
 
+DirectScrolledFrame::~DirectScrolledFrame() = default;
+
 PGScrollFrame* DirectScrolledFrame::get_gui_item() const
 {
     return DCAST(PGScrollFrame, _gui_item);

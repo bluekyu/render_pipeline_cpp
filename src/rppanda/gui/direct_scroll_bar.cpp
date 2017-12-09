@@ -109,6 +109,8 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     }
 }
 
+DirectScrollBar::~DirectScrollBar() = default;
+
 PGSliderBar* DirectScrollBar::get_gui_item() const
 {
     return DCAST(PGSliderBar, _gui_item);

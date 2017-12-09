@@ -58,6 +58,7 @@ public:
 
 public:
     DirectFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    ~DirectFrame();
 
     ALLOC_DELETED_CHAIN(DirectFrame);
 

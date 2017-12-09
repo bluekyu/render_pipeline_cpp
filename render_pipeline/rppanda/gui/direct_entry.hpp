@@ -50,6 +50,9 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectEntry : public DirectFrame
 {
 public:
+    static const std::vector<std::string> allow_cap_name_prefixes_;
+    static const std::vector<std::string> force_cap_name_prefixes_;
+
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options : public DirectFrame::Options
     {
@@ -65,6 +68,8 @@ public:
         // Setting backgroundFocus allows the entry box to get keyboard
         bool background_focus = false;
 
+        std::string initial_text;
+
         // Command to be called on hitting Enter
         std::function<void(const std::string&)> command;
         // bind "extraArgs" to std::function
@@ -77,8 +82,8 @@ public:
         std::function<void()> focus_out_command;
 
         bool auto_capitalize = false;
-
-        std::string initial_text;
+        std::vector<std::string> auto_capitalize_allow_prefixes;
+        std::vector<std::string> auto_capitalize_force_prefixes;
     };
 
 public:

@@ -37,6 +37,8 @@
 
 #include "render_pipeline/rppanda/gui/direct_entry.hpp"
 
+#include <cctype>
+
 #include <pgEntry.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
@@ -44,12 +46,25 @@
 
 namespace rppanda {
 
+const std::vector<std::string> DirectEntry::allow_cap_name_prefixes_ = {
+    "Al", "Ap", "Ben", "De", "Del", "Della", "Delle", "Der", "Di", "Du",
+    "El", "Fitz", "La", "Las", "Le", "Les", "Lo", "Los",
+    "Mac", "St", "Te", "Ten", "Van", "Von",
+};
+
+const std::vector<std::string> DirectEntry::force_cap_name_prefixes_ = {
+    "D'", "DeLa", "Dell'", "L'", "M'", "Mc", "O'",
+};
+
 TypeHandle DirectEntry::type_handle_;
 
 DirectEntry::Options::Options()
 {
     num_states = 3;
     state = NORMAL;
+
+    auto_capitalize_allow_prefixes = DirectEntry::allow_cap_name_prefixes_;
+    auto_capitalize_force_prefixes = DirectEntry::force_cap_name_prefixes_;
 }
 
 DirectEntry::DirectEntry(NodePath parent, const std::shared_ptr<Options>& options): DirectEntry(new PGEntry(""), parent, options, get_class_type())
@@ -363,7 +378,68 @@ void DirectEntry::handle_erasing()
 
 void DirectEntry::auto_capitalize()
 {
-    enter_text(get());
+    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    const auto& auto_capitalize_allow_prefixes = options->auto_capitalize_allow_prefixes;
+    const auto& auto_capitalize_force_prefixes = options->auto_capitalize_force_prefixes;
+
+    const auto name = get();
+
+    // capitalize each word, allowing for things like McMutton
+    std::string cap_name;
+    // track each individual word to detect prefixes like Mc
+    std::string word_so_far;
+    // track whether the previous character was part of a word or not
+    bool was_non_word_char = true;
+
+    bool capitalize = false;
+    for (auto character: name)
+    {
+        // test to see if we are between words
+        // - Count characters that can't be capitalized as a break between words
+        //   This assumes that string.lower and string.upper will return different
+        //   values for all unicode letters.
+        // - Don't count apostrophes as a break between words
+        if (std::tolower(character) == std::toupper(character) && character != '\'')
+        {
+            // we are between words
+            was_non_word_char = true;
+        }
+        else
+        {
+            capitalize = false;
+            if (was_non_word_char)
+            {
+                // first letter of a word, capitalize it unconditionally;
+                capitalize = true;
+            }
+            else if (character == std::toupper(character) && auto_capitalize_allow_prefixes.size() &&
+                std::find(auto_capitalize_allow_prefixes.begin(), auto_capitalize_allow_prefixes.end(), word_so_far) != auto_capitalize_allow_prefixes.end())
+            {
+                // first letter after one of the prefixes, allow it to be capitalized
+                capitalize = true;
+            }
+            else if (auto_capitalize_force_prefixes.size() &&
+                std::find(auto_capitalize_force_prefixes.begin(), auto_capitalize_force_prefixes.end(), word_so_far) != auto_capitalize_force_prefixes.end())
+            {
+                // first letter after one of the force prefixes, force it to be capitalized
+                capitalize = true;
+            }
+
+            if (capitalize)
+            {
+                // allow this letter to remain capitalized
+                character = std::toupper(character);
+            }
+            else
+            {
+                character = std::tolower(character);
+            }
+            word_so_far += character;
+            was_non_word_char = false;
+        }
+        cap_name += character;
+    }
+    enter_text(cap_name);
 }
 
 }

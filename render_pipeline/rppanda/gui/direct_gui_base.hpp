@@ -71,6 +71,7 @@ class RENDER_PIPELINE_DECL DirectGuiBase : public DirectObject
 {
 public:
     DirectGuiBase() = default;
+    ~DirectGuiBase();
 
     ALLOC_DELETED_CHAIN(DirectGuiBase);
 
@@ -185,6 +186,7 @@ public:
     static std::string inactive_init_state;
 
     DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    virtual ~DirectGuiWidget();
 
     ALLOC_DELETED_CHAIN(DirectGuiWidget);
 

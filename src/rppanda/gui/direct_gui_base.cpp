@@ -53,6 +53,8 @@ namespace rppanda {
 
 TypeHandle DirectGuiBase::type_handle_;
 
+DirectGuiBase::~DirectGuiBase() = default;
+
 boost::any& DirectGuiBase::create_component(const std::string& component_name, boost::any&& component)
 {
     // Check for invalid component name
@@ -193,6 +195,8 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
         frame_initialise_func();
     }
 }
+
+DirectGuiWidget::~DirectGuiWidget() = default;
 
 void DirectGuiWidget::enable_edit()
 {

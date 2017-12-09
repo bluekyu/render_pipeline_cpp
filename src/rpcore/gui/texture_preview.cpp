@@ -25,7 +25,6 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
 #include "render_pipeline/rpcore/gui/slider.hpp"

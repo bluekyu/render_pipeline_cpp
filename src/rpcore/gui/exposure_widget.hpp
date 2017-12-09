@@ -63,10 +63,10 @@ private:
     NodePath _node;
 
     std::shared_ptr<Image> _storage_tex = nullptr;
-    PT(rppanda::DirectFrame) _bg_frame = nullptr;
+    PT(rppanda::DirectFrame) _bg_frame;
     Sprite* _display_img = nullptr;
     Text* _display_txt = nullptr;
-    PT(ComputeNode) _cshader_node = nullptr;
+    PT(ComputeNode) _cshader_node;
     NodePath _cshader_np;
     PT(Shader) _cshader;
 };
