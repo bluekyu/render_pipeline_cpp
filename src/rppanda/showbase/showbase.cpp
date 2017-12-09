@@ -265,6 +265,7 @@ void ShowBase::Impl::setup_mouse(ShowBase* self)
     DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
     DCAST(PGTop, self->get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
     DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+    mouse_watcher_node_->add_region(new PGMouseWatcherBackground);
 }
 
 void ShowBase::Impl::setup_render_2dp(ShowBase* self)

@@ -15,6 +15,7 @@ set(header_rppanda_util
 set(header_rppanda_gui
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_button.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_check_box.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_entry.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_frame.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_base.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rppanda/gui/direct_gui_globals.hpp"
@@ -185,6 +186,7 @@ set(source_rppanda_gui
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/config_rppanda_gui.hpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_button.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_check_box.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_entry.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_frame.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_gui_base.cpp"
     "${PROJECT_SOURCE_DIR}/src/rppanda/gui/direct_gui_globals.cpp"

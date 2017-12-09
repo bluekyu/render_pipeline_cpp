@@ -97,6 +97,8 @@ public:
 
     void destroy() { cleanup(); }
 
+    PandaNode* get_text_node() const;
+
     /**
      * Reimplementation of TextNode::set_card_decal.
      * @param[in] decal   if this is true, the text is decalled onto its
@@ -161,6 +163,12 @@ private:
 };
 
 // ************************************************************************************************
+
+inline PandaNode* OnscreenText::get_text_node() const
+{
+    return text_node_;
+}
+
 inline void OnscreenText::set_x(float x)
 {
     set_pos(LVecBase2f(x, pos_[1]));

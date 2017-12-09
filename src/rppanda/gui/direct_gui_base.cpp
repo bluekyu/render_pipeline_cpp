@@ -166,8 +166,8 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
     }
 
     // For holding bounds info
-    _ll = LPoint3(0);
-    _ur = LPoint3(0);
+    ll_ = LPoint3(0);
+    ur_ = LPoint3(0);
 
     // Is drag and drop enabled?
     if (options->enable_edit && gui_edit)
@@ -258,7 +258,7 @@ void DirectGuiWidget::set_frame_size(bool clear_frame)
     if (_options->frame_size)
     {
         //  Use user specified bounds
-        _bounds = _options->frame_size.get();
+        bounds_ = _options->frame_size.get();
     }
     else
     {
@@ -286,10 +286,10 @@ void DirectGuiWidget::set_frame_size(bool clear_frame)
 
     // Set frame to new dimensions
     _gui_item->set_frame(
-        _bounds[0] - bw[0],
-        _bounds[1] + bw[0],
-        _bounds[2] - bw[1],
-        _bounds[3] + bw[1]);
+        bounds_[0] - bw[0],
+        bounds_[1] + bw[0],
+        bounds_[2] - bw[1],
+        bounds_[3] + bw[1]);
 }
 
 void DirectGuiWidget::set_frame_size(const LVecBase4& frame_size)
@@ -300,22 +300,22 @@ void DirectGuiWidget::set_frame_size(const LVecBase4& frame_size)
 
 LVecBase4 DirectGuiWidget::get_bounds(int state)
 {
-    _state_node_path[state].calc_tight_bounds(_ll, _ur);
+    _state_node_path[state].calc_tight_bounds(ll_, ur_);
     // Scale bounds to give a pad around graphics
     LVector3 vec_right(LVector3::right());
     LVector3 vec_up(LVector3::up());
-    PN_stdfloat left = vec_right.dot(_ll);
-    PN_stdfloat right = vec_right.dot(_ur);
-    PN_stdfloat bottom = vec_up.dot(_ll);
-    PN_stdfloat top = vec_up.dot(_ur);
-    _ll = LPoint3(left, 0.0f, bottom);
-    _ur = LPoint3(right, 0.0f, top);
-    _bounds = LVecBase4(
-        _ll[0] - _options->pad[0],
-        _ur[0] + _options->pad[0],
-        _ll[2] - _options->pad[1],
-        _ur[2] + _options->pad[1]);
-    return _bounds;
+    PN_stdfloat left = vec_right.dot(ll_);
+    PN_stdfloat right = vec_right.dot(ur_);
+    PN_stdfloat bottom = vec_up.dot(ll_);
+    PN_stdfloat top = vec_up.dot(ur_);
+    ll_ = LPoint3(left, 0.0f, bottom);
+    ur_ = LPoint3(right, 0.0f, top);
+    bounds_ = LVecBase4(
+        ll_[0] - _options->pad[0],
+        ur_[0] + _options->pad[0],
+        ll_[2] - _options->pad[1],
+        ur_[2] + _options->pad[1]);
+    return bounds_;
 }
 
 PGFrameStyle::Type DirectGuiWidget::get_frame_type(int state)

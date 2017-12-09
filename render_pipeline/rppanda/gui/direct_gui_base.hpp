@@ -211,7 +211,7 @@ public:
     void set_frame_size(bool clear_frame=false);
     void set_frame_size(const LVecBase4& frame_size);
 
-    LVecBase4 get_bounds(int state=0);
+    virtual LVecBase4 get_bounds(int state = 0);
     float get_width() const;
     float get_height() const;
     LVecBase2 get_center() const;
@@ -246,15 +246,16 @@ protected:
     std::vector<NodePath> _state_node_path;
     std::shared_ptr<Options> _options;
 
+    LVecBase4 bounds_;
+    LPoint3 ll_;
+    LPoint3 ur_;
+
 private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
     static bool _snap_to_grid;
     static float _grid_spacing;
 
-    LVecBase4 _bounds;
-    LPoint3 _ll;
-    LPoint3 _ur;
     std::vector<PGFrameStyle> _frame_style;
 
 public:
@@ -304,18 +305,18 @@ inline const LVecBase2& DirectGuiWidget::get_border_width() const
 
 inline float DirectGuiWidget::get_width() const
 {
-    return _bounds[1] - _bounds[0];
+    return bounds_[1] - bounds_[0];
 }
 
 inline float DirectGuiWidget::get_height() const
 {
-    return _bounds[3] - _bounds[2];
+    return bounds_[3] - bounds_[2];
 }
 
 inline LVecBase2 DirectGuiWidget::get_center() const
 {
-    PN_stdfloat x = _bounds[0] + (_bounds[1] - _bounds[0]) / 2.0f;
-    PN_stdfloat y = _bounds[2] + (_bounds[3] + _bounds[2]) / 2.0f;
+    PN_stdfloat x = bounds_[0] + (bounds_[1] - bounds_[0]) / 2.0f;
+    PN_stdfloat y = bounds_[2] + (bounds_[3] + bounds_[2]) / 2.0f;
     return LVecBase2(x, y);
 }
 

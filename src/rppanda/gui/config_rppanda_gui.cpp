@@ -23,6 +23,7 @@
 
 #include "render_pipeline/rppanda/gui/direct_button.hpp"
 #include "render_pipeline/rppanda/gui/direct_check_box.hpp"
+#include "render_pipeline/rppanda/gui/direct_entry.hpp"
 #include "render_pipeline/rppanda/gui/direct_frame.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_base.hpp"
 #include "render_pipeline/rppanda/gui/direct_scroll_bar.hpp"
@@ -47,6 +48,7 @@ void init_librppanda_gui()
 
     rppanda::DirectGuiBase::init_type();
     rppanda::DirectGuiWidget::init_type();
+    rppanda::DirectEntry::init_type();
     rppanda::DirectFrame::init_type();
     rppanda::DirectButton::init_type();
     rppanda::DirectCheckBox::init_type();
