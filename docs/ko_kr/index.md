@@ -31,3 +31,4 @@
 - [Event](../snippets/event.md)
 - [모델](../snippets/model.md)
 - [텍스처](../snippets/texture.md)
+- [Panda3D GUI](../snippets/panda3d_gui.md)
