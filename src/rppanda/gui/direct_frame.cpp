@@ -83,7 +83,7 @@ void DirectFrame::prepare_text(const std::vector<std::string>& text_list)
     std::dynamic_pointer_cast<Options>(_options)->text = text_list;
 }
 
-void DirectFrame::set_text()
+void DirectFrame::update_text()
 {
     const auto& text_list = std::dynamic_pointer_cast<Options>(_options)->text;
 
@@ -144,7 +144,7 @@ void DirectFrame::prepare_image(const std::vector<std::shared_ptr<ImageInput>>& 
     std::dynamic_pointer_cast<Options>(_options)->image = images;
 }
 
-void DirectFrame::set_image()
+void DirectFrame::update_image()
 {
     const auto& images = std::dynamic_pointer_cast<Options>(_options)->image;
 

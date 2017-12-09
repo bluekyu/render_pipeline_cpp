@@ -28,8 +28,8 @@
 
 namespace rpcore {
 
-Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(bool, const std::shared_ptr<void>&)>& callback,
-    const std::shared_ptr<void>& extra_args, bool radio, int expand_width, bool checked, bool enabled): RPObject("Checkbox")
+Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(bool)>& callback,
+    bool radio, int expand_width, bool checked, bool enabled): RPObject("Checkbox")
 {
     const std::string prefix = radio ? "radiobox" : "checkbox";
 
@@ -63,10 +63,9 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
     node_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     node_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
     node_options->image = { std::make_shared<rppanda::ImageInput>(unchecked_img) };
-    //node_options->extra_args = ;
     node_options->state = rppanda::NORMAL;
     node_options->relief = rppanda::FLAT;
-    node_options->command = std::bind(&Checkbox::update_status, this, std::placeholders::_1);
+    node_options->checkbox_command = std::bind(&Checkbox::update_status, this, std::placeholders::_1);
 
     node_ = new rppanda::DirectCheckBox(parent, node_options);
     node_->set_frame_color(LColorf(0));
@@ -74,7 +73,6 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
     node_->set_transparency(TransparencyAttrib::M_alpha);
 
     callback_ = callback;
-    extra_args_ = extra_args;
 
     if (checked)
         set_checked(true, false);
@@ -85,15 +83,13 @@ bool Checkbox::is_checked() const
     return node_->is_checked();
 }
 
-void Checkbox::update_status(const std::shared_ptr<void>&)
+void Checkbox::update_status(bool status)
 {
-    const bool status = node_->is_checked();
-
     // TODO: implement
     //if (!status)
 
     if (callback_)
-        callback_(status, extra_args_);
+        callback_(status);
 }
 
 void Checkbox::set_checked(bool val, bool do_callback)
@@ -106,7 +102,7 @@ void Checkbox::set_checked(bool val, bool do_callback)
         node_->set_image(node_->get_unchecked_image());
 
     if (do_callback && callback_)
-        callback_(val, extra_args_);
+        callback_(val);
 }
 
 }

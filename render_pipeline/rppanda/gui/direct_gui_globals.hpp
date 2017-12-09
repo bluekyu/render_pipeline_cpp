@@ -89,6 +89,13 @@ RENDER_PIPELINE_DECL extern const std::string B3PRESS;
 RENDER_PIPELINE_DECL extern const std::string B1RELEASE;
 RENDER_PIPELINE_DECL extern const std::string B2RELEASE;
 RENDER_PIPELINE_DECL extern const std::string B3RELEASE;
+// For DirectEntry widgets
+RENDER_PIPELINE_DECL extern const std::string DGG_OVERFLOW;
+RENDER_PIPELINE_DECL extern const std::string DGG_ACCEPT;
+RENDER_PIPELINE_DECL extern const std::string DGG_ACCEPTFAILED;
+RENDER_PIPELINE_DECL extern const std::string DGG_TYPE;
+RENDER_PIPELINE_DECL extern const std::string DGG_ERASE;
+RENDER_PIPELINE_DECL extern const std::string DGG_CURSORMOVE;
 // For DirectSlider and DirectScrollBar widgets
 RENDER_PIPELINE_DECL extern const std::string ADJUST;
 

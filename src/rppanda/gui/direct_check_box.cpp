@@ -83,14 +83,10 @@ void DirectCheckBox::command_func(const Event* ev)
         set_image(options->unchecked_image);
 
     if (options->command)
-    {
-        // Pass any extra args to command
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-        options->command(std::shared_ptr<void>(this, [](auto) {}));
-#else
-        options->command(std::shared_ptr<void>(this, [](void*) {}));
-#endif
-    }
+        options->command();
+
+    if (options->checkbox_command)
+        options->checkbox_command(is_checked());
 }
 
 const std::shared_ptr<DirectCheckBox::Options>& DirectCheckBox::define_options(const std::shared_ptr<Options>& options)

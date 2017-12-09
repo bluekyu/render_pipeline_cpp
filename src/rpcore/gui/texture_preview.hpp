@@ -42,13 +42,13 @@ public:
 private:
     void create_components() override;
 
-    void set_slice(const std::shared_ptr<void>&);
+    void set_slice();
 
-    void set_mip(const std::shared_ptr<void>&);
+    void set_mip();
 
-    void set_brightness(const std::shared_ptr<void>&);
+    void set_brightness();
 
-    void set_enable_tonemap(bool arg, const std::shared_ptr<void>&);
+    void set_enable_tonemap(bool arg);
 
     RenderPipeline* _pipeline;
     NodePath _content_node;

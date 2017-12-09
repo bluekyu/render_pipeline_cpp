@@ -143,7 +143,7 @@ void DirectButton::command_func(const Event*)
 {
     const auto& options = std::dynamic_pointer_cast<Options>(_options);
     if (options->command)
-        options->command(options->extra_args);
+        options->command();
 }
 
 void DirectButton::set_click_sound()

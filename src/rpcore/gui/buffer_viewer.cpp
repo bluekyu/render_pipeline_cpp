@@ -141,11 +141,11 @@ void BufferViewer::create_components()
     _content_node.set_z(_scroll_height);
 
     _chb_show_images = std::make_shared<LabeledCheckbox>(node_, 10, 43,
-        std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1, std::placeholders::_2),
-        nullptr, false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
+        std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1),
+        false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
 }
 
-void BufferViewer::set_show_images(bool arg, const std::shared_ptr<void>&)
+void BufferViewer::set_show_images(bool arg)
 {
     _display_images = arg;
     perform_update();

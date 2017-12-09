@@ -51,6 +51,12 @@ public:
     {
         Options();
 
+        /**
+         * This accepts a parameter as status of checkbox unlike 'command'.
+         * We will call 'command' and 'checkbox_command' if they are given.
+         */
+        std::function<void(bool)> checkbox_command;
+
         std::shared_ptr<ImageInput> checked_image;
         std::shared_ptr<ImageInput> unchecked_image;
         bool is_checked = false;

@@ -98,6 +98,7 @@ public:
     const std::vector<PT(AudioManager)>& get_sfx_manager_list() const;
     AudioManager* get_music_manager() const;
 
+    NodePath get_hidden() const;
     NodePath get_render() const;
     NodePath get_render_2d() const;
     NodePath get_aspect_2d() const;

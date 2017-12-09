@@ -170,7 +170,7 @@ void DirectSlider::command_func()
     // Store the updated value in self['value']
     options->value = get_gui_item()->get_value();
     if (options->command)
-        options->command(options->extra_args);
+        options->command();
 }
 
 void DirectSlider::initialise_options(const std::shared_ptr<Options>& options)

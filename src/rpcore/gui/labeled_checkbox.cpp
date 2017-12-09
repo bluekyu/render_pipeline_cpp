@@ -31,8 +31,8 @@ namespace rpcore {
 
 const float LabeledCheckbox::Default::text_size = 16;
 
-LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback,
-    const std::shared_ptr<void>& chb_args, bool chb_checked, const std::string& text, float text_size,
+LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::function<void(bool)>& chb_callback,
+    bool chb_checked, const std::string& text, float text_size,
     bool radio, const boost::optional<LVecBase3>& text_color, int expand_width, bool enabled): RPObject("LabeledCheckbox")
 {
     if (!text_color)
@@ -43,7 +43,7 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
     if (!enabled)
         text_color_ = LVecBase3(1.0f, 0.0f, 0.28f);
 
-    checkbox_ = std::make_unique<Checkbox>(parent, x, y, chb_callback, chb_args, radio, expand_width, chb_checked, enabled);
+    checkbox_ = std::make_unique<Checkbox>(parent, x, y, chb_callback, radio, expand_width, chb_checked, enabled);
 
     text_ = std::make_unique<Text>(text, parent, x+26, y+9, text_size, Text::Default::align, text_color_, true);
 

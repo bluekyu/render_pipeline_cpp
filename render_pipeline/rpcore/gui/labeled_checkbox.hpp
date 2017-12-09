@@ -53,8 +53,7 @@ public:
      */
     LabeledCheckbox(
         NodePath parent={}, float x=0, float y=0,
-        const std::function<void(bool, const std::shared_ptr<void>&)>& chb_callback={},
-        const std::shared_ptr<void>& chb_args={}, bool chb_checked=false,
+        const std::function<void(bool)>& chb_callback={}, bool chb_checked=false,
         const std::string& text={}, float text_size=Default::text_size,
         bool radio=false, const boost::optional<LVecBase3>& text_color={},
         int expand_width=Default::expand_width, bool enabled=true);

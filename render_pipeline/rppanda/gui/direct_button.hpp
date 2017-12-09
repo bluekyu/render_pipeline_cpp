@@ -56,8 +56,8 @@ public:
         Options();
 
         /// Command to be called on button click.
-        std::function<void(const std::shared_ptr<void>&)> command;
-        std::shared_ptr<void> extra_args;
+        std::function<void()> command;
+        // bind "extraArgs" to std::function
 
         /// Which mouse buttons can be used to click the button.
         std::vector<int> command_buttons;
@@ -78,7 +78,7 @@ public:
 
     void set_command_buttons();
 
-    virtual void command_func(const Event*);
+    virtual void command_func(const Event* ev);
 
     void set_click_sound();
 

@@ -50,8 +50,7 @@ public:
     Slider(float x=0, float y=0, NodePath parent={}, float size=Default::size,
         float min_value=0, float max_value=Default::max_value,
         float value=Default::value, float page_size=Default::page_size,
-        const std::function<void(const std::shared_ptr<void>&)>& callback={},
-        const std::shared_ptr<void>& extra_args={});
+        const std::function<void()>& callback={});
 
     /** Returns the currently assigned value. */
     float get_value() const;

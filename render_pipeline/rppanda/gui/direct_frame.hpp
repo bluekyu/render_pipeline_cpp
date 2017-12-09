@@ -67,8 +67,8 @@ public:
     void prepare_text(const std::string& text);
     void prepare_text(const std::vector<std::string>& text_list);
 
-    /** Apply text changes. */
-    void set_text();
+    /** Update text changes. */
+    void update_text();
 
     /** Change text directly. */
     void set_text(const std::string& text);
@@ -80,8 +80,8 @@ public:
     void prepare_image(const std::shared_ptr<ImageInput>& image);
     void prepare_image(const std::vector<std::shared_ptr<ImageInput>>& images);
 
-    /** Apply image changes. */
-    void set_image();
+    /** Update image changes. */
+    void update_image();
 
     /** Change image directly. */
     void set_image(const std::shared_ptr<ImageInput>& image);
@@ -110,25 +110,25 @@ private:
 inline void DirectFrame::set_text(const std::string& text)
 {
     prepare_text(text);
-    set_text();
+    update_text();
 }
 
 inline void DirectFrame::set_text(const std::vector<std::string>& text_list)
 {
     prepare_text(text_list);
-    set_text();
+    update_text();
 }
 
 inline void DirectFrame::set_image(const std::shared_ptr<ImageInput>& image)
 {
     prepare_image(image);
-    set_image();
+    update_image();
 }
 
 inline void DirectFrame::set_image(const std::vector<std::shared_ptr<ImageInput>>& images)
 {
     prepare_image(images);
-    set_image();
+    update_image();
 }
 
 inline TypeHandle DirectFrame::get_class_type()

@@ -39,6 +39,8 @@
 
 #include <pgButton.h>
 #include <pgSliderBar.h>
+#include <pgEntry.h>
+#include <keyboardButton.h>
 #include <mouseButton.h>
 #include <textNode.h>
 
@@ -67,6 +69,13 @@ const std::string B3PRESS = PGButton::get_press_prefix() + MouseButton::three().
 const std::string B1RELEASE = PGButton::get_release_prefix() + MouseButton::one().get_name() + "-";
 const std::string B2RELEASE = PGButton::get_release_prefix() + MouseButton::two().get_name() + "-";
 const std::string B3RELEASE = PGButton::get_release_prefix() + MouseButton::three().get_name() + "-";
+
+const std::string DGG_OVERFLOW = PGEntry::get_overflow_prefix();
+const std::string DGG_ACCEPT = PGEntry::get_accept_prefix() + KeyboardButton::enter().get_name() + "-";
+const std::string DGG_ACCEPTFAILED = PGEntry::get_accept_failed_prefix() + KeyboardButton::enter().get_name() + "-";
+const std::string DGG_TYPE = PGEntry::get_type_prefix();
+const std::string DGG_ERASE = PGEntry::get_erase_prefix();
+const std::string DGG_CURSORMOVE = PGEntry::get_cursormove_prefix();
 
 const std::string ADJUST = PGSliderBar::get_adjust_prefix();
 

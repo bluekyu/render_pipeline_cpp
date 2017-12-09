@@ -33,8 +33,7 @@ const float Slider::Default::value = 50;
 const float Slider::Default::page_size = 1;
 
 Slider::Slider(float x, float y, NodePath parent, float size, float min_value, float max_value,
-    float value, float page_size, const std::function<void(const std::shared_ptr<void>&)>& callback,
-    const std::shared_ptr<void>& extra_args): RPObject("Slider")
+    float value, float page_size, const std::function<void()>& callback): RPObject("Slider")
 {
     // TODO: implement
     // Scale has to be 2.0, otherwise there will be an error.
@@ -44,8 +43,7 @@ Slider::Slider(float x, float y, NodePath parent, float size, float min_value, f
     options->value = value;
     options->page_size = page_size;
     options->scale = 2.0f;
-    options->command=callback;
-    options->extra_args = extra_args;
+    options->command = callback;
     options->frame_color = LColor(0.0, 0.0, 0.0, 1);
     options->frame_size = LVecBase4(-size * 0.25, size * 0.25, -5, 5);
     options->relief = rppanda::FLAT;

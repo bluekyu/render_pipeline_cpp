@@ -100,6 +100,8 @@ public:
     std::string window_type_;
     bool require_window_;
 
+    NodePath hidden_;
+
     NodePath render_2dp_;
     NodePath aspect_2dp_;
     NodePath pixel_2dp_;
@@ -217,6 +219,8 @@ void ShowBase::Impl::initailize(ShowBase* self)
     // window_type in config_framework.h, but NOT exported.
     window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
     require_window_ = ConfigVariableBool("require-window", true).get_value();
+
+    hidden_ = NodePath("hidden");
 
     // The global graphics engine, ie. GraphicsEngine.getGlobalPtr()
     graphics_engine_ = GraphicsEngine::get_global_ptr();
@@ -570,6 +574,11 @@ SfxPlayer* ShowBase::get_sfx_player() const
 AudioManager* ShowBase::get_music_manager() const
 {
     return impl_->music_manager_;
+}
+
+NodePath ShowBase::get_hidden() const
+{
+    return impl_->hidden_;
 }
 
 NodePath ShowBase::get_render() const

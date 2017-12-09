@@ -61,7 +61,7 @@ namespace rppanda {
  * in configure() function.
  *
  * However, in C++, we provide direct call functions without the callback function.
- * For examples, in DirectFrame, some `set_text()` function has parameters and
+ * For examples, in DirectFrame, `set_text()` function has parameters and
  * the functions does not exist in Python version.
  *
  * Instead, if you want to change only options like `setProp()` in Python,

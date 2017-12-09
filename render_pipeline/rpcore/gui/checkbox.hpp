@@ -47,8 +47,8 @@ public:
     };
 
 public:
-    Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool, const std::shared_ptr<void>&)>& callback={},
-        const std::shared_ptr<void>& extra_args={}, bool radio=false, int expand_width=Default::expand_width, bool checked=false, bool enabled=true);
+    Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool)>& callback={},
+        bool radio=false, int expand_width=Default::expand_width, bool checked=false, bool enabled=true);
 
     /** Returns whether the node is currently checked. */
     bool is_checked() const;
@@ -57,7 +57,7 @@ public:
     rppanda::DirectCheckBox* get_node() const;
 
     /** Internal method when another checkbox in the same radio group changed it's value. */
-    void update_status(const std::shared_ptr<void>&);
+    void update_status(bool status);
 
     /** Internal method to check/uncheck the checkbox. */
     void set_checked(bool val, bool do_callback=true);
@@ -65,8 +65,7 @@ public:
 private:
     PT(rppanda::DirectCheckBox) node_;
 
-    std::function<void(bool, const std::shared_ptr<void>&)> callback_;
-    std::shared_ptr<void> extra_args_;
+    std::function<void(bool)> callback_;
 };
 
 inline rppanda::DirectCheckBox* Checkbox::get_node() const

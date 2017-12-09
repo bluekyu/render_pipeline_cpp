@@ -93,7 +93,7 @@ void TexturePreview::present(Texture* tex)
     {
         _mip_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, 0,
             tex->get_expected_num_mipmap_levels()-1, 0, Slider::Default::page_size,
-            std::bind(&TexturePreview::set_mip, this, std::placeholders::_1));
+            std::bind(&TexturePreview::set_mip, this));
 
         x_pos += 140 + 5;
 
@@ -109,7 +109,7 @@ void TexturePreview::present(Texture* tex)
     {
         _slice_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 250, 0,
             tex->get_z_size() - 1, 0, Slider::Default::page_size,
-            std::bind(&TexturePreview::set_slice, this, std::placeholders::_1));
+            std::bind(&TexturePreview::set_slice, this));
 
         x_pos += 250 + 5;
 
@@ -123,7 +123,7 @@ void TexturePreview::present(Texture* tex)
     // Slider to adjust brightness
     _bright_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, -14, 14,
         0, Slider::Default::page_size,
-        std::bind(&TexturePreview::set_brightness, this, std::placeholders::_1));
+        std::bind(&TexturePreview::set_brightness, this));
 
     x_pos += 140 + 5;
     _bright_text = std::make_shared<Text>("Bright: 1", _content_node, x_pos, 72, 18,
@@ -132,8 +132,8 @@ void TexturePreview::present(Texture* tex)
 
     // Slider to enable reinhard tonemapping
     _tonemap_box = std::make_shared<LabeledCheckbox>(_content_node, x_pos, 60,
-        std::bind(&TexturePreview::set_enable_tonemap, this, std::placeholders::_1, std::placeholders::_2),
-        nullptr, false, "Tonemap", 18, false, LVecBase3(1.0f, 0.4f, 0.4f), 90);
+        std::bind(&TexturePreview::set_enable_tonemap, this, std::placeholders::_1),
+        false, "Tonemap", 18, false, LVecBase3(1.0f, 0.4f, 0.4f), 90);
     x_pos += 90 + 30;
 
     auto image_np = image->get_node();
@@ -150,21 +150,21 @@ void TexturePreview::present(Texture* tex)
     show();
 }
 
-void TexturePreview::set_slice(const std::shared_ptr<void>&)
+void TexturePreview::set_slice()
 {
     int idx = static_cast<int>(_slice_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("slice", LVecBase4i(idx, 0, 0, 0)));
     _slice_text->set_text(std::string("Z: ") + std::to_string(idx));
 }
 
-void TexturePreview::set_mip(const std::shared_ptr<void>&)
+void TexturePreview::set_mip()
 {
     int idx = static_cast<int>(_mip_slider->get_value());
     _preview_image->set_shader_input(ShaderInput("mipmap", LVecBase4i(idx, 0, 0, 0)));
     _mip_text->set_text(std::string("MIP: ") + std::to_string(idx));
 }
 
-void TexturePreview::set_brightness(const std::shared_ptr<void>&)
+void TexturePreview::set_brightness()
 {
     float val = _bright_slider->get_value();
     float scale = std::pow(2.0f, val);
@@ -172,7 +172,7 @@ void TexturePreview::set_brightness(const std::shared_ptr<void>&)
     _preview_image->set_shader_input(ShaderInput("brightness", LVecBase4(scale, 0, 0, 0)));
 }
 
-void TexturePreview::set_enable_tonemap(bool arg, const std::shared_ptr<void>&)
+void TexturePreview::set_enable_tonemap(bool arg)
 {
     _preview_image->set_shader_input(ShaderInput("tonemap", LVecBase4i(arg, 0, 0, 0)));
 }

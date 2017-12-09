@@ -62,7 +62,7 @@ private:
     void create_components() override;
 
     /** Sets whether images and textures will be shown. */
-    void set_show_images(bool arg, const std::shared_ptr<void>&);
+    void set_show_images(bool arg);
 
     /** Sets the maximum scroll height in the content frame */
     void set_scroll_height(int height);
