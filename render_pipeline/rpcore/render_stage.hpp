@@ -64,8 +64,11 @@ public:
     static bool disabled_;
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
+    RenderStage(const RenderStage&) = delete;
 
     virtual ~RenderStage() {}
+
+    RenderStage& operator=(const RenderStage&) = delete;
 
     virtual RequireType& get_required_inputs() const = 0;
     virtual RequireType& get_required_pipes() const = 0;

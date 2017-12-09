@@ -47,7 +47,11 @@ public:
     static int CURRENT_SORT;
 
     RenderTarget(const std::string& name);
+    RenderTarget(const RenderTarget&) = delete;
+
     ~RenderTarget();
+
+    RenderTarget& operator=(const RenderTarget&) = delete;
 
     void add_color_attachment(const LVecBase3i& bits);
     void add_color_attachment(const LVecBase4i& bits);

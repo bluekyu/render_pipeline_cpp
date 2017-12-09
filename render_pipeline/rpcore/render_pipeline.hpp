@@ -76,7 +76,11 @@ public:
     /** Initialize RenderPipeline with given PandaFramework. */
     RenderPipeline(PandaFramework* framework);
 
+    RenderPipeline(const RenderPipeline&) = delete;
+
     ~RenderPipeline();
+
+    RenderPipeline& operator=(const RenderPipeline&) = delete;
 
     /** Call ShowBase::Run() */
     void run();
