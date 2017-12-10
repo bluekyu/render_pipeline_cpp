@@ -37,6 +37,7 @@
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include "render_pipeline/rppanda/showbase/loader.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 
 namespace rpcore {
@@ -140,7 +141,7 @@ NodePath RPLoader::load_model(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
-    return Globals::base->get_window_framework()->load_model(Globals::base->get_panda_framework()->get_models(), filename);
+    return Globals::base->get_loader()->load_model(filename);
 }
 
 Texture* RPLoader::load_sliced_3d_texture(const Filename& filename, int tile_size_x)
