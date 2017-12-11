@@ -80,6 +80,7 @@ DirectEntry::DirectEntry(PGItem* gui_item, NodePath parent, const std::shared_pt
     else
         font = get_default_font();
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     // Create Text Node Component
     onscreen_text_ = OnscreenText(
         "", OnscreenText::Default::style, LVecBase2(0), 0, LVecBase2(1),
@@ -87,6 +88,14 @@ DirectEntry::DirectEntry(PGItem* gui_item, NodePath parent, const std::shared_pt
         TextNode::A_left, {}, {}, false, font, rppanda::ShowBase::get_global_ptr()->get_hidden(), 0,
         // Don't get rid of the text node
         true);
+#else
+    onscreen_text_ = OnscreenText(
+        "", OnscreenText::Default::style, LVecBase2(0), 0, LVecBase2(1),
+        LColor(), LColor(), LColor(), OnscreenText::Default::shadow_offset, LColor(),
+        TextNode::A_left, {}, {}, false, font, rppanda::ShowBase::get_global_ptr()->get_hidden(), 0,
+        // Don't get rid of the text node
+        true);
+#endif
 
     create_component("text", boost::any(onscreen_text_));
 
