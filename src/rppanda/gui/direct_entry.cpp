@@ -61,7 +61,7 @@ TypeHandle DirectEntry::type_handle_;
 DirectEntry::Options::Options()
 {
     num_states = 3;
-    state = NORMAL;
+    state = DGG_NORMAL;
 
     auto_capitalize_allow_prefixes = DirectEntry::allow_cap_name_prefixes_;
     auto_capitalize_force_prefixes = DirectEntry::force_cap_name_prefixes_;

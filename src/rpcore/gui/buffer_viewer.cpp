@@ -118,10 +118,10 @@ void BufferViewer::create_components()
     content_frame_options->auto_hide_scroll_bars = false;
     content_frame_options->scroll_bar_width = 12.0f;
     content_frame_options->frame_color = LColorf(0, 0, 0, 0);
-    content_frame_options->vertical_scroll_options->relief = rppanda::FLAT;
-    content_frame_options->vertical_scroll_options->inc_button_options->relief = rppanda::FLAT;
-    content_frame_options->vertical_scroll_options->dec_button_options->relief = rppanda::FLAT;
-    content_frame_options->vertical_scroll_options->thumb_options->relief = rppanda::FLAT;
+    content_frame_options->vertical_scroll_options->relief = rppanda::DGG_FLAT;
+    content_frame_options->vertical_scroll_options->inc_button_options->relief = rppanda::DGG_FLAT;
+    content_frame_options->vertical_scroll_options->dec_button_options->relief = rppanda::DGG_FLAT;
+    content_frame_options->vertical_scroll_options->thumb_options->relief = rppanda::DGG_FLAT;
     content_frame_options->vertical_scroll_options->frame_color = LColorf(0.05, 0.05, 0.05, 1);
     content_frame_options->vertical_scroll_options->thumb_options->frame_color = LColorf(0.8, 0.8, 0.8, 1);
     content_frame_options->vertical_scroll_options->inc_button_options->frame_color = LColorf(0.6, 0.6, 0.6, 1);
@@ -278,14 +278,14 @@ void BufferViewer::render_stages()
         frame_hover_options->frame_size = LVecBase4(0, entry_width - 10, 0, -entry_height + 10);
         frame_hover_options->frame_color = LColor(0);
         frame_hover_options->pos = LVecBase3(0, 0, 0);
-        frame_hover_options->state = rppanda::NORMAL;
+        frame_hover_options->state = rppanda::DGG_NORMAL;
         PT(rppanda::DirectFrame) frame_hover = new rppanda::DirectFrame(node, frame_hover_options);
         frame_hovers_.push_back(frame_hover);
-        frame_hover->bind(rppanda::ENTER, [frame_hover, this](const Event*) { on_texture_hovered(frame_hover); });
-        frame_hover->bind(rppanda::EXIT, [frame_hover, this](const Event*) { on_texture_blurred(frame_hover); });
+        frame_hover->bind(rppanda::DGG_ENTER, [frame_hover, this](const Event*) { on_texture_hovered(frame_hover); });
+        frame_hover->bind(rppanda::DGG_EXIT, [frame_hover, this](const Event*) { on_texture_blurred(frame_hover); });
         
         //frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
-        frame_hover->bind(rppanda::B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
+        frame_hover->bind(rppanda::DGG_B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
 
         Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3f(0.8f));
 

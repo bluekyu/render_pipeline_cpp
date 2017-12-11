@@ -49,8 +49,8 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
 
     if (enabled)
     {
-        checkbox_->get_node()->bind(rppanda::WITHIN, [this](const Event*) { on_node_enter(); });
-        checkbox_->get_node()->bind(rppanda::WITHOUT, [this](const Event*) { on_node_leave(); });
+        checkbox_->get_node()->bind(rppanda::DGG_WITHIN, [this](const Event*) { on_node_enter(); });
+        checkbox_->get_node()->bind(rppanda::DGG_WITHOUT, [this](const Event*) { on_node_leave(); });
     }
 }
 

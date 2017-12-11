@@ -69,7 +69,7 @@ void DraggableWindow::create_components()
     border_frame_options->pos = LVecBase3f(0, 1, 0);
     border_frame_options->frame_size = border_frame_size;
     border_frame_options->frame_color = LColorf(24 / 255.0, 131 / 255.0, 215 / 255.0, 1);
-    border_frame_options->state = rppanda::NORMAL;
+    border_frame_options->state = rppanda::DGG_NORMAL;
     border_frame_ = new rppanda::DirectFrame(node_, border_frame_options);
 
     auto background_options = std::make_shared<rppanda::DirectFrame::Options>();
@@ -82,13 +82,13 @@ void DraggableWindow::create_components()
     title_bar_options->pos = LVecBase3f(0, 1, 0);
     title_bar_options->frame_size = LVecBase4f(0, width_, 0, -25);
     title_bar_options->frame_color = LColorf(1, 1, 1, 1);
-    title_bar_options->state = rppanda::NORMAL;
+    title_bar_options->state = rppanda::DGG_NORMAL;
     title_bar_ = new rppanda::DirectFrame(node_, title_bar_options);
 
     window_title_ = std::make_unique<Text>(title_, node_, 8.0f, 17.0f, 13.0f, "left", LVecBase3f(0.15f), true);
 
     auto btn_close_options = std::make_shared<rppanda::DirectButton::Options>();
-    btn_close_options->relief = rppanda::FLAT;
+    btn_close_options->relief = rppanda::DGG_FLAT;
     btn_close_options->press_effect = true;
     btn_close_options->pos = LVecBase3f(width_ - 22, 1, -12);
     btn_close_options->frame_color = LColorf(1.0f, 0.2f, 0.2f, 0.5f);
@@ -98,11 +98,11 @@ void DraggableWindow::create_components()
 
     // Init bindings
     btn_close_->set_transparency(TransparencyAttrib::M_alpha);
-    btn_close_->bind(rppanda::B1CLICK, [this](const Event*) { request_close(); });
-    btn_close_->bind(rppanda::WITHIN, [this](const Event*) { on_close_btn_hover(); });
-    btn_close_->bind(rppanda::WITHOUT, [this](const Event*) { on_close_btn_out(); });
-    title_bar_->bind(rppanda::B1PRESS, [this](const Event*) { start_drag(); });
-    title_bar_->bind(rppanda::B1RELEASE, [this](const Event*) { stop_drag(); });
+    btn_close_->bind(rppanda::DGG_B1CLICK, [this](const Event*) { request_close(); });
+    btn_close_->bind(rppanda::DGG_WITHIN, [this](const Event*) { on_close_btn_hover(); });
+    btn_close_->bind(rppanda::DGG_WITHOUT, [this](const Event*) { on_close_btn_out(); });
+    title_bar_->bind(rppanda::DGG_B1PRESS, [this](const Event*) { start_drag(); });
+    title_bar_->bind(rppanda::DGG_B1RELEASE, [this](const Event*) { stop_drag(); });
 }
 
 void DraggableWindow::start_drag()

@@ -120,12 +120,12 @@ TypeHandle DirectGuiWidget::type_handle_;
 bool DirectGuiWidget::_snap_to_grid = false;
 float DirectGuiWidget::_grid_spacing = 0.05f;
 bool DirectGuiWidget::gui_edit = ConfigVariableBool("direct-gui-edit", false).get_value();
-std::string DirectGuiWidget::inactive_init_state = gui_edit ? NORMAL : DISABLED;
+std::string DirectGuiWidget::inactive_init_state = gui_edit ? DGG_NORMAL : DGG_DISABLED;
 
 DirectGuiWidget::Options::Options()
 {
-    state = NORMAL;
-    relief = FLAT;
+    state = DGG_NORMAL;
+    relief = DGG_FLAT;
 }
 
 DirectGuiWidget::DirectGuiWidget(NodePath parent, const std::shared_ptr<Options>& options): DirectGuiWidget(new PGItem(""), parent, options, get_class_type())
@@ -200,9 +200,9 @@ DirectGuiWidget::~DirectGuiWidget() = default;
 
 void DirectGuiWidget::enable_edit()
 {
-    this->bind(B2PRESS, [this](const Event*) { edit_start(); });
-    this->bind(B2RELEASE, [this](const Event*) { edit_stop(); });
-    this->bind(PRINT, [this](const Event* ev) {
+    this->bind(DGG_B2PRESS, [this](const Event*) { edit_start(); });
+    this->bind(DGG_B2RELEASE, [this](const Event*) { edit_stop(); });
+    this->bind(DGG_PRINT, [this](const Event* ev) {
         int indent = 0;
         if (ev->get_num_parameters() >= 1 && ev->get_parameter(0).is_int())
             indent = ev->get_parameter(0).get_int_value();
@@ -212,9 +212,9 @@ void DirectGuiWidget::enable_edit()
 
 void DirectGuiWidget::disable_edit()
 {
-    this->unbind(B2PRESS);
-    this->unbind(B2RELEASE);
-    this->unbind(PRINT);
+    this->unbind(DGG_B2PRESS);
+    this->unbind(DGG_B2RELEASE);
+    this->unbind(DGG_PRINT);
 }
 
 void DirectGuiWidget::edit_start()
@@ -236,7 +236,7 @@ void DirectGuiWidget::edit_stop()
 void DirectGuiWidget::set_state(const std::string& state)
 {
     _options->state = state;
-    if (state == NORMAL)
+    if (state == DGG_NORMAL)
         _gui_item->set_active(true);
     else
         _gui_item->set_active(false);
@@ -244,7 +244,7 @@ void DirectGuiWidget::set_state(const std::string& state)
 
 void DirectGuiWidget::set_state(bool state)
 {
-    _options->state = state ? NORMAL : DISABLED;
+    _options->state = state ? DGG_NORMAL : DGG_DISABLED;
     _gui_item->set_active(state);
 }
 
@@ -341,7 +341,7 @@ void DirectGuiWidget::update_frame_style()
 void DirectGuiWidget::set_relief(const std::string& relief_name)
 {
     // Convert string to frame style int
-    set_relief(FrameStyleDict.at(relief_name));
+    set_relief(frame_style_dict.at(relief_name));
 }
 
 void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
@@ -349,24 +349,24 @@ void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
     _options->relief = relief;
 
     // Set style
-    if (relief == RAISED)
+    if (relief == DGG_RAISED)
     {
         for (int i=0; i < _options->num_states; ++i)
         {
             if (std::find(_options->inverted_frames.begin(), _options->inverted_frames.end(), i) != std::end(_options->inverted_frames))
-                _frame_style[1].set_type(SUNKEN);
+                _frame_style[1].set_type(DGG_SUNKEN);
             else
-                _frame_style[i].set_type(RAISED);
+                _frame_style[i].set_type(DGG_RAISED);
         }
     }
-    else if (relief == SUNKEN)
+    else if (relief == DGG_SUNKEN)
     {
         for (int i=0; i < _options->num_states; ++i)
         {
             if (std::find(_options->inverted_frames.begin(), _options->inverted_frames.end(), i) != std::end(_options->inverted_frames))
-                _frame_style[1].set_type(RAISED);
+                _frame_style[1].set_type(DGG_RAISED);
             else
-                _frame_style[i].set_type(SUNKEN);
+                _frame_style[i].set_type(DGG_SUNKEN);
         }
     }
     else
@@ -459,7 +459,7 @@ void DirectGuiWidget::print_config(int indent)
     // Print out children info
     const auto& npc = get_children();
     for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-        Messenger::get_global_instance()->send(PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
+        Messenger::get_global_instance()->send(DGG_PRINT + npc.get_path(k).get_name(), EventParameter(indent+2));
 }
 
 const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options(const std::shared_ptr<Options>& options)

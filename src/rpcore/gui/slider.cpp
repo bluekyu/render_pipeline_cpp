@@ -46,9 +46,9 @@ Slider::Slider(float x, float y, NodePath parent, float size, float min_value, f
     options->command = callback;
     options->frame_color = LColor(0.0, 0.0, 0.0, 1);
     options->frame_size = LVecBase4(-size * 0.25, size * 0.25, -5, 5);
-    options->relief = rppanda::FLAT;
+    options->relief = rppanda::DGG_FLAT;
     options->thumb_options->frame_color = LColor(0.35, 0.53, 0.2, 1.0);
-    options->thumb_options->relief = rppanda::FLAT;
+    options->thumb_options->relief = rppanda::DGG_FLAT;
     options->thumb_options->frame_size = LVecBase4(-2.5, 2.5, -5.0, 5.0);
     node_ = new rppanda::DirectSlider(parent, options);
 }

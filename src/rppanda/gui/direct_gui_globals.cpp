@@ -46,29 +46,29 @@
 
 namespace rppanda {
 
-const std::unordered_map<std::string, PGFrameStyle::Type> FrameStyleDict = {
-    { "flat", FLAT },
-    { "raised", RAISED },
-    { "sunken", SUNKEN },
-    { "groove", GROOVE },
-    { "ridge", RIDGE },
-    { "texture_border", TEXTUREBORDER },
+const std::unordered_map<std::string, PGFrameStyle::Type> frame_style_dict = {
+    { "flat", DGG_FLAT },
+    { "raised", DGG_RAISED },
+    { "sunken", DGG_SUNKEN },
+    { "groove", DGG_GROOVE },
+    { "ridge", DGG_RIDGE },
+    { "texture_border", DGG_TEXTUREBORDER },
 };
 
-const std::string ENTER = PGButton::get_enter_prefix();
-const std::string EXIT = PGButton::get_exit_prefix();
-const std::string WITHIN = PGButton::get_within_prefix();
-const std::string WITHOUT = PGButton::get_without_prefix();
+const std::string DGG_ENTER = PGButton::get_enter_prefix();
+const std::string DGG_EXIT = PGButton::get_exit_prefix();
+const std::string DGG_WITHIN = PGButton::get_within_prefix();
+const std::string DGG_WITHOUT = PGButton::get_without_prefix();
 
-const std::string B1CLICK = PGButton::get_click_prefix() + MouseButton::one().get_name() + '-';
-const std::string B2CLICK = PGButton::get_click_prefix() + MouseButton::two().get_name() + '-';
-const std::string B3CLICK = PGButton::get_click_prefix() + MouseButton::three().get_name() + '-';
-const std::string B1PRESS = PGButton::get_press_prefix() + MouseButton::one().get_name() + '-';
-const std::string B2PRESS = PGButton::get_press_prefix() + MouseButton::two().get_name() + "-";
-const std::string B3PRESS = PGButton::get_press_prefix() + MouseButton::three().get_name() + "-";
-const std::string B1RELEASE = PGButton::get_release_prefix() + MouseButton::one().get_name() + "-";
-const std::string B2RELEASE = PGButton::get_release_prefix() + MouseButton::two().get_name() + "-";
-const std::string B3RELEASE = PGButton::get_release_prefix() + MouseButton::three().get_name() + "-";
+const std::string DGG_B1CLICK = PGButton::get_click_prefix() + MouseButton::one().get_name() + "-";
+const std::string DGG_B2CLICK = PGButton::get_click_prefix() + MouseButton::two().get_name() + "-";
+const std::string DGG_B3CLICK = PGButton::get_click_prefix() + MouseButton::three().get_name() + "-";
+const std::string DGG_B1PRESS = PGButton::get_press_prefix() + MouseButton::one().get_name() + "-";
+const std::string DGG_B2PRESS = PGButton::get_press_prefix() + MouseButton::two().get_name() + "-";
+const std::string DGG_B3PRESS = PGButton::get_press_prefix() + MouseButton::three().get_name() + "-";
+const std::string DGG_B1RELEASE = PGButton::get_release_prefix() + MouseButton::one().get_name() + "-";
+const std::string DGG_B2RELEASE = PGButton::get_release_prefix() + MouseButton::two().get_name() + "-";
+const std::string DGG_B3RELEASE = PGButton::get_release_prefix() + MouseButton::three().get_name() + "-";
 
 const std::string DGG_OVERFLOW = PGEntry::get_overflow_prefix();
 const std::string DGG_ACCEPT = PGEntry::get_accept_prefix() + KeyboardButton::enter().get_name() + "-";
@@ -77,7 +77,7 @@ const std::string DGG_TYPE = PGEntry::get_type_prefix();
 const std::string DGG_ERASE = PGEntry::get_erase_prefix();
 const std::string DGG_CURSORMOVE = PGEntry::get_cursormove_prefix();
 
-const std::string ADJUST = PGSliderBar::get_adjust_prefix();
+const std::string DGG_ADJUST = PGSliderBar::get_adjust_prefix();
 
 TextFont* get_default_font()
 {

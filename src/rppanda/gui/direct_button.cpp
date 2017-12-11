@@ -49,11 +49,11 @@ TypeHandle DirectButton::type_handle_;
 DirectButton::Options::Options()
 {
     num_states = 4;
-    state = NORMAL;
-    relief = RAISED;
+    state = DGG_NORMAL;
+    relief = DGG_RAISED;
     inverted_frames = { 1 };
 
-    command_buttons = { LMB, };
+    command_buttons = { DGG_LMB, };
 }
 
 DirectButton::DirectButton(NodePath parent, const std::shared_ptr<Options>& options): DirectButton(new PGButton(""), parent, options, get_class_type())
@@ -105,38 +105,38 @@ void DirectButton::set_command_buttons()
     const auto& command_buttons = std::dynamic_pointer_cast<Options>(_options)->command_buttons;
 
     // Left mouse button
-    if (std::find(command_buttons.begin(), command_buttons.end(), LMB) != command_buttons.end())
+    if (std::find(command_buttons.begin(), command_buttons.end(), DGG_LMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::one());
-        bind(B1CLICK, [this](const Event* ev) { command_func(ev); });
+        bind(DGG_B1CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
-        unbind(B1CLICK);
+        unbind(DGG_B1CLICK);
         get_gui_item()->remove_click_button(MouseButton::one());
     }
 
     // Middle mouse button
-    if (std::find(command_buttons.begin(), command_buttons.end(), MMB) != command_buttons.end())
+    if (std::find(command_buttons.begin(), command_buttons.end(), DGG_MMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::two());
-        bind(B2CLICK, [this](const Event* ev) { command_func(ev); });
+        bind(DGG_B2CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
-        unbind(B2CLICK);
+        unbind(DGG_B2CLICK);
         get_gui_item()->remove_click_button(MouseButton::two());
     }
 
     // Right mouse button
-    if (std::find(command_buttons.begin(), command_buttons.end(), RMB) != command_buttons.end())
+    if (std::find(command_buttons.begin(), command_buttons.end(), DGG_RMB) != command_buttons.end())
     {
         get_gui_item()->add_click_button(MouseButton::three());
-        bind(B3CLICK, [this](const Event* ev) { command_func(ev); });
+        bind(DGG_B3CLICK, [this](const Event* ev) { command_func(ev); });
     }
     else
     {
-        unbind(B3CLICK);
+        unbind(DGG_B3CLICK);
         get_gui_item()->remove_click_button(MouseButton::three());
     }
 }

@@ -65,13 +65,13 @@ DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, cons
 
     options->vertical_scroll_options->border_width = options->border_width;
     options->vertical_scroll_options->frame_size = LVecBase4f(-w / 2.0f, w / 2.0f, -1, 1);
-    options->vertical_scroll_options->orientation = VERTICAL;
+    options->vertical_scroll_options->orientation = DGG_VERTICAL;
     _vertical_scroll = new DirectScrollBar(*this, options->vertical_scroll_options);
     create_component("verticalScroll", boost::any(_vertical_scroll));
 
     options->horizontal_scroll_options->border_width = options->border_width;
     options->horizontal_scroll_options->frame_size = LVecBase4f(-1, 1, -w / 2.0f, w / 2.0f);
-    options->horizontal_scroll_options->orientation = HORIZONTAL;
+    options->horizontal_scroll_options->orientation = DGG_HORIZONTAL;
     _horizontal_scroll = new DirectScrollBar(*this, options->horizontal_scroll_options);
     create_component("horizontalScroll", boost::any(_horizontal_scroll));
 

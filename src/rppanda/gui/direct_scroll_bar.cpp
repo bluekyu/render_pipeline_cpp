@@ -47,9 +47,9 @@ TypeHandle DirectScrollBar::type_handle_;
 
 DirectScrollBar::Options::Options()
 {
-    state = NORMAL;
+    state = DGG_NORMAL;
     frame_color = LColor(0.6, 0.6, 0.6, 1.0);
-    orientation = HORIZONTAL;
+    orientation = DGG_HORIZONTAL;
 
     thumb_options = std::make_shared<DirectButton::Options>();
     inc_button_options = std::make_shared<DirectButton::Options>();
@@ -78,7 +78,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     if (!_dec_button->get_frame_size() && _dec_button->get_bounds() == LVecBase4(0))
     {
         const auto& f = options->frame_size.get();
-        if (options->orientation == HORIZONTAL)
+        if (options->orientation == DGG_HORIZONTAL)
             _dec_button->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else
             _dec_button->set_frame_size(LVecBase4(f[0], f[1], f[2]*0.05, f[3]*0.05));
@@ -87,7 +87,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     if (!_inc_button->get_frame_size() && _inc_button->get_bounds() == LVecBase4(0))
     {
         const auto& f = options->frame_size.get();
-        if (options->orientation == HORIZONTAL)
+        if (options->orientation == DGG_HORIZONTAL)
             _inc_button->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else
             _inc_button->set_frame_size(LVecBase4(f[0], f[1], f[2]*0.05, f[3]*0.05));
@@ -99,7 +99,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
     item->set_right_button(_inc_button->get_gui_item());
 
     // Bind command function
-    this->bind(ADJUST, [this](const Event*){ command_func(); });
+    this->bind(DGG_ADJUST, [this](const Event*){ command_func(); });
 
     // Call option initialization functions
     if (is_exact_type(type_handle))
@@ -145,11 +145,11 @@ void DirectScrollBar::set_page_size(PN_stdfloat page_size)
 void DirectScrollBar::set_orientation(const std::string& orientation)
 {
     std::dynamic_pointer_cast<Options>(_options)->orientation = orientation;
-    if (orientation == HORIZONTAL)
+    if (orientation == DGG_HORIZONTAL)
         get_gui_item()->set_axis(LVector3(1, 0, 0));
-    else if (orientation == VERTICAL)
+    else if (orientation == DGG_VERTICAL)
         get_gui_item()->set_axis(LVector3(0, 0, -1));
-    else if (orientation == VERTICAL_INVERTED)
+    else if (orientation == DGG_VERTICAL_INVERTED)
         get_gui_item()->set_axis(LVector3(0, 0, 1));
     else
         throw std::runtime_error(std::string("Invalid value for orientation: ") + orientation);
@@ -177,7 +177,7 @@ const std::shared_ptr<DirectScrollBar::Options>& DirectScrollBar::define_options
 {
     if (!options->frame_size)
     {
-        if ((options->orientation == VERTICAL || options->orientation == VERTICAL_INVERTED))
+        if ((options->orientation == DGG_VERTICAL || options->orientation == DGG_VERTICAL_INVERTED))
         {
             // These are the default options for a vertical layout.
             options->frame_size = LVecBase4(-0.04f, 0.04f, -0.5f, 0.5f);

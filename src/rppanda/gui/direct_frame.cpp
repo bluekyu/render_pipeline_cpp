@@ -125,13 +125,13 @@ void DirectFrame::update_text()
                 create_component(component_name, boost::any(OnscreenText(
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
                     {}, {}, {}, OnscreenText::Default::shadow_offset, {},
-                    {}, {}, {}, false, nullptr, _state_node_path.at(i), TEXT_SORT_INDEX,
+                    {}, {}, {}, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
                     std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
 #else
                 create_component(component_name, boost::any(OnscreenText(
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
                     boost::none, boost::none, boost::none, OnscreenText::Default::shadow_offset, boost::none,
-                    boost::none, boost::none, boost::none, false, nullptr, _state_node_path.at(i), TEXT_SORT_INDEX,
+                    boost::none, boost::none, boost::none, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
                     std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
 #endif
             }
@@ -211,7 +211,7 @@ void DirectFrame::update_image()
             }
             else
             {
-                PT(OnscreenImage) onscreen_image = new OnscreenImage(image, _state_node_path.at(i), IMAGE_SORT_INDEX);
+                PT(OnscreenImage) onscreen_image = new OnscreenImage(image, _state_node_path.at(i), DGG_IMAGE_SORT_INDEX);
                 create_component(component_name, boost::any(onscreen_image));
             }
         }

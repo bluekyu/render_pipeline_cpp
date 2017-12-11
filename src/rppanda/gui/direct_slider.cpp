@@ -47,9 +47,9 @@ TypeHandle DirectSlider::type_handle_;
 
 DirectSlider::Options::Options()
 {
-    state = NORMAL;
+    state = DGG_NORMAL;
     frame_color = LColor(0.6, 0.6, 0.6, 1);
-    orientation = HORIZONTAL;
+    orientation = DGG_HORIZONTAL;
 
     thumb_options = std::make_shared<DirectButton::Options>();
 }
@@ -69,7 +69,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     {
         // Compute a default frameSize for the thumb.
         const auto& f = options->frame_size.get();
-        if (options->orientation == HORIZONTAL)
+        if (options->orientation == DGG_HORIZONTAL)
             thumb_->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else
             thumb_->set_frame_size(LVecBase4(f[0], f[1], f[2]*0.05, f[3]*0.05));
@@ -78,7 +78,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     get_gui_item()->set_thumb_button(thumb_->get_gui_item());
 
     // Bind command function
-    this->bind(ADJUST, [this](const Event*) { command_func(); });
+    this->bind(DGG_ADJUST, [this](const Event*) { command_func(); });
 
     // Call option initialization functions
     if (is_exact_type(type_handle))
@@ -135,9 +135,9 @@ void DirectSlider::set_page_size(float page_size)
 void DirectSlider::set_orientation(const std::string& orientation)
 {
     std::dynamic_pointer_cast<Options>(_options)->orientation = orientation;
-    if (orientation == HORIZONTAL)
+    if (orientation == DGG_HORIZONTAL)
         get_gui_item()->set_axis(LVector3(1, 0, 0));
-    else if (orientation == VERTICAL)
+    else if (orientation == DGG_VERTICAL)
         get_gui_item()->set_axis(LVector3(0, 0, 1));
     else
         throw std::runtime_error(std::string("Invalid value for orientation: ") + orientation);
@@ -145,7 +145,7 @@ void DirectSlider::set_orientation(const std::string& orientation)
 
 const std::shared_ptr<DirectSlider::Options>& DirectSlider::define_options(const std::shared_ptr<Options>& options)
 {
-    if (options->orientation == VERTICAL)
+    if (options->orientation == DGG_VERTICAL)
     {
         // These are the default options for a vertical layout.
         if (!options->frame_size)

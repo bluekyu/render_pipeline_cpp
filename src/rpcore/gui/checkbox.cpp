@@ -63,8 +63,8 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
     node_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     node_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
     node_options->image = { std::make_shared<rppanda::ImageInput>(unchecked_img) };
-    node_options->state = rppanda::NORMAL;
-    node_options->relief = rppanda::FLAT;
+    node_options->state = rppanda::DGG_NORMAL;
+    node_options->relief = rppanda::DGG_FLAT;
     node_options->checkbox_command = std::bind(&Checkbox::update_status, this, std::placeholders::_1);
 
     node_ = new rppanda::DirectCheckBox(parent, node_options);

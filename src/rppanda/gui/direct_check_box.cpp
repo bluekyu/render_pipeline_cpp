@@ -49,8 +49,8 @@ TypeHandle DirectCheckBox::type_handle_;
 DirectCheckBox::Options::Options()
 {
     num_states = 4;
-    state = NORMAL;
-    relief = RAISED;
+    state = DGG_NORMAL;
+    relief = DGG_RAISED;
     inverted_frames = { 1 };
 
     press_effect = true;
