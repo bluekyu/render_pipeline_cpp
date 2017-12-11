@@ -69,10 +69,10 @@ public:
     ALLOC_DELETED_CHAIN(Loader);
 
     NodePath load_model(const Filename& model_path, const LoaderOptions& loader_options={},
-        boost::optional<bool> no_cache={}, bool allow_instance=false, boost::optional<bool> ok_missing={});
+        boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none);
 
     std::vector<NodePath> load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
-        boost::optional<bool> no_cache={}, bool allow_instance=false, boost::optional<bool> ok_missing={});
+        boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none);
 
     PT(AudioSound) load_sfx(const std::string& sound_path, bool positional=false);
 

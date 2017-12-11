@@ -107,9 +107,9 @@ class RENDER_PIPELINE_DECL LerpPosInterval : public LerpNodePathInterval
 {
 public:
     LerpPosInterval(NodePath nodepath, double duration, const LVecBase3& pos,
-        const boost::optional<LVecBase3>& start_pos={}, NodePath other={},
+        const boost::optional<LVecBase3>& start_pos=boost::none, NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none);
 
 public:
     static TypeHandle get_class_type();
@@ -159,10 +159,10 @@ class RENDER_PIPELINE_DECL LerpHprInterval : public LerpNodePathInterval
 {
 public:
     LerpHprInterval(NodePath nodepath, double duration, const LVecBase3& hpr,
-        const boost::optional<LVecBase3>& start_hpr={},
-        const boost::optional<LQuaternion>& start_quat={}, NodePath other={},
+        const boost::optional<LVecBase3>& start_hpr=boost::none,
+        const boost::optional<LQuaternion>& start_quat=boost::none, NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none);
 
 public:
     static TypeHandle get_class_type();
@@ -215,13 +215,13 @@ class RENDER_PIPELINE_DECL LerpQuatInterval : public LerpNodePathInterval
 {
 public:
     LerpQuatInterval(NodePath nodepath, double duration,
-        const boost::optional<LQuaternion>& quat={},
-        const boost::optional<LVecBase3>& start_hpr={},
-        const boost::optional<LQuaternion>& start_quat={},
+        const boost::optional<LQuaternion>& quat=boost::none,
+        const boost::optional<LVecBase3>& start_hpr=boost::none,
+        const boost::optional<LQuaternion>& start_quat=boost::none,
         NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={},
-        const boost::optional<LVecBase3>& hpr={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none,
+        const boost::optional<LVecBase3>& hpr=boost::none);
 
 public:
     static TypeHandle get_class_type();
@@ -290,10 +290,10 @@ class RENDER_PIPELINE_DECL LerpScaleInterval : public LerpNodePathInterval
 public:
     LerpScaleInterval(NodePath nodepath, double duration,
         const LVecBase3& scale,
-        const boost::optional<LVecBase3>& start_scale={},
+        const boost::optional<LVecBase3>& start_scale=boost::none,
         NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none);
 
 public:
     static TypeHandle get_class_type();
@@ -345,10 +345,10 @@ class RENDER_PIPELINE_DECL LerpShearInterval : public LerpNodePathInterval
 public:
     LerpShearInterval(NodePath nodepath, double duration,
         const LVecBase3& shear,
-        const boost::optional<LVecBase3>& start_shear={},
+        const boost::optional<LVecBase3>& start_shear=boost::none,
         NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none);
 
 public:
     static TypeHandle get_class_type();
@@ -401,12 +401,12 @@ class RENDER_PIPELINE_DECL LerpPosHprInterval : public LerpNodePathInterval
 public:
     LerpPosHprInterval(NodePath nodepath, double duration,
         const LVecBase3& pos, const LVecBase3& hpr,
-        const boost::optional<LVecBase3>& start_pos={},
-        const boost::optional<LVecBase3>& start_hpr={},
-        const boost::optional<LQuaternion>& start_quat={},
+        const boost::optional<LVecBase3>& start_pos=boost::none,
+        const boost::optional<LVecBase3>& start_hpr=boost::none,
+        const boost::optional<LQuaternion>& start_quat=boost::none,
         NodePath other={},
         BlendType blend_type=BlendType::BT_no_blend, bool bake_in_start=true,
-        bool fluid=false, const boost::optional<std::string>& name={});
+        bool fluid=false, const boost::optional<std::string>& name=boost::none);
 
 public:
     static TypeHandle get_class_type();

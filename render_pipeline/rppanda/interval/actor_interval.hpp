@@ -51,11 +51,11 @@ public:
 
 public:
     ActorInterval(Actor* actor, const std::vector<std::string>& anim_name, bool loop=false,
-        bool constrained_loop=false, boost::optional<double> duration={},
-        boost::optional<double> start_time={}, boost::optional<double> end_time={},
-        boost::optional<double> start_frame={}, boost::optional<double> end_frame={},
-        double play_rate=1.0, const boost::optional<std::string> name={}, bool force_update=false,
-        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name={});
+        bool constrained_loop=false, boost::optional<double> duration=boost::none,
+        boost::optional<double> start_time=boost::none, boost::optional<double> end_time=boost::none,
+        boost::optional<double> start_frame=boost::none, boost::optional<double> end_frame=boost::none,
+        double play_rate=1.0, const boost::optional<std::string> name=boost::none, bool force_update=false,
+        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name=boost::none);
 
     void priv_step(double t) override;
     void priv_finalize() override;

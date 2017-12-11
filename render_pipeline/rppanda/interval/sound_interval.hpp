@@ -56,9 +56,9 @@ public:
 
 public:
     SoundInterval(AudioSound* sound, bool loop=false, double duration=0.0,
-        const boost::optional<std::string>& name={}, double volume=1.0, double start_time=0.0,
-        boost::optional<NodePath> node={}, bool seamless_loop=true, boost::optional<NodePath> listener_node={},
-        boost::optional<float> cut_off={});
+        const boost::optional<std::string>& name=boost::none, double volume=1.0, double start_time=0.0,
+        boost::optional<NodePath> node=boost::none, bool seamless_loop=true, boost::optional<NodePath> listener_node=boost::none,
+        boost::optional<float> cut_off=boost::none);
 
     ~SoundInterval() = default;
 

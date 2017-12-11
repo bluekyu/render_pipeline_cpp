@@ -91,8 +91,8 @@ DirectEntry::DirectEntry(PGItem* gui_item, NodePath parent, const std::shared_pt
 #else
     onscreen_text_ = OnscreenText(
         "", OnscreenText::Default::style, LVecBase2(0), 0, LVecBase2(1),
-        LColor(), LColor(), LColor(), OnscreenText::Default::shadow_offset, LColor(),
-        TextNode::A_left, {}, {}, false, font, rppanda::ShowBase::get_global_ptr()->get_hidden(), 0,
+        boost::none, boost::none, boost::none, OnscreenText::Default::shadow_offset, boost::none,
+        TextNode::A_left, boost::none, boost::none, false, font, rppanda::ShowBase::get_global_ptr()->get_hidden(), 0,
         // Don't get rid of the text node
         true);
 #endif

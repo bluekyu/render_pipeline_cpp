@@ -73,15 +73,15 @@ public:
      * @see TaskManager::add
      */
     AsyncTask* add_task(AsyncTask* task, const std::string& name = {},
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {});
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none);
 
     /**
      * @see TaskManager::add
      */
     FunctionalTask* add_task(const FunctionalTask::TaskFunc& func, const std::string& name = {},
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {},
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death = nullptr);
 
     /**
@@ -89,16 +89,16 @@ public:
      */
     AsyncTask* do_method_later(float delay_time,
         AsyncTask* task, const std::string& name,
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {});
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none);
 
     /**
      * @see TaskManager::do_method_later
      */
     FunctionalTask* do_method_later(float delay_time,
         const FunctionalTask::TaskFunc& func, const std::string& name,
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {},
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death = nullptr);
 
     void remove_task(const std::string& task_name);

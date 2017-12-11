@@ -130,8 +130,8 @@ void DirectFrame::update_text()
 #else
                 create_component(component_name, boost::any(OnscreenText(
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
-                    LColor(), LColor(), LColor(), OnscreenText::Default::shadow_offset, LColor(),
-                    {}, {}, {}, false, nullptr, _state_node_path.at(i), TEXT_SORT_INDEX,
+                    boost::none, boost::none, boost::none, OnscreenText::Default::shadow_offset, boost::none,
+                    boost::none, boost::none, boost::none, false, nullptr, _state_node_path.at(i), TEXT_SORT_INDEX,
                     std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
 #endif
             }

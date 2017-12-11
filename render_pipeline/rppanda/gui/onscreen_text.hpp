@@ -85,13 +85,13 @@ public:
      *                     many parameters.
      */
     OnscreenText(const std::string& text = "", Style style = Default::style,
-        const LVecBase2& pos = LVecBase2(0), float roll = 0, boost::optional<LVecBase2> scale = {},
-        boost::optional<LColor> fg = {}, boost::optional<LColor> bg = {}, boost::optional<LColor> shadow = {},
-        const LVecBase2& shadow_offset = Default::shadow_offset, boost::optional<LColor> frame = {},
-        boost::optional<TextNode::Alignment> align = {}, boost::optional<float> wordwrap = {},
-        boost::optional<int> draw_order = {}, bool decal = false, TextFont* font = nullptr,
+        const LVecBase2& pos = LVecBase2(0), float roll = 0, boost::optional<LVecBase2> scale = boost::none,
+        boost::optional<LColor> fg = boost::none, boost::optional<LColor> bg = boost::none, boost::optional<LColor> shadow = boost::none,
+        const LVecBase2& shadow_offset = Default::shadow_offset, boost::optional<LColor> frame = boost::none,
+        boost::optional<TextNode::Alignment> align = boost::none, boost::optional<float> wordwrap = boost::none,
+        boost::optional<int> draw_order = boost::none, bool decal = false, TextFont* font = nullptr,
         NodePath parent = {}, int sort = 0, bool may_change = true,
-        boost::optional<TextProperties::Direction> direction = {});
+        boost::optional<TextProperties::Direction> direction = boost::none);
 
     void cleanup();
 

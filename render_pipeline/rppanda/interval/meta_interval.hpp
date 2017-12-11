@@ -57,7 +57,7 @@ protected:
     static int sequence_num_;
 
 public:
-    MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+    MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false);
 
 protected:
@@ -105,7 +105,7 @@ inline TypeHandle MetaInterval::force_init_type()
 class RENDER_PIPELINE_DECL Sequence : public MetaInterval
 {
 public:
-    Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+    Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
@@ -154,7 +154,7 @@ inline TypeHandle Sequence::force_init_type()
 class RENDER_PIPELINE_DECL Parallel : public MetaInterval
 {
 public:
-    Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+    Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
@@ -203,7 +203,7 @@ inline TypeHandle Parallel::force_init_type()
 class RENDER_PIPELINE_DECL ParallelEndTogether : public MetaInterval
 {
 public:
-    ParallelEndTogether(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name={},
+    ParallelEndTogether(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:
@@ -258,7 +258,7 @@ class RENDER_PIPELINE_DECL Track : public MetaInterval
 public:
     using TrackType = std::tuple<double, CInterval*, RelativeStart>;
 
-    Track(std::initializer_list<TrackType> track_list, const boost::optional<std::string>& name={},
+    Track(std::initializer_list<TrackType> track_list, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false, double duration=-1);
 
 public:

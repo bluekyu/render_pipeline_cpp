@@ -66,17 +66,17 @@ public:
     /** Return the curent cutoff distance. */
     float get_cutoff_distance();
 
-    float get_localized_volume(NodePath node, boost::optional<NodePath> listener_node={}, boost::optional<float> cutoff={});
+    float get_localized_volume(NodePath node, boost::optional<NodePath> listener_node=boost::none, boost::optional<float> cutoff=boost::none);
 
     void set_cutoff_distance(float d);
 
-    void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume={},
-        float time=0.0, boost::optional<NodePath> node={}, boost::optional<NodePath> listener_node={},
-        boost::optional<float> cutoff={});
+    void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume=boost::none,
+        float time=0.0, boost::optional<NodePath> node=boost::none, boost::optional<NodePath> listener_node=boost::none,
+        boost::optional<float> cutoff=boost::none);
 
     /** Calculate the final volume based on all contributed factors. */
     void set_final_volume(AudioSound* sfx, boost::optional<NodePath> node, boost::optional<float> volume,
-        boost::optional<NodePath> listener_node, boost::optional<float> cutoff={});
+        boost::optional<NodePath> listener_node, boost::optional<float> cutoff=boost::none);
 
 private:
     class Impl;

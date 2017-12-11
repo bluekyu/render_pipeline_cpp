@@ -85,13 +85,13 @@ public:
 public:
     Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models=nullptr,
         const boost::variant<void*, AnimsType, MultiPartAnimsType>& anims=nullptr,
-        boost::optional<NodePath> other={},
+        boost::optional<NodePath> other = boost::none,
         bool copy=true,
         bool flattenable=true,
         bool set_final=false,
-        boost::optional<bool> merge_LOD_bundles={},
-        boost::optional<bool> allow_async_bind={},
-        boost::optional<bool> ok_missing={}
+        boost::optional<bool> merge_LOD_bundles =boost::none,
+        boost::optional<bool> allow_async_bind = boost::none,
+        boost::optional<bool> ok_missing = boost::none
     );
     Actor(const Actor&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -126,7 +126,7 @@ public:
     /** accessing */
     ///@{
 
-    std::vector<PartBundle*> get_part_bundles(const boost::optional<std::string>& part_name={}) const;
+    std::vector<PartBundle*> get_part_bundles(const boost::optional<std::string>& part_name = boost::none) const;
 
     /**
      * Return list of Actor LOD names. If not an LOD actor,
@@ -155,8 +155,8 @@ public:
      * Returns True if any joint has changed as a result of this,
      * False otherwise.
      */
-    bool update(int lod=0, const boost::optional<std::string>& part_name={},
-        const boost::optional<std::string>& lod_name={}, bool force=false);
+    bool update(int lod=0, const boost::optional<std::string>& part_name = boost::none,
+        const boost::optional<std::string>& lod_name = boost::none, bool force=false);
 
     /**
      * Return actual frame rate of given anim name and given part.
@@ -199,7 +199,7 @@ public:
      * NOTE: returns info for arbitrary LOD
      */
     boost::optional<double> get_duration(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
-        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+        boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
 
     boost::optional<int> get_num_frames(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
 
@@ -227,15 +227,15 @@ public:
      * If lodName is None or omitted, all LOD's are returned.
      */
     std::vector<AnimControl*> get_anim_controls(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
-        const boost::optional<std::string>& lod_name={}, bool allow_async_bind=true);
+        const boost::optional<std::string>& lod_name=boost::none, bool allow_async_bind=true);
 
     std::vector<AnimControl*> get_anim_controls(bool anim_name, const std::vector<std::string>& part_name={},
-        const boost::optional<std::string>& lod_name={}, bool allow_async_bind=true);
+        const boost::optional<std::string>& lod_name=boost::none, bool allow_async_bind=true);
 
     void load_model(NodePath model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
         bool copy=true, bool auto_bind_anims=true);
     void load_model(const Filename& model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
-        bool copy=true, const boost::optional<bool>& ok_missing={}, bool auto_bind_anims=true);
+        bool copy=true, const boost::optional<bool>& ok_missing=boost::none, bool auto_bind_anims=true);
 
     /**
      * loadAnims(self, string:string{}, string='modelRoot',
@@ -293,7 +293,7 @@ public:
      * plays over ALL LODs
      */
     void play(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={},
-        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+        boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
 
     /**
      * Loop the given animation on the given part of the actor,
@@ -302,10 +302,10 @@ public:
      * all LOD's
      */
     void loop(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
-        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+        boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
 
     void pingpong(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
-        boost::optional<double> from_frame={}, boost::optional<double> to_frame={});
+        boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
 
     /**
      * Pose the actor in position found at given frame in the specified
@@ -313,7 +313,7 @@ public:
      * to apply pose to all parts.
      */
     void pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={},
-        const boost::optional<std::string>& lod_name={});
+        const boost::optional<std::string>& lod_name=boost::none);
 
     /**
      * Changes the way the Actor handles blending of multiple
@@ -351,8 +351,8 @@ public:
      * default blendType is controlled by the anim-blend-type
      * Config.prc variable.
      */
-    void set_blend(boost::optional<bool> anim_blend={}, boost::optional<bool> frame_blend={},
-        boost::optional<PartBundle::BlendType> blend_type={}, const boost::optional<std::string>& part_name={});
+    void set_blend(boost::optional<bool> anim_blend=boost::none, boost::optional<bool> frame_blend=boost::none,
+        boost::optional<PartBundle::BlendType> blend_type=boost::none, const boost::optional<std::string>& part_name=boost::none);
 
     ///@}
 
@@ -363,11 +363,11 @@ public:
     void hide_all_bounds();
 
     PT(ActorInterval) actor_interval(const std::vector<std::string>& anim_name, bool loop=false,
-        bool constrained_loop=false, boost::optional<double> duration={},
-        boost::optional<double> start_time={}, boost::optional<double> end_time={},
-        boost::optional<double> start_frame={}, boost::optional<double> end_frame={},
-        double play_rate=1.0, const boost::optional<std::string> name={}, bool force_update=false,
-        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name={});
+        bool constrained_loop=false, boost::optional<double> duration=boost::none,
+        boost::optional<double> start_time=boost::none, boost::optional<double> end_time=boost::none,
+        boost::optional<double> start_frame=boost::none, boost::optional<double> end_frame=boost::none,
+        double play_rate=1.0, const boost::optional<std::string> name=boost::none, bool force_update=false,
+        const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name=boost::none);
 
 protected:
     Loader* loader_;

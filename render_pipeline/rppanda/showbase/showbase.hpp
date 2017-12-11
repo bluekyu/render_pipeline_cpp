@@ -231,11 +231,11 @@ public:
     /** @see disable_all_audio() */
     void enable_all_audio();
 
-    void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume={},
-        float time=0.0, boost::optional<NodePath> node={}, boost::optional<NodePath> listener_node={},
-        boost::optional<float> cutoff={});
+    void play_sfx(AudioSound* sfx, bool looping=false, bool interrupt=true, boost::optional<float> volume=boost::none,
+        float time=0.0, boost::optional<NodePath> node=boost::none, boost::optional<NodePath> listener_node=boost::none,
+        boost::optional<float> cutoff=boost::none);
 
-    void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume={});
+    void play_music(AudioSound* music, bool looping=false, bool interrupt=true, float time=0.0f, boost::optional<float> volume=boost::none);
 
     /**
      * Captures a screenshot from the main window and writes it to a filename

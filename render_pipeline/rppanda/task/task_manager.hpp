@@ -69,8 +69,8 @@ public:
      */
     AsyncTask* do_method_later(float delay_time,
         AsyncTask* task, const std::string& name,
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {});
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none);
 
     /**
      * Add a new task to be performed at some time in the future.
@@ -80,8 +80,8 @@ public:
      */
     FunctionalTask* do_method_later(float delay_time,
         const FunctionalTask::TaskFunc& func, const std::string& name,
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {},
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death=nullptr);
 
     /**
@@ -105,8 +105,8 @@ public:
      * @return  pointer of the task object
      */
     AsyncTask* add(AsyncTask* task, const std::string& name = {},
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {});
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none);
 
     /**
      * Add a new task to the task manager.
@@ -123,8 +123,8 @@ public:
      * @return  pointer of a new task object
      */
     FunctionalTask* add(const FunctionalTask::TaskFunc& func, const std::string& name,
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {},
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death = nullptr);
 
     int remove(const std::string& task_name);
@@ -132,8 +132,8 @@ public:
 
 private:
     AsyncTask* setup_task(AsyncTask* task, const std::string& name = {},
-        boost::optional<int> sort = {}, boost::optional<int> priority = {},
-        const boost::optional<std::string>& task_chain = {});
+        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        const boost::optional<std::string>& task_chain = boost::none);
 
     AsyncTaskManager* mgr_;
     ClockObject* global_clock_;

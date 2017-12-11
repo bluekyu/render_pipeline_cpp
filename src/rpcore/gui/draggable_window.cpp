@@ -113,7 +113,7 @@ void DraggableWindow::start_drag()
 
     Globals::base->get_task_mgr()->add(
         [this](rppanda::FunctionalTask* task) { return on_tick(task); },
-        "UIWindowDrag", {}, {}, {},
+        "UIWindowDrag", boost::none, boost::none, boost::none,
         [this](rppanda::FunctionalTask*, bool) { stop_drag(); });
 
     drag_offset_ = pos_ - get_mouse_pos();
