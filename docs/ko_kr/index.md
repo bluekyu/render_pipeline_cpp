@@ -15,6 +15,7 @@
 - [모델](rendering/model.md)  
 - [물리 기반 쉐이딩 모델](rendering/pbs-model.md)
 - [Render Pipeline Material](rendering/rpmaterial.md)
+- [텍스처](rendering/texture.md)
 - [스테레오 및 가상현실](rendering/stereo-and-vr.md)
 
 ## 프레임워크
@@ -30,5 +31,4 @@
 - [Task](../snippets/task.md)
 - [Event](../snippets/event.md)
 - [모델](../snippets/model.md)
-- [텍스처](../snippets/texture.md)
 - [Panda3D GUI](../snippets/panda3d_gui.md)

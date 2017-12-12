@@ -21,7 +21,7 @@ Shading Model 은 shading 할 방식을 정하며, 6개 방식을 지원한다.
 
 ### Base Color
 Base Color 는 Material 의 기본 색상을 지정한다. 기본값은 `(0.8, 0.8, 0.8, 1.0)` 이다.
-텍스처 사용 시 0번 텍스처(`p3d_Texture0`)에 매핑된다.
+텍스처 사용 시 0번 텍스처(`p3d_Texture0`)에 매핑되며, material 의 기본 색상과 곱해서 적용이 된다.
 
 ### Specular IOR
 [1.0, 2.51] 값을 가진다. 기본값은 1.51 이다.

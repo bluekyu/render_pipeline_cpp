@@ -15,6 +15,7 @@
 - [Panda3D Model](rendering/model.md)
 - [Physically Based Shading Model](rendering/pbs-model.md)
 - [Render Pipeline Material](rendering/rpmaterial.md)
+- [Texture](rendering/texture.md)
 - [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
 
 ## Framework
@@ -30,5 +31,4 @@
 - [Task](snippets/task.md)
 - [Event](snippets/event.md)
 - [Model](snippets/model.md)
-- [Texture](snippets/texture.md)
 - [Panda3D GUI](snippets/panda3d_gui.md)
