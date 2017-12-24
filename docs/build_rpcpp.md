@@ -4,11 +4,11 @@
 ## Requirements
 The **Versions** are used by a build system and does **NOT** need to match.
 
-- CMake (build tool): 3.8
+- CMake (build tool)
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): develop branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
-- Boost: 1.64.0
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): beb44b87 commit
+- Boost: 1.65.1
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 86ae3a5a commit
 - [spdlog](https://github.com/gabime/spdlog): 0.14.0
 
 ### Optional
