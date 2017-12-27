@@ -26,9 +26,15 @@
 
 #version 430
 
+#pragma include "render_pipeline_base.inc.glsl"
+
 in vec2 texcoord;
 out vec4 color;
+#if STEREO_MODE
+uniform sampler2DArray SceneTex;
+#else
 uniform sampler2D SceneTex;
+#endif
 uniform vec2 mousePos;
 
 void main() {
@@ -43,6 +49,10 @@ void main() {
     }
 
     int_coord = (int_coord) / zoom - (ivec2(200, 150)) / zoom + ivec2(mousePos);
+#if STEREO_MODE
+    color = texelFetch(SceneTex, ivec3(int_coord, gl_Layer), 0);
+#else
     color = texelFetch(SceneTex, int_coord, 0);
+#endif
     color.w = 1.0;
 }
