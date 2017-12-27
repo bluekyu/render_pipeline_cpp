@@ -56,7 +56,6 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
         tex->set_anisotropic_degree(0);
     }
 
-    // TODO: implement
     auto node_options = std::make_shared<rppanda::DirectCheckBox::Options>();
     node_options->pos = LVecBase3f(x+11, 1, -y-8);
     node_options->scale = LVecBase3f(10 / 2.0f, 1.0f, 10 / 2.0f);

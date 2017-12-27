@@ -207,7 +207,6 @@ void Debugger::handle_window_resize()
     gui_scale = (std::max)(0.65f, (std::min)(1.0f, Globals::native_resolution.get_x() / 1920.0f));
     fullscreen_node.set_scale(gui_scale);
 
-    // TODO: implement
     if (use_advanced_info())
     {
         exposure_node.set_pos(
@@ -235,6 +234,7 @@ void Debugger::handle_window_resize()
 
     _buffer_viewer->center_on_screen();
     _pipe_viewer->center_on_screen();
+    // TODO: implement
     //self.rm_selector.center_on_screen()
 }
 
@@ -295,7 +295,7 @@ void Debugger::toggle_keybindings_visible()
 AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
 {
     const auto& clock = Globals::clock;
-    debug_lines[0]->set_text(fmt::format("{:3.0f} fps  |  {:3.1f} ms  |  {:3.1f} ms max",
+    debug_lines[0]->set_text(fmt::format("{:3.1f} fps  |  {:3.2f} ms  |  {:3.2f} ms max",
         clock->get_average_frame_rate(),
         (1000.0 / (std::max)(0.001, clock->get_average_frame_rate())),
         (clock->get_max_frame_duration() * 1000.0)));

@@ -50,8 +50,6 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id):
     RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id),
     impl_(std::make_unique<Impl>())
 {
-    // TODO: implement
-    //self._set_debug_color("magenta", "bright")
 }
 
 BasePlugin::~BasePlugin() = default;

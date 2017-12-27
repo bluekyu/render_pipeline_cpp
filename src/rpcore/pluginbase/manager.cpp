@@ -173,7 +173,21 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
             "create_plugin",
             boost::dll::load_mode::append_decorations);
 
-        return plugin_creators_.at(plugin_id)(pipeline_);
+        auto instance = plugin_creators_.at(plugin_id)(pipeline_);
+
+        for (const auto& required_plugin: instance->get_required_plugins())
+        {
+            if (enabled_plugins_.find(required_plugin) == enabled_plugins_.end())
+            {
+                if (enabled_plugins_.find(plugin_id) != enabled_plugins_.end())
+                {
+                    self_.warn(fmt::format("Cannot load {} since it requires {}", plugin_id, required_plugin));
+                    return nullptr;
+                }
+                break;
+            }
+        }
+        return instance;
     }
     catch (const boost::system::system_error& err)
     {
@@ -189,8 +203,6 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
         self_.error(fmt::format("Plugin error message: {}", err.what()));
         return nullptr;
     }
-
-    // TODO: implement
 }
 
 void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)

@@ -35,7 +35,6 @@ const float Slider::Default::page_size = 1;
 Slider::Slider(float x, float y, NodePath parent, float size, float min_value, float max_value,
     float value, float page_size, const std::function<void()>& callback): RPObject("Slider")
 {
-    // TODO: implement
     // Scale has to be 2.0, otherwise there will be an error.
     auto options = std::make_shared<rppanda::DirectSlider::Options>();
     options->pos = LVecBase3(size * 0.5 + x, 1, -y);
