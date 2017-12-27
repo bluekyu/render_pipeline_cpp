@@ -380,8 +380,6 @@ AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(rppanda::Functiona
 AsyncTask::DoneStatus RenderPipeline::Impl::manager_update_task(rppanda::FunctionalTask* task)
 {
     task_scheduler_->step();
-    // TODO: implements
-    //self._listener.update()
     if (debugger)
         debugger->update();
     daytime_mgr_->update();
@@ -508,8 +506,6 @@ bool RenderPipeline::Impl::create()
 
     plugin_mgr_->on_pipeline_created();
 
-    // TODO: implement
-    //self._listener = NetworkCommunication(self)
     set_default_effect();
 
     // Measure how long it took to initialize everything, and also store
@@ -598,7 +594,6 @@ void RenderPipeline::Impl::init_globals()
     // This is unused code.
     //RenderTarget.RT_OUTPUT_FUNC = lambda *args: RPObject.global_warn("RenderTarget", *args[1:])
 
-    // TODO: implement
     RenderTarget::USE_R11G11B10 = self_.get_setting<bool>("pipeline.use_r11_g11_b10", false);
 
     const auto& stereo_mode = get_setting<std::string>("pipeline.stereo_mode", std::string(""));
@@ -1121,11 +1116,6 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
     }
 
     impl_->plugin_mgr_->on_prepare_scene(scene);
-}
-
-void RenderPipeline::export_materials(const std::string& pth)
-{
-    // TODO: implement
 }
 
 void RenderPipeline::compute_render_resolution(float resolution_scale)

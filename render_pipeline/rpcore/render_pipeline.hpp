@@ -168,12 +168,6 @@ public:
      */
     void prepare_scene(const NodePath& scene);
 
-    /**
-     * Exports a list of all materials found in the current scene in a
-     * serialized format to the given path.
-     */
-    void export_materials(const std::string& pth);
-
     void compute_render_resolution(float resolution_scale);
     void compute_render_resolution(int width, int height);
 
