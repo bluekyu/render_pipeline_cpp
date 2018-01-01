@@ -13,11 +13,22 @@
 
 
 
-## 폴더 구조 및 실행
-[Render Pipeline C++ 빌드](build_rpcpp.md) 문서에 따라서 빌드 했다면, install 경로(`render_pipeline_cpp`)에
-아래와 유사한 구조를 가진다.
+## 개발 환경 구성하기
+### 빌드된 버전 사용하기
+[Panda3D](https://github.com/bluekyu/panda3d) 와 [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp) 의
+최신 빌드 버전은 저장소의 메인 페이지(README.md) 에서 다운로드 받을 수 있다.
 
-만일, 최신 빌드 파일을 다운로드 받았다면, 아래와 같은 구조로 압축을 풀어준다.
+또한, [플러그인](https://github.com/bluekyu/rpcpp_plugins) 과 [샘플](https://github.com/bluekyu/rpcpp_samples) 도
+각 저장소에서 받을 수 있다.
+
+### 빌드하기
+[Render Pipeline C++ 빌드](build_rpcpp.md) 항목 참조.
+
+
+
+## 폴더 구조 및 실행
+최신 빌드 파일을 다운로드 받았다면, 아래와 같은 구조로 압축을 풀어준다.
+소스로부터 빌드 했다면, 설치한 경로는 아래와 유사한 구조를 가진다.
 
 ```
 - panda3d               # (from panda3d)

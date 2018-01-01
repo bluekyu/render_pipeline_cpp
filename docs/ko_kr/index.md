@@ -2,8 +2,8 @@
 **Translation**: [English](../index.md)
 
 ## 시작하기
-- [Render Pipeline C++ 빌드](build_rpcpp.md)
 - [Render Pipeline C++ 사용하기](using_rpcpp.md)
+  - [Render Pipeline C++ 빌드](build_rpcpp.md)
 
 ## 시스템
 - [설정](configuration.md)

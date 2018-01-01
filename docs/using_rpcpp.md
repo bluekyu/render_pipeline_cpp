@@ -13,11 +13,22 @@ These are required when you include related headers to access internal data.
 
 
 
+## Development Environment Setup
+### Using Pre-built
+You can download the latest built versions in main page (README.md) of each repository,
+[Panda3D](https://github.com/bluekyu/panda3d) and [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp).
+
+Also, [plugins](https://github.com/bluekyu/rpcpp_plugins) and [samples](https://github.com/bluekyu/rpcpp_samples) can be
+downloaded from each repository.
+
+### Building from Sources
+See [Building Render Pipeline C++](build_rpcpp.md) page.
+
+
+
 ## Directory Structure and Run
-
-
-
-
+If you download the latest built files, extract the files as the below.
+If you build it from sources, the install directory has a structure as the below.
 
 ```
 - panda3d               # (from panda3d)

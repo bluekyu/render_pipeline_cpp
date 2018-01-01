@@ -5,7 +5,7 @@
 명시된 **버전** 은 빌드 시스템에서 사용되는 것이며, 일치할 필요는 없다.
 
 - CMake (빌드 도구)
-- [(Patched) Panda3D](https://github.com/bluekyu/panda3d): develop branch
+- [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.1
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): 86ae3a5a commit

@@ -2,8 +2,8 @@
 **Translation**: [한국어](ko_kr/index.md)
 
 ## Getting Started
-- [Build Render Pipeline C++](build_rpcpp.md)
 - [Using Render Pipeline C++](using_rpcpp.md)
+  - [Build Render Pipeline C++](build_rpcpp.md)
 
 ## System
 - [Configuration](configuration.md)
