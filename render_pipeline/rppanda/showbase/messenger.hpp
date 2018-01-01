@@ -84,6 +84,8 @@ public:
 
     bool is_empty() const;
 
+    AsyncFuture* get_future(const EventName& event_name) const;
+
     /**
      * Add the method to hook with given event name.
      *
@@ -171,6 +173,11 @@ inline size_t Messenger::get_num_listners(const EventName& event_name) const
 inline bool Messenger::is_empty() const
 {
     return get_num_listners() == 0;
+}
+
+inline AsyncFuture* Messenger::get_future(const EventName& event_name) const
+{
+    return handler_->get_future(event_name);
 }
 
 inline auto Messenger::accept(const EventName& event_name, const EventFunction& method,

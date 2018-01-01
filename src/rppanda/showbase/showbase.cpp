@@ -262,9 +262,13 @@ void ShowBase::Impl::setup_mouse(ShowBase* self)
     mouse_watcher_node_ = DCAST(MouseWatcher, mouse_watcher_.node());
 
     // In C++, aspect2d has already mouse watcher.
-    DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
     DCAST(PGTop, self->get_pixel_2d().node())->set_mouse_watcher(mouse_watcher_node_);
-    DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+
+    if (want_render_2dp_)
+    {
+        DCAST(PGTop, aspect_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+        DCAST(PGTop, pixel_2dp_.node())->set_mouse_watcher(mouse_watcher_node_);
+    }
 }
 
 void ShowBase::Impl::setup_render_2dp(ShowBase* self)
@@ -627,8 +631,11 @@ void ShowBase::open_main_window()
 {
     if (impl_->win_)
     {
-        setup_mouse();
-        make_camera2dp(impl_->win_);
+        if (impl_->win_->is_of_type(GraphicsWindow::get_class_type()))
+            setup_mouse();
+
+        if (impl_->want_render_2dp_)
+            make_camera2dp(impl_->win_);
     }
 }
 
@@ -761,7 +768,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
     if (!win)
         win = impl_->win_;
 
-    if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
+    if (win && win->get_side_by_side_stereo() && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
         aspect_ratio = static_cast<float>(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
     }
@@ -809,15 +816,7 @@ const LVecBase2i& ShowBase::get_size(GraphicsOutput* win) const
                 props = WindowProperties::get_default();
         }
 
-        if (props.has_size())
-        {
-            return props.get_size();
-        }
-        else
-        {
-            static LVecBase2i zero_size(0);
-            return zero_size;
-        }
+        return props.get_size();
     }
 }
 
