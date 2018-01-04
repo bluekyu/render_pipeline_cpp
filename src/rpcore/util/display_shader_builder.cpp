@@ -73,7 +73,7 @@ std::string DisplayShaderBuilder::build_fragment_shader(Texture* texture, int vi
 
     // Build actual shader
     boost::format built_format(
-        "#version 400\n"
+        "#version 430\n"
         "#pragma include \"render_pipeline_base.inc.glsl\"\n"
         "in vec2 texcoord;\n"
         "out vec3 result;\n"

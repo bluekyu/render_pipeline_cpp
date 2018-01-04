@@ -226,17 +226,13 @@ Actor& Actor::operator=(Actor&&) = default;
 
 void Actor::list_joints(const std::string& part_name, const std::string& lod_name) const
 {
-    std::string true_name;
+    std::reference_wrapper<const std::string> true_name(part_name);
     PartSubset subpart_subset;
     const auto& subpart_dict_iter = subpart_dict_.find(part_name);
     if (subpart_dict_iter != subpart_dict_.end())
     {
-        true_name = subpart_dict_iter->second.true_part_name;
+        true_name = std::cref(subpart_dict_iter->second.true_part_name);
         subpart_subset = subpart_dict_iter->second.subset;
-    }
-    else
-    {
-        true_name = part_name;
     }
 
     PartBundle* part_def = nullptr;
@@ -816,12 +812,10 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     }
     const auto& part_bundle_dict = part_bundle_dict_iter->second;
 
-    std::string true_name;
+    std::reference_wrapper<const std::string> true_name(part_name);
     const auto& subpart_dict_iter = subpart_dict_.find(part_name);
     if (subpart_dict_iter != subpart_dict_.end())
-        true_name = subpart_dict_iter->second.true_part_name;
-    else
-        true_name = part_name;
+        true_name = std::cref(subpart_dict_iter->second.true_part_name);
 
     const auto& iter = part_bundle_dict.find(true_name);
     if (iter == part_bundle_dict.end())
@@ -854,12 +848,11 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
 
 NodePath Actor::control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name)
 {
-    std::string true_name;
+    std::reference_wrapper<const std::string> true_name(part_name);
     const auto& iter = subpart_dict_.find(part_name);
     if (iter != subpart_dict_.end())
-        true_name = iter->second.true_part_name;
-    else
-        true_name = part_name;
+        true_name = std::cref(iter->second.true_part_name);
+
     bool any_good = false;
 
     for (const auto& bundle_dict: part_bundle_dict_)
@@ -1103,8 +1096,7 @@ void Actor::do_list_joints(size_t indent_level, const PartGroup* part, bool is_i
             DCAST(MovingPartBase, part)->output_value(stream);
             value = stream.str();
         }
-        std::string indent(indent_level, ' ');
-        std::cout << indent << " " << part->get_name() << " " << value << std::endl;
+        std::cout << fmt::format("{} {} {}", std::string(indent_level, ' '), part->get_name(), value) << std::endl;
     }
 
     for (int k=0, k_end=part->get_num_children(); k < k_end; ++k)
@@ -1275,17 +1267,13 @@ void Actor::update_sorted_LOD_names()
 AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::string& part_name, const std::string& lod_name, bool allow_async_bind)
 {
     // make sure this anim is in the dict
-    std::string true_part_name;
+    std::reference_wrapper<const std::string> true_part_name(part_name);
     PartSubset subpart_subset;
     const auto& subpart_dict_iter = subpart_dict_.find(part_name);
     if (subpart_dict_iter != subpart_dict_.end())
     {
-        true_part_name = subpart_dict_iter->second.true_part_name;
+        true_part_name = std::cref(subpart_dict_iter->second.true_part_name);
         subpart_subset = subpart_dict_iter->second.subset;
-    }
-    else
-    {
-        true_part_name = part_name;
     }
 
     auto& part_dict = anim_control_dict_[lod_name];

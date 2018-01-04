@@ -83,6 +83,31 @@ public:
     static ConfigVariableBool allow_async_bind_;
 
 public:
+    /**
+     * Create Actor instance.
+     *
+     * Actor constructor can be used to create single or multipart
+     * actors. If another Actor is supplied as an argument this
+     * method acts like a copy constructor. Single part actors are
+     * created by calling with a model and animation dictionary
+     * (animName, animPath{}) as follows:
+     *
+     * ```
+     * PT(Actor) a = new Actor(
+     *     Actor::ModelsType{"panda-3k.egg"},
+     *     Actor::AnimsType{
+     *         {"walk", "panda-walk.egg"},
+     *         {"run", "panda-run.egg"}});
+     * ```
+     *
+     * This could be displayed and animated as such:
+     *
+     * ```
+     * a->reparent_to(render);
+     * a->loop("walk");
+     * a->stop();
+     * ```
+     */
     Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLODModelsType>& models=nullptr,
         const boost::variant<void*, AnimsType, MultiPartAnimsType>& anims=nullptr,
         boost::optional<NodePath> other = boost::none,
