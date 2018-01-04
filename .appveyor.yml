@@ -95,7 +95,6 @@ build_script:
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
-    -Dyaml-cpp_DIR:PATH="C:/projects/_install/yaml-cpp/CMake"
 - cmake --build . --config %CONFIGURATION% --target install
 - ps: popd
 
