@@ -123,7 +123,7 @@ bool BasePlugin::load_shared_library(const Filename& path)
     {
         error(fmt::format("Failed to load shared library in plugin ({}).", plugin_id_));
         error(fmt::format("Loaded path: {}", lib_path.string()));
-        error(fmt::format("Boost::DLL Error message: {}", err.what()));
+        error(fmt::format("Boost::DLL Error message: {} ({})", err.what(), err.code().value()));
         return false;
     }
 

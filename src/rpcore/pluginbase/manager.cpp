@@ -193,7 +193,7 @@ std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     {
         self_.error(fmt::format("Failed to import plugin or to create plugin ({}).", plugin_id));
         self_.error(fmt::format("Loaded path: {}", plugin_path.string()));
-        self_.error(fmt::format("Boost::DLL Error message: {}", err.what()));
+        self_.error(fmt::format("Boost::DLL Error message: {} ({})", err.what(), err.code().value()));
         return nullptr;
     }
     catch (const std::exception& err)
