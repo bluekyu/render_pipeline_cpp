@@ -9,7 +9,7 @@
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.1
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): 86ae3a5a commit
-- [spdlog](https://github.com/gabime/spdlog): 0.14.0
+- [spdlog](https://github.com/gabime/spdlog): v0.16.2
 
 ### 선택사항
 - Doxygen (Doxygen 문서 생성)
