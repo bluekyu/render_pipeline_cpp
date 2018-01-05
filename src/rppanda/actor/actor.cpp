@@ -139,6 +139,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
         if (models.which() == 2)
         {
             // TODO
+            rppanda_actor_cat.error() << "This is NOT implemented: " << __FILE__ << ":" << __LINE__ << std::endl;
         }
         // else it is a single part actor
         else if (models.which() == 1)
@@ -197,6 +198,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     else
     {
         // TODO
+        rppanda_actor_cat.error() << "This is NOT implemented: " << __FILE__ << ":" << __LINE__ << std::endl;
     }
 
     if (set_final)
@@ -691,6 +693,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     {
         reload = false;
         // TODO
+        rppanda_actor_cat.error() << "This is NOT implemented: " << __FILE__ << ":" << __LINE__ << std::endl;
     }
     else
     {
@@ -788,12 +791,10 @@ PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::stri
 
     const auto& part_bundle_dict = found->second;
 
-    std::string true_name;
+    std::reference_wrapper<const std::string> true_name(part_name);
     const auto& subpart_dict_iter = subpart_dict_.find(part_name);
     if (subpart_dict_iter != subpart_dict_.end())
-        true_name = subpart_dict_iter->second.true_part_name;
-    else
-        true_name = part_name;
+        true_name = std::cref(subpart_dict_iter->second.true_part_name);
 
     const auto& part_def_found = part_bundle_dict.find(true_name);
     if (part_def_found != part_bundle_dict.end())
@@ -829,7 +830,14 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     auto joint = DCAST(CharacterJoint, bundle->find_child(joint_name));
 
     if (node.is_empty())
-        node = this->attach_new_node(joint_name);
+    {
+        // This is not same as original codes.
+        // In original code, the new node is attached to this Actor,
+        // however, if character node (part_bundle_np) is transformed, then
+        // the position of the exposed node does not match that of the joint.
+        // We fix it in C++.
+        node = iter->second.part_bundle_np.attach_new_node(joint_name);
+    }
 
     if (joint)
     {
@@ -857,10 +865,17 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
 
     for (const auto& bundle_dict: part_bundle_dict_)
     {
-        PartBundle* bundle = bundle_dict.second.at(true_name).get_bundle();
+        const auto& part_def = bundle_dict.second.at(true_name);
+
+        PartBundle* bundle = part_def.get_bundle();
         if (node.is_empty())
         {
-            node = this->attach_new_node(new ModelNode(joint_name));
+            // This is not same as original codes.
+            // Similar patch is in exposed_joint function,
+            // but it is meaningless in control joint.
+            // However, we change this for consistency.
+            node = part_def.part_bundle_np.attach_new_node(new ModelNode(joint_name));
+
             auto joint = bundle->find_child(joint_name);
             if (joint && joint->is_of_type(MovingPartMatrix::get_class_type()))
                 node.set_mat(DCAST(MovingPartMatrix, joint)->get_default_value());
