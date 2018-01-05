@@ -54,6 +54,9 @@
 
 namespace rppanda {
 
+const std::string Actor::Default::part_name("modelRoot");
+const std::string Actor::Default::lod_name("lodRoot");
+
 TypeHandle Actor::type_handle_;
 
 std::string Actor::part_prefix_("__Actor_");
@@ -144,7 +147,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
         // else it is a single part actor
         else if (models.which() == 1)
         {
-            load_model(boost::get<ModelsType>(models), "modelRoot", "lodRoot", copy, ok_missing);
+            load_model(boost::get<ModelsType>(models), Default::part_name, Default::lod_name, copy, ok_missing);
         }
 
         // load anims
@@ -187,7 +190,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
                 sorted_keys.push_back(key_val.first);
             std::sort(sorted_keys.begin(), sorted_keys.end());
             for (const auto& lod_name: sorted_keys)
-                load_anims(boost::get<AnimsType>(anims), "modelRoot", lod_name);
+                load_anims(boost::get<AnimsType>(anims), Default::part_name, lod_name);
         }
         // else it is single-part w/o LOD
         else if (anims.which() == 1)
@@ -457,10 +460,30 @@ boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& an
     return controls[0]->get_frame_rate();
 }
 
+boost::optional<double> Actor::get_frame_rate(bool, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(true, part_name);
+    if (controls.empty())
+        return {};
+
+    return controls[0]->get_frame_rate();
+}
+
 boost::optional<double> Actor::get_base_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
     const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+
+    return controls[0]->get_anim()->get_base_frame_rate();
+}
+
+boost::optional<double> Actor::get_base_frame_rate(bool, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};
 
@@ -480,9 +503,29 @@ boost::optional<double> Actor::get_play_rate(const std::vector<std::string>& ani
     return {};
 }
 
+
+boost::optional<double> Actor::get_play_rate(bool, const std::vector<std::string>& part_name)
+{
+    if (!anim_control_dict_.empty())
+    {
+        // use the first lod
+        const std::string& lod_name = anim_control_dict_.begin()->first;
+        const auto& controls = get_anim_controls(true, part_name);
+        if (!controls.empty())
+            return controls[0]->get_play_rate();
+    }
+    return {};
+}
+
 void Actor::set_play_rate(double rate, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
     for (auto control: get_anim_controls(anim_name, part_name))
+        control->set_play_rate(rate);
+}
+
+void Actor::set_play_rate(double rate, bool, const std::vector<std::string>& part_name)
+{
+    for (auto control : get_anim_controls(true, part_name))
         control->set_play_rate(rate);
 }
 
@@ -491,6 +534,22 @@ boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim
 {
     const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
+    if (controls.empty())
+        return {};
+
+    AnimControl* anim_control = controls[0];
+    if (!from_frame)
+        from_frame = 0;
+    if (!to_frame)
+        to_frame = anim_control->get_num_frames() - 1;
+    return ((to_frame.get() + 1) - from_frame.get()) / anim_control->get_frame_rate();
+}
+
+boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};
 
@@ -511,10 +570,28 @@ boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_
     return controls[0]->get_num_frames();
 }
 
+boost::optional<int> Actor::get_num_frames(bool, const std::vector<std::string>& part_name)
+{
+    const std::string& lod_name = anim_control_dict_.begin()->first;
+    const auto& controls = get_anim_controls(true, part_name);
+    if (controls.empty())
+        return {};
+    return controls[0]->get_num_frames();
+}
+
 boost::optional<double> Actor::get_frame_time(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name)
 {
     auto num_frames = get_num_frames(anim_name, part_name);
     auto anim_time = get_duration(anim_name, part_name);
+    if (!num_frames || !anim_time)
+        return {};
+    return anim_time.get() * frame / num_frames.get();
+}
+
+boost::optional<double> Actor::get_frame_time(bool, double frame, const std::vector<std::string>& part_name)
+{
+    auto num_frames = get_num_frames(true, part_name);
+    auto anim_time = get_duration(true, part_name);
     if (!num_frames || !anim_time)
         return {};
     return anim_time.get() * frame / num_frames.get();
@@ -567,15 +644,9 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
     return controls;
 }
 
-std::vector<AnimControl*> Actor::get_anim_controls(bool anim_name, const std::vector<std::string>& part_name,
+std::vector<AnimControl*> Actor::get_anim_controls(bool, const std::vector<std::string>& part_name,
     const boost::optional<std::string>& lod_name, bool allow_async_bind)
 {
-    if (!anim_name)
-    {
-        rppanda_actor_cat.error() << "anim_name should be true in Actor::get_anim_controls." << std::endl;
-        return {};
-    }
-
     std::vector<AnimControl*> controls;
     LODDictType::iterator iter;
     LODDictType::iterator iter_end;
@@ -780,6 +851,29 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     }
 }
 
+NodePath Actor::get_part(const std::string& part_name, const std::string& lod_name) const
+{
+    const auto& found = part_bundle_dict_.find(lod_name);
+    if (found == part_bundle_dict_.end())
+    {
+        rppanda_actor_cat.warning() << "No lod named: " << lod_name << std::endl;
+        return {};
+    }
+
+    const auto& part_bundle_dict = found->second;
+
+    std::reference_wrapper<const std::string> true_name(part_name);
+    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
+    if (subpart_dict_iter != subpart_dict_.end())
+        true_name = std::cref(subpart_dict_iter->second.true_part_name);
+
+    const auto& part_def_found = part_bundle_dict.find(true_name);
+    if (part_def_found != part_bundle_dict.end())
+        return part_def_found->second.part_bundle_np;
+
+    return {};
+}
+
 PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::string& lod_name) const
 {
     const auto& found = part_bundle_dict_.find(lod_name);
@@ -801,6 +895,38 @@ PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::stri
         return part_def_found->second.get_bundle();
 
     return nullptr;
+}
+
+void Actor::hide_part(const std::string& part_name, const std::string& lod_name)
+{
+    auto part = get_part(part_name, lod_name);
+    if (part)
+        part.hide();
+    else
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+}
+
+void Actor::show_part(const std::string& part_name, const std::string& lod_name)
+{
+    auto part = get_part(part_name, lod_name);
+    if (part)
+        part.show();
+    else
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+}
+
+void Actor::show_all_parts(const std::string& part_name, const std::string& lod_name)
+{
+    auto part = get_part(part_name, lod_name);
+    if (part)
+    {
+        part.show();
+        part.get_children().show();
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+    }
 }
 
 NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name, bool local_transform)
@@ -854,6 +980,48 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     return node;
 }
 
+boost::optional<LMatrix4f> Actor::get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name) const
+{
+    auto bundle = get_part_bundle(part_name, lod_name);
+    if (!bundle)
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+        return boost::none;
+    }
+
+    auto joint = bundle->find_child(joint_name);
+    if (joint && joint->is_of_type(MovingPartMatrix::get_class_type()))
+    {
+        return DCAST(MovingPartMatrix, joint)->get_default_value();
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "No joint named: " << joint_name << std::endl;
+        return boost::none;
+    }
+}
+
+CPT(TransformState) Actor::get_joint_transform_state(const std::string& part_name, const std::string& joint_name, const std::string& lod_name) const
+{
+    auto bundle = get_part_bundle(part_name, lod_name);
+    if (!bundle)
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+        return nullptr;
+    }
+
+    auto joint = bundle->find_child(joint_name);
+    if (joint && joint->is_of_type(CharacterJoint::get_class_type()))
+    {
+        return DCAST(CharacterJoint, joint)->get_transform_state();
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "No joint named: " << joint_name << std::endl;
+        return nullptr;
+    }
+}
+
 NodePath Actor::control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name)
 {
     std::reference_wrapper<const std::string> true_name(part_name);
@@ -889,6 +1057,60 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
         rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
 
     return node;
+}
+
+void Actor::freeze_joint(const std::string& part_name, const std::string& joint_name, CPT(TransformState) transform,
+    const LVecBase3f& pos, const LVecBase3f& hpr, const LVecBase3f& scale)
+{
+    if (!transform)
+        transform = TransformState::make_pos_hpr_scale(pos, hpr, scale);
+
+    std::reference_wrapper<const std::string> true_name(part_name);
+    const auto& iter = subpart_dict_.find(part_name);
+    if (iter != subpart_dict_.end())
+        true_name = std::cref(iter->second.true_part_name);
+
+    bool any_good = false;
+
+    for (const auto& bundle_dict : part_bundle_dict_)
+    {
+        const auto& part_def = bundle_dict.second.at(true_name);
+        if (part_def.get_bundle()->freeze_joint(joint_name, transform))
+            any_good = true;
+    }
+
+    if (!any_good)
+        rppanda_actor_cat.warning() << "Cannot freeze joint " << joint_name << std::endl;
+}
+
+void Actor::release_joint(const std::string& part_name, const std::string& joint_name)
+{
+    std::reference_wrapper<const std::string> true_name(part_name);
+    const auto& iter = subpart_dict_.find(part_name);
+    if (iter != subpart_dict_.end())
+        true_name = std::cref(iter->second.true_part_name);
+
+    for (const auto& bundle_dict : part_bundle_dict_)
+    {
+        const auto& part_def = bundle_dict.second.at(true_name);
+        part_def.get_bundle()->release_joint(joint_name);
+    }
+}
+
+void Actor::set_control_effect(const std::vector<std::string>& anim_name, float effect,
+    const std::vector<std::string>& part_name,
+    boost::optional<std::string> lod_name)
+{
+    for (auto&& control: get_anim_controls(anim_name, part_name, lod_name))
+        control->get_part()->set_control_effect(control, effect);
+}
+
+void Actor::set_control_effect(bool, float effect,
+    const std::vector<std::string>& part_name,
+    boost::optional<std::string> lod_name)
+{
+    for (auto&& control : get_anim_controls(true, part_name, lod_name))
+        control->get_part()->set_control_effect(control, effect);
 }
 
 void Actor::show_all_bounds()
@@ -1148,7 +1370,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
         //  Now extract out the Character and integrate it with
         // the Actor.
 
-        if (lod_name != "lodRoot")
+        if (lod_name != Default::lod_name)
         {
             // parent to appropriate node under LOD switch
             bundle_np.reparent_to(LOD_node_.find(lod_name));

@@ -60,6 +60,33 @@ class ActorInterval;
 class RENDER_PIPELINE_DECL Actor : public DirectObject, public NodePath
 {
 public:
+    struct RENDER_PIPELINE_DECL Default
+    {
+        static const std::string part_name;
+        static const std::string lod_name;
+    };
+
+public:
+    /**
+     * Instances of this class are stored within the
+     * PartBundleDict to track all of the individual PartBundles
+     * associated with the Actor.  In general, each separately loaded
+     * model file is a different PartBundle.  This can include the
+     * multiple different LOD's, as well as the multiple different
+     * pieces of a multipart Actor.
+     */
+    class PartDef
+    {
+    public:
+        PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model);
+
+        PartBundle* get_bundle() const;
+
+        NodePath part_bundle_np;
+        PartBundleHandle* part_bundle_handle;
+        PandaNode* part_model;
+    };
+
     using ModelsType = Filename;    // single part actor
     using LODModelsType = std::unordered_map<std::string, Filename>;                // single part actor w/ LOD
     using MultiPartModelsType = LODModelsType;                                      // multi-part actor
@@ -72,6 +99,8 @@ public:
     using PartInfoType = std::tuple<std::string, PartBundle*, std::vector<AnimInfoType>>;   // part name, PartBundle*, AnimInfoType
     using LODInfoType = std::tuple<std::string, std::vector<PartInfoType>>;                 // lod name, PartInfoType
     using ActorInfoType = std::vector<LODInfoType>;
+
+    using PartBundleDictType = std::unordered_map<std::string, std::unordered_map<std::string, PartDef>>;
 
     static std::string part_prefix_;
 
@@ -135,7 +164,7 @@ public:
     /**
      * Handy utility function to list the joint hierarchy of the actor.
      */
-    void list_joints(const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot") const;
+    void list_joints(const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name) const;
 
     /**
      * Utility function to create a list of information about an actor.
@@ -150,6 +179,9 @@ public:
 
     /** accessing */
     ///@{
+
+    PartBundleDictType& get_part_bundle_dict();
+    const PartBundleDictType& get_part_bundle_dict() const;
 
     std::vector<PartBundle*> get_part_bundles(const boost::optional<std::string>& part_name = boost::none) const;
 
@@ -190,12 +222,14 @@ public:
      * NOTE: returns info only for an arbitrary LOD
      */
     boost::optional<double> get_frame_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+    boost::optional<double> get_frame_rate(bool, const std::vector<std::string>& part_name = {});
 
     /**
      * Return frame rate of given anim name and given part, unmodified
      * by any play rate in effect.
      */
     boost::optional<double> get_base_frame_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+    boost::optional<double> get_base_frame_rate(bool, const std::vector<std::string>& part_name = {});
 
     /**
      * Return the play rate of given anim for a given part.
@@ -204,6 +238,7 @@ public:
      * NOTE: Returns info only for an arbitrary LOD
      */
     boost::optional<double> get_play_rate(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+    boost::optional<double> get_play_rate(bool, const std::vector<std::string>& part_name = {});
 
     /**
      * Set the play rate of given anim for a given part.
@@ -216,6 +251,7 @@ public:
      * NOTE: sets play rate on all LODs
      */
     void set_play_rate(double rate, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={});
+    void set_play_rate(double rate, bool, const std::vector<std::string>& part_name = {});
 
     /**
      * Return duration of given anim name and given part.
@@ -225,41 +261,54 @@ public:
      */
     boost::optional<double> get_duration(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
         boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
+    boost::optional<double> get_duration(bool, const std::vector<std::string>& part_name = {},
+        boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     boost::optional<int> get_num_frames(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+    boost::optional<int> get_num_frames(bool, const std::vector<std::string>& part_name = {});
 
     boost::optional<double> get_frame_time(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={});
+    boost::optional<double> get_frame_time(bool, double frame, const std::vector<std::string>& part_name = {});
 
     ///@}
 
     /**
-     * getAnimControls(self, string, string=None, string=None)
-     *
-     * Returns a list of the AnimControls that represent the given
+     * Returns a list of the AnimControl that represent the given
      * animation for the given part and the given lod.
      *
-     * If animName is None or omitted, the currently-playing
+     * If @p anim_name is empty, the currently-playing
      * animation (or all currently-playing animations) is returned.
-     * If animName is True, all animations are returned.  If animName
-     * is a single string name, that particular animation is
-     * returned.  If animName is a list of string names, all of the
+     * If @p anim_name is a single string name (the size of vector is one),
+     * that particular animation is returned.
+     * If @p anim_name is a vector of string names, all of the
      * names animations are returned.
      *
-     * If partName is None or omitted, all parts are returned (or
+     * If part_name is none, all parts are returned (or
      * possibly the one overall Actor part, according to the
      * subpartsComplete flag).
      *
-     * If lodName is None or omitted, all LOD's are returned.
+     * If lod_name is none, all LOD's are returned.
      */
     std::vector<AnimControl*> get_anim_controls(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
         const boost::optional<std::string>& lod_name=boost::none, bool allow_async_bind=true);
 
-    std::vector<AnimControl*> get_anim_controls(bool anim_name, const std::vector<std::string>& part_name={},
-        const boost::optional<std::string>& lod_name=boost::none, bool allow_async_bind=true);
+    /**
+     * Returns a list of the AnimControl that represent all animations
+     * for the given part and the given lod.
+     * (This function is same as 'animName=True' in python version)
+     *
+     * If part_name is none, all parts are returned (or
+     * possibly the one overall Actor part, according to the
+     * subpartsComplete flag).
+     *
+     * If lod_name is none, all LOD's are returned.
+     */
+    std::vector<AnimControl*> get_anim_controls(bool, const std::vector<std::string>& part_name = {},
+        const boost::optional<std::string>& lod_name = boost::none, bool allow_async_bind = true);
 
-    void load_model(NodePath model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
+    void load_model(NodePath model_path, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name,
         bool copy=true, bool auto_bind_anims=true);
-    void load_model(const Filename& model_path, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot",
+    void load_model(const Filename& model_path, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name,
         bool copy=true, const boost::optional<bool>& ok_missing=boost::none, bool auto_bind_anims=true);
 
     /**
@@ -270,12 +319,37 @@ public:
      * to 'lodRoot' for non-LOD actors) and dict of corresponding
      * anims in the form animName:animPath{}
      */
-    void load_anims(const AnimsType& anims, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
-
-    PartBundle* get_part_bundle(const std::string& part_name, const std::string& lod_name="lodRoot") const;
+    void load_anims(const AnimsType& anims, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name);
 
     /**
-     * exposeJoint(self, NodePath, string, string, key="lodRoot")
+     * Find the named part in the optional named lod and return it, or
+     * return None if not present.
+     */
+    NodePath get_part(const std::string& part_name, const std::string& lod_name = Default::lod_name) const;
+
+    PartBundle* get_part_bundle(const std::string& part_name, const std::string& lod_name=Default::lod_name) const;
+
+    /**
+     * Make the given part of the optionally given lod not render,
+     * even though still in the tree.
+     * NOTE: this will affect child geometry
+     */
+    void hide_part(const std::string& part_name, const std::string& lod_name = Default::lod_name);
+
+    /**
+     * Make the given part render while in the tree.
+     * NOTE: this will affect child geometry
+     */
+    void show_part(const std::string& part_name, const std::string& lod_name = Default::lod_name);
+
+    /**
+     * Make the given part and all its children render while in the tree.
+     * NOTE: this will affect child geometry
+     */
+    void show_all_parts(const std::string& part_name, const std::string& lod_name = Default::lod_name);
+
+    /**
+     * exposeJoint(self, NodePath, string, string, key=Default::lod_name)
      * Starts the joint animating the indicated node.  As the joint
      * animates, it will transform the node by the corresponding
      * amount.  This will replace whatever matrix is on the node each
@@ -283,34 +357,62 @@ public:
      * but if localTransform is true, only the node's local transform
      * from its parent is exposed.
      */
-    NodePath expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot", bool local_transform=false);
+    NodePath expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name=Default::lod_name, bool local_transform=false);
+
+    boost::optional<LMatrix4f> get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
+
+    CPT(TransformState) get_joint_transform_state(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
 
     /**
      * The converse of exposeJoint: this associates the joint with
      * the indicated node, so that the joint transform will be copied
      * from the node to the joint each frame.  This can be used for
      * programmer animation of a particular joint at runtime.
-     * 
+     *
      * The parameter node should be the NodePath for the node whose
      * transform will animate the joint.  If node is None, a new node
      * will automatically be created and loaded with the joint's
      * initial transform.  In either case, the node used will be
      * returned.
-     * 
+     *
      * It used to be necessary to call this before any animations
      * have been loaded and bound, but that is no longer so.
      */
-    NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name="lodRoot");
+    NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name=Default::lod_name);
+
+    /**
+     * Similar to control_joint, but the transform assigned is
+     * static, and may not be animated at runtime (without another
+     * subsequent call to freeze_joint).  This is slightly more
+     * optimal than control_joint() for cases in which the transform
+     * is not intended to be animated during the lifetime of the
+     * Actor.
+     */
+    void freeze_joint(const std::string& part_name, const std::string& joint_name, CPT(TransformState) transform = nullptr,
+        const LVecBase3f& pos = LVecBase3f(0), const LVecBase3f& hpr = LVecBase3f(0), const LVecBase3f& scale = LVecBase3f(1));
+
+    /**
+     * Undoes a previous call to control_joint() or freeze_joint()
+     * and restores the named joint to its normal animation.
+     */
+    void release_joint(const std::string& part_name, const std::string& joint_name);
 
     /** actoins */
     ///@{
 
     /**
      * Stop named animation on the given part of the actor.
-     * If no name specified then stop all animations on the actor.
+     *
      * NOTE: stops all LODs
      */
-    void stop(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={});
+    void stop(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={});
+
+    /**
+     * Stop all animations on the actor on the given part of the actor.
+     *
+     * NOTE: stops all LODs
+     */
+    void stop(bool, const std::vector<std::string>& part_name = {});
 
     /**
      * Play the given animation on the given part of the actor.
@@ -319,6 +421,9 @@ public:
      */
     void play(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={},
         boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
+
+    void play(bool, const std::vector<std::string>& part_name = {},
+        boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     /**
      * Loop the given animation on the given part of the actor,
@@ -329,8 +434,14 @@ public:
     void loop(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
         boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
 
+    void loop(bool, bool restart = true, const std::vector<std::string>& part_name = {},
+        boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
+
     void pingpong(const std::vector<std::string>& anim_name, bool restart=true, const std::vector<std::string>& part_name={},
         boost::optional<double> from_frame=boost::none, boost::optional<double> to_frame=boost::none);
+
+    void pingpong(bool, bool restart = true, const std::vector<std::string>& part_name = {},
+        boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     /**
      * Pose the actor in position found at given frame in the specified
@@ -340,6 +451,9 @@ public:
     void pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={},
         const boost::optional<std::string>& lod_name=boost::none);
 
+    void pose(bool, double frame, const std::vector<std::string>& part_name = {},
+        const boost::optional<std::string>& lod_name = boost::none);
+
     /**
      * Changes the way the Actor handles blending of multiple
      * different animations, and/or interpolation between consecutive
@@ -348,7 +462,7 @@ public:
      * The animBlend and frameBlend parameters are boolean flags.
      * You may set either or both to True or False.  If you do not
      * specify them, they do not change from the previous value.
-     * 
+     *
      * When animBlend is True, multiple different animations may
      * simultaneously be playing on the Actor.  This means you may
      * call play(), loop(), or pose() on multiple animations and have
@@ -379,6 +493,26 @@ public:
     void set_blend(boost::optional<bool> anim_blend=boost::none, boost::optional<bool> frame_blend=boost::none,
         boost::optional<PartBundle::BlendType> blend_type=boost::none, const boost::optional<std::string>& part_name=boost::none);
 
+    /**
+     * Sets the amount by which the named animation contributes to
+     * the overall pose.  This controls blending of multiple
+     * animations; it only makes sense to call this after a previous
+     * call to setBlend(animBlend = True).
+     */
+    void set_control_effect(const std::vector<std::string>& anim_name, float effect,
+        const std::vector<std::string>& part_name = {},
+        boost::optional<std::string> lod_name = boost::none);
+
+    /**
+     * Sets the amount by which the named animation contributes to
+     * the overall pose.  This controls blending of multiple
+     * animations; it only makes sense to call this after a previous
+     * call to setBlend(animBlend = True).
+     */
+    void set_control_effect(bool, float effect,
+        const std::vector<std::string>& part_name = {},
+        boost::optional<std::string> lod_name = boost::none);
+
     ///@}
 
     /** Show the bounds of all actor geoms. */
@@ -386,6 +520,49 @@ public:
 
     /** Hide the bounds of all actor geoms. */
     void hide_all_bounds();
+
+    /**
+     * Binds the named animation to the named part and/or lod.  If
+     * allow_async_bind is false, this guarantees that the animation is
+     * bound immediately--the animation is never bound in a
+     * sub-thread; it will be loaded and bound in the main thread, so
+     * it will be available by the time this method returns.
+     *
+     * The parameters are the same as that for get_anim_controls().  In
+     * fact, this method is a thin wrapper around that other method.
+     *
+     * Use this method if you need to ensure that an animation is
+     * available before you start to play it, and you don't mind
+     * holding up the render for a frame or two until the animation
+     * is available.
+     */
+    void bind_anims(const std::vector<std::string>& anim_name,
+        const std::vector<std::string>& part_name = {},
+        boost::optional<std::string> lod_name = boost::none,
+        bool allow_async_bind = false);
+
+    /**
+     * Binds all animations to the named part and/or lod.  If
+     * allow_async_bind is false, this guarantees that the animation is
+     * bound immediately--the animation is never bound in a
+     * sub-thread; it will be loaded and bound in the main thread, so
+     * it will be available by the time this method returns.
+     *
+     * The parameters are the same as that for get_anim_controls().  In
+     * fact, this method is a thin wrapper around that other method.
+     *
+     * Use this method if you need to ensure that an animation is
+     * available before you start to play it, and you don't mind
+     * holding up the render for a frame or two until the animation
+     * is available.
+     */
+    void bind_anims(bool,
+        const std::vector<std::string>& part_name = {},
+        boost::optional<std::string> lod_name = boost::none,
+        bool allow_async_bind = false);
+
+    /** Loads and binds all animations that have been defined for the Actor. */
+    void bind_all_anims(bool allow_async_bind = false);
 
     PT(ActorInterval) actor_interval(const std::vector<std::string>& anim_name, bool loop=false,
         bool constrained_loop=false, boost::optional<double> duration=boost::none,
@@ -401,26 +578,6 @@ protected:
     bool this_allow_async_bind_;
 
 private:
-    /**
-     * Instances of this class are stored within the
-     * PartBundleDict to track all of the individual PartBundles
-     * associated with the Actor.  In general, each separately loaded
-     * model file is a different PartBundle.  This can include the
-     * multiple different LOD's, as well as the multiple different
-     * pieces of a multipart Actor.
-     */
-    class PartDef
-    {
-    public:
-        PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model);
-
-        PartBundle* get_bundle() const;
-
-        NodePath part_bundle_np;
-        PartBundleHandle* part_bundle_handle;
-        PandaNode* part_model;
-    };
-
     /**
      * Instances of this class are stored within the
      * AnimControlDict to track all of the animations associated with
@@ -460,6 +617,9 @@ private:
         PartSubset subset;
     };
 
+    using CommonBundleHandlesType = std::unordered_map<std::string, PartBundleHandle*>;
+    using SubpartDictType = std::unordered_map<std::string, SubpartDef>;
+
     using AnimDictType = std::unordered_map<std::string, AnimDef>;
     using PartDictType = std::unordered_map<std::string, AnimDictType>;
     using LODDictType = std::unordered_map<std::string, PartDictType>;
@@ -474,7 +634,7 @@ private:
 
     void post_load_model(NodePath model, const std::string& part_name, const std::string& lod_name, bool auto_bind_anims);
 
-    void prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name="modelRoot", const std::string& lod_name="lodRoot");
+    void prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name);
 
     /**
      * Cache the sorted LOD names so we don't have to grab them
@@ -495,10 +655,10 @@ private:
      */
     AnimControl* bind_anim_to_part(const std::string& anim_name, const std::string& part_name, const std::string& lod_name, bool allow_async_bind=true);
 
-    std::unordered_map<std::string, PartBundleHandle*> common_bundle_handles_;
-    std::unordered_map<std::string, SubpartDef> subpart_dict_;
+    CommonBundleHandlesType common_bundle_handles_;
+    SubpartDictType subpart_dict_;
     LODDictType anim_control_dict_;
-    std::unordered_map<std::string, std::unordered_map<std::string, PartDef>> part_bundle_dict_;
+    PartBundleDictType part_bundle_dict_;
 
     std::vector<std::string> sorted_LOD_names_;
 
@@ -519,6 +679,16 @@ private:
 };
 
 // ************************************************************************************************
+
+inline Actor::PartBundleDictType& Actor::get_part_bundle_dict()
+{
+    return part_bundle_dict_;
+}
+
+inline const Actor::PartBundleDictType& Actor::get_part_bundle_dict() const
+{
+    return part_bundle_dict_;
+}
 
 inline const std::vector<std::string>& Actor::get_LOD_names() const
 {
@@ -547,7 +717,13 @@ inline bool Actor::has_LOD() const
 
 inline void Actor::stop(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
-    for (auto control: get_anim_controls(anim_name, part_name))
+    for (auto&& control: get_anim_controls(anim_name, part_name))
+        control->stop();
+}
+
+inline void Actor::stop(bool, const std::vector<std::string>& part_name)
+{
+    for (auto&& control : get_anim_controls(true, part_name))
         control->stop();
 }
 
@@ -570,6 +746,29 @@ inline void Actor::play(const std::vector<std::string>& anim_name, const std::ve
     else
     {
         for (auto control: get_anim_controls(anim_name, part_name))
+            control->play();
+    }
+}
+
+inline void Actor::play(bool, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (from_frame)
+    {
+        if (to_frame)
+        {
+            for (auto control : get_anim_controls(true, part_name))
+                control->play(from_frame.get(), to_frame.get());
+        }
+        else
+        {
+            for (auto control : get_anim_controls(true, part_name))
+                control->play(from_frame.get(), control->get_num_frames() - 1);
+        }
+    }
+    else
+    {
+        for (auto control : get_anim_controls(true, part_name))
             control->play();
     }
 }
@@ -597,6 +796,29 @@ inline void Actor::loop(const std::vector<std::string>& anim_name, bool restart,
     }
 }
 
+inline void Actor::loop(bool, bool restart, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (from_frame)
+    {
+        if (to_frame)
+        {
+            for (auto control : get_anim_controls(true, part_name))
+                control->loop(restart, from_frame.get(), to_frame.get());
+        }
+        else
+        {
+            for (auto control : get_anim_controls(true, part_name))
+                control->loop(restart, from_frame.get(), control->get_num_frames() - 1);
+        }
+    }
+    else
+    {
+        for (auto control : get_anim_controls(true, part_name))
+            control->loop(restart);
+    }
+}
+
 inline void Actor::pingpong(const std::vector<std::string>& anim_name, bool restart, const std::vector<std::string>& part_name,
     boost::optional<double> from_frame, boost::optional<double> to_frame)
 {
@@ -615,10 +837,35 @@ inline void Actor::pingpong(const std::vector<std::string>& anim_name, bool rest
     }
 }
 
+inline void Actor::pingpong(bool, bool restart, const std::vector<std::string>& part_name,
+    boost::optional<double> from_frame, boost::optional<double> to_frame)
+{
+    if (!from_frame)
+        from_frame = 0;
+
+    if (to_frame)
+    {
+        for (auto control : get_anim_controls(true, part_name))
+            control->pingpong(restart, from_frame.get(), to_frame.get());
+    }
+    else
+    {
+        for (auto control : get_anim_controls(true, part_name))
+            control->pingpong(restart, from_frame.get(), control->get_num_frames() - 1);
+    }
+}
+
 inline void Actor::pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name,
     const boost::optional<std::string>& lod_name)
 {
     for (auto control: get_anim_controls(anim_name, part_name, lod_name))
+        control->pose(frame);
+}
+
+inline void Actor::pose(bool, double frame, const std::vector<std::string>& part_name,
+    const boost::optional<std::string>& lod_name)
+{
+    for (auto control : get_anim_controls(true, part_name, lod_name))
         control->pose(frame);
 }
 
@@ -634,6 +881,24 @@ inline void Actor::set_blend(boost::optional<bool> anim_blend, boost::optional<b
         if (frame_blend)
             bundle->set_frame_blend_flag(frame_blend.get());
     }
+}
+
+inline void Actor::bind_anims(const std::vector<std::string>& anim_name,
+    const std::vector<std::string>& part_name,
+    boost::optional<std::string> lod_name, bool allow_async_bind)
+{
+    get_anim_controls(anim_name, part_name, lod_name, allow_async_bind);
+}
+
+inline void Actor::bind_anims(bool, const std::vector<std::string>& part_name,
+    boost::optional<std::string> lod_name, bool allow_async_bind)
+{
+    get_anim_controls(true, part_name, lod_name, allow_async_bind);
+}
+
+inline void Actor::bind_all_anims(bool allow_async_bind)
+{
+    get_anim_controls(true, {}, boost::none, allow_async_bind);
 }
 
 inline TypeHandle Actor::get_class_type()
