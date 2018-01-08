@@ -768,7 +768,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
     if (!win)
         win = impl_->win_;
 
-    if (win && win->get_side_by_side_stereo() && win->has_size() && win->get_sbs_left_y_size() != 0)
+    if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
         aspect_ratio = static_cast<float>(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
     }
