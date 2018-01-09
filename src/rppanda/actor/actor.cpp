@@ -851,30 +851,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     }
 }
 
-NodePath Actor::get_part(const std::string& part_name, const std::string& lod_name) const
-{
-    const auto& found = part_bundle_dict_.find(lod_name);
-    if (found == part_bundle_dict_.end())
-    {
-        rppanda_actor_cat.warning() << "No lod named: " << lod_name << std::endl;
-        return {};
-    }
-
-    const auto& part_bundle_dict = found->second;
-
-    std::reference_wrapper<const std::string> true_name(part_name);
-    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
-    if (subpart_dict_iter != subpart_dict_.end())
-        true_name = std::cref(subpart_dict_iter->second.true_part_name);
-
-    const auto& part_def_found = part_bundle_dict.find(true_name);
-    if (part_def_found != part_bundle_dict.end())
-        return part_def_found->second.part_bundle_np;
-
-    return {};
-}
-
-PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::string& lod_name) const
+const Actor::PartDef* Actor::get_part_def(const std::string& part_name, const std::string& lod_name) const
 {
     const auto& found = part_bundle_dict_.find(lod_name);
     if (found == part_bundle_dict_.end())
@@ -892,9 +869,25 @@ PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::stri
 
     const auto& part_def_found = part_bundle_dict.find(true_name);
     if (part_def_found != part_bundle_dict.end())
-        return part_def_found->second.get_bundle();
+        return &part_def_found->second;
 
     return nullptr;
+}
+
+NodePath Actor::get_part(const std::string& part_name, const std::string& lod_name) const
+{
+    if (auto part_def = get_part_def(part_name, lod_name))
+        return part_def->part_bundle_np;
+    else
+        return {};
+}
+
+PartBundle* Actor::get_part_bundle(const std::string& part_name, const std::string& lod_name) const
+{
+    if (auto part_def = get_part_def(part_name, lod_name))
+        return part_def->get_bundle();
+    else
+        return nullptr;
 }
 
 void Actor::hide_part(const std::string& part_name, const std::string& lod_name)
@@ -931,39 +924,18 @@ void Actor::show_all_parts(const std::string& part_name, const std::string& lod_
 
 NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name, bool local_transform)
 {
-    const auto& part_bundle_dict_iter = part_bundle_dict_.find(lod_name);
-    if (part_bundle_dict_iter == part_bundle_dict_.end())
-    {
-        rppanda_actor_cat.warning() << "No lod named: " << lod_name << std::endl;
-        return NodePath();
-    }
-    const auto& part_bundle_dict = part_bundle_dict_iter->second;
-
-    std::reference_wrapper<const std::string> true_name(part_name);
-    const auto& subpart_dict_iter = subpart_dict_.find(part_name);
-    if (subpart_dict_iter != subpart_dict_.end())
-        true_name = std::cref(subpart_dict_iter->second.true_part_name);
-
-    const auto& iter = part_bundle_dict.find(true_name);
-    if (iter == part_bundle_dict.end())
+    auto part_def = get_part_def(part_name, lod_name);
+    if (!part_def)
     {
         rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
-        return NodePath();
+        return {};
     }
-    PartBundle* bundle = iter->second.get_bundle();
 
     // Get a handle to the joint.
-    auto joint = DCAST(CharacterJoint, bundle->find_child(joint_name));
+    auto joint = DCAST(CharacterJoint, part_def->get_bundle()->find_child(joint_name));
 
     if (node.is_empty())
-    {
-        // This is not same as original codes.
-        // In original code, the new node is attached to this Actor,
-        // however, if character node (part_bundle_np) is transformed, then
-        // the position of the exposed node does not match that of the joint.
-        // We fix it in C++.
-        node = iter->second.part_bundle_np.attach_new_node(joint_name);
-    }
+        node = part_def->part_bundle_np.attach_new_node(joint_name);
 
     if (joint)
     {
@@ -1039,7 +1011,7 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
         if (node.is_empty())
         {
             // This is not same as original codes.
-            // Similar patch is in exposed_joint function,
+            // Similar patch (panda3d/panda3d#221) is in exposed_joint function,
             // but it is meaningless in control joint.
             // However, we change this for consistency.
             node = part_def.part_bundle_np.attach_new_node(new ModelNode(joint_name));
@@ -1140,16 +1112,6 @@ PT(ActorInterval) Actor::actor_interval(const std::vector<std::string>& anim_nam
 }
 
 // ************************************************************************************************
-
-Actor::PartDef::PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model):
-    part_bundle_np(part_bundle_np), part_bundle_handle(part_bundle_handle), part_model(part_model)
-{
-}
-
-PartBundle* Actor::PartDef::get_bundle() const
-{
-    return part_bundle_handle->get_bundle();
-}
 
 Actor::AnimDef::AnimDef(const std::string& filename, AnimBundle* anim_bundle): filename(filename), anim_bundle(anim_bundle)
 {

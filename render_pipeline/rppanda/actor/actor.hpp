@@ -100,6 +100,7 @@ public:
     using LODInfoType = std::tuple<std::string, std::vector<PartInfoType>>;                 // lod name, PartInfoType
     using ActorInfoType = std::vector<LODInfoType>;
 
+    // { lod name, { part name, PartDef } }
     using PartBundleDictType = std::unordered_map<std::string, std::unordered_map<std::string, PartDef>>;
 
     static std::string part_prefix_;
@@ -321,6 +322,8 @@ public:
      */
     void load_anims(const AnimsType& anims, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name);
 
+    const PartDef* get_part_def(const std::string& part_name, const std::string& lod_name = Default::lod_name) const;
+
     /**
      * Find the named part in the optional named lod and return it, or
      * return None if not present.
@@ -349,12 +352,11 @@ public:
     void show_all_parts(const std::string& part_name, const std::string& lod_name = Default::lod_name);
 
     /**
-     * exposeJoint(self, NodePath, string, string, key=Default::lod_name)
-     * Starts the joint animating the indicated node.  As the joint
+     * Starts the joint animating the indicated node. As the joint
      * animates, it will transform the node by the corresponding
      * amount.  This will replace whatever matrix is on the node each
-     * frame.  The default is to expose the net transform from the root,
-     * but if localTransform is true, only the node's local transform
+     * frame. The default is to expose the net transform from the root,
+     * but if local_transform is true, only the node's local transform
      * from its parent is exposed.
      */
     NodePath expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name=Default::lod_name, bool local_transform=false);
@@ -364,7 +366,7 @@ public:
     CPT(TransformState) get_joint_transform_state(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
 
     /**
-     * The converse of exposeJoint: this associates the joint with
+     * The converse of expose_joint: this associates the joint with
      * the indicated node, so that the joint transform will be copied
      * from the node to the joint each frame.  This can be used for
      * programmer animation of a particular joint at runtime.
@@ -679,6 +681,16 @@ private:
 };
 
 // ************************************************************************************************
+
+inline Actor::PartDef::PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model) :
+    part_bundle_np(part_bundle_np), part_bundle_handle(part_bundle_handle), part_model(part_model)
+{
+}
+
+inline PartBundle* Actor::PartDef::get_bundle() const
+{
+    return part_bundle_handle->get_bundle();
+}
 
 inline Actor::PartBundleDictType& Actor::get_part_bundle_dict()
 {
