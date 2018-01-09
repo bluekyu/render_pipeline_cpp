@@ -119,7 +119,7 @@ public:
      * window), or the default size if there is not yet a
      * main window.
      */
-    const LVecBase2i& get_size(GraphicsOutput* win=nullptr) const;
+    LVecBase2i get_size(GraphicsOutput* win=nullptr) const;
 
     /**
      * This is the NodePath that should be used to manipulate the camera.

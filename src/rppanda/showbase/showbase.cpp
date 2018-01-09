@@ -793,7 +793,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
     return aspect_ratio == 0 ? 1 : aspect_ratio;
 }
 
-const LVecBase2i& ShowBase::get_size(GraphicsOutput* win) const
+LVecBase2i ShowBase::get_size(GraphicsOutput* win) const
 {
     if (!win)
         win = impl_->win_;
