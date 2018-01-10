@@ -1025,36 +1025,28 @@ CPT(TransformState) Actor::get_joint_transform_state(const std::string& part_nam
 
 NodePath Actor::control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name)
 {
-    std::reference_wrapper<const std::string> true_name(part_name);
-    const auto& iter = subpart_dict_.find(part_name);
-    if (iter != subpart_dict_.end())
-        true_name = std::cref(iter->second.true_part_name);
-
-    bool any_good = false;
-
-    for (const auto& bundle_dict: part_bundle_dict_)
+    auto part_def = get_part_def(part_name, lod_name);
+    if (!part_def)
     {
-        const auto& part_def = bundle_dict.second.at(true_name);
-
-        PartBundle* bundle = part_def.get_bundle();
-        if (node.is_empty())
-        {
-            // This is not same as original codes.
-            // Similar patch (panda3d/panda3d#221) is in exposed_joint function,
-            // but it is meaningless in control joint.
-            // However, we change this for consistency.
-            node = part_def.part_bundle_np.attach_new_node(new ModelNode(joint_name));
-
-            auto joint = bundle->find_child(joint_name);
-            if (joint && joint->is_of_type(MovingPartMatrix::get_class_type()))
-                node.set_mat(DCAST(MovingPartMatrix, joint)->get_default_value());
-        }
-
-        if (bundle->control_joint(joint_name, node.node()))
-            any_good = true;
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+        return {};
     }
 
-    if (!any_good)
+    PartBundle* bundle = part_def->get_bundle();
+    if (node.is_empty())
+    {
+        // This is not same as original codes.
+        // Similar patch (panda3d/panda3d#221) is in exposed_joint function,
+        // but it is meaningless in control joint.
+        // However, we change this for consistency.
+        node = part_def->part_bundle_np.attach_new_node(new ModelNode(joint_name));
+
+        auto joint = bundle->find_child(joint_name);
+        if (joint && joint->is_of_type(MovingPartMatrix::get_class_type()))
+            node.set_mat(DCAST(MovingPartMatrix, joint)->get_default_value());
+    }
+
+    if (!bundle->control_joint(joint_name, node.node()))
         rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
 
     return node;
