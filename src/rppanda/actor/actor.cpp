@@ -54,6 +54,35 @@
 
 namespace rppanda {
 
+static void build_control_joint_tree(PartGroup* joint, NodePath parent)
+{
+    if (!joint)
+    {
+        rppanda_actor_cat.warning() << "Joint is nullptr." << std::endl;
+        return;
+    }
+
+    // Skip if the non-joint
+    if (joint->is_of_type(MovingPartMatrix::get_class_type()))
+    {
+        const auto& joint_name = joint->get_name();
+
+        NodePath node = parent.attach_new_node(new ModelNode(joint_name));
+
+        node.set_mat(DCAST(MovingPartMatrix, joint)->get_default_value());
+
+        if (!joint->apply_control(node.node()))
+            rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
+
+        parent = node;
+    }
+
+    for (int k = 0, k_end = joint->get_num_children(); k < k_end; ++k)
+        build_control_joint_tree(joint->get_child(k), parent);
+}
+
+// ************************************************************************************************
+
 const std::string Actor::Default::part_name("modelRoot");
 const std::string Actor::Default::lod_name("lodRoot");
 
@@ -1029,6 +1058,63 @@ NodePath Actor::control_joint(NodePath node, const std::string& part_name, const
         rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
 
     return node;
+}
+
+NodePath Actor::control_joint_tree(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name)
+{
+    auto part_def = get_part_def(part_name, lod_name);
+    if (!part_def)
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+        return {};
+    }
+
+    auto joint = part_def->get_bundle()->find_child(joint_name);
+    if (!joint)
+    {
+        rppanda_actor_cat.warning() << "Cannot find joint: " << joint_name << std::endl;
+        return {};
+    }
+
+    if (joint->is_of_type(MovingPartMatrix::get_class_type()))
+    {
+        if (!node)
+        {
+            node = part_def->part_bundle_np.attach_new_node(new ModelNode(joint_name));
+            node.set_mat(DCAST(MovingPartMatrix, joint)->get_default_value());
+        }
+
+        if (!joint->apply_control(node.node()))
+            rppanda_actor_cat.warning() << "Cannot control joint " << joint_name << std::endl;
+
+        // build subtree of the joint more faster than Actor::control_joint
+        for (int k = 0, k_end = joint->get_num_children(); k < k_end; ++k)
+            build_control_joint_tree(joint->get_child(k), node);
+
+        return node;
+    }
+    else
+    {
+        rppanda_actor_cat.warning() << "This is not joint: " << joint_name << std::endl;
+        return {};
+    }
+}
+
+NodePath Actor::control_all_joints(NodePath root, const std::string& part_name, const std::string& lod_name)
+{
+    auto part_def = get_part_def(part_name, lod_name);
+    if (!part_def)
+    {
+        rppanda_actor_cat.warning() << "No part named: " << part_name << std::endl;
+        return {};
+    }
+
+    if (!root)
+        root = part_def->part_bundle_np;
+
+    build_control_joint_tree(part_def->get_bundle(), root);
+
+    return root;
 }
 
 void Actor::freeze_joint(const std::string& part_name, const std::string& joint_name, CPT(TransformState) transform,

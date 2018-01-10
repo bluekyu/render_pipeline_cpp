@@ -383,6 +383,26 @@ public:
     NodePath control_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name=Default::lod_name);
 
     /**
+     * Create tree of control joints from joint name
+     *
+     * @param[in]   node    Root node for the control joints. If it is emtpy, a new node will automatically
+     *                      be created and loaded with the joint's initial transform.
+     *
+     * @return      Root node of the control joints. If failed, empty NodePath is returned.
+     */
+    NodePath control_joint_tree(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name);
+
+    /**
+     * Create tree of all control joints.
+     *
+     * @param[in]   root    Parent node for all control joints. If it is emtpy, parent will be the character node.
+     *
+     * @return      Parent node of all control joints. If @root is not empty, this is same as that.
+     *              If failed, empty NodePath is returned.
+     */
+    NodePath control_all_joints(NodePath root, const std::string& part_name = Default::part_name, const std::string& lod_name = Default::lod_name);
+
+    /**
      * Similar to control_joint, but the transform assigned is
      * static, and may not be animated at runtime (without another
      * subsequent call to freeze_joint).  This is slightly more
