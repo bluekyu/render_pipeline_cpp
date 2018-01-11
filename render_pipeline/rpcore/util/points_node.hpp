@@ -30,8 +30,8 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL PointsNode
 {
 public:
-    PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius=1.0f, 
-        GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
+    PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius = 1.0f,
+        GeomEnums::UsageHint buffer_hint = GeomEnums::UH_static);
 
     PointsNode(const PointsNode&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900

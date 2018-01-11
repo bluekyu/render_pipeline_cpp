@@ -24,7 +24,6 @@
 #include <cardMaker.h>
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
-#include <geomPoints.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
 
@@ -48,12 +47,15 @@ static NodePath create_geom_node(const std::string& name, PT(Geom) geom)
     return np;
 }
 
+// ************************************************************************************************
+
 NodePath create_triangle_mesh(
     const std::string& name,
     const std::vector<LVecBase3>& vertices,
     const std::vector<LVecBase3>& normals,
     const std::vector<LVecBase2>& texcoords,
-    const std::vector<int>& indices)
+    const std::vector<int>& indices,
+    GeomEnums::UsageHint vertex_buffer_hint, GeomEnums::UsageHint index_buffer_hint)
 {
     const size_t indices_per_triangle = 3;
 
@@ -72,7 +74,7 @@ NodePath create_triangle_mesh(
     // Add vertices
     int vertices_count = static_cast<int>(vertices.size());
 
-    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3n3t2(), Geom::UsageHint::UH_static);
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3n3t2(), vertex_buffer_hint);
     vdata->unclean_set_num_rows(vertices_count);
 
     GeomVertexWriter geom_vertices(vdata, InternalName::get_vertex());
@@ -91,7 +93,7 @@ NodePath create_triangle_mesh(
     }
 
     // Add indices
-    PT(GeomTriangles) prim = new GeomTriangles(Geom::UsageHint::UH_static);
+    PT(GeomTriangles) prim = new GeomTriangles(index_buffer_hint);
     prim->reserve_num_vertices(indices.size());
     for (size_t k = 0, k_end = indices.size(); k < k_end; k += 3)
         prim->add_vertices(indices[k], indices[k+1], indices[k+2]);
@@ -101,59 +103,6 @@ NodePath create_triangle_mesh(
     geom->add_primitive(prim);
 
     return create_geom_node(name, geom);
-}
-
-void modify_points(GeomVertexData* vdata, GeomPrimitive* prim, const std::vector<LPoint3f>& positions)
-{
-    const int count = static_cast<int>(positions.size());
-
-    vdata->unclean_set_num_rows(count);
-    vdata->modify_array(0)->modify_handle()->copy_data_from(
-        reinterpret_cast<const unsigned char*>(positions.data()),
-        count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
-
-    prim->clear_vertices();
-    prim->add_consecutive_vertices(0, count);
-    prim->close_primitive();
-}
-
-NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions, GeomEnums::UsageHint buffer_hint)
-{
-    if (positions.size() > (std::numeric_limits<int>::max)())
-    {
-        LoggerManager::get_instance().get_logger()->error(
-            "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
-        return {};
-    }
-
-    const int count = static_cast<int>(positions.size());
-
-    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
-    PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
-    modify_points(vdata, prim, positions);
-
-    PT(Geom) geom = new Geom(vdata);
-    geom->add_primitive(prim);
-
-    return create_geom_node(name, geom);
-}
-
-bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions, int geom_index, int primitive_index)
-{
-    if (positions.size() > (std::numeric_limits<int>::max)())
-    {
-        LoggerManager::get_instance().get_logger()->error(
-            "The size {} of points is more than the maximum size ({}).", positions.size(), (std::numeric_limits<int>::max)());
-        return false;
-    }
-
-    auto geom = geom_node->modify_geom(geom_index);
-    if (!geom)
-        return false;
-
-    modify_points(geom->modify_vertex_data(), geom->modify_primitive(primitive_index), positions);
-
-    return true;
 }
 
 NodePath create_plane(const std::string& name)

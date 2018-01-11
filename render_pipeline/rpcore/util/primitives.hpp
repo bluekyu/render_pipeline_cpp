@@ -36,16 +36,9 @@ RENDER_PIPELINE_DECL NodePath create_triangle_mesh(const std::string& name,
     const std::vector<LVecBase3>& vertices,
     const std::vector<LVecBase3>& normals,
     const std::vector<LVecBase2>& texcoords,
-    const std::vector<int>& indices);
-
-/**
- * Create a mesh has points geometry.
- */
-RENDER_PIPELINE_DECL NodePath create_points(const std::string& name, const std::vector<LPoint3f>& positions,
-    GeomEnums::UsageHint buffer_hint=Geom::UsageHint::UH_static);
-
-RENDER_PIPELINE_DECL bool modify_points(GeomNode* geom_node, const std::vector<LPoint3f>& positions,
-    int geom_index=0, int primitive_index=0);
+    const std::vector<int>& indices,
+    GeomEnums::UsageHint vertex_buffer_hint = Geom::UsageHint::UH_static,
+    GeomEnums::UsageHint index_buffer_hint = Geom::UsageHint::UH_static);
 
 /**
  * Create a mesh has a 2D plane geometry.

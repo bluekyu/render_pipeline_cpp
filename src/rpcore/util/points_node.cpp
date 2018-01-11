@@ -23,11 +23,12 @@
 
 #include <shaderAttrib.h>
 #include <geomNode.h>
+#include <geomPoints.h>
 
 #include <spdlog/fmt/fmt.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
-#include "render_pipeline/rpcore/util/primitives.hpp"
+#include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 
 namespace rpcore {
 
@@ -60,7 +61,38 @@ public:
 void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     GeomEnums::UsageHint buffer_hint)
 {
-    points_np_ = create_points(name, positions_ = positions);
+    if (positions.size() > (std::numeric_limits<int>::max)())
+    {
+        RPObject::global_error("PointsNode",
+            fmt::format("The size {} of points is more than the maximum size ({}).", positions.size(),
+            (std::numeric_limits<int>::max)()));
+        return;
+    }
+
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
+    PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
+
+    const int count = static_cast<int>(positions.size());
+
+    vdata->unclean_set_num_rows(count);
+    vdata->modify_array(0)->modify_handle()->copy_data_from(
+        reinterpret_cast<const unsigned char*>(positions.data()),
+        count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
+
+    prim->clear_vertices();
+    prim->add_consecutive_vertices(0, count);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    PT(GeomNode) geom_node = new GeomNode(name);
+    geom_node->add_geom(geom);
+
+    // default material
+    points_np_ = NodePath(geom_node);
+    RPGeomNode gn(points_np_);
+    gn.set_material(0, RPMaterial());
 
     set_radius(radius);
     points_np_.set_attrib(DCAST(ShaderAttrib, points_np_.get_attrib(ShaderAttrib::get_class_type()))->set_flag(ShaderAttrib::F_shader_point_size, true));
@@ -79,10 +111,33 @@ void PointsNode::Impl::set_position(const LPoint3f& position, int point_index)
 
 void PointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
 {
-    if (positions.size() == positions_.size())
-        positions_ = positions;
-    else
-        modify_points(DCAST(GeomNode, points_np_.node()), positions_ = positions);
+    if (positions.size() > (std::numeric_limits<int>::max)())
+    {
+        RPObject::global_error("PointsNode", fmt::format("The size {} of points is more than the maximum size ({}).",
+            positions.size(), (std::numeric_limits<int>::max)()));
+        return;
+    }
+
+    if (positions.size() != positions_.size())
+    {
+        PT(Geom) geom = DCAST(GeomNode, points_np_.node())->modify_geom(0);
+
+        auto vdata = geom->modify_vertex_data();
+        auto prim = geom->modify_primitive(0);
+
+        const int count = static_cast<int>(positions.size());
+
+        vdata->unclean_set_num_rows(count);
+        vdata->modify_array(0)->modify_handle()->copy_data_from(
+            reinterpret_cast<const unsigned char*>(positions.data()),
+            count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
+
+        prim->clear_vertices();
+        prim->add_consecutive_vertices(0, count);
+        prim->close_primitive();
+    }
+
+    positions_ = positions;
 
     dirty_ = true;
 }

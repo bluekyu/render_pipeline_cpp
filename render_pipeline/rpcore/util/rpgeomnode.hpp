@@ -32,13 +32,13 @@ class NodePath;
 namespace rpcore {
 
 /**
- * Decorator of GeomNode.
+ * Adapater of GeomNode.
  */
 class RENDER_PIPELINE_DECL RPGeomNode
 {
 public:
     RPGeomNode(const NodePath& nodepath);
-    RPGeomNode(GeomNode* geomnode);
+    RPGeomNode(PT(GeomNode) geomnode);
 
     GeomNode& operator*() const;
     GeomNode* operator->() const;
@@ -59,13 +59,43 @@ public:
     /** Set the texture on the first TextureStage or default stage if texture does not exist. */
     void set_texture(int geom_index, Texture* texture);
 
-private:
-    GeomNode* node_ = nullptr;
+    /**
+     * Modify vertices, normal, texcoords in vertex data.
+     *
+     * The size among @p vertices, @p normals and @p texcoords should be same.
+     * And the size should be same as the original size.
+     */
+    bool modify_vertex_data(const std::vector<LVecBase3f>& vertices,
+        const std::vector<LVecBase3f>& normals,
+        const std::vector<LVecBase2f>& texcoords,
+        int geom_index = 0);
+
+    bool modify_vertex_data(const std::vector<LVecBase3f>& vertices,
+        int geom_index = 0);
+
+    /**
+     * Modify vertices, normal, texcoords in vertex data using memcpy.
+     *
+     * This assumes vertex data has single array.
+     *
+     * This is useful that the data has already v3n3t2 format,
+     * so it is copied using memcpy.
+     *
+     * @param[in]   v3n3t2_data     The pointer of data.
+     * @param[in]   data_size       The size of data in bytes.
+     */
+    bool modify_vertex_data(const unsigned char* v3n3t2_data,
+        size_t data_size, int geom_index = 0);
+
+protected:
+    bool check_index_bound(int geom_index) const;
+
+    PT(GeomNode) node_;
 };
 
 // ************************************************************************************************
 
-inline RPGeomNode::RPGeomNode(GeomNode* geomnode): node_(geomnode)
+inline RPGeomNode::RPGeomNode(PT(GeomNode) geomnode): node_(geomnode)
 {
 }
 
