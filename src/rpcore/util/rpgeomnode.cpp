@@ -24,6 +24,7 @@
 #include <nodePath.h>
 #include <materialAttrib.h>
 #include <textureAttrib.h>
+#include <geomVertexReader.h>
 #include <geomVertexWriter.h>
 
 #include <spdlog/fmt/ostr.h>
@@ -118,6 +119,87 @@ void RPGeomNode::set_texture(int geom_index, Texture* texture)
     node_->set_geom_state(geom_index, state->set_attrib(new_attrib));
 }
 
+size_t RPGeomNode::get_vertex_data_size(size_t array_index, int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return 0;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data();
+
+    if (!check_index_bound(vdata, array_index))
+        return 0;
+
+    return vdata->get_array(array_index)->get_data_size_bytes();
+}
+
+bool RPGeomNode::get_vertex_data(std::vector<LVecBase3f>& vertices,
+    std::vector<LVecBase3f>& normals,
+    std::vector<LVecBase2f>& texcoords,
+    int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data();
+
+    return get_vertex_data(vdata, vertices, normals, texcoords);
+}
+
+bool RPGeomNode::get_vertex_data(std::vector<LVecBase3f>& vertices,
+    int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data();
+
+    return get_vertex_data(vdata, vertices);
+}
+
+bool RPGeomNode::get_vertex_data(std::vector<unsigned char>& data, size_t array_index, int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data();
+
+    return get_vertex_data(vdata, data, array_index);
+}
+
+bool RPGeomNode::get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
+    std::vector<LVecBase3f>& normals,
+    std::vector<LVecBase2f>& texcoords,
+    int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data()->animate_vertices(true, Thread::get_current_thread());
+
+    return get_vertex_data(vdata, vertices, normals, texcoords);
+}
+
+bool RPGeomNode::get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
+    int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data()->animate_vertices(true, Thread::get_current_thread());
+
+    return get_vertex_data(vdata, vertices);
+}
+
+bool RPGeomNode::get_animated_vertex_data(std::vector<unsigned char>& data, size_t array_index, int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data()->animate_vertices(true, Thread::get_current_thread());
+
+    return get_vertex_data(vdata, data, array_index);
+}
+
 bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
     const std::vector<LVecBase3>& normals, const std::vector<LVecBase2>& texcoords,
     int geom_index)
@@ -186,38 +268,46 @@ bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
     return true;
 }
 
-bool RPGeomNode::modify_vertex_data(const unsigned char* v3n3t2_data,
-    size_t data_size, int geom_index)
+bool RPGeomNode::modify_vertex_data(const void* data,
+    size_t data_size, size_t start_index, size_t array_index, int geom_index)
 {
     if (!check_index_bound(geom_index))
         return false;
 
     PT(GeomVertexData) vdata = node_->modify_geom(geom_index)->modify_vertex_data();
 
-    const size_t num_rows = data_size / (sizeof(LVecBase3f) + sizeof(LVecBase3f) + sizeof(LVecBase2f));
-    if (static_cast<size_t>(vdata->get_num_rows()) != num_rows)
+    if (!check_index_bound(vdata, array_index))
+        return false;
+
+    // copy_subdata_from() will adjust the size correctly.
+    // so, we do not need to check the bounds.
+    vdata->modify_array_handle(array_index)->copy_subdata_from(start_index, data_size,
+        reinterpret_cast<const unsigned char*>(data), 0, data_size);
+
+    return true;
+}
+
+bool RPGeomNode::get_index_data(std::vector<int>& indices, size_t primitive_index, int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    CPT(Geom) geom = node_->get_geom(geom_index);
+
+    if (primitive_index >= geom->get_num_primitives())
     {
-        RPObject::global_error("RPGeomNode", 
-            fmt::format("The size ({}) of vertices is not same as the original size ({}) of vertices in Geom.",
-                num_rows, static_cast<size_t>(vdata->get_num_rows())));
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The primitive index is greater or equal than the number of primitive ({})", geom->get_num_primitives()));
         return false;
     }
 
-    if (vdata->get_num_arrays() != 1)
-    {
-        RPObject::global_error("RPGeomNode", "The number of vertex array is not one.");
-        return false;
-    }
+    const auto& primitive = geom->get_primitive(primitive_index);
+    const GeomPrimitivePipelineReader reader(primitive, Thread::get_current_thread());
 
-    const size_t dest_total_bytes = vdata->get_array(0)->get_data_size_bytes();
-    if (dest_total_bytes != data_size)
-    {
-        RPObject::global_error("RPGeomNode", 
-            fmt::format("Total size ({}) is not same as the size ({}) of vertices in Geom.", data_size, dest_total_bytes));
-        return false;
-    }
-
-    vdata->modify_array_handle(0)->copy_data_from(v3n3t2_data, data_size);
+    indices.clear();
+    indices.reserve(reader.get_num_vertices());
+    for (int k = 0, k_end = reader.get_num_vertices(); k < k_end; ++k)
+        indices.push_back(reader.get_vertex(k));
 
     return true;
 }
@@ -233,6 +323,89 @@ bool RPGeomNode::check_index_bound(int geom_index) const
     {
         return true;
     }
+}
+
+bool RPGeomNode::check_index_bound(const GeomVertexData* vdata, size_t array_index) const
+{
+    if (array_index >= vdata->get_num_arrays())
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The array index is greater or equal than the number of array ({})", vdata->get_num_arrays()));
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+bool RPGeomNode::get_vertex_data(const GeomVertexData* vdata, std::vector<LVecBase3f>& vertices,
+    std::vector<LVecBase3f>& normals,
+    std::vector<LVecBase2f>& texcoords) const
+{
+    GeomVertexReader geom_vertices(vdata, InternalName::get_vertex());
+    GeomVertexReader geom_normals(vdata, InternalName::get_normal());
+    GeomVertexReader geom_texcoord0(vdata, InternalName::get_texcoord());
+
+    if (geom_vertices.has_column())
+    {
+        vertices.clear();
+        vertices.reserve(static_cast<size_t>(vdata->get_num_rows()));
+
+        while (!geom_vertices.is_at_end())
+            vertices.push_back(geom_vertices.get_data3f());
+    }
+
+    if (geom_normals.has_column())
+    {
+        normals.clear();
+        normals.reserve(static_cast<size_t>(vdata->get_num_rows()));
+
+        while (!geom_normals.is_at_end())
+            normals.push_back(geom_normals.get_data3f());
+    }
+
+    if (geom_texcoord0.has_column())
+    {
+        texcoords.clear();
+        texcoords.reserve(static_cast<size_t>(vdata->get_num_rows()));
+
+        while (!geom_texcoord0.is_at_end())
+            texcoords.push_back(geom_texcoord0.get_data2f());
+    }
+
+    return true;
+}
+
+bool RPGeomNode::get_vertex_data(const GeomVertexData* vdata, std::vector<LVecBase3f>& vertices) const
+{
+    GeomVertexReader geom_vertices(vdata, InternalName::get_vertex());
+
+    if (geom_vertices.has_column())
+    {
+        vertices.clear();
+        vertices.reserve(static_cast<size_t>(vdata->get_num_rows()));
+
+        while (!geom_vertices.is_at_end())
+            vertices.push_back(geom_vertices.get_data3f());
+    }
+
+    return true;
+}
+
+bool RPGeomNode::get_vertex_data(const GeomVertexData* vdata, std::vector<unsigned char>& data, size_t array_index) const
+{
+    if (!check_index_bound(vdata, array_index))
+        return false;
+
+    const size_t dest_total_bytes = vdata->get_array(array_index)->get_data_size_bytes();
+
+    data.resize(dest_total_bytes);
+
+    const unsigned char* read_pointer = vdata->get_array_handle(array_index)->get_read_pointer(true);
+    std::copy(read_pointer, read_pointer + dest_total_bytes, data.data());
+
+    return true;
 }
 
 }

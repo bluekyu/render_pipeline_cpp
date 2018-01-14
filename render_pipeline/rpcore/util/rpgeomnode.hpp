@@ -59,6 +59,37 @@ public:
     /** Set the texture on the first TextureStage or default stage if texture does not exist. */
     void set_texture(int geom_index, Texture* texture);
 
+    /** Functions for vertex data. */
+    ///@{
+
+    size_t get_vertex_data_size(size_t array_index = 0, int geom_index = 0) const;
+
+    bool get_vertex_data(std::vector<LVecBase3f>& vertices,
+        std::vector<LVecBase3f>& normals,
+        std::vector<LVecBase2f>& texcoords,
+        int geom_index = 0) const;
+
+    bool get_vertex_data(std::vector<LVecBase3f>& vertices,
+        int geom_index = 0) const;
+
+    /**
+     * Read vertex data in the array with @p array_index.
+     */
+    bool get_vertex_data(std::vector<unsigned char>& data, size_t array_index = 0, int geom_index = 0) const;
+
+    bool get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
+        std::vector<LVecBase3f>& normals,
+        std::vector<LVecBase2f>& texcoords,
+        int geom_index = 0) const;
+
+    bool get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
+        int geom_index = 0) const;
+
+    /**
+     * Read animated vertex data in the array with @p array_index.
+     */
+    bool get_animated_vertex_data(std::vector<unsigned char>& data, size_t array_index = 0, int geom_index = 0) const;
+
     /**
      * Modify vertices, normal, texcoords in vertex data.
      *
@@ -74,21 +105,32 @@ public:
         int geom_index = 0);
 
     /**
-     * Modify vertices, normal, texcoords in vertex data using memcpy.
+     * Modify (sub) vertex data.
      *
-     * This assumes vertex data has single array.
+     * This just copy the @p data to vertex data in geom, so the format of @p data
+     * should be equal to the format of vertex data.
      *
-     * This is useful that the data has already v3n3t2 format,
-     * so it is copied using memcpy.
-     *
-     * @param[in]   v3n3t2_data     The pointer of data.
-     * @param[in]   data_size       The size of data in bytes.
+     * @param[in]   data        The pointer of data.
+     * @param[in]   data_size   The size of data in bytes.
+     * @param[in]   start_index The starting index of the vertex data in geom.
      */
-    bool modify_vertex_data(const unsigned char* v3n3t2_data,
-        size_t data_size, int geom_index = 0);
+    bool modify_vertex_data(const void* data, size_t data_size, size_t start_index = 0,
+        size_t array_index = 0, int geom_index = 0);
+
+    bool get_index_data(std::vector<int>& indices, size_t primitive_index = 0, int geom_index = 0) const;
+
+    ///@}
 
 protected:
     bool check_index_bound(int geom_index) const;
+    bool check_index_bound(const GeomVertexData* vdata, size_t array_index) const;
+
+    bool get_vertex_data(const GeomVertexData* vdata, std::vector<LVecBase3f>& vertices,
+        std::vector<LVecBase3f>& normals,
+        std::vector<LVecBase2f>& texcoords) const;
+    bool get_vertex_data(const GeomVertexData* vdata, std::vector<LVecBase3f>& vertices) const;
+    bool get_vertex_data(const GeomVertexData* vdata, std::vector<unsigned char>& data,
+        size_t array_index) const;
 
     PT(GeomNode) node_;
 };
