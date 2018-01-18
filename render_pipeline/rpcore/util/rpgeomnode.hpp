@@ -62,33 +62,37 @@ public:
     /** Functions for vertex data. */
     ///@{
 
-    size_t get_vertex_data_size(size_t array_index = 0, int geom_index = 0) const;
+    /** Get total size of vertex data in bytes. */
+    size_t get_vertex_data_size(int geom_index, size_t array_index) const;
+
+    /** Get the number of vertices. */
+    int get_vertex_count(int geom_index) const;
 
     bool get_vertex_data(std::vector<LVecBase3f>& vertices,
         std::vector<LVecBase3f>& normals,
         std::vector<LVecBase2f>& texcoords,
-        int geom_index = 0) const;
+        int geom_index) const;
 
     bool get_vertex_data(std::vector<LVecBase3f>& vertices,
-        int geom_index = 0) const;
+        int geom_index) const;
 
     /**
      * Read vertex data in the array with @p array_index.
      */
-    bool get_vertex_data(std::vector<unsigned char>& data, size_t array_index = 0, int geom_index = 0) const;
+    bool get_vertex_data(std::vector<unsigned char>& data, int geom_index, size_t array_index) const;
 
     bool get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
         std::vector<LVecBase3f>& normals,
         std::vector<LVecBase2f>& texcoords,
-        int geom_index = 0) const;
+        int geom_index) const;
 
     bool get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
-        int geom_index = 0) const;
+        int geom_index) const;
 
     /**
      * Read animated vertex data in the array with @p array_index.
      */
-    bool get_animated_vertex_data(std::vector<unsigned char>& data, size_t array_index = 0, int geom_index = 0) const;
+    bool get_animated_vertex_data(std::vector<unsigned char>& data, int geom_index, size_t array_index) const;
 
     /**
      * Modify vertices, normal, texcoords in vertex data.
@@ -99,10 +103,10 @@ public:
     bool modify_vertex_data(const std::vector<LVecBase3f>& vertices,
         const std::vector<LVecBase3f>& normals,
         const std::vector<LVecBase2f>& texcoords,
-        int geom_index = 0);
+        int geom_index);
 
     bool modify_vertex_data(const std::vector<LVecBase3f>& vertices,
-        int geom_index = 0);
+        int geom_index);
 
     /**
      * Modify (sub) vertex data.
@@ -114,10 +118,13 @@ public:
      * @param[in]   data_size   The size of data in bytes.
      * @param[in]   start_index The starting index of the vertex data in geom.
      */
-    bool modify_vertex_data(const void* data, size_t data_size, size_t start_index = 0,
-        size_t array_index = 0, int geom_index = 0);
+    bool modify_vertex_data(const void* data, size_t data_size, size_t start_index,
+        int geom_index, size_t array_index);
 
-    bool get_index_data(std::vector<int>& indices, size_t primitive_index = 0, int geom_index = 0) const;
+    /** Get the number of indices. */
+    int get_index_count(int geom_index, size_t primitive_index) const;
+
+    bool get_index_data(std::vector<int>& indices, int geom_index, size_t primitive_index) const;
 
     ///@}
 

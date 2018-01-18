@@ -119,7 +119,7 @@ void RPGeomNode::set_texture(int geom_index, Texture* texture)
     node_->set_geom_state(geom_index, state->set_attrib(new_attrib));
 }
 
-size_t RPGeomNode::get_vertex_data_size(size_t array_index, int geom_index) const
+size_t RPGeomNode::get_vertex_data_size(int geom_index, size_t array_index) const
 {
     if (!check_index_bound(geom_index))
         return 0;
@@ -130,6 +130,16 @@ size_t RPGeomNode::get_vertex_data_size(size_t array_index, int geom_index) cons
         return 0;
 
     return vdata->get_array(array_index)->get_data_size_bytes();
+}
+
+int RPGeomNode::get_vertex_count(int geom_index) const
+{
+    if (!check_index_bound(geom_index))
+        return 0;
+
+    CPT(GeomVertexData) vdata = node_->get_geom(geom_index)->get_vertex_data();
+
+    return vdata->get_num_rows();
 }
 
 bool RPGeomNode::get_vertex_data(std::vector<LVecBase3f>& vertices,
@@ -156,7 +166,7 @@ bool RPGeomNode::get_vertex_data(std::vector<LVecBase3f>& vertices,
     return get_vertex_data(vdata, vertices);
 }
 
-bool RPGeomNode::get_vertex_data(std::vector<unsigned char>& data, size_t array_index, int geom_index) const
+bool RPGeomNode::get_vertex_data(std::vector<unsigned char>& data, int geom_index, size_t array_index) const
 {
     if (!check_index_bound(geom_index))
         return false;
@@ -190,7 +200,7 @@ bool RPGeomNode::get_animated_vertex_data(std::vector<LVecBase3f>& vertices,
     return get_vertex_data(vdata, vertices);
 }
 
-bool RPGeomNode::get_animated_vertex_data(std::vector<unsigned char>& data, size_t array_index, int geom_index) const
+bool RPGeomNode::get_animated_vertex_data(std::vector<unsigned char>& data, int geom_index, size_t array_index) const
 {
     if (!check_index_bound(geom_index))
         return false;
@@ -269,7 +279,7 @@ bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
 }
 
 bool RPGeomNode::modify_vertex_data(const void* data,
-    size_t data_size, size_t start_index, size_t array_index, int geom_index)
+    size_t data_size, size_t start_index, int geom_index, size_t array_index)
 {
     if (!check_index_bound(geom_index))
         return false;
@@ -287,7 +297,25 @@ bool RPGeomNode::modify_vertex_data(const void* data,
     return true;
 }
 
-bool RPGeomNode::get_index_data(std::vector<int>& indices, size_t primitive_index, int geom_index) const
+int RPGeomNode::get_index_count(int geom_index, size_t primitive_index) const
+{
+    if (!check_index_bound(geom_index))
+        return 0;
+
+    CPT(Geom) geom = node_->get_geom(geom_index);
+
+    if (primitive_index >= geom->get_num_primitives())
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The primitive index is greater or equal than the number of primitive ({})", geom->get_num_primitives()));
+        return false;
+    }
+
+    const auto& primitive = geom->get_primitive(primitive_index);
+    return primitive->get_num_vertices();
+}
+
+bool RPGeomNode::get_index_data(std::vector<int>& indices, int geom_index, size_t primitive_index) const
 {
     if (!check_index_bound(geom_index))
         return false;
