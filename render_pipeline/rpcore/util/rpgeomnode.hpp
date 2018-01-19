@@ -126,6 +126,8 @@ public:
 
     bool get_index_data(std::vector<int>& indices, int geom_index, size_t primitive_index) const;
 
+    bool modify_index_data(const std::vector<int>& indices, int geom_index, size_t primitive_index);
+
     ///@}
 
 protected:

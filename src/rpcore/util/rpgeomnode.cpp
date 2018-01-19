@@ -340,6 +340,66 @@ bool RPGeomNode::get_index_data(std::vector<int>& indices, int geom_index, size_
     return true;
 }
 
+bool RPGeomNode::modify_index_data(const std::vector<int>& indices, int geom_index, size_t primitive_index)
+{
+    if (indices.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The size {} of indices is more than the maximum size ({}).", indices.size(),
+            (std::numeric_limits<int>::max)()));
+        return false;
+    }
+
+    if (!check_index_bound(geom_index))
+        return false;
+
+    if (primitive_index >= node_->get_geom(geom_index)->get_num_primitives())
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The primitive index is greater or equal than the number of primitive ({})",
+                node_->get_geom(geom_index)->get_num_primitives()));
+        return false;
+    }
+
+    PT(Geom) geom = node_->modify_geom(geom_index);
+
+    auto primitive = geom->modify_primitive(primitive_index);
+
+    // see GeomPrimitive::add_vertex
+    auto handle = primitive->modify_vertices()->modify_handle();
+    handle->set_num_rows(static_cast<int>(indices.size()));
+
+    unsigned char* ptr = handle->get_write_pointer();
+    switch (primitive->get_index_type())
+    {
+        case GeomEnums::NT_uint8:
+        {
+            for (size_t k = 0, k_end = indices.size(); k < k_end; ++k)
+                reinterpret_cast<uint8_t*>(ptr)[k] = indices[k];
+            break;
+        }
+        case GeomEnums::NT_uint16:
+        {
+            for (size_t k = 0, k_end = indices.size(); k < k_end; ++k)
+                reinterpret_cast<uint16_t*>(ptr)[k] = indices[k];
+            break;
+        }
+        case GeomEnums::NT_uint32:
+        {
+            static_assert(sizeof(int) == sizeof(uint32_t), "WARN: type size is not same in std::copy");
+            std::copy(indices.begin(), indices.end(), reinterpret_cast<uint32_t*>(ptr));
+            break;
+        }
+        default:
+        {
+            nassertv(false);
+            break;
+        }
+    }
+
+    return true;
+}
+
 bool RPGeomNode::check_index_bound(int geom_index) const
 {
     if (geom_index < 0 || geom_index >= node_->get_num_geoms())
