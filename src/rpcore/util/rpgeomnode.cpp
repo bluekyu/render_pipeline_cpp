@@ -392,8 +392,7 @@ bool RPGeomNode::modify_index_data(const std::vector<int>& indices, int geom_ind
         }
         default:
         {
-            nassertr(false, false);
-            break;
+            return false;
         }
     }
 
