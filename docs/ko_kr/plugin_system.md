@@ -16,6 +16,13 @@ Custom 플러그인을 만들 경우에는 `rpplugins` 폴더에 플러그인 �
 DLL 파일은 컴파일된 동적 라이브러리이며, `config.yaml` 은 플러그인 설정을 포함한다.
 플러그인 설정이 없다면, 빈 설정 파일을 만들면 된다.
 
+플러그인에서 shader 를 사용한다면 shader 폴더를 만들고, 그 안에 shader 파일들을 추가하면 된다.
+그리고 코드에서는 `BasePlugin::get_shader_resource(PATH)` 를 사용해서 원하는 shader 폴더에 있는
+파일을 가져올 수 있다.
+
+데이터(리소스) 파일도 마찬가지로 resources 폴더에 넣고 `BasePlugin::get_resource(PATH)` 를 사용해서
+원하는 리소스 파일을 가져와서 사용하면 된다.
+
 
 
 ## 외부 동적 라이브러리
