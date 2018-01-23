@@ -61,23 +61,17 @@ public:
 void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     GeomEnums::UsageHint buffer_hint)
 {
-    if (positions.size() > (std::numeric_limits<int>::max)())
-    {
-        RPObject::global_error("PointsNode",
-            fmt::format("The size {} of points is more than the maximum size ({}).", positions.size(),
-            (std::numeric_limits<int>::max)()));
-        return;
-    }
+    set_positions(positions);
 
     PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
-    PT(GeomPoints) prim = new GeomPoints(Geom::UsageHint::UH_static);
+    PT(GeomPoints) prim = new GeomPoints(buffer_hint);
 
-    const int count = static_cast<int>(positions.size());
+    const int count = static_cast<int>(positions_.size());
 
     vdata->unclean_set_num_rows(count);
     vdata->modify_array(0)->modify_handle()->copy_data_from(
-        reinterpret_cast<const unsigned char*>(positions.data()),
-        count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
+        reinterpret_cast<const unsigned char*>(positions_.data()),
+        count * sizeof(std::remove_reference<decltype(positions_)>::type::value_type));
 
     prim->clear_vertices();
     prim->add_consecutive_vertices(0, count);
@@ -118,25 +112,6 @@ void PointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
         return;
     }
 
-    if (positions.size() != positions_.size())
-    {
-        PT(Geom) geom = DCAST(GeomNode, points_np_.node())->modify_geom(0);
-
-        auto vdata = geom->modify_vertex_data();
-        auto prim = geom->modify_primitive(0);
-
-        const int count = static_cast<int>(positions.size());
-
-        vdata->unclean_set_num_rows(count);
-        vdata->modify_array(0)->modify_handle()->copy_data_from(
-            reinterpret_cast<const unsigned char*>(positions.data()),
-            count * sizeof(std::remove_reference<decltype(positions)>::type::value_type));
-
-        prim->clear_vertices();
-        prim->add_consecutive_vertices(0, count);
-        prim->close_primitive();
-    }
-
     positions_ = positions;
 
     dirty_ = true;
@@ -152,9 +127,22 @@ void PointsNode::Impl::upload_positions()
     if (!dirty_)
         return;
 
-    PT(GeomVertexArrayData) vertex_array = DCAST(GeomNode, points_np_.node())->modify_geom(0)->modify_vertex_data()->modify_array(0);
+    auto geom = DCAST(GeomNode, points_np_.node())->modify_geom(0);
+    auto vdata = geom->modify_vertex_data();
 
-    vertex_array->modify_handle()->copy_data_from(
+    const int count = static_cast<int>(positions_.size());
+    if (vdata->get_num_rows() != count)
+    {
+        auto prim = geom->modify_primitive(0);
+
+        vdata->unclean_set_num_rows(count);
+
+        prim->clear_vertices();
+        prim->add_consecutive_vertices(0, count);
+        prim->close_primitive();
+    }
+
+    vdata->modify_array(0)->modify_handle()->copy_data_from(
         reinterpret_cast<const unsigned char*>(positions_.data()),
         positions_.size() * sizeof(decltype(positions_)::value_type));
 
