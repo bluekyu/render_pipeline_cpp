@@ -8,8 +8,8 @@ The **Versions** are used by a build system and does **NOT** need to match.
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: 1.65.1
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 86ae3a5a commit
-- [spdlog](https://github.com/gabime/spdlog): v0.16.2
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.1
+- [spdlog](https://github.com/gabime/spdlog): 0.16.2
 
 ### Optional
 - Doxygen (to create doxygen documents)
