@@ -158,6 +158,8 @@ public:
 
     bool backface_culling_enabled_;
     bool wireframe_enabled_;
+
+    std::vector<std::function<void()>> final_exit_callbacks;
 };
 
 ShowBase* ShowBase::Impl::global_ptr = nullptr;
@@ -500,6 +502,12 @@ ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
 
 ShowBase::~ShowBase()
 {
+    for (const auto& cb: impl_->final_exit_callbacks)
+        cb();
+
+    get_aspect_2d().node()->remove_all_children();
+
+    ignore_all();
     shutdown();
 
     if (impl_->music_manager_)
@@ -1043,6 +1051,16 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
 void ShowBase::run()
 {
     impl_->panda_framework_->main_loop();
+}
+
+std::vector<std::function<void()>>& ShowBase::get_final_exit_callbacks()
+{
+    return impl_->final_exit_callbacks;
+}
+
+const std::vector<std::function<void()>>& ShowBase::get_final_exit_callbacks() const
+{
+    return impl_->final_exit_callbacks;
 }
 
 }

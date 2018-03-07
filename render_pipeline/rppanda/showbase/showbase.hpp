@@ -284,6 +284,13 @@ public:
 
     void run();
 
+    /**
+     * Add final-exit callbacks to this list. These will be called
+     * when ShowBase is removed, after Panda has unloaded.
+     */
+    std::vector<std::function<void()>>& get_final_exit_callbacks();
+    const std::vector<std::function<void()>>& get_final_exit_callbacks() const;
+
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
