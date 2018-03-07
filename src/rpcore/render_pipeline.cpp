@@ -247,19 +247,19 @@ public:
 
     bool pre_showbase_initialized = false;
 
-    Debugger* debugger = nullptr;
-    LoadingScreen* loading_screen = nullptr;
-    CommonResources* common_resources = nullptr;
+    std::unique_ptr<Debugger> debugger_;
+    std::unique_ptr<LoadingScreen> loading_screen_;
+    std::unique_ptr<CommonResources> common_resources_;
 
     PT(rppanda::ShowBase) showbase_ = nullptr;
-    TaskScheduler* task_scheduler_ = nullptr;
-    TagStateManager* tag_mgr_ = nullptr;
-    PluginManager* plugin_mgr_ = nullptr;
-    MountManager* mount_mgr_ = nullptr;
-    StageManager* stage_mgr_ = nullptr;
-    LightManager* light_mgr_ = nullptr;
-    DayTimeManager* daytime_mgr_ = nullptr;
-    IESProfileLoader* ies_loader_ = nullptr;
+    std::unique_ptr<TaskScheduler> task_scheduler_;
+    std::unique_ptr<TagStateManager> tag_mgr_;
+    std::unique_ptr<PluginManager> plugin_mgr_;
+    std::unique_ptr<MountManager> mount_mgr_;
+    std::unique_ptr<StageManager> stage_mgr_;
+    std::unique_ptr<LightManager> light_mgr_;
+    std::unique_ptr<DayTimeManager> daytime_mgr_;
+    std::unique_ptr<IESProfileLoader> ies_loader_;
 };
 
 const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
@@ -272,22 +272,22 @@ RenderPipeline::Impl::~Impl()
 {
     self_.debug("Destructing RenderPipeline");
 
-    delete common_resources;
-    delete ies_loader_;
-    delete daytime_mgr_;
-    delete light_mgr_;
-    delete stage_mgr_;
-    delete tag_mgr_;
-    delete task_scheduler_;
-    delete debugger;
-    delete loading_screen;
+    common_resources_.reset();
+    ies_loader_.reset();
+    daytime_mgr_.reset();
+    light_mgr_.reset();
+    stage_mgr_.reset();
+    tag_mgr_.reset();
+    task_scheduler_.reset();
+    debugger_.reset();
+    loading_screen_.reset();
 
     showbase_.clear();
 
     // should delete at last to delete resources in DLL module.
-    delete plugin_mgr_;
+    plugin_mgr_.reset();
 
-    delete mount_mgr_;
+    mount_mgr_.reset();
 
     LoggerManager::get_instance().clear();
 
@@ -380,15 +380,15 @@ AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(rppanda::Functiona
 AsyncTask::DoneStatus RenderPipeline::Impl::manager_update_task(rppanda::FunctionalTask* task)
 {
     task_scheduler_->step();
-    if (debugger)
-        debugger->update();
+    if (debugger_)
+        debugger_->update();
     daytime_mgr_->update();
     light_mgr_->update();
 
     if (rpcore::Globals::clock->get_frame_count() == 10)
     {
         self_.debug("Hiding loading screen after 10 pre-rendered frames.");
-        loading_screen->remove();
+        loading_screen_->remove();
     }
 
     return AsyncTask::DS_cont;
@@ -396,7 +396,7 @@ AsyncTask::DoneStatus RenderPipeline::Impl::manager_update_task(rppanda::Functio
 
 AsyncTask::DoneStatus RenderPipeline::Impl::update_inputs_and_stages(rppanda::FunctionalTask* task)
 {
-    common_resources->update();
+    common_resources_->update();
     stage_mgr_->update();
     return AsyncTask::DS_cont;
 }
@@ -454,11 +454,11 @@ void RenderPipeline::Impl::handle_window_event()
 
 void RenderPipeline::Impl::reload_shaders()
 {
-    if (debugger)
+    if (debugger_)
     {
         self_.debug("Reloading shaders ..");
-        debugger->get_error_msg_handler()->clear_messages();
-        debugger->set_reload_hint_visible(true);
+        debugger_->get_error_msg_handler()->clear_messages();
+        debugger_->set_reload_hint_visible(true);
         showbase_->get_graphics_engine()->render_frame();
         showbase_->get_graphics_engine()->render_frame();
     }
@@ -468,8 +468,8 @@ void RenderPipeline::Impl::reload_shaders()
     light_mgr_->reload_shaders();
     set_default_effect();
     plugin_mgr_->on_shader_reload();
-    if (debugger)
-        debugger->set_reload_hint_visible(false);
+    if (debugger_)
+        debugger_->set_reload_hint_visible(false);
     apply_custom_shaders();
 }
 
@@ -488,13 +488,13 @@ bool RenderPipeline::Impl::create()
     }
 
     init_globals();
-    loading_screen->create();
+    loading_screen_->create();
     adjust_camera_settings();
     create_managers();
     plugin_mgr_->load();
     plugin_mgr_->on_load();
     daytime_mgr_->load_settings();
-    common_resources->write_config();
+    common_resources_->write_config();
     init_debugger();
 
     plugin_mgr_->on_stage_setup();
@@ -529,14 +529,14 @@ void RenderPipeline::Impl::create_managers()
 {
     self_.trace("Creating managers ...");
 
-    task_scheduler_ = new TaskScheduler(self_);
-    tag_mgr_ = new TagStateManager(Globals::base->get_cam());
-    plugin_mgr_ = new PluginManager(self_);
-    stage_mgr_ = new StageManager(self_);
-    light_mgr_ = new LightManager(self_);
-    daytime_mgr_ = new DayTimeManager(self_);
-    ies_loader_ = new IESProfileLoader(self_);
-    common_resources = new CommonResources(self_);
+    task_scheduler_ = std::make_unique<TaskScheduler>(self_);
+    tag_mgr_ = std::make_unique<TagStateManager>(Globals::base->get_cam());
+    plugin_mgr_ = std::make_unique<PluginManager>(self_);
+    stage_mgr_ = std::make_unique<StageManager>(self_);
+    light_mgr_ = std::make_unique<LightManager>(self_);
+    daytime_mgr_ = std::make_unique<DayTimeManager>(self_);
+    ies_loader_ = std::make_unique<IESProfileLoader>(self_);
+    common_resources_ = std::make_unique<CommonResources>(self_);
     init_common_stages();
 }
 
@@ -573,7 +573,7 @@ void RenderPipeline::Impl::init_debugger()
 {
     if (self_.get_setting<bool>("pipeline.display_debugger"))
     {
-        debugger = new Debugger(&self_);
+        debugger_ = std::make_unique<Debugger>(&self_);
     }
     else
     {
@@ -767,7 +767,7 @@ void RenderPipeline::Impl::init_common_stages()
 
 NodePath RenderPipeline::Impl::create_default_skybox(float size)
 {
-    NodePath skybox = common_resources->load_default_skybox();
+    NodePath skybox = common_resources_->load_default_skybox();
     skybox.set_scale(size);
     skybox.reparent_to(Globals::render);
     skybox.set_bin("unsorted", 10000);
@@ -790,8 +790,8 @@ void RenderPipeline::Impl::handle_window_resize()
 
     light_mgr_->compute_tile_size();
     stage_mgr_->handle_window_resize();
-    if (debugger)
-        debugger->handle_window_resize();
+    if (debugger_)
+        debugger_->handle_window_resize();
     plugin_mgr_->on_window_resized();
 }
 
@@ -849,7 +849,7 @@ RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipelin
 
     impl_->analyze_system();
 
-    impl_->mount_mgr_ = new MountManager;
+    impl_->mount_mgr_ = std::make_unique<MountManager>();
     impl_->pre_showbase_initialized = false;
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
@@ -877,7 +877,7 @@ RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipel
 
     impl_->analyze_system();
 
-    impl_->mount_mgr_ = new MountManager;
+    impl_->mount_mgr_ = std::make_unique<MountManager>();
     impl_->pre_showbase_initialized = false;
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
@@ -970,7 +970,7 @@ bool RenderPipeline::create()
 
 void RenderPipeline::set_loading_screen_image(const Filename& image_source)
 {
-    impl_->loading_screen = new LoadingScreen(this, image_source);
+    impl_->loading_screen_ = std::make_unique<LoadingScreen>(this, image_source);
 }
 
 void RenderPipeline::add_light(RPLight* light)
@@ -1245,37 +1245,37 @@ rppanda::ShowBase* RenderPipeline::get_showbase() const
 
 MountManager* RenderPipeline::get_mount_mgr() const
 {
-    return impl_->mount_mgr_;
+    return impl_->mount_mgr_.get();
 }
 
 StageManager* RenderPipeline::get_stage_mgr() const
 {
-    return impl_->stage_mgr_;
+    return impl_->stage_mgr_.get();
 }
 
 TagStateManager* RenderPipeline::get_tag_mgr() const
 {
-    return impl_->tag_mgr_;
+    return impl_->tag_mgr_.get();
 }
 
 LightManager* RenderPipeline::get_light_mgr() const
 {
-    return impl_->light_mgr_;
+    return impl_->light_mgr_.get();
 }
 
 PluginManager* RenderPipeline::get_plugin_mgr() const
 {
-    return impl_->plugin_mgr_;
+    return impl_->plugin_mgr_.get();
 }
 
 TaskScheduler* RenderPipeline::get_task_scheduler() const
 {
-    return impl_->task_scheduler_;
+    return impl_->task_scheduler_.get();
 }
 
 DayTimeManager* RenderPipeline::get_daytime_mgr() const
 {
-    return impl_->daytime_mgr_;
+    return impl_->daytime_mgr_.get();
 }
 
 }

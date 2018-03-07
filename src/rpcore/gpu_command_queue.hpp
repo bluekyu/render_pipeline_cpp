@@ -24,8 +24,8 @@
 
 #include <pta_int.h>
 
-#include "render_pipeline/rpcore/rpobject.hpp"
-#include "render_pipeline/rpcore/image.hpp"
+#include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {
 
@@ -41,6 +41,7 @@ class GPUCommandQueue : public RPObject
 {
 public:
     GPUCommandQueue(RenderPipeline& pipeline);
+    ~GPUCommandQueue();
 
     GPUCommandList* get_command_list() const;
 
@@ -71,11 +72,11 @@ private:
     void create_command_target();
 
     RenderPipeline& pipeline_;
-    int _commands_per_frame = 1024;
+    int commands_per_frame_ = 1024;
     std::unique_ptr<GPUCommandList> command_list_;
-    PTA_int _pta_num_commands;
-    RenderTarget* _command_target = nullptr;
-    std::shared_ptr<Image> _data_texture = nullptr;
+    PTA_int pta_num_commands_;
+    std::unique_ptr<RenderTarget> command_target_;
+    std::shared_ptr<Image> data_texture_;
 };
 
 // ************************************************************************************************
@@ -86,7 +87,7 @@ inline GPUCommandList* GPUCommandQueue::get_command_list() const
 
 inline int GPUCommandQueue::get_num_processed_commands() const
 {
-    return _pta_num_commands[0];
+    return pta_num_commands_[0];
 }
 
 }

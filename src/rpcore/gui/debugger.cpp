@@ -61,7 +61,7 @@ namespace rpcore {
 Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pipeline)
 {
     debug("Creating debugger");
-    _analyzer = new SceneGraphAnalyzer;
+    analyzer_ = std::make_unique<SceneGraphAnalyzer>();
 
     fullscreen_node = Globals::base->get_pixel_2d().attach_new_node("rp_debugger");
     create_components();
@@ -81,18 +81,6 @@ Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pip
 Debugger::~Debugger()
 {
     trace("Destructing Debugger");
-
-    for (auto&& tn: debug_lines)
-        delete tn;
-    delete _hint_reloading;
-    delete keybinding_instructions_;
-    delete _error_msg_handler;
-    delete _exposure_widget;
-    delete _fps_widget;
-    delete _pipeline_logo;
-    delete _pipe_viewer;
-    delete _buffer_viewer;
-    delete _analyzer;
 }
 
 bool Debugger::use_advanced_info() const
@@ -111,40 +99,40 @@ void Debugger::create_components()
     create_stats();
     create_hints();
 
-    _pipeline_logo = new Sprite("/$$rp/data/gui/pipeline_logo_text.png", fullscreen_node, 30, 30);
+    pipeline_logo_ = std::make_unique<Sprite>("/$$rp/data/gui/pipeline_logo_text.png", fullscreen_node, 30, 30);
 
     if (use_advanced_info())
     {
         exposure_node = fullscreen_node.attach_new_node("ExposureWidget");
-        _exposure_widget = new ExposureWidget(pipeline, exposure_node);
+        exposure_widget_ = std::make_unique<ExposureWidget>(pipeline, exposure_node);
     }
 
     fps_node = fullscreen_node.attach_new_node("FPSChart");
     fps_node.set_pos(LVecBase3f(21, 1, -108 - 40));
-    _fps_widget = new FPSChart(pipeline, fps_node);
+    fps_widget_ = std::make_unique<FPSChart>(pipeline, fps_node);
 
-    _pixel_widget = new PixelInspector(pipeline);
-    _buffer_viewer = new BufferViewer(pipeline, fullscreen_node);
-    _pipe_viewer = new PipeViewer(pipeline, fullscreen_node);
+    pixel_widget_ = std::make_unique<PixelInspector>(pipeline);
+    buffer_viewer_ = std::make_unique<BufferViewer>(pipeline, fullscreen_node);
+    pipe_viewer_ = std::make_unique<PipeViewer>(pipeline, fullscreen_node);
     // TODO: implement
     //self.rm_selector = RenderModeSelector(self.pipeline, self.fullscreen_node)
-    _error_msg_handler = new ErrorMessageDisplay;
+    error_msg_handler_ = std::make_unique<ErrorMessageDisplay>();
 
     handle_window_resize();
 }
 
 void Debugger::update()
 {
-    _error_msg_handler->update();
-    _pixel_widget->update();
+    error_msg_handler_->update();
+    pixel_widget_->update();
 }
 
 AsyncTask::DoneStatus Debugger::collect_scene_data(rppanda::FunctionalTask* task)
 {
-    _analyzer->clear();
+    analyzer_->clear();
     const auto& npc = Globals::base->get_render().find_all_matches("**/+GeomNode");
     for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-        _analyzer->add_node(npc.get_path(k).node());
+        analyzer_->add_node(npc.get_path(k).node());
 
     if (task)
         return AsyncTask::DS_again;
@@ -154,34 +142,34 @@ AsyncTask::DoneStatus Debugger::collect_scene_data(rppanda::FunctionalTask* task
 void Debugger::create_stats()
 {
     overlay_node = Globals::base->get_aspect_2d().attach_new_node("Overlay");
-    debug_lines.clear();
+    debug_lines_.clear();
 
     const int num_lines = use_advanced_info() ? 6 : 1;
     for (int k = 0; k < num_lines; ++k)
     {
-        debug_lines.push_back(new TextNode(
+        debug_lines_.push_back(std::make_unique<TextNode>(
             overlay_node,
             TextNode::Default::pixel_size,
             LVecBase2(0, -k * 0.046f),
             LVecBase3(0.7, 1, 1),
             "right"));
     }
-    debug_lines[0]->set_color(LColor(1, 1, 0, 1));
+    debug_lines_[0]->set_color(LColor(1, 1, 0, 1));
 }
 
 void Debugger::create_hints()
 {
-    _hint_reloading = new Sprite("/$$rp/data/gui/shader_reload_hint.png", fullscreen_node);
+    hint_reloading_ = std::make_unique<Sprite>("/$$rp/data/gui/shader_reload_hint.png", fullscreen_node);
     set_reload_hint_visible(false);
 
     // C++ does not implement this part.
     //python_warning = nullptr;
 
     // Keybinding hints
-    keybinding_instructions_ = new Sprite("/$$rp/data/gui/keybindings.png", fullscreen_node, 0.0f, 0.0f, true, true, false);
+    keybinding_instructions_ = std::make_unique<Sprite>("/$$rp/data/gui/keybindings.png", fullscreen_node, 0.0f, 0.0f, true, true, false);
 
-    keybinding_text_ = new TextNode(
-        {},
+    keybinding_text_ = std::make_unique<TextNode>(
+        NodePath{},
         TextNode::Default::pixel_size,
         LVecBase2(0),
         LVecBase3(0.8, 0.8, 0.8),
@@ -195,9 +183,9 @@ void Debugger::create_hints()
 void Debugger::set_reload_hint_visible(bool flag)
 {
     if (flag)
-        _hint_reloading->show();
+        hint_reloading_->show();
     else
-        _hint_reloading->hide();
+        hint_reloading_->hide();
 }
 
 void Debugger::handle_window_resize()
@@ -213,7 +201,7 @@ void Debugger::handle_window_resize()
             static_cast<int>(Globals::native_resolution.get_x() / gui_scale) - 200,
             1, static_cast<int>(-Globals::native_resolution.get_y() / gui_scale) + 120);
     }
-    _hint_reloading->set_pos((Globals::native_resolution.get_x() / 2.0f) / gui_scale - 465 / 2, 220);
+    hint_reloading_->set_pos((Globals::native_resolution.get_x() / 2.0f) / gui_scale - 465 / 2, 220);
     keybinding_instructions_->set_pos(30, Globals::native_resolution.get_y() / gui_scale - 510.0);
     keybinding_text_->get_np().set_pos(-Globals::base->get_aspect_ratio() + 0.07, 0, -0.9);
     keybinding_text_->set_pixel_size(16 * (std::max)(0.8f, gui_scale));
@@ -227,13 +215,13 @@ void Debugger::handle_window_resize()
     //      (Globals.native_resolution.y // self.gui_scale - 118 - 40))
     //}
 
-    for (const auto& text: debug_lines)
+    for (const auto& text: debug_lines_)
     {
         text->set_pixel_size(16 * (std::max)(0.8f, gui_scale));
     }
 
-    _buffer_viewer->center_on_screen();
-    _pipe_viewer->center_on_screen();
+    buffer_viewer_->center_on_screen();
+    pipe_viewer_->center_on_screen();
     // TODO: implement
     //self.rm_selector.center_on_screen()
 }
@@ -243,12 +231,12 @@ void Debugger::init_keybindings()
     Globals::base->accept("v", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
             Globals::base->get_render_2d().show();
-        _buffer_viewer->toggle();
+        buffer_viewer_->toggle();
     });
     Globals::base->accept("c", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
             Globals::base->get_render_2d().show();
-        _pipe_viewer->toggle();
+        pipe_viewer_->toggle();
     });
 
     // TODO: implement
@@ -295,7 +283,7 @@ void Debugger::toggle_keybindings_visible()
 AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
 {
     const auto& clock = Globals::clock;
-    debug_lines[0]->set_text(fmt::format("{:3.1f} fps  |  {:3.2f} ms  |  {:3.2f} ms max",
+    debug_lines_[0]->set_text(fmt::format("{:3.1f} fps  |  {:3.2f} ms  |  {:3.2f} ms max",
         clock->get_average_frame_rate(),
         (1000.0 / (std::max)(0.001, clock->get_average_frame_rate())),
         (clock->get_max_frame_duration() * 1000.0)));
@@ -305,7 +293,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
 
     const auto& light_mgr = pipeline->get_light_mgr();
 
-    debug_lines[1]->set_text(fmt::format(
+    debug_lines_[1]->set_text(fmt::format(
         "{:4d} states |  {:4d} transforms |  {:4d} cmds |  {:4d} lights |  {:4d} shadow |  {:5.1f}% atlas usage",
 
         RenderState::get_num_states(),
@@ -315,7 +303,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         light_mgr->get_num_shadow_sources(),
         light_mgr->get_shadow_atlas_coverage()));
 
-    const auto& tex_memory_count = _buffer_viewer->get_stage_information();
+    const auto& tex_memory_count = buffer_viewer_->get_stage_information();
 
     int views = 0;
     int active_views = 0;
@@ -337,7 +325,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         }
     }
 
-    debug_lines[2]->set_text(fmt::format(
+    debug_lines_[2]->set_text(fmt::format(
         "Internal:  {:3.0f} MB VRAM  |  {:5d} img |  {:5d} tex |  "
         "{:5d} fbos |  {:3d} plugins |  {:2d}  views  ({:2d} active)",
 
@@ -356,14 +344,14 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     for (int k = 0; k < tex_count; ++k)
         scene_tex_size += texture_collection.get_texture(k)->estimate_texture_memory();
 
-    debug_lines[3]->set_text(fmt::format(
+    debug_lines_[3]->set_text(fmt::format(
         "Scene:   {:4.0f} MB VRAM |  {:3d} tex |  {:4d} geoms |  {:4d} nodes |  {:7d} vertices",
 
         (scene_tex_size / (1024.0*1024.0)),
         tex_count,
-        _analyzer->get_num_geoms(),
-        _analyzer->get_num_nodes(),
-        _analyzer->get_num_vertices()
+        analyzer_->get_num_geoms(),
+        analyzer_->get_num_nodes(),
+        analyzer_->get_num_vertices()
         ));
 
     LVecBase3f sun_vector(0);
@@ -376,7 +364,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     const NodePath& render = Globals::base->get_render();
     const LPoint3& camera_global_pos = camera.get_pos(render);
 
-    debug_lines[4]->set_text(fmt::format(
+    debug_lines_[4]->set_text(fmt::format(
         "Time: {} ({:1.3f}) |  Sun  {:0.2f} {:0.2f} {:0.2f} |  X {:4.2f}  Y {:4.2f}  Z {:4.2f} |  {:2d} tasks |  scheduled: {:2d}",
 
         pipeline->get_daytime_mgr()->get_formatted_time(),
@@ -426,7 +414,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         Globals::resolution.get_y(),
         light_mgr->get_num_tiles().get_x(),
         light_mgr->get_num_tiles().get_y());
-    debug_lines[5]->set_text(debug_lines_5_text);
+    debug_lines_[5]->set_text(debug_lines_5_text);
 
     return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 }

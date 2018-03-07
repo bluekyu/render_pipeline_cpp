@@ -35,11 +35,13 @@ namespace rpcore {
 GPUCommandQueue::GPUCommandQueue(RenderPipeline& pipeline): RPObject("GPUCommandQueue"), pipeline_(pipeline)
 {
     command_list_ = std::make_unique<GPUCommandList>();
-    _pta_num_commands = PTA_int::empty_array(1);
+    pta_num_commands_ = PTA_int::empty_array(1);
     create_data_storage();
     create_command_target();
     register_defines();
 }
+
+GPUCommandQueue::~GPUCommandQueue() = default;
 
 size_t GPUCommandQueue::get_num_queued_commands() const
 {
@@ -48,14 +50,14 @@ size_t GPUCommandQueue::get_num_queued_commands() const
 
 void GPUCommandQueue::process_queue()
 {
-    PTA_uchar pointer = _data_texture->get_texture()->modify_ram_image();
-    size_t num_commands_exec = command_list_->write_commands_to(pointer, _commands_per_frame);
-    _pta_num_commands[0] = num_commands_exec;
+    PTA_uchar pointer = data_texture_->get_texture()->modify_ram_image();
+    size_t num_commands_exec = command_list_->write_commands_to(pointer, commands_per_frame_);
+    pta_num_commands_[0] = num_commands_exec;
 }
 
 void GPUCommandQueue::reload_shaders()
 {
-    _command_target->set_shader(RPLoader::load_shader({
+    command_target_->set_shader(RPLoader::load_shader({
         "/$$rp/shader/default_post_process.vert.glsl",
         "/$$rp/shader/process_command_queue.frag.glsl"}
     ));
@@ -63,7 +65,7 @@ void GPUCommandQueue::reload_shaders()
 
 void GPUCommandQueue::register_input(CPT_InternalName key, Texture* val)
 {
-    _command_target->set_shader_input(ShaderInput(std::move(key), val));
+    command_target_->set_shader_input(ShaderInput(std::move(key), val));
 }
 
 void GPUCommandQueue::register_defines()
@@ -81,18 +83,18 @@ void GPUCommandQueue::register_defines()
 
 void GPUCommandQueue::create_data_storage()
 {
-    int command_buffer_size = _commands_per_frame * 32;
+    int command_buffer_size = commands_per_frame_ * 32;
     debug(std::string("Allocating command buffer of size ") + std::to_string(command_buffer_size));
-    _data_texture = Image::create_buffer("CommandQueue", command_buffer_size, "R32");
+    data_texture_ = Image::create_buffer("CommandQueue", command_buffer_size, "R32");
 }
 
 void GPUCommandQueue::create_command_target()
 {
-    _command_target = new RenderTarget("ExecCommandTarget");
-    _command_target->set_size(1);
-    _command_target->prepare_buffer();
-    _command_target->set_shader_input(ShaderInput("CommandQueue", _data_texture->get_texture()));
-    _command_target->set_shader_input(ShaderInput("commandCount", _pta_num_commands));
+    command_target_ = std::make_unique<RenderTarget>("ExecCommandTarget");
+    command_target_->set_size(1);
+    command_target_->prepare_buffer();
+    command_target_->set_shader_input(ShaderInput("CommandQueue", data_texture_->get_texture()));
+    command_target_->set_shader_input(ShaderInput("commandCount", pta_num_commands_));
 }
 
 }

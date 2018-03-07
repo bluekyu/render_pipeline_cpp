@@ -24,24 +24,20 @@
 
 #include <graphicsEngine.h>
 
-#include "render_pipeline/rpcore/globals.hpp"
-#include "render_pipeline/rpcore/gui/sprite.hpp"
-#include "render_pipeline/rppanda/showbase/showbase.hpp"
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/gui/sprite.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 namespace rpcore {
 
 Filename LoadingScreen::Default::image_source = "/$$rp/data/gui/loading_screen_bg.txo";
 
 LoadingScreen::LoadingScreen(RenderPipeline* pipeline, const Filename& image_source): RPObject("LoadingScreen"),
-    pipeline(pipeline), image_source_(image_source)
+    pipeline_(pipeline), image_source_(image_source)
 {
-
 }
 
-LoadingScreen::~LoadingScreen()
-{
-    delete fullscreen_bg;
-}
+LoadingScreen::~LoadingScreen() = default;
 
 void LoadingScreen::create()
 {
@@ -49,17 +45,17 @@ void LoadingScreen::create()
 
     const int screen_w = Globals::native_resolution.get_x();
     const int screen_h = Globals::native_resolution.get_y();
-    fullscreen_node = Globals::base->get_pixel_2dp().attach_new_node("LoadingScreen");
-    fullscreen_node.set_bin("fixed", 10);
-    fullscreen_node.set_depth_test(false);
+    fullscreen_node_ = Globals::base->get_pixel_2dp().attach_new_node("LoadingScreen");
+    fullscreen_node_.set_bin("fixed", 10);
+    fullscreen_node_.set_depth_test(false);
 
     // FIXME: hard corded value
     const float image_w = 1920.0f;
     const float image_h = 1080.0f;
     const float scale = (std::min)(screen_w / image_w, screen_h / image_h);
 
-    fullscreen_bg = new Sprite(image_source_, static_cast<int>(image_w * scale),
-        static_cast<int>(image_h * scale), fullscreen_node,
+    fullscreen_bg_ = std::make_unique<Sprite>(image_source_, static_cast<int>(image_w * scale),
+        static_cast<int>(image_h * scale), fullscreen_node_,
         static_cast<int>(screen_w - image_w * scale) / 2,
         static_cast<int>(screen_h - image_h * scale) / 2, true, false);
 
@@ -70,10 +66,9 @@ void LoadingScreen::create()
 
 void LoadingScreen::remove()
 {
-    fullscreen_bg->get_node()->get_texture()->release_all();
-    fullscreen_node.remove_node();
-    delete fullscreen_bg;
-    fullscreen_bg = nullptr;
+    fullscreen_bg_->get_node()->get_texture()->release_all();
+    fullscreen_node_.remove_node();
+    fullscreen_bg_.reset();
 }
 
 }

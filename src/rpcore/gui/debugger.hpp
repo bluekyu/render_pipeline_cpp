@@ -96,29 +96,29 @@ private:
     NodePath overlay_node;
     NodePath exposure_node;
     NodePath fps_node;
-    SceneGraphAnalyzer* _analyzer = nullptr;
+    std::unique_ptr<SceneGraphAnalyzer> analyzer_;
 
-    BufferViewer* _buffer_viewer = nullptr;
-    PipeViewer* _pipe_viewer = nullptr;
-    ErrorMessageDisplay* _error_msg_handler = nullptr;
-    Sprite* _pipeline_logo = nullptr;
-    Sprite* _hint_reloading = nullptr;
-    Sprite* keybinding_instructions_ = nullptr;
-    rpcore::TextNode* keybinding_text_ = nullptr;
-    ExposureWidget* _exposure_widget = nullptr;
-    FPSChart* _fps_widget = nullptr;
-    PixelInspector* _pixel_widget = nullptr;
+    std::unique_ptr<BufferViewer> buffer_viewer_;
+    std::unique_ptr<PipeViewer> pipe_viewer_;
+    std::unique_ptr<ErrorMessageDisplay> error_msg_handler_;
+    std::unique_ptr<Sprite> pipeline_logo_;
+    std::unique_ptr<Sprite> hint_reloading_;
+    std::unique_ptr<Sprite> keybinding_instructions_;
+    std::unique_ptr<rpcore::TextNode> keybinding_text_;
+    std::unique_ptr<ExposureWidget> exposure_widget_;
+    std::unique_ptr<FPSChart> fps_widget_;
+    std::unique_ptr<PixelInspector> pixel_widget_;
 
     int debugger_width;
     bool debugger_visible;
     float gui_scale;
 
-    std::vector<rpcore::TextNode*> debug_lines;
+    std::vector<std::unique_ptr<rpcore::TextNode>> debug_lines_;
 };
 
 inline ErrorMessageDisplay* Debugger::get_error_msg_handler() const
 {
-    return _error_msg_handler;
+    return error_msg_handler_.get();
 }
 
 }

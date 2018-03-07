@@ -54,11 +54,11 @@ public:
     void remove();
 
 private:
-    RenderPipeline* pipeline;
+    RenderPipeline* pipeline_;
     const Filename image_source_;
 
-    NodePath fullscreen_node;
-    Sprite* fullscreen_bg = nullptr;
+    NodePath fullscreen_node_;
+    std::unique_ptr<Sprite> fullscreen_bg_;
 };
 
 }

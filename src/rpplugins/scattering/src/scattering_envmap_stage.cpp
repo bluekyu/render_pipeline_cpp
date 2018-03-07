@@ -42,21 +42,21 @@ ScatteringEnvmapStage::ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline): 
 ScatteringEnvmapStage::ProduceType ScatteringEnvmapStage::get_produced_pipes() const
 {
     return {
-        ShaderInput("ScatteringIBLDiffuse", _cubemap_filter->get_diffuse_cubemap()->get_texture()),
-        ShaderInput("ScatteringIBLSpecular", _cubemap_filter->get_specular_cubemap()->get_texture()),
+        ShaderInput("ScatteringIBLDiffuse", cubemap_filter_->get_diffuse_cubemap()->get_texture()),
+        ShaderInput("ScatteringIBLSpecular", cubemap_filter_->get_specular_cubemap()->get_texture()),
     };
 }
 
 void ScatteringEnvmapStage::create()
 {
-    _cubemap_filter = new rpcore::CubemapFilter(this, "ScatEnvCub");
+    cubemap_filter_ = std::make_unique<rpcore::CubemapFilter>(this, "ScatEnvCub");
 
-    _target_cube = create_target("ComputeScattering");
-    _target_cube->set_size(_cubemap_filter->get_size() * 6, _cubemap_filter->get_size());
-    _target_cube->prepare_buffer();
-    _target_cube->set_shader_input(ShaderInput("DestCubemap", _cubemap_filter->get_target_cubemap()->get_texture()));
+    target_cube_ = create_target("ComputeScattering");
+    target_cube_->set_size(cubemap_filter_->get_size() * 6, cubemap_filter_->get_size());
+    target_cube_->prepare_buffer();
+    target_cube_->set_shader_input(ShaderInput("DestCubemap", cubemap_filter_->get_target_cubemap()->get_texture()));
 
-    _cubemap_filter->create();
+    cubemap_filter_->create();
 
     // Make the stages use our cubemap textures
     rpcore::AmbientStage::get_global_required_pipes().push_back("ScatteringIBLDiffuse");
@@ -67,8 +67,8 @@ void ScatteringEnvmapStage::create()
 
 void ScatteringEnvmapStage::reload_shaders()
 {
-    _target_cube->set_shader(load_plugin_shader({"scattering_envmap.frag.glsl"}));
-    _cubemap_filter->reload_shaders();
+    target_cube_->set_shader(load_plugin_shader({"scattering_envmap.frag.glsl"}));
+    cubemap_filter_->reload_shaders();
 }
 
 std::string ScatteringEnvmapStage::get_plugin_id() const
