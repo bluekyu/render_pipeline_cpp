@@ -46,6 +46,7 @@ class ErrorMessageDisplay;
 class ExposureWidget;
 class FPSChart;
 class PixelInspector;
+class RenderModeSelector;
 
 class Debugger : public RPObject
 {
@@ -100,6 +101,7 @@ private:
 
     std::unique_ptr<BufferViewer> buffer_viewer_;
     std::unique_ptr<PipeViewer> pipe_viewer_;
+    std::unique_ptr<RenderModeSelector> rm_selector_;
     std::unique_ptr<ErrorMessageDisplay> error_msg_handler_;
     std::unique_ptr<Sprite> pipeline_logo_;
     std::unique_ptr<Sprite> hint_reloading_;

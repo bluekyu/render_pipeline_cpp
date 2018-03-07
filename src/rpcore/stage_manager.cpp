@@ -583,7 +583,7 @@ void StageManager::write_autoconfig()
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$pipeline_shader_config.inc.glsl", false, false);
+        std::ostream* file = vfs->open_write_file("/$$rptemp/$$pipeline_shader_config.inc.glsl", false, true);
         *file << output;
         vfs->close_write_file(file);
     }

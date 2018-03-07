@@ -55,7 +55,7 @@ void CommonResources::write_config()
     try
     {
         // Try to write the temporary file
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, false);
+        std::ostream* file = vfs->open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, true);
         *file << content;
         vfs->close_write_file(file);
     }

@@ -55,6 +55,7 @@
 #include "rpcore/gui/fps_chart.hpp"
 #include "rpcore/gui/pipe_viewer.hpp"
 #include "rpcore/gui/pixel_inspector.hpp"
+#include "rpcore/gui/render_mode_selector.hpp"
 
 namespace rpcore {
 
@@ -114,8 +115,7 @@ void Debugger::create_components()
     pixel_widget_ = std::make_unique<PixelInspector>(pipeline);
     buffer_viewer_ = std::make_unique<BufferViewer>(pipeline, fullscreen_node);
     pipe_viewer_ = std::make_unique<PipeViewer>(pipeline, fullscreen_node);
-    // TODO: implement
-    //self.rm_selector = RenderModeSelector(self.pipeline, self.fullscreen_node)
+    rm_selector_ = std::make_unique<RenderModeSelector>(pipeline, fullscreen_node);
     error_msg_handler_ = std::make_unique<ErrorMessageDisplay>();
 
     handle_window_resize();
@@ -222,8 +222,7 @@ void Debugger::handle_window_resize()
 
     buffer_viewer_->center_on_screen();
     pipe_viewer_->center_on_screen();
-    // TODO: implement
-    //self.rm_selector.center_on_screen()
+    rm_selector_->center_on_screen();
 }
 
 void Debugger::init_keybindings()
@@ -238,9 +237,9 @@ void Debugger::init_keybindings()
             Globals::base->get_render_2d().show();
         pipe_viewer_->toggle();
     });
-
-    // TODO: implement
-    //Globals.base.accept("z", self.rm_selector.toggle)
+    Globals::base->accept("z", [this](const Event* ev) {
+        rm_selector_->toggle();
+    });
     Globals::base->accept("f5", [this](const Event* ev) {
         toggle_gui_visible();
     });

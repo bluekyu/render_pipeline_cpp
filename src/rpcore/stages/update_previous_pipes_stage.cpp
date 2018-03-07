@@ -120,7 +120,7 @@ void UpdatePreviousPipesStage::reload_shaders()
     VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
-        std::ostream* file = vfs->open_write_file(shader_dest, false, false);
+        std::ostream* file = vfs->open_write_file(shader_dest, false, true);
         *file << fragment;
         vfs->close_write_file(file);
     }

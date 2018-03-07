@@ -23,6 +23,7 @@
 #include "render_pipeline/rpcore/gui/checkbox.hpp"
 
 #include "render_pipeline/rpcore/loader.hpp"
+#include "render_pipeline/rpcore/gui/checkbox_collection.hpp"
 #include "render_pipeline/rppanda/gui/direct_check_box.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 
@@ -77,6 +78,12 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
         set_checked(true, false);
 }
 
+Checkbox::~Checkbox()
+{
+    if (collection_)
+        collection_->remove(this);
+}
+
 bool Checkbox::is_checked() const
 {
     return node_->is_checked();
@@ -84,8 +91,21 @@ bool Checkbox::is_checked() const
 
 void Checkbox::update_status(bool status)
 {
-    // TODO: implement
-    //if (!status)
+    if (!status && collection_)
+    {
+        node_->command_func(nullptr);
+        return;
+    }
+
+    if (collection_)
+    {
+        if (status)
+        {
+            collection_->on_checkbox_changed(this);
+            // A radio box can't be unchecked
+            // self._node["state"] = DGG.DISABLED
+        }
+    }
 
     if (callback_)
         callback_(status);

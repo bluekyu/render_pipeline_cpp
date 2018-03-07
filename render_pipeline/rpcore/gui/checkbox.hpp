@@ -34,6 +34,8 @@ class DirectCheckBox;
 
 namespace rpcore {
 
+class CheckboxCollection;
+
 /**
  * This is a wrapper around DirectCheckBox, providing a simpler interface
  * and better visuals.
@@ -49,6 +51,20 @@ public:
 public:
     Checkbox(NodePath parent={}, float x=0, float y=0, const std::function<void(bool)>& callback={},
         bool radio=false, int expand_width=Default::expand_width, bool checked=false, bool enabled=true);
+
+    ~Checkbox();
+
+    /**
+     * Returns a handle to the assigned checkbox collection, or None
+     * if no collection was assigned
+     */
+    CheckboxCollection* get_collection() const;
+
+    /**
+     * Internal method to add a checkbox to a checkbox collection, this
+     *  is used for radio-buttons.
+     */
+    void set_collection(CheckboxCollection* coll);
 
     /** Returns whether the node is currently checked. */
     bool is_checked() const;
@@ -66,7 +82,21 @@ private:
     PT(rppanda::DirectCheckBox) node_;
 
     std::function<void(bool)> callback_;
+
+    CheckboxCollection* collection_ = nullptr;
 };
+
+// ************************************************************************************************
+
+inline CheckboxCollection* Checkbox::get_collection() const
+{
+    return collection_;
+}
+
+inline void Checkbox::set_collection(CheckboxCollection* coll)
+{
+    collection_ = coll;
+}
 
 inline rppanda::DirectCheckBox* Checkbox::get_node() const
 {

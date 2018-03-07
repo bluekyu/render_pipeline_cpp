@@ -116,7 +116,7 @@ void DayTimeManager::load_settings()
     try
     {
         // Try to write the temporary file
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$daytime_config.inc.glsl", false, false);
+        std::ostream* file = vfs->open_write_file("/$$rptemp/$$daytime_config.inc.glsl", false, true);
         *file << (impl_->input_ubo_->generate_shader_code());
         vfs->close_write_file(file);
     }

@@ -370,7 +370,7 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 
     try
     {
-        std::ostream* file = vfs->open_write_file(temp_path, false, false);
+        std::ostream* file = vfs->open_write_file(temp_path, false, true);
 
         for (const auto& shader_content: parsed_lines)
             *file << shader_content << std::endl;

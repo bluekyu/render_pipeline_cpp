@@ -64,6 +64,7 @@ set(header_rpcore
 
 set(header_rpcore_gui
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/checkbox_collection.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/draggable_window.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/labeled_checkbox.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/gui/slider.hpp"
@@ -250,6 +251,7 @@ set(source_rpcore_gui
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/buffer_viewer.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/checkbox.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/checkbox_collection.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/debugger.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/draggable_window.cpp"
@@ -266,6 +268,8 @@ set(source_rpcore_gui
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pipe_viewer.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/pixel_inspector.hpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/render_mode_selector.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/gui/render_mode_selector.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/slider.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/sprite.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/gui/text.cpp"

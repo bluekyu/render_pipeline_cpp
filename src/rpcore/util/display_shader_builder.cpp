@@ -52,7 +52,7 @@ PT(Shader) DisplayShaderBuilder::build(Texture* texture, int view_width, int vie
 
         try
         {
-            std::ostream* file = vfs->open_write_file(cache_key, false, false);
+            std::ostream* file = vfs->open_write_file(cache_key, false, true);
 
             *file << fragment_shader;
 
