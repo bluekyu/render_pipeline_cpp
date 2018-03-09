@@ -30,8 +30,6 @@
 #pragma include "includes/normal_packing.inc.glsl"
 #pragma include "includes/brdf.inc.glsl"
 
-uniform mat4 p3d_ProjectionMatrix;
-
 #if IN_GBUFFER_SHADER
 
     /*
