@@ -37,43 +37,39 @@
 
 namespace rpcore {
 
-ExposureWidget::ExposureWidget(RenderPipeline* pipeline, NodePath parent): RPObject("ExposureWidget"), _pipeline(pipeline), _parent(parent)
+ExposureWidget::ExposureWidget(RenderPipeline* pipeline, NodePath parent): RPObject("ExposureWidget"), pipeline_(pipeline), parent_(parent)
 {
-    _node = _parent.attach_new_node("ExposureWidgetNode");
+    node_ = parent_.attach_new_node("ExposureWidgetNode");
 
     create_components();
 }
 
-ExposureWidget::~ExposureWidget()
-{
-    delete _display_img;
-    delete _display_txt;
-}
+ExposureWidget::~ExposureWidget() = default;
 
 void ExposureWidget::create_components()
 {
-    _node.hide();
+    node_.hide();
 
     // Create the texture where the gui component is rendered inside
-    _storage_tex = Image::create_2d("ExposureDisplay", 140, 20, "RGBA8");
-    _storage_tex->set_clear_color(LColor(0.2, 0.6, 1.0, 1.0));
-    _storage_tex->clear_image();
+    storage_tex_ = Image::create_2d("ExposureDisplay", 140, 20, "RGBA8");
+    storage_tex_->set_clear_color(LColor(0.2, 0.6, 1.0, 1.0));
+    storage_tex_->clear_image();
 
     auto option = std::make_shared<rppanda::DirectFrame::Options>();
     option->frame_color = LColor(0.1, 0.1, 0.1, 1.0);
     option->frame_size = LVecBase4(200, 0, -10, -85);
     option->pos = LVecBase3(0, 0, 0);
-    _bg_frame = new rppanda::DirectFrame(_node, option);
+    bg_frame_ = new rppanda::DirectFrame(node_, option);
 
-    _display_img = new Sprite(_storage_tex->get_texture(), 140, 20, _node, 20, 50);
+    display_img_ = std::make_unique<Sprite>(storage_tex_->get_texture(), 140, 20, node_, 20, 50);
 
-    _display_txt = new Text("CURRENT EXPOSURE", _node, 160, 40, 13, "right", LVecBase3(0.8f));
+    display_txt_ = std::make_unique<Text>("CURRENT EXPOSURE", node_, 160, 40, 13, "right", LVecBase3(0.8f));
 
     // Create the shader which generates the visualization texture
     _cshader_node = new ComputeNode("ExposureWidget");
     _cshader_node->add_dispatch(140 / 10, 20 / 4, 1);
 
-    _cshader_np = _node.attach_new_node(_cshader_node);
+    cshader_np_ = node_.attach_new_node(_cshader_node);
 
     // Defer the further loading
     Globals::base->get_task_mgr()->do_method_later(1.0f, std::bind(&ExposureWidget::late_init, this, std::placeholders::_1),
@@ -82,23 +78,23 @@ void ExposureWidget::create_components()
 
 AsyncTask::DoneStatus ExposureWidget::late_init(rppanda::FunctionalTask* task)
 {
-    StageManager* stage_mgr = _pipeline->get_stage_mgr();
+    StageManager* stage_mgr = pipeline_->get_stage_mgr();
 
     const auto& pipe = stage_mgr->get_pipe("Exposure");
     if (pipe == ShaderInput::get_blank())
     {
         debug("Disabling exposure widget, could not find the exposure data.");
-        _node.remove_node();
+        node_.remove_node();
         return AsyncTask::DS_done;
     }
 
-    _node.show();
+    node_.show();
 
     Texture* exposure_tex = pipe.get_texture();
-    _cshader = RPLoader::load_shader({"/$$rp/shader/visualize_exposure.compute.glsl"});
-    _cshader_np.set_shader(_cshader);
-    _cshader_np.set_shader_input("DestTex", _storage_tex->get_texture());
-    _cshader_np.set_shader_input("ExposureTex", exposure_tex);
+    cshader_ = RPLoader::load_shader({"/$$rp/shader/visualize_exposure.compute.glsl"});
+    cshader_np_.set_shader(cshader_);
+    cshader_np_.set_shader_input("DestTex", storage_tex_->get_texture());
+    cshader_np_.set_shader_input("ExposureTex", exposure_tex);
 
     return AsyncTask::DS_done;
 }

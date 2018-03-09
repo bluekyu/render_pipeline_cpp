@@ -35,23 +35,20 @@ namespace rpcore {
 
 ErrorMessageDisplay::ErrorMessageDisplay(): RPObject("ErrorMessageDisplay")
 {
-    _error_node = Globals::base->get_pixel_2d().attach_new_node("ErrorDisplay");
-    _error_node.set_z(-180);
+    error_node_ = Globals::base->get_pixel_2d().attach_new_node("ErrorDisplay");
+    error_node_.set_z(-180);
 }
 
-ErrorMessageDisplay::~ErrorMessageDisplay()
-{
-    delete _notify_stream;
-}
+ErrorMessageDisplay::~ErrorMessageDisplay() = default;
 
 void ErrorMessageDisplay::update()
 {
-    if (!_notify_stream)
+    if (!notify_stream_)
         init_notify();
 
-    while (_notify_stream->is_text_available())
+    while (notify_stream_->is_text_available())
     {
-        const std::string line(_notify_stream->get_line());
+        const std::string line(notify_stream_->get_line());
         if (line.find("warning") != std::string::npos)
         {
             RPObject::global_warn("Panda3d", line);
@@ -80,12 +77,12 @@ void ErrorMessageDisplay::add_warning(const std::string& msg)
 
 void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3f& color)
 {
-    Text error_text(boost::trim_copy(text), _error_node, Globals::native_resolution.get_x()-30,
-        _num_errors * 23, 12.0f, "right", color);
+    Text error_text(boost::trim_copy(text), error_node_, Globals::native_resolution.get_x()-30,
+        num_errors_ * 23, 12.0f, "right", color);
 
-    _num_errors += 1;
+    num_errors_ += 1;
 
-    if (_num_errors > 30)
+    if (num_errors_ > 30)
     {
         clear_messages();
         add_error("Error count exceeded. Cleared errors ..");
@@ -94,14 +91,14 @@ void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3f& co
 
 void ErrorMessageDisplay::clear_messages()
 {
-    _error_node.node()->remove_all_children();
-    _num_errors = 0;
+    error_node_.node()->remove_all_children();
+    num_errors_ = 0;
 }
 
 void ErrorMessageDisplay::init_notify()
 {
-    _notify_stream = new LineStream;
-    Notify::ptr()->set_ostream_ptr(_notify_stream, false);
+    notify_stream_ = std::make_unique<LineStream>();
+    Notify::ptr()->set_ostream_ptr(notify_stream_.get(), false);
 }
 
 }

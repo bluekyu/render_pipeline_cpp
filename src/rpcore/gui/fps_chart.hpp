@@ -60,27 +60,27 @@ private:
     /** Updates the widget. */
     AsyncTask::DoneStatus update(rppanda::FunctionalTask* task);
 
-    RenderPipeline* _pipeline;
-    NodePath _parent;
-    NodePath _node;
+    RenderPipeline* pipeline_;
+    NodePath parent_;
+    NodePath node_;
 
-    std::shared_ptr<Image> _storage_buffer = nullptr;
-    PTA_int _store_index;
-    PTA_float _current_ftime;
-    PTA_float _chart_ms_max;
-    std::shared_ptr<Image> _display_tex = nullptr;
-    Sprite* _display_img = nullptr;
+    std::shared_ptr<Image> storage_buffer_;
+    PTA_int store_index_;
+    PTA_float current_ftime_;
+    PTA_float chart_ms_max_;
+    std::shared_ptr<Image> display_tex_;
+    std::unique_ptr<Sprite> display_img_;
 
-    Text* _display_txt = nullptr;
-    Text* _display_txt_bottom = nullptr;
+    std::unique_ptr<Text> display_txt_;
+    std::unique_ptr<Text> display_txt_bottom_;
 
-    PT(ComputeNode) _cshader_node = nullptr;
-    NodePath _cshader_np;
-    PT(Shader) _cshader;
+    PT(ComputeNode) cshader_node_;
+    NodePath cshader_np_;
+    PT(Shader) cshader_;
 
-    PT(ComputeNode) _update_shader_node = nullptr;
-    NodePath _update_shader_np;
-    PT(Shader) _ushader;
+    PT(ComputeNode) update_shader_node_;
+    NodePath update_shader_np_;
+    PT(Shader) ushader_;
 };
 
 }

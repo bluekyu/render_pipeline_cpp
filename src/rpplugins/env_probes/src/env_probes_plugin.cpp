@@ -50,7 +50,6 @@ class EnvProbesPlugin::Impl
 {
 public:
     Impl(EnvProbesPlugin& self);
-    ~Impl();
 
     void on_stage_setup();
 
@@ -64,7 +63,7 @@ public:
     static RequrieType require_plugins_;
 
     EnvProbesPlugin& self_;
-    ProbeManager* probe_mgr_ = nullptr;
+    std::unique_ptr<ProbeManager> probe_mgr_;
     PTA_int pta_probes_;
     std::shared_ptr<rpcore::SimpleInputBlock> data_ubo_;
 
@@ -79,11 +78,6 @@ EnvProbesPlugin::Impl::Impl(EnvProbesPlugin& self): self_(self)
 {
 }
 
-EnvProbesPlugin::Impl::~Impl()
-{
-    delete probe_mgr_;
-}
-
 EnvProbesPlugin::EnvProbesPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
@@ -95,7 +89,7 @@ EnvProbesPlugin::RequrieType& EnvProbesPlugin::get_required_plugins() const
 
 void EnvProbesPlugin::Impl::on_stage_setup()
 {
-    probe_mgr_ = new ProbeManager;
+    probe_mgr_ = std::make_unique<ProbeManager>();
     probe_mgr_->set_resolution(boost::any_cast<int>(self_.get_setting("probe_resolution")));
     probe_mgr_->set_diffuse_resolution(boost::any_cast<int>(self_.get_setting("diffuse_probe_resolution")));
     probe_mgr_->set_max_probes(boost::any_cast<int>(self_.get_setting("max_probes")));

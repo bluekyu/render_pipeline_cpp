@@ -59,20 +59,20 @@ private:
     /** Internal method to init the stream to catch all notify messages. */
     void init_notify();
 
-    int _num_errors = 0;
-    NodePath _error_node;
-    LineStream* _notify_stream = nullptr;
+    int num_errors_ = 0;
+    NodePath error_node_;
+    std::unique_ptr<LineStream> notify_stream_;
 };
 
 // ************************************************************************************************
 inline void ErrorMessageDisplay::show()
 {
-    _error_node.show();
+    error_node_.show();
 }
 
 inline void ErrorMessageDisplay::hide()
 {
-    _error_node.hide();
+    error_node_.hide();
 }
 
 }

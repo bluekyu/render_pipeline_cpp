@@ -81,7 +81,7 @@ void PSSMCameraRig::init_cam_nodes() {
     for (size_t i = 0; i < _num_splits; ++i)
     {
         // Construct a new lens
-        Lens *lens = new OrthographicLens();
+        PT(Lens) lens = new OrthographicLens();
         lens->set_film_size(1, 1);
         lens->set_near_far(1, 1000);
 

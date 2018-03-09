@@ -58,17 +58,17 @@ private:
      */
     AsyncTask::DoneStatus late_init(rppanda::FunctionalTask* task);
 
-    RenderPipeline* _pipeline;
-    NodePath _parent;
-    NodePath _node;
+    RenderPipeline* pipeline_;
+    NodePath parent_;
+    NodePath node_;
 
-    std::shared_ptr<Image> _storage_tex = nullptr;
-    PT(rppanda::DirectFrame) _bg_frame;
-    Sprite* _display_img = nullptr;
-    Text* _display_txt = nullptr;
+    std::shared_ptr<Image> storage_tex_;
+    PT(rppanda::DirectFrame) bg_frame_;
+    std::unique_ptr<Sprite> display_img_;
+    std::unique_ptr<Text> display_txt_;
     PT(ComputeNode) _cshader_node;
-    NodePath _cshader_np;
-    PT(Shader) _cshader;
+    NodePath cshader_np_;
+    PT(Shader) cshader_;
 };
 
 }
