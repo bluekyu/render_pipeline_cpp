@@ -47,8 +47,9 @@ public:
 
     NodePath get_nodepath() const;
 
-    /** Set circular effect. */
-    void set_circular_point() const;
+    void set_square_point_effect() const;
+    void set_disk_point_effect() const;
+    void set_sphere_point_effect() const;
 
     /** Get position. */
     const LPoint3f& get_position(int point_index) const;

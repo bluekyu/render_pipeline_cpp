@@ -198,9 +198,19 @@ float PointsNode::get_radius() const
     return impl_->points_np_.get_shader_input("point_radius").get_vector().get_x();
 }
 
-void PointsNode::set_circular_point() const
+void PointsNode::set_square_point_effect() const
 {
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(impl_->points_np_, "/$$rp/effects/circular_points.yaml");
+    rpcore::RenderPipeline::get_global_ptr()->set_effect(impl_->points_np_, "/$$rp/effects/square_point.yaml");
+}
+
+void PointsNode::set_disk_point_effect() const
+{
+    rpcore::RenderPipeline::get_global_ptr()->set_effect(impl_->points_np_, "/$$rp/effects/disk_point.yaml");
+}
+
+void PointsNode::set_sphere_point_effect() const
+{
+    rpcore::RenderPipeline::get_global_ptr()->set_effect(impl_->points_np_, "/$$rp/effects/sphere_point.yaml");
 }
 
 const LPoint3f& PointsNode::get_position(int point_index) const
