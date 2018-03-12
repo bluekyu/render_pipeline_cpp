@@ -107,7 +107,7 @@ Texture* RPLoader::load_3d_texture(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
-    return TexturePool::load_3d_texture(filename);
+    return Globals::base->get_loader()->load_3d_texture(filename);
 }
 
 PT(Shader) RPLoader::load_shader(const std::vector<Filename>& path_args)

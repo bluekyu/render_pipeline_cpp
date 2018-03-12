@@ -44,6 +44,7 @@
 #include <staticTextFont.h>
 #include <dynamicTextFont.h>
 #include <texturePool.h>
+#include <shaderPool.h>
 
 #include <spdlog/fmt/ostr.h>
 
@@ -303,6 +304,50 @@ Texture* Loader::load_texture(const Filename& texture_path, boost::optional<File
     return texture;
 }
 
+Texture* Loader::load_3d_texture(const Filename& texture_pattern,
+    bool read_mipmaps, bool ok_missing,
+    boost::optional<SamplerState::FilterType> min_filter,
+    boost::optional<SamplerState::FilterType> mag_filter,
+    boost::optional<int> anisotropic_degree, const LoaderOptions& loader_options,
+    boost::optional<bool> multiview, int num_views)
+{
+    rppanda_showbase_cat.debug() << "Loading 3-D texture: " << texture_pattern.c_str() << std::endl;
+
+    LoaderOptions this_options(loader_options);
+
+    if (multiview)
+    {
+        auto flags = this_options.get_texture_flags();
+        if (multiview.value())
+            flags |= LoaderOptions::TF_multiview;
+        else
+            flags &= ~LoaderOptions::TF_multiview;
+        this_options.set_texture_flags(flags);
+        this_options.set_texture_num_views(num_views);
+    }
+
+    Texture* texture = TexturePool::load_3d_texture(texture_pattern, read_mipmaps, this_options);
+    if (!texture && !ok_missing)
+    {
+        throw std::runtime_error(fmt::format("Could not load 3-D texture: {}", texture_pattern.c_str()));
+    }
+
+    if (min_filter)
+        texture->set_minfilter(min_filter.value());
+    if (mag_filter)
+        texture->set_magfilter(mag_filter.value());
+    if (anisotropic_degree)
+        texture->set_anisotropic_degree(anisotropic_degree.value());
+
+    return texture;
+}
+
+void Loader::unload_texture(Texture* texture)
+{
+    rppanda_showbase_cat.debug() << "Unloading texture: " << *texture << std::endl;
+    TexturePool::release_texture(texture);
+}
+
 PT(AudioSound) Loader::load_sfx(const std::string& sound_path, bool positional)
 {
     const auto& manager_list = impl_->base_.get_sfx_manager_list();
@@ -352,6 +397,29 @@ std::vector<PT(AudioSound)> Loader::load_sound(AudioManager* manager,
         result.push_back(manager->get_sound(path, positional));
 
     return result;
+}
+
+void Loader::unload_sfx(AudioSound* sfx)
+{
+    if (sfx)
+    {
+        const auto& manager_list = impl_->base_.get_sfx_manager_list();
+        if (!manager_list.empty())
+            manager_list[0]->uncache_sound(sfx->get_name());
+    }
+}
+
+CPT(Shader) Loader::load_shader(const Filename& shader_path, bool ok_missing)
+{
+    CPT(Shader) shader = ShaderPool::load_shader(shader_path);
+    if (!shader && ok_missing)
+        throw std::runtime_error(fmt::format("Could not load shader file: {}", shader_path.c_str()));
+    return shader;
+}
+
+void Loader::unload_shader(const Filename& shader_path)
+{
+    ShaderPool::release_shader(shader_path);
 }
 
 }

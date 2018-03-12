@@ -46,6 +46,7 @@
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class AudioManager;
+class Shader;
 
 namespace rppanda {
 
@@ -110,6 +111,15 @@ public:
         boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
         boost::optional<bool> multiview = boost::none);
 
+    Texture* load_3d_texture(const Filename& texture_pattern,
+        bool read_mipmaps = false, bool ok_missing = false,
+        boost::optional<SamplerState::FilterType> min_filter = boost::none,
+        boost::optional<SamplerState::FilterType> mag_filter = boost::none,
+        boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
+        boost::optional<bool> multiview = boost::none, int num_views = 2);
+
+    void unload_texture(Texture* texture);
+
     PT(AudioSound) load_sfx(const std::string& sound_path, bool positional=false);
 
     std::vector<PT(AudioSound)> load_sfx(const std::vector<std::string>& sound_path, bool positional=false);
@@ -130,6 +140,12 @@ public:
      */
     std::vector<PT(AudioSound)> load_sound(AudioManager* manager,
         const std::vector<std::string>& sound_path, bool positional=false);
+
+    void unload_sfx(AudioSound* sfx);
+
+    CPT(Shader) load_shader(const Filename& shader_path, bool ok_missing = false);
+
+    void unload_shader(const Filename& shader_path);
 
 private:
     class Impl;
