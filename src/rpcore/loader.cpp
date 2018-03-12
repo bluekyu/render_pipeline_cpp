@@ -24,10 +24,8 @@
 
 #include <chrono>
 
-#include <textFont.h>
 #include <pnmImage.h>
 #include <pandaFramework.h>
-#include <fontPool.h>
 #include <texturePool.h>
 #include <virtualFileMountRamdisk.h>
 
@@ -134,7 +132,7 @@ TextFont* RPLoader::load_font(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
-    return FontPool::load_font(filename);
+    return Globals::base->get_loader()->load_font(filename);
 }
 
 NodePath RPLoader::load_model(const Filename& filename)

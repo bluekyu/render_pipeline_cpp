@@ -39,6 +39,7 @@
 
 #include <nodePath.h>
 #include <audioSound.h>
+#include <textFont.h>
 
 #include <boost/optional.hpp>
 
@@ -73,6 +74,30 @@ public:
 
     std::vector<NodePath> load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none);
+
+    /**
+     * This loads a special model as a TextFont object, for rendering
+     * text with a TextNode.  A font file must be either a special
+     * egg file (or bam file) generated with egg-mkfont, which is
+     * considered a static font, or a standard font file (like a TTF
+     * file) that is supported by FreeType, which is considered a
+     * dynamic font.
+     */
+    PT(TextFont) load_font(const std::string& model_path,
+        boost::optional<float> space_advance = boost::none,
+        boost::optional<float> line_height = boost::none,
+        boost::optional<float> point_size = boost::none,
+        boost::optional<float> pixels_per_unit = boost::none, boost::optional<float> scale_factor = boost::none,
+        boost::optional<int> texture_margin = boost::none, boost::optional<float> poly_margin = boost::none,
+        boost::optional<SamplerState::FilterType> min_filter = boost::none,
+        boost::optional<SamplerState::FilterType> mag_filter = boost::none,
+        boost::optional<int> anisotropic_degree = boost::none,
+        boost::optional<LColor> color = boost::none,
+        boost::optional<float> outline_width = boost::none,
+        float outline_feather = 0.1,
+        LColor outline_color = LColor(0, 0, 0, 1),
+        boost::optional<TextFont::RenderMode> render_mode = boost::none,
+        bool ok_missing = false);
 
     PT(AudioSound) load_sfx(const std::string& sound_path, bool positional=false);
 

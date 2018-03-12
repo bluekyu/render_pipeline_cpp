@@ -40,6 +40,11 @@
 #include <audioManager.h>
 #include <loader.h>
 #include <audioLoadRequest.h>
+#include <fontPool.h>
+#include <staticTextFont.h>
+#include <dynamicTextFont.h>
+
+#include <spdlog/fmt/ostr.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"
@@ -127,7 +132,7 @@ NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loa
         result = NodePath(node);
 
     if (!this_ok_missing && result.is_empty())
-        std::runtime_error(std::string("Could not load model file(s): ") + model_path.c_str());
+        throw std::runtime_error(std::string("Could not load model file(s): ") + model_path.c_str());
 
     return result;
 }
@@ -150,12 +155,105 @@ std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list
             nodepath = NodePath(node);
 
         if (!this_ok_missing && nodepath.is_empty())
-            std::runtime_error(std::string("Could not load model file(s): ") + model_path.c_str());
+            throw std::runtime_error(fmt::format("Could not load model file(s): {}", model_path));
 
         result.push_back(nodepath);
     }
 
     return result;
+}
+
+PT(TextFont) Loader::load_font(const std::string& model_path,
+    boost::optional<float> space_advance,  boost::optional<float> line_height,
+    boost::optional<float> point_size,
+    boost::optional<float> pixels_per_unit, boost::optional<float> scale_factor,
+    boost::optional<int> texture_margin, boost::optional<float> poly_margin,
+    boost::optional<SamplerState::FilterType> min_filter,
+    boost::optional<SamplerState::FilterType> mag_filter,
+    boost::optional<int> anisotropic_degree,
+    boost::optional<LColor> color,
+    boost::optional<float> outline_width,
+    float outline_feather,
+    LColor outline_color,
+    boost::optional<TextFont::RenderMode> render_mode,
+    bool ok_missing)
+{
+    PT(TextFont) font = FontPool::load_font(model_path);
+    if (!font)
+    {
+        if (!ok_missing)
+            throw std::runtime_error(fmt::format("Could not load font file: {}", model_path));
+
+        // If we couldn't load the model, at least return an
+        // empty font.
+        font = new StaticTextFont(new PandaNode("empty"));
+    }
+
+    // The following properties may only be set for dynamic fonts.
+    if (font->is_of_type(DynamicTextFont::get_class_type()))
+    {
+        DynamicTextFont* dfont = DCAST(DynamicTextFont, font);
+
+        if (point_size)
+            dfont->set_point_size(point_size.value());
+
+        if (pixels_per_unit)
+            dfont->set_pixels_per_unit(pixels_per_unit.value());
+
+        if (scale_factor)
+            dfont->set_scale_factor(scale_factor.value());
+        
+        if (texture_margin)
+            dfont->set_texture_margin(texture_margin.value());
+
+        if (poly_margin)
+            dfont->set_poly_margin(poly_margin.value());
+
+        if (min_filter)
+            dfont->set_minfilter(min_filter.value());
+
+        if (mag_filter)
+            dfont->set_magfilter(mag_filter.value());
+
+        if (anisotropic_degree)
+            dfont->set_anisotropic_degree(anisotropic_degree.value());
+
+        if (color)
+        {
+            dfont->set_fg(color.value());
+
+            // This means we want the background to match the
+            // foreground color, but transparent.
+            dfont->set_bg(LColor(color.value().get_xyz(), 0));
+        }
+
+        if (outline_width)
+        {
+            dfont->set_outline(outline_color, outline_width.value(), outline_feather);
+
+            // This means we want the background to match the
+            // outline color, but transparent.
+            dfont->set_bg(LColor(outline_color.get_xyz(), 0));
+        }
+
+        if (render_mode)
+            dfont->set_render_mode(render_mode.value());
+    }
+
+    if (line_height)
+    {
+        // If the line height is specified, it overrides whatever
+        // the font itself thinks the line height should be.This
+        // and spaceAdvance should be set last, since some of the
+        // other parameters can cause these to be reset to their
+        // default.
+        font->set_line_height(line_height.value());
+    }
+
+    if (space_advance)
+        font->set_space_advance(space_advance.value());
+
+    return font;
 }
 
 PT(AudioSound) Loader::load_sfx(const std::string& sound_path, bool positional)
