@@ -49,8 +49,8 @@ public:
     static NodePath render;
     static ClockObject* clock;
     static TextFont* font;
-    static LVecBase2i resolution;
-    static LVecBase2i native_resolution;
+    static LVecBase2i resolution;               //!< rendering resolution (can be scaled)
+    static LVecBase2i native_resolution;        //!< screen resolution
 };
 
 }

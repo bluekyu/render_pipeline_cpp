@@ -59,6 +59,7 @@ void PixelInspector::update()
             LVecBase2f rel_mouse_pos(mouse.get_x(), Globals::native_resolution.get_y() - mouse.get_y());
             _node.set_pos(pos);
             _zoomer.set_shader_input("mousePos", rel_mouse_pos);
+            _zoomer.set_shader_input("nativeScreenSize", LVecBase2(Globals::native_resolution[0], Globals::native_resolution[1]));
         }
     }
 }

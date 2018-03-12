@@ -36,6 +36,7 @@ uniform sampler2DArray SceneTex;
 uniform sampler2D SceneTex;
 #endif
 uniform vec2 mousePos;
+uniform vec2 nativeScreenSize;
 
 void main() {
     int border = 3;
@@ -49,10 +50,25 @@ void main() {
     }
 
     int_coord = (int_coord) / zoom - (ivec2(200, 150)) / zoom + ivec2(mousePos);
-#if STEREO_MODE
-    color = texelFetch(SceneTex, ivec3(int_coord, gl_Layer), 0);
-#else
-    color = texelFetch(SceneTex, int_coord, 0);
+#if STEREO_MODE == 0
+    color = textureLod(SceneTex, int_coord / nativeScreenSize, 0);
+#elif STEREO_MODE == 1
+    color = textureLod(SceneTex, vec3(int_coord / nativeScreenSize, 0), 0);
+#elif STEREO_MODE == 2
+    color = textureLod(SceneTex, vec3(int_coord / nativeScreenSize, 1), 0);
+#elif STEREO_MODE == 3
+    vec2 tc = int_coord / nativeScreenSize;
+    int layer = 0;
+    if (tc.x < 0.5f)
+    {
+        tc.x *= 2;
+    }
+    else
+    {
+        tc.x = fma(tc.x, 2, -1);
+        layer = 1;
+    }
+    color = textureLod(SceneTex, vec3(tc, layer), 0);
 #endif
     color.w = 1.0;
 }
