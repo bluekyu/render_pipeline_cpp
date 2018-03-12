@@ -25,8 +25,6 @@
 #include <chrono>
 
 #include <pnmImage.h>
-#include <pandaFramework.h>
-#include <texturePool.h>
 #include <virtualFileMountRamdisk.h>
 
 #include <boost/algorithm/string/join.hpp>
@@ -100,7 +98,7 @@ Texture* RPLoader::load_cube_map(const Filename& filename, bool read_mipmaps)
 {
     TimedLoadingOperation tlo(filename);
 
-    return TexturePool::load_cube_map(filename, read_mipmaps);
+    return Globals::base->get_loader()->load_cube_map(filename, read_mipmaps);
 }
 
 Texture* RPLoader::load_3d_texture(const Filename& filename)

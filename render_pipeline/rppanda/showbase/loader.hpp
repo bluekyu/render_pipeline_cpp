@@ -111,12 +111,44 @@ public:
         boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
         boost::optional<bool> multiview = boost::none);
 
+    /**
+     * @p texture_pattern is a string that contains a sequence of one or
+     * more hash characters ('#'), which will be filled in with the
+     * z-height number.  Returns a 3-D Texture object, suitable for
+     * rendering volumetric textures.
+     */
     Texture* load_3d_texture(const Filename& texture_pattern,
         bool read_mipmaps = false, bool ok_missing = false,
         boost::optional<SamplerState::FilterType> min_filter = boost::none,
         boost::optional<SamplerState::FilterType> mag_filter = boost::none,
         boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
         boost::optional<bool> multiview = boost::none, int num_views = 2);
+
+    /**
+     * @p texture_pattern is a string that contains a sequence of one or
+     * more hash characters ('#'), which will be filled in with the
+     * z-height number.  Returns a 2-D Texture array object, suitable
+     * for rendering array of textures.
+     */
+    Texture* load_2d_texture_array(const Filename& texture_pattern,
+        bool read_mipmaps = false, bool ok_missing = false,
+        boost::optional<SamplerState::FilterType> min_filter = boost::none,
+        boost::optional<SamplerState::FilterType> mag_filter = boost::none,
+        boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
+        boost::optional<bool> multiview = boost::none, int num_views = 2);
+
+    /**
+     * @p texture_pattern is a string that contains a sequence of one or
+     * more hash characters ('#'), which will be filled in with the
+     * face index number (0 through 6).  Returns a six-face cube map
+     * Texture object.
+     */
+    Texture* load_cube_map(const Filename& texture_pattern,
+        bool read_mipmaps = false, bool ok_missing = false,
+        boost::optional<SamplerState::FilterType> min_filter = boost::none,
+        boost::optional<SamplerState::FilterType> mag_filter = boost::none,
+        boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
+        boost::optional<bool> multiview = boost::none);
 
     void unload_texture(Texture* texture);
 

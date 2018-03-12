@@ -342,6 +342,81 @@ Texture* Loader::load_3d_texture(const Filename& texture_pattern,
     return texture;
 }
 
+Texture* Loader::load_2d_texture_array(const Filename& texture_pattern,
+    bool read_mipmaps, bool ok_missing,
+    boost::optional<SamplerState::FilterType> min_filter,
+    boost::optional<SamplerState::FilterType> mag_filter,
+    boost::optional<int> anisotropic_degree, const LoaderOptions& loader_options,
+    boost::optional<bool> multiview, int num_views)
+{
+    rppanda_showbase_cat.debug() << "Loading 3-D texture array: " << texture_pattern.c_str() << std::endl;
+
+    LoaderOptions this_options(loader_options);
+
+    if (multiview)
+    {
+        auto flags = this_options.get_texture_flags();
+        if (multiview.value())
+            flags |= LoaderOptions::TF_multiview;
+        else
+            flags &= ~LoaderOptions::TF_multiview;
+        this_options.set_texture_flags(flags);
+        this_options.set_texture_num_views(num_views);
+    }
+
+    Texture* texture = TexturePool::load_2d_texture_array(texture_pattern, read_mipmaps, this_options);
+    if (!texture && !ok_missing)
+    {
+        throw std::runtime_error(fmt::format("Could not load 2-D texture array: {}", texture_pattern.c_str()));
+    }
+
+    if (min_filter)
+        texture->set_minfilter(min_filter.value());
+    if (mag_filter)
+        texture->set_magfilter(mag_filter.value());
+    if (anisotropic_degree)
+        texture->set_anisotropic_degree(anisotropic_degree.value());
+
+    return texture;
+}
+
+Texture* Loader::load_cube_map(const Filename& texture_pattern,
+    bool read_mipmaps, bool ok_missing,
+    boost::optional<SamplerState::FilterType> min_filter,
+    boost::optional<SamplerState::FilterType> mag_filter,
+    boost::optional<int> anisotropic_degree, const LoaderOptions& loader_options,
+    boost::optional<bool> multiview)
+{
+    rppanda_showbase_cat.debug() << "Loading cube map: " << texture_pattern.c_str() << std::endl;
+
+    LoaderOptions this_options(loader_options);
+
+    if (multiview)
+    {
+        auto flags = this_options.get_texture_flags();
+        if (multiview.value())
+            flags |= LoaderOptions::TF_multiview;
+        else
+            flags &= ~LoaderOptions::TF_multiview;
+        this_options.set_texture_flags(flags);
+    }
+
+    Texture* texture = TexturePool::load_cube_map(texture_pattern, read_mipmaps, this_options);
+    if (!texture && !ok_missing)
+    {
+        throw std::runtime_error(fmt::format("Could not load cube map: {}", texture_pattern.c_str()));
+    }
+
+    if (min_filter)
+        texture->set_minfilter(min_filter.value());
+    if (mag_filter)
+        texture->set_magfilter(mag_filter.value());
+    if (anisotropic_degree)
+        texture->set_anisotropic_degree(anisotropic_degree.value());
+
+    return texture;
+}
+
 void Loader::unload_texture(Texture* texture)
 {
     rppanda_showbase_cat.debug() << "Unloading texture: " << *texture << std::endl;
