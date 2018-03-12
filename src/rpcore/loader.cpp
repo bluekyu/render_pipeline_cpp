@@ -93,7 +93,7 @@ Texture* RPLoader::load_texture(const Filename& filename)
 {
     TimedLoadingOperation tlo(filename);
 
-    return TexturePool::load_texture(filename);
+    return Globals::base->get_loader()->load_texture(filename);
 }
 
 Texture* RPLoader::load_cube_map(const Filename& filename, bool read_mipmaps)

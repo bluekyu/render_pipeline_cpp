@@ -43,6 +43,7 @@
 #include <fontPool.h>
 #include <staticTextFont.h>
 #include <dynamicTextFont.h>
+#include <texturePool.h>
 
 #include <spdlog/fmt/ostr.h>
 
@@ -254,6 +255,52 @@ PT(TextFont) Loader::load_font(const std::string& model_path,
         font->set_space_advance(space_advance.value());
 
     return font;
+}
+
+Texture* Loader::load_texture(const Filename& texture_path, boost::optional<Filename> alpha_path,
+    bool read_mipmaps, bool ok_missing,
+    boost::optional<SamplerState::FilterType> min_filter,
+    boost::optional<SamplerState::FilterType> mag_filter,
+    boost::optional<int> anisotropic_degree, const LoaderOptions& loader_options,
+    boost::optional<bool> multiview)
+{
+    LoaderOptions this_options(loader_options);
+
+    if (multiview)
+    {
+        auto flags = this_options.get_texture_flags();
+        if (multiview.value())
+            flags |= LoaderOptions::TF_multiview;
+        else
+            flags &= ~LoaderOptions::TF_multiview;
+        this_options.set_texture_flags(flags);
+    }
+
+    Texture* texture;
+    if (alpha_path)
+    {
+        rppanda_showbase_cat.debug() << "Loading texture: " << texture_path.c_str() << " " << alpha_path.value().c_str() << std::endl;
+        texture = TexturePool::load_texture(texture_path, alpha_path.value(), 0, 0, read_mipmaps, this_options);
+    }
+    else
+    {
+        rppanda_showbase_cat.debug() << "Loading texture: " << texture_path.c_str() << std::endl;
+        texture = TexturePool::load_texture(texture_path, 0, read_mipmaps, this_options);
+    }
+
+    if (!texture && !ok_missing)
+    {
+        throw std::runtime_error(fmt::format("Could not load texture: {}", texture_path.c_str()));
+    }
+
+    if (min_filter)
+        texture->set_minfilter(min_filter.value());
+    if (mag_filter)
+        texture->set_magfilter(mag_filter.value());
+    if (anisotropic_degree)
+        texture->set_anisotropic_degree(anisotropic_degree.value());
+
+    return texture;
 }
 
 PT(AudioSound) Loader::load_sfx(const std::string& sound_path, bool positional)

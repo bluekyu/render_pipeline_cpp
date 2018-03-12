@@ -99,6 +99,17 @@ public:
         boost::optional<TextFont::RenderMode> render_mode = boost::none,
         bool ok_missing = false);
 
+    /**
+     * Attempt to load a texture from the given file path using
+     * TexturePool class.
+     */
+    Texture* load_texture(const Filename& texture_path, boost::optional<Filename> alpha_path = boost::none,
+        bool read_mipmaps = false, bool ok_missing = false,
+        boost::optional<SamplerState::FilterType> min_filter = boost::none,
+        boost::optional<SamplerState::FilterType> mag_filter = boost::none,
+        boost::optional<int> anisotropic_degree = boost::none, const LoaderOptions& loader_options = {},
+        boost::optional<bool> multiview = boost::none);
+
     PT(AudioSound) load_sfx(const std::string& sound_path, bool positional=false);
 
     std::vector<PT(AudioSound)> load_sfx(const std::vector<std::string>& sound_path, bool positional=false);
