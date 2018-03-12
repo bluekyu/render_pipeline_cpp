@@ -278,7 +278,7 @@ bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
     return true;
 }
 
-bool RPGeomNode::modify_vertex_data(const void* data,
+bool RPGeomNode::modify_vertex_data(const unsigned char* data,
     size_t data_size, size_t start_index, int geom_index, size_t array_index)
 {
     if (!check_index_bound(geom_index))
@@ -292,7 +292,7 @@ bool RPGeomNode::modify_vertex_data(const void* data,
     // copy_subdata_from() will adjust the size correctly.
     // so, we do not need to check the bounds.
     vdata->modify_array_handle(array_index)->copy_subdata_from(start_index, data_size,
-        reinterpret_cast<const unsigned char*>(data), 0, data_size);
+        data, 0, data_size);
 
     return true;
 }
@@ -340,12 +340,70 @@ bool RPGeomNode::get_index_data(std::vector<int>& indices, int geom_index, size_
     return true;
 }
 
+bool RPGeomNode::modify_index_data(const unsigned char* indices, size_t data_size, int geom_index, size_t primitive_index)
+{
+    if (!check_index_bound(geom_index))
+        return false;
+
+    if (primitive_index >= node_->get_geom(geom_index)->get_num_primitives())
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The primitive index is greater or equal than the number of primitive ({})",
+                node_->get_geom(geom_index)->get_num_primitives()));
+        return false;
+    }
+
+    PT(Geom) geom = node_->modify_geom(geom_index);
+
+    auto primitive = geom->modify_primitive(primitive_index);
+
+    size_t type_size = 0;
+    switch (primitive->get_index_type())
+    {
+    case GeomEnums::NT_uint8:
+        type_size = sizeof(uint8_t);
+        break;
+    case GeomEnums::NT_uint16:
+        type_size = sizeof(uint16_t);
+        break;
+    case GeomEnums::NT_uint32:
+        type_size = sizeof(uint32_t);
+        break;
+    default:
+        return false;
+    }
+
+    if ((data_size % type_size) != 0)
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The size {} of indices is NOT multiple of the size ({}) of type", data_size,
+                type_size));
+        return false;
+    }
+
+    const size_t num_rows = data_size / type_size;
+    if (num_rows > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+        RPObject::global_error("RPGeomNode",
+            fmt::format("The number {} of indices is more than the maximum size ({}).", num_rows,
+            (std::numeric_limits<int>::max)()));
+        return false;
+    }
+
+    // see GeomPrimitive::add_vertex
+    auto handle = primitive->modify_vertices()->modify_handle();
+    handle->set_num_rows(static_cast<int>(num_rows));
+    std::copy(indices, indices + data_size, handle->get_write_pointer());
+
+    return true;
+}
+
 bool RPGeomNode::modify_index_data(const std::vector<int>& indices, int geom_index, size_t primitive_index)
 {
     if (indices.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
     {
         RPObject::global_error("RPGeomNode",
-            fmt::format("The size {} of indices is more than the maximum size ({}).", indices.size(),
+            fmt::format("The number {} of indices is more than the maximum size ({}).", indices.size(),
             (std::numeric_limits<int>::max)()));
         return false;
     }
@@ -386,7 +444,7 @@ bool RPGeomNode::modify_index_data(const std::vector<int>& indices, int geom_ind
         }
         case GeomEnums::NT_uint32:
         {
-            static_assert(sizeof(int) == sizeof(uint32_t), "WARN: type size is not same in std::copy");
+            static_assert(sizeof(int) == sizeof(uint32_t), "ERROR: type size is not same in std::copy");
             std::copy(indices.begin(), indices.end(), reinterpret_cast<uint32_t*>(ptr));
             break;
         }

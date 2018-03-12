@@ -114,17 +114,29 @@ public:
      * This just copy the @p data to vertex data in geom, so the format of @p data
      * should be equal to the format of vertex data.
      *
+     * For example, if the format consists of position, normal and texture coordinates,
+     *
+     * ```
+     * struct Vertex { LVecBase3f pos; LVecBase3f norm; LVecBase2f tex; };
+     * std::vector<Vertex> vertices;
+     *
+     * modify_vertex_data(reinterpret_cast<const unsigned char*>(vertices.data()),
+     *     vertices.size() * sizeof(Vertex), 0, 0, 0);
+     * ```
+     *
      * @param[in]   data        The pointer of data.
      * @param[in]   data_size   The size of data in bytes.
      * @param[in]   start_index The starting index of the vertex data in geom.
      */
-    bool modify_vertex_data(const void* data, size_t data_size, size_t start_index,
+    bool modify_vertex_data(const unsigned char* data, size_t data_size, size_t start_index,
         int geom_index, size_t array_index);
 
     /** Get the number of indices. */
     int get_index_count(int geom_index, size_t primitive_index) const;
 
     bool get_index_data(std::vector<int>& indices, int geom_index, size_t primitive_index) const;
+
+    bool modify_index_data(const unsigned char* indices, size_t data_size, int geom_index, size_t primitive_index);
 
     bool modify_index_data(const std::vector<int>& indices, int geom_index, size_t primitive_index);
 
