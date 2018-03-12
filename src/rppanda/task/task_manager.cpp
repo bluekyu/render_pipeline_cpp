@@ -152,13 +152,13 @@ AsyncTask* TaskManager::setup_task(AsyncTask* task, const std::string& name,
     }
 
     if (sort)
-        task->set_sort(sort.get());
+        task->set_sort(sort.value());
 
     if (priority)
-        task->set_priority(priority.get());
+        task->set_priority(priority.value());
 
     if (task_chain)
-        task->set_task_chain(task_chain.get());
+        task->set_task_chain(task_chain.value());
 
     return task;
 }

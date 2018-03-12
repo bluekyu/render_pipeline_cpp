@@ -77,7 +77,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
 
     if (!_dec_button->get_frame_size() && _dec_button->get_bounds() == LVecBase4(0))
     {
-        const auto& f = options->frame_size.get();
+        const auto& f = options->frame_size.value();
         if (options->orientation == DGG_HORIZONTAL)
             _dec_button->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else
@@ -86,7 +86,7 @@ DirectScrollBar::DirectScrollBar(PGItem* gui_item, NodePath parent, const std::s
 
     if (!_inc_button->get_frame_size() && _inc_button->get_bounds() == LVecBase4(0))
     {
-        const auto& f = options->frame_size.get();
+        const auto& f = options->frame_size.value();
         if (options->orientation == DGG_HORIZONTAL)
             _inc_button->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else

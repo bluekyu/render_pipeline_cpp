@@ -120,7 +120,7 @@ private:
 
 inline Sequence::Sequence(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
     bool auto_pause, bool auto_finish, double duration):
-    MetaInterval(name ? name.get() : ("Sequence" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
+    MetaInterval(name ? name.value() : ("Sequence" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (CInterval* ival: ivals)
@@ -169,7 +169,7 @@ private:
 
 inline Parallel::Parallel(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
     bool auto_pause, bool auto_finish, double duration):
-    MetaInterval(name ? name.get() : ("Parallel" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
+    MetaInterval(name ? name.value() : ("Parallel" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (CInterval* ival: ivals)
@@ -218,7 +218,7 @@ private:
 
 inline ParallelEndTogether::ParallelEndTogether(std::initializer_list<CInterval*> ivals,
     const boost::optional<std::string>& name, bool auto_pause, bool auto_finish, double duration):
-    MetaInterval(name ? name.get() : ("ParallelEndTogether" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
+    MetaInterval(name ? name.value() : ("ParallelEndTogether" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     double max_duration = 0;
     for (CInterval* ival: ivals)
@@ -273,7 +273,7 @@ private:
 
 inline Track::Track(std::initializer_list<TrackType> track_list, const boost::optional<std::string>& name,
     bool auto_pause, bool auto_finish, double duration):
-    MetaInterval(name ? name.get() : ("Track" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
+    MetaInterval(name ? name.value() : ("Track" + std::to_string(sequence_num_++)), auto_pause, auto_finish)
 {
     push_level(get_name(), 0, CMetaInterval::RS_level_begin);
     for (const auto& track: track_list)

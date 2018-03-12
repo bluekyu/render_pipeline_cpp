@@ -105,12 +105,12 @@ float SfxPlayer::get_localized_volume(NodePath node, boost::optional<NodePath> l
         return 0;
 
     float d;
-    if (listener_node && listener_node.get().is_empty())
-        d = node.get_distance(listener_node.get());
+    if (listener_node && listener_node.value().is_empty())
+        d = node.get_distance(listener_node.value());
     else
         d = node.get_distance(ShowBase::get_global_ptr()->get_cam());
 
-    if (cutoff && d > cutoff.get())
+    if (cutoff && d > cutoff.value())
         return 0;
 
     if (use_inverse_suqare_)
@@ -120,7 +120,7 @@ float SfxPlayer::get_localized_volume(NodePath node, boost::optional<NodePath> l
     }
     else
     {
-        return 1 - (d / (cutoff ? cutoff.get() : 1.0f));
+        return 1 - (d / (cutoff ? cutoff.value() : 1.0f));
     }
 }
 
@@ -139,7 +139,7 @@ void SfxPlayer::play_sfx(AudioSound* sfx, bool looping, bool interrupt, boost::o
     if (!cutoff)
         cutoff = impl_->cutoff_distance_;
 
-    set_final_volume(sfx, node, volume, listener_node, cutoff.get());
+    set_final_volume(sfx, node, volume, listener_node, cutoff.value());
 
     if (interrupt || (sfx->status() != AudioSound::PLAYING))
     {
@@ -160,15 +160,15 @@ void SfxPlayer::set_final_volume(AudioSound* sfx, boost::optional<NodePath> node
 
     float final_volume;
     if (node)
-        final_volume = get_localized_volume(node.get(), listener_node, cutoff);
+        final_volume = get_localized_volume(node.value(), listener_node, cutoff);
     else
         final_volume = 1.0f;
 
     if (volume)
-        final_volume *= volume.get();
+        final_volume *= volume.value();
 
     if (node)
-        final_volume *= node.get().get_net_audio_volume();
+        final_volume *= node.value().get_net_audio_volume();
 
     sfx->set_volume(final_volume);
 }

@@ -292,7 +292,7 @@ inline const std::vector<PT(Texture)>& DirectGuiWidget::get_frame_texture() cons
 
 inline const LVecBase2& DirectGuiWidget::get_frame_visible_scale() const
 {
-    return _options->frame_visible_scale.get();
+    return _options->frame_visible_scale.value();
 }
 
 inline const LVecBase2& DirectGuiWidget::get_border_uv_width() const

@@ -74,7 +74,7 @@ private:
 inline LerpNodePathInterval::LerpNodePathInterval(NodePath nodepath, const boost::optional<std::string>& name, double duration,
     BlendType blend_type, bool bake_in_start, bool fluid,
     NodePath other): CLerpNodePathInterval(
-        name ? name.get() : (get_class_type().get_name() + "-" + std::to_string(lerp_node_path_num)),
+        name ? name.value() : (get_class_type().get_name() + "-" + std::to_string(lerp_node_path_num)),
         duration, blend_type, bake_in_start, fluid, nodepath, other)
 {
     ++lerp_node_path_num;
@@ -129,7 +129,7 @@ inline LerpPosInterval::LerpPosInterval(NodePath nodepath, double duration, cons
 {
     set_end_pos(pos);
     if (start_pos)
-        set_start_pos(start_pos.get());
+        set_start_pos(start_pos.value());
 }
 
 inline TypeHandle LerpPosInterval::get_class_type()
@@ -183,9 +183,9 @@ inline LerpHprInterval::LerpHprInterval(NodePath nodepath, double duration, cons
 {
     set_end_hpr(hpr);
     if (start_hpr)
-        set_start_hpr(start_hpr.get());
+        set_start_hpr(start_hpr.value());
     if (start_quat)
-        set_start_quat(start_quat.get());
+        set_start_quat(start_quat.value());
 }
 
 inline TypeHandle LerpHprInterval::get_class_type()
@@ -246,20 +246,20 @@ inline LerpQuatInterval::LerpQuatInterval(NodePath nodepath, double duration,
     LQuaternion quat__;
     if (quat)
     {
-        quat__ = quat.get();
+        quat__ = quat.value();
     }
     else
     {
         if (!hpr)
             throw std::runtime_error("HPR value does not exist!");
-        quat__.set_hpr(hpr.get());
+        quat__.set_hpr(hpr.value());
     }
 
     set_end_quat(quat__);
     if (start_hpr)
-        set_start_hpr(start_hpr.get());
+        set_start_hpr(start_hpr.value());
     if (start_quat)
-        set_start_quat(start_quat.get());
+        set_start_quat(start_quat.value());
 }
 
 inline TypeHandle LerpQuatInterval::get_class_type()
@@ -314,7 +314,7 @@ inline LerpScaleInterval::LerpScaleInterval(NodePath nodepath, double duration,
 {
     set_end_scale(scale);
     if (start_scale)
-        set_start_hpr(start_scale.get());
+        set_start_hpr(start_scale.value());
 }
 
 inline TypeHandle LerpScaleInterval::get_class_type()
@@ -370,7 +370,7 @@ inline LerpShearInterval::LerpShearInterval(NodePath nodepath, double duration,
 {
     set_end_scale(shear);
     if (start_shear)
-        set_start_hpr(start_shear.get());
+        set_start_hpr(start_shear.value());
 }
 
 inline TypeHandle LerpShearInterval::get_class_type()
@@ -430,12 +430,12 @@ inline LerpPosHprInterval::LerpPosHprInterval(NodePath nodepath, double duration
 {
     set_end_pos(pos);
     if (start_pos)
-        set_start_pos(start_pos.get());
+        set_start_pos(start_pos.value());
     set_end_hpr(hpr);
     if (start_hpr)
-        set_start_hpr(start_hpr.get());
+        set_start_hpr(start_hpr.value());
     if (start_quat)
-        set_start_quat(start_quat.get());
+        set_start_quat(start_quat.value());
 }
 
 inline TypeHandle LerpPosHprInterval::get_class_type()

@@ -122,7 +122,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     // per each LOD name.
 
     if (merge_LOD_bundles)
-        this_merge_LOD_bundles_ = merge_LOD_bundles.get();
+        this_merge_LOD_bundles_ = merge_LOD_bundles.value();
     else
         this_merge_LOD_bundles_ = Actor::merge_LOD_bundles_.get_value();
 
@@ -132,7 +132,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     // generate the appropriate AnimPreloadTable.
 
     if (allow_async_bind)
-        this_allow_async_bind_ = allow_async_bind.get();
+        this_allow_async_bind_ = allow_async_bind.value();
     else
         this_allow_async_bind_ = Actor::allow_async_bind_.get_value();
 
@@ -409,16 +409,16 @@ inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<st
         if (part_name)
         {
             std::string true_part_name;
-            const auto& subpart_dict_iter = subpart_dict_.find(part_name.get());
+            const auto& subpart_dict_iter = subpart_dict_.find(part_name.value());
             if (subpart_dict_iter != subpart_dict_.end())
                 true_part_name = subpart_dict_iter->second.true_part_name;
             else
-                true_part_name = part_name.get();
+                true_part_name = part_name.value();
             auto found = part_bundle_dict.find(true_part_name);
             if (found != part_bundle_dict.end())
                 bundles.push_back(found->second.get_bundle());
             else
-                rppanda_actor_cat.warning() << "Couldn't find part: " << part_name.get() << std::endl;
+                rppanda_actor_cat.warning() << "Couldn't find part: " << part_name.value() << std::endl;
         }
         else
         {
@@ -435,7 +435,7 @@ bool Actor::update(int lod, const boost::optional<std::string>& part_name,
 {
     std::vector<std::string> lod_names;
     if (lod_name)
-        lod_names.push_back(lod_name.get());
+        lod_names.push_back(lod_name.value());
     else
         lod_names = get_LOD_names();
 
@@ -446,7 +446,7 @@ bool Actor::update(int lod, const boost::optional<std::string>& part_name,
         std::vector<std::string> part_names;
         if (part_name)
         {
-            part_names.push_back(part_name.get());
+            part_names.push_back(part_name.value());
         }
         else
         {
@@ -571,7 +571,7 @@ boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim
         from_frame = 0;
     if (!to_frame)
         to_frame = anim_control->get_num_frames() - 1;
-    return ((to_frame.get() + 1) - from_frame.get()) / anim_control->get_frame_rate();
+    return ((to_frame.value() + 1) - from_frame.value()) / anim_control->get_frame_rate();
 }
 
 boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>& part_name,
@@ -587,7 +587,7 @@ boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>
         from_frame = 0;
     if (!to_frame)
         to_frame = anim_control->get_num_frames() - 1;
-    return ((to_frame.get() + 1) - from_frame.get()) / anim_control->get_frame_rate();
+    return ((to_frame.value() + 1) - from_frame.value()) / anim_control->get_frame_rate();
 }
 
 boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
@@ -614,7 +614,7 @@ boost::optional<double> Actor::get_frame_time(const std::vector<std::string>& an
     auto anim_time = get_duration(anim_name, part_name);
     if (!num_frames || !anim_time)
         return {};
-    return anim_time.get() * frame / num_frames.get();
+    return anim_time.value() * frame / num_frames.value();
 }
 
 boost::optional<double> Actor::get_frame_time(bool, double frame, const std::vector<std::string>& part_name)
@@ -623,7 +623,7 @@ boost::optional<double> Actor::get_frame_time(bool, double frame, const std::vec
     auto anim_time = get_duration(true, part_name);
     if (!num_frames || !anim_time)
         return {};
-    return anim_time.get() * frame / num_frames.get();
+    return anim_time.value() * frame / num_frames.value();
 }
 
 std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
@@ -757,7 +757,7 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 
     if (ok_missing)
     {
-        if (ok_missing.get())
+        if (ok_missing.value())
             loader_options->set_flags(loader_options->get_flags() & ~LoaderOptions::LF_report_errors);
         else
             loader_options->set_flags(loader_options->get_flags() | LoaderOptions::LF_report_errors);
@@ -1227,10 +1227,10 @@ void Actor::build_LOD_dict_items(std::vector<std::string>& part_name_list, LODDi
     }
     else
     {
-        auto found = anim_control_dict_.find(lod_name.get());
+        auto found = anim_control_dict_.find(lod_name.value());
         if (found == lod_end)
         {
-            rppanda_actor_cat.warning() << "Couldn't find lod: " << lod_name.get() << std::endl;
+            rppanda_actor_cat.warning() << "Couldn't find lod: " << lod_name.value() << std::endl;
             lod_begin = lod_end;
         }
         else

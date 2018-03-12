@@ -174,11 +174,11 @@ void BufferViewer::perform_update()
     auto entries = get_entries();
     std::sort(entries.begin(), entries.end(), [&](const EntryType& lhs, const EntryType& rhs) {
         const int lhs_sort = lhs.second == EntryID::RENDER_TARGET ?
-            reinterpret_cast<RenderTarget*>(lhs.first)->get_sort().get() :
+            reinterpret_cast<RenderTarget*>(lhs.first)->get_sort().value() :
             reinterpret_cast<Image*>(lhs.first)->get_sort();
 
         const int rhs_sort = rhs.second == EntryID::RENDER_TARGET ?
-            reinterpret_cast<RenderTarget*>(rhs.first)->get_sort().get() :
+            reinterpret_cast<RenderTarget*>(rhs.first)->get_sort().value() :
             reinterpret_cast<Image*>(rhs.first)->get_sort();
 
         return lhs_sort < rhs_sort;

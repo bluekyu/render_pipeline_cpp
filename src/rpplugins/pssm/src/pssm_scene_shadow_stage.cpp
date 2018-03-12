@@ -107,8 +107,8 @@ void PSSMSceneShadowStage::update()
         }
         else
         {
-            const LVecBase3f& focus_point = _focus.get().first;
-            const float focus_size = _focus.get().second;
+            const LVecBase3f& focus_point = _focus.value().first;
+            const float focus_size = _focus.value().second;
 
             _cam_lens->set_near_far(0.0f, 2.0f * (focus_size + _sun_distance));
             _cam_lens->set_film_size(2 * focus_size, 2 * focus_size);

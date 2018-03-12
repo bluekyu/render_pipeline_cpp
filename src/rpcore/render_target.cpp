@@ -380,7 +380,7 @@ bool RenderTarget::Impl::create()
         sort_ = RenderTarget::CURRENT_SORT;
     }
 
-    internal_buffer_->set_sort(sort_.get());
+    internal_buffer_->set_sort(sort_.value());
     internal_buffer_->disable_clears();
     internal_buffer_->get_display_region(0)->disable_clears();
     internal_buffer_->get_overlay_display_region()->disable_clears();

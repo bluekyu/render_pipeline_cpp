@@ -100,7 +100,7 @@ void AutoExposureStage::set_dimensions()
         auto mip_target = create_target(std::string("DScaleLum:S") + std::to_string(wsize_x));
         mip_target->add_color_attachment(LVecBase4i(16, 0, 0, 0));
         mip_target->set_size(wsize_x, wsize_y);
-        mip_target->set_sort(_target_lum->get_sort().get() + _mip_targets.size());
+        mip_target->set_sort(_target_lum->get_sort().value() + _mip_targets.size());
         if (stereo_mode_)
             mip_target->set_layers(2);
         mip_target->prepare_buffer();

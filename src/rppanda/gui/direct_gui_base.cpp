@@ -146,13 +146,13 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
 
     // Update pose to initial values
     if (options->pos)
-        set_pos(options->pos.get());
+        set_pos(options->pos.value());
     if (options->hpr)
-        set_hpr(options->hpr.get());
+        set_hpr(options->hpr.value());
     if (options->scale)
-        set_scale(options->scale.get());
+        set_scale(options->scale.value());
     if (options->color)
-        set_color(options->color.get());
+        set_color(options->color.value());
 
     // Initialize names
     // Putting the class name in helps with debugging.
@@ -262,7 +262,7 @@ void DirectGuiWidget::set_frame_size(bool clear_frame)
     if (_options->frame_size)
     {
         //  Use user specified bounds
-        bounds_ = _options->frame_size.get();
+        bounds_ = _options->frame_size.value();
     }
     else
     {
@@ -480,7 +480,7 @@ void DirectGuiWidget::initialise_options(const std::shared_ptr<Options>& options
     set_frame_size();
     set_frame_color(options->frame_color);
     set_frame_texture(options->frame_texture);
-    set_frame_visible_scale(options->frame_visible_scale.get());
+    set_frame_visible_scale(options->frame_visible_scale.value());
     set_pad(options->pad);
     f_init_ = false;
 }

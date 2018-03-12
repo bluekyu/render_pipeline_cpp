@@ -767,12 +767,12 @@ inline void Actor::play(const std::vector<std::string>& anim_name, const std::ve
         if (to_frame)
         {
             for (auto control: get_anim_controls(anim_name, part_name))
-                control->play(from_frame.get(), to_frame.get());
+                control->play(from_frame.value(), to_frame.value());
         }
         else
         {
             for (auto control: get_anim_controls(anim_name, part_name))
-                control->play(from_frame.get(), control->get_num_frames()-1);
+                control->play(from_frame.value(), control->get_num_frames()-1);
         }
     }
     else
@@ -790,12 +790,12 @@ inline void Actor::play(bool, const std::vector<std::string>& part_name,
         if (to_frame)
         {
             for (auto control : get_anim_controls(true, part_name))
-                control->play(from_frame.get(), to_frame.get());
+                control->play(from_frame.value(), to_frame.value());
         }
         else
         {
             for (auto control : get_anim_controls(true, part_name))
-                control->play(from_frame.get(), control->get_num_frames() - 1);
+                control->play(from_frame.value(), control->get_num_frames() - 1);
         }
     }
     else
@@ -813,12 +813,12 @@ inline void Actor::loop(const std::vector<std::string>& anim_name, bool restart,
         if (to_frame)
         {
             for (auto control: get_anim_controls(anim_name, part_name))
-                control->loop(restart, from_frame.get(), to_frame.get());
+                control->loop(restart, from_frame.value(), to_frame.value());
         }
         else
         {
             for (auto control: get_anim_controls(anim_name, part_name))
-                control->loop(restart, from_frame.get(), control->get_num_frames()-1);
+                control->loop(restart, from_frame.value(), control->get_num_frames()-1);
         }
     }
     else
@@ -836,12 +836,12 @@ inline void Actor::loop(bool, bool restart, const std::vector<std::string>& part
         if (to_frame)
         {
             for (auto control : get_anim_controls(true, part_name))
-                control->loop(restart, from_frame.get(), to_frame.get());
+                control->loop(restart, from_frame.value(), to_frame.value());
         }
         else
         {
             for (auto control : get_anim_controls(true, part_name))
-                control->loop(restart, from_frame.get(), control->get_num_frames() - 1);
+                control->loop(restart, from_frame.value(), control->get_num_frames() - 1);
         }
     }
     else
@@ -860,12 +860,12 @@ inline void Actor::pingpong(const std::vector<std::string>& anim_name, bool rest
     if (to_frame)
     {
         for (auto control: get_anim_controls(anim_name, part_name))
-            control->pingpong(restart, from_frame.get(), to_frame.get());
+            control->pingpong(restart, from_frame.value(), to_frame.value());
     }
     else
     {
         for (auto control: get_anim_controls(anim_name, part_name))
-            control->pingpong(restart, from_frame.get(), control->get_num_frames()-1);
+            control->pingpong(restart, from_frame.value(), control->get_num_frames()-1);
     }
 }
 
@@ -878,12 +878,12 @@ inline void Actor::pingpong(bool, bool restart, const std::vector<std::string>& 
     if (to_frame)
     {
         for (auto control : get_anim_controls(true, part_name))
-            control->pingpong(restart, from_frame.get(), to_frame.get());
+            control->pingpong(restart, from_frame.value(), to_frame.value());
     }
     else
     {
         for (auto control : get_anim_controls(true, part_name))
-            control->pingpong(restart, from_frame.get(), control->get_num_frames() - 1);
+            control->pingpong(restart, from_frame.value(), control->get_num_frames() - 1);
     }
 }
 
@@ -907,11 +907,11 @@ inline void Actor::set_blend(boost::optional<bool> anim_blend, boost::optional<b
     for (auto bundle: get_part_bundles(part_name))
     {
         if (blend_type)
-            bundle->set_blend_type(blend_type.get());
+            bundle->set_blend_type(blend_type.value());
         if (anim_blend)
-            bundle->set_anim_blend_flag(anim_blend.get());
+            bundle->set_anim_blend_flag(anim_blend.value());
         if (frame_blend)
-            bundle->set_frame_blend_flag(frame_blend.get());
+            bundle->set_frame_blend_flag(frame_blend.value());
     }
 }
 

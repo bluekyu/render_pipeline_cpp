@@ -244,8 +244,8 @@ bool PSSMPlugin::get_last_focus(LVecBase3f& focus_point, float& focus_size) cons
     const auto& last_focus = impl_->scene_shadow_stage_->get_last_focus();
     if (last_focus)
     {
-        focus_point = last_focus.get().first;
-        focus_size = last_focus.get().second;
+        focus_point = last_focus.value().first;
+        focus_size = last_focus.value().second;
         return true;
     }
     else

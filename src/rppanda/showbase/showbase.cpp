@@ -955,7 +955,7 @@ void ShowBase::play_music(AudioSound* music, bool looping, bool interrupt, float
         return;
 
     if (volume)
-        music->set_volume(volume.get());
+        music->set_volume(volume.value());
 
     if (interrupt || (music->status() != AudioSound::PLAYING))
     {

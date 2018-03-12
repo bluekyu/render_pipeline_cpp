@@ -51,7 +51,7 @@ TypeHandle Track::type_handle_;
 
 MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name,
     bool auto_pause, bool auto_finish):
-    MetaInterval(name ? name.get() : ("MetaInterval" + std::to_string(sequence_num_++)),
+    MetaInterval(name ? name.value() : ("MetaInterval" + std::to_string(sequence_num_++)),
         auto_pause, auto_finish)
 {
     if (ivals.size() == 0)

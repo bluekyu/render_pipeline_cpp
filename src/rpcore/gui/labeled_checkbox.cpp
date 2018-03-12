@@ -38,7 +38,7 @@ LabeledCheckbox::LabeledCheckbox(NodePath parent, float x, float y, const std::f
     if (!text_color)
         text_color_ = LVecBase3(1);
     else
-        text_color_ = text_color.get();
+        text_color_ = text_color.value();
 
     if (!enabled)
         text_color_ = LVecBase3(1.0f, 0.0f, 0.28f);

@@ -68,7 +68,7 @@ DirectSlider::DirectSlider(PGItem* gui_item, NodePath parent, const std::shared_
     if (!thumb_->get_frame_size() && thumb_->get_bounds() == LVecBase4(0.0))
     {
         // Compute a default frameSize for the thumb.
-        const auto& f = options->frame_size.get();
+        const auto& f = options->frame_size.value();
         if (options->orientation == DGG_HORIZONTAL)
             thumb_->set_frame_size(LVecBase4(f[0]*0.05, f[1]*0.05, f[2], f[3]));
         else

@@ -66,7 +66,7 @@ ActorInterval::ActorInterval(Actor* actor, const std::vector<std::string>& anim_
     _play_rate = play_rate;
 
     // If no name specified, use id as name
-    _name = name ? name.get() : id;
+    _name = name ? name.value() : id;
 
     if (controls_.empty())
     {
@@ -80,26 +80,26 @@ ActorInterval::ActorInterval(Actor* actor, const std::vector<std::string>& anim_
         frame_rate_ = controls_[0]->get_frame_rate() * std::abs(_play_rate);
         // Compute start and end frames.
         if (start_frame)
-            start_frame_ = start_frame.get();
+            start_frame_ = start_frame.value();
         else if (start_time)
-            start_frame_ = start_time.get() * frame_rate_;
+            start_frame_ = start_time.value() * frame_rate_;
         else
             start_frame_ = 0;
 
         if (end_frame)
         {
-            end_frame_ = end_frame.get();
+            end_frame_ = end_frame.value();
         }
         else if (end_time)
         {
-            end_frame_ = end_time.get() * frame_rate_;
+            end_frame_ = end_time.value() * frame_rate_;
         }
         else if (duration)
         {
             if (!start_time)
                 start_time = start_frame_ / frame_rate_;
-            end_time = start_time.get() + duration.get();
-            end_frame_ = end_time.get() * frame_rate_;
+            end_time = start_time.value() + duration.value();
+            end_frame_ = end_time.value() * frame_rate_;
         }
         else
         {
@@ -142,7 +142,7 @@ ActorInterval::ActorInterval(Actor* actor, const std::vector<std::string>& anim_
         duration = num_frames_ / frame_rate_;
     }
 
-    _duration = duration.get();
+    _duration = duration.value();
 }
 
 void ActorInterval::priv_step(double t)

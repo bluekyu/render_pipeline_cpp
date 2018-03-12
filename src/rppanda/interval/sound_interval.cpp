@@ -82,7 +82,7 @@ SoundInterval::SoundInterval(AudioSound* sound, bool loop, double duration,
 
     // Generate unique name if necessary
     if (name)
-        _name = name.get();
+        _name = name.value();
     else
         _name = id;
 }
@@ -140,8 +140,8 @@ void SoundInterval::priv_step(double t)
         }
     }
 
-    if (listener_node_ && !listener_node_.get().is_empty() &&
-        node_ && !node_.get().is_empty())
+    if (listener_node_ && !listener_node_.value().is_empty() &&
+        node_ && !node_.value().is_empty())
     {
         ShowBase::get_global_ptr()->get_sfx_player()->set_final_volume(
             sound_, node_, volume_, listener_node_, cut_off_);

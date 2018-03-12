@@ -78,7 +78,7 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
 {
     if (ok_missing)
     {
-        this_ok_missing = ok_missing.get();
+        this_ok_missing = ok_missing.value();
         if (this_ok_missing)
             this_options.set_flags(this_options.get_flags() & ~LoaderOptions::LF_report_errors);
         else
@@ -91,7 +91,7 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
 
     if (no_cache)
     {
-        if (no_cache.get())
+        if (no_cache.value())
             this_options.set_flags(this_options.get_flags() & ~LoaderOptions::LF_no_cache);
         else
             this_options.set_flags(this_options.get_flags() | LoaderOptions::LF_no_cache);
