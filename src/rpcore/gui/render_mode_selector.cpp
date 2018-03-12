@@ -66,18 +66,31 @@ void RenderModeSelector::populate_content()
     debugger_content.set_z(-20);
     debugger_content.set_x(20);
 
-    std::vector<std::tuple<std::string, std::string, std::string, bool>> render_modes = {{"Default", "", "", false}};
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    std::vector<std::tuple<std::string, std::string, std::string, bool>> render_modes = { { "Default", "", "", false } };
+#else
+    std::vector<std::tuple<std::string, std::string, std::string, bool>> render_modes = {
+        std::make_tuple<std::string, std::string, std::string, bool>("Default", "", "", false) };
+#endif
 
     try
     {
         // Read modes from configuration
         for (auto&& mode: config["render_modes"])
         {
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
             render_modes.push_back({
                 mode["name"].as<std::string>(),
                 mode["key"].as<std::string>(),
                 mode["requires"].as<std::string>(""),
                 mode["special"].as<bool>(false)});
+#else
+            render_modes.push_back(std::make_tuple<std::string, std::string, std::string, bool>(
+                mode["name"].as<std::string>(),
+                mode["key"].as<std::string>(),
+                mode["requires"].as<std::string>(""),
+                mode["special"].as<bool>(false)));
+#endif
         }
     }
     catch (...)
