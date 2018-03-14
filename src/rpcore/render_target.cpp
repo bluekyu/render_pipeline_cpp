@@ -33,8 +33,7 @@
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
-
-#include "rpcore/util/post_process_region.hpp"
+#include "render_pipeline/rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 
@@ -430,7 +429,7 @@ void RenderTarget::add_aux_attachment(int bits)
     // RTP_aux_rgba_0 ~ RTP_aux_rgba_3
     if (impl_->aux_count_ > 4)
     {
-        warn(get_debug_name() + ": The maximum number of AUX textures is 4!");
+        warn("The maximum number of AUX textures is 4!");
         impl_->aux_count_ = (std::min)(impl_->aux_count_, 4);
     }
 }
@@ -443,7 +442,7 @@ void RenderTarget::add_aux_attachments(int bits, int count)
     // RTP_aux_rgba_0 ~ RTP_aux_rgba_3
     if (impl_->aux_count_ > 4)
     {
-        warn(get_debug_name() + ": The maximum number of AUX textures is 4!");
+        warn("The maximum number of AUX textures is 4!");
         impl_->aux_count_ = (std::min)(impl_->aux_count_, 4);
     }
 }

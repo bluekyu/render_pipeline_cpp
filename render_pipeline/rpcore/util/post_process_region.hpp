@@ -28,11 +28,13 @@
 #include <unordered_map>
 #include <functional>
 
+#include <render_pipeline/rpcore/rpobject.hpp>
+
 class CallbackObject;
 
 namespace rpcore {
 
-class PostProcessRegion
+class RENDER_PIPELINE_DECL PostProcessRegion
 {
 public:
     static PostProcessRegion* make(GraphicsOutput* internal_buffer);

@@ -27,8 +27,7 @@
 #include <boost/format.hpp>
 
 #include "render_pipeline/rpcore/render_stage.hpp"
-
-#include "rpcore/util/post_process_region.hpp"
+#include "render_pipeline/rpcore/util/post_process_region.hpp"
 
 namespace rpcore {
 

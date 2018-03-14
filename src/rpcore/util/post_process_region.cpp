@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "rpcore/util/post_process_region.hpp"
+#include "render_pipeline/rpcore/util/post_process_region.hpp"
 
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
