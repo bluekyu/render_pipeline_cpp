@@ -278,7 +278,7 @@ void MovementController::setup()
     // add ourself as an update task which gets executed very early before the rendering
     impl_->update_task_ = showbase->add_task([this](rppanda::FunctionalTask* task) {
         return impl_->update(this);
-    }, "RP_UpdateMovementController", -40);
+    }, "RP_UpdateMovementController", -50);
 
     // Hotkeys to connect to pstats and reset the initial position
     showbase->accept("1", [this](const Event* ev) { PStatClient::connect(); });

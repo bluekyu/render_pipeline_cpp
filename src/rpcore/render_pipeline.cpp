@@ -710,7 +710,7 @@ void RenderPipeline::Impl::init_bindings()
     showbase_->add_task(std::bind(&Impl::update_inputs_and_stages, this, std::placeholders::_1), "RP_UpdateInputsAndStages", 18);
 
     // igloop has 50 sorting value.
-    showbase_->add_task(std::bind(&Impl::plugin_post_render_update, this, std::placeholders::_1), "RP_Plugin_AfterRender", 51);
+    showbase_->add_task(std::bind(&Impl::plugin_post_render_update, this, std::placeholders::_1), "RP_Plugin_AfterRender", 55);
     showbase_->get_task_mgr()->do_method_later(0.5f, std::bind(&Impl::clear_state_cache, this, std::placeholders::_1), "RP_ClearStateCache");
     showbase_->accept("window-event", [this](const Event*) { handle_window_event(); });
 }
