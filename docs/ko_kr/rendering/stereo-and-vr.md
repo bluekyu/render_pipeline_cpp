@@ -26,6 +26,7 @@ Render Pipeline 에서 가상현실을 위한 Head Mount Display (HMD) 렌더링
 
 OpenVR 플러그인을 설치한 후, OpenVR 플러그인을 `plugins.yaml` 에서 활성화 시킨다.
 그리고 `pipeline.yaml` 파일에서 `stereo_mode` 옵션을 위에서 언급된 값으로 변경한다.
+`stages.yaml` 파일에서는 `UpscaleStage` 전에 `OpenVRRenderStage` 를 추가한다.
 
 추가적으로, 렌더링 버퍼 크기를 설정해줘야 한다. 기본적인 OpenVR 렌더링 `넓이 x 높이` 는 `1512 x 1680` 이다.
 이를 `Config.prc` 파일에서 창크기 설정인 `win-size` 에 반영해도 된다.
@@ -39,8 +40,9 @@ OpenVR 플러그인을 설치한 후, OpenVR 플러그인을 `plugins.yaml` 에�
 
 ### 요약
 1. `plugins.yaml`: 플러그인 활성화 (예, `openvr`)
-2. 스테레오 모드 활성화(`pipeline.yaml`)
-   - `stereo_mode`: `left`, `right`, `stereo` 중 하나
+2. 스테레오 모드 활성화(`pipeline.yaml`, `stage.yaml`)
+   - `pipeline.yaml`: `stereo_mode` 에서 `left`, `right`, `stereo` 중 하나 사용
+   - `stage.yaml`: `UpscaleStage` 전에 `OpenVRRenderStage` 추가
 3. 렌더링 크기 조절
    - 창크기 변경(`Config.prc`)
      - `win-size` 에서 `width x height` 에 HMD 해상도 적용
