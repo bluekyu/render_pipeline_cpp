@@ -60,7 +60,7 @@ static boost::filesystem::path get_canonical_path(const boost::filesystem::path&
 
     return result;
 #else
-    return boost::filesystem::canonical(plugin_dir_ / plugin_id);
+    return boost::filesystem::canonical(path);
 #endif
 }
 
@@ -72,7 +72,7 @@ static boost::filesystem::path get_weakly_canonical_path(const boost::filesystem
     PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
     return boost::filesystem::path(path_buffer);
 #else
-    return boost::filesystem::weakly_canonical(plugin_dir_ / plugin_id);
+    return boost::filesystem::weakly_canonical(path);
 #endif
 }
 
