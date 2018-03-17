@@ -58,7 +58,7 @@ void LoggerManager::create(const std::string& file_path)
 #ifdef _WIN32
     sinks.push_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
 #else
-    sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_sink>(spdlog::sinks::stdout_sink_mt::instance()));
+    sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
 #endif
     if (!file_path.empty())
         sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(file_path, true));
