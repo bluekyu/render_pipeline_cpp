@@ -100,8 +100,8 @@ private:
 public:
     static TypeHandle get_class_type();
     static void init_type();
-    virtual TypeHandle get_type() const;
-    virtual TypeHandle force_init_type();
+    virtual TypeHandle get_type() const override;
+    virtual TypeHandle force_init_type() override;
 
 private:
     static TypeHandle type_handle_;
