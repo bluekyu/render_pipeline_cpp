@@ -45,8 +45,8 @@ public:
 
     virtual LVecBase3f get_sun_vector();
 
-    virtual const std::shared_ptr<ScatteringStage>& get_display_stage() const;
-    virtual const std::shared_ptr<ScatteringEnvmapStage>& get_envmap_stage() const;
+    virtual ScatteringStage* get_display_stage() const;
+    virtual ScatteringEnvmapStage* get_envmap_stage() const;
 
 private:
     class Impl;

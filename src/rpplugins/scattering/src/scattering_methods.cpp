@@ -154,7 +154,7 @@ void ScatteringMethodEricBruneton::compute()
     }
 
     // Make stages available
-    for (auto&& stage: std::vector<std::shared_ptr<rpcore::RenderStage>>({handle_.get_display_stage(), handle_.get_envmap_stage()}))
+    for (auto&& stage: std::vector<rpcore::RenderStage*>({handle_.get_display_stage(), handle_.get_envmap_stage()}))
     {
         stage->set_shader_input(ShaderInput("InscatterSampler", _textures.at("inscatter")->get_texture()));
         stage->set_shader_input(ShaderInput("transmittanceSampler", _textures.at("transmittance")->get_texture()));

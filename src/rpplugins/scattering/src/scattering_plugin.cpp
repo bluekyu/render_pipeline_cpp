@@ -128,14 +128,14 @@ LVecBase3f ScatteringPlugin::get_sun_vector()
         std::cos(theta));
 }
 
-const std::shared_ptr<ScatteringStage>& ScatteringPlugin::get_display_stage() const
+ScatteringStage* ScatteringPlugin::get_display_stage() const
 {
-    return impl_->display_stage_;
+    return impl_->display_stage_.get();
 }
 
-const std::shared_ptr<ScatteringEnvmapStage>& ScatteringPlugin::get_envmap_stage() const
+ScatteringEnvmapStage* ScatteringPlugin::get_envmap_stage() const
 {
-    return impl_->envmap_stage_;
+    return impl_->envmap_stage_.get();
 }
 
 }

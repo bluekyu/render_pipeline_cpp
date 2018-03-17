@@ -39,6 +39,7 @@ class ScatteringEnvmapStage : public rpcore::RenderStage
 {
 public:
     ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline);
+    ~ScatteringEnvmapStage();
 
     RequireType& get_required_inputs() const final { return required_inputs; }
     RequireType& get_required_pipes() const final { return required_pipes; }

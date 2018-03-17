@@ -39,6 +39,8 @@ ScatteringEnvmapStage::ScatteringEnvmapStage(rpcore::RenderPipeline& pipeline): 
 {
 }
 
+ScatteringEnvmapStage::~ScatteringEnvmapStage() = default;
+
 ScatteringEnvmapStage::ProduceType ScatteringEnvmapStage::get_produced_pipes() const
 {
     return {
