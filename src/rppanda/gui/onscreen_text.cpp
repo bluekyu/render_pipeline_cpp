@@ -182,7 +182,7 @@ OnscreenText::OnscreenText(const std::string& text, Style style,
     is_clean_ = false;
 
     // Set ourselves up as the NodePath that points to this node.
-    NodePath::operator=(std::move(parent.attach_new_node(text_node_, sort)));
+    NodePath::operator=(parent.attach_new_node(text_node_, sort));
 }
 
 void OnscreenText::cleanup()

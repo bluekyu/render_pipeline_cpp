@@ -152,7 +152,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
             // those ModelNodes, and the GeomNode is the same as
             // the root.
             root = new PandaNode("actor");
-            NodePath::operator=(std::move(NodePath(root)));
+            NodePath::operator=(NodePath(root));
             set_geom_node(*this);
         }
         else
@@ -163,7 +163,7 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
             root = model;
 
             model->set_preserve_transform(ModelNode::PreserveTransform::PT_local);
-            NodePath::operator=(std::move(NodePath(root)));
+            NodePath::operator=(NodePath(root));
             set_geom_node(attach_new_node(new ModelNode("actorGeom")));
         }
 
@@ -403,7 +403,6 @@ inline std::vector<PartBundle*> Actor::get_part_bundles(const boost::optional<st
 
     for (const auto& key_val: part_bundle_dict_)
     {
-        const std::string& lod_name = key_val.first;
         const auto& part_bundle_dict = key_val.second;
 
         if (part_name)
@@ -481,7 +480,6 @@ bool Actor::update(int lod, const boost::optional<std::string>& part_name,
 
 boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
     if (controls.empty())
         return {};
@@ -491,7 +489,6 @@ boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& an
 
 boost::optional<double> Actor::get_frame_rate(bool, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};
@@ -501,7 +498,6 @@ boost::optional<double> Actor::get_frame_rate(bool, const std::vector<std::strin
 
 boost::optional<double> Actor::get_base_frame_rate(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
     if (controls.empty())
         return {};
@@ -511,7 +507,6 @@ boost::optional<double> Actor::get_base_frame_rate(const std::vector<std::string
 
 boost::optional<double> Actor::get_base_frame_rate(bool, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};
@@ -524,7 +519,6 @@ boost::optional<double> Actor::get_play_rate(const std::vector<std::string>& ani
     if (!anim_control_dict_.empty())
     {
         // use the first lod
-        const std::string& lod_name = anim_control_dict_.begin()->first;
         const auto& controls = get_anim_controls(anim_name, part_name);
         if (!controls.empty())
             return controls[0]->get_play_rate();
@@ -538,7 +532,6 @@ boost::optional<double> Actor::get_play_rate(bool, const std::vector<std::string
     if (!anim_control_dict_.empty())
     {
         // use the first lod
-        const std::string& lod_name = anim_control_dict_.begin()->first;
         const auto& controls = get_anim_controls(true, part_name);
         if (!controls.empty())
             return controls[0]->get_play_rate();
@@ -561,7 +554,6 @@ void Actor::set_play_rate(double rate, bool, const std::vector<std::string>& par
 boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
     boost::optional<double> from_frame, boost::optional<double> to_frame)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
     if (controls.empty())
         return {};
@@ -577,7 +569,6 @@ boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim
 boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>& part_name,
     boost::optional<double> from_frame, boost::optional<double> to_frame)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};
@@ -592,7 +583,6 @@ boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>
 
 boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(anim_name, part_name);
     if (controls.empty())
         return {};
@@ -601,7 +591,6 @@ boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_
 
 boost::optional<int> Actor::get_num_frames(bool, const std::vector<std::string>& part_name)
 {
-    const std::string& lod_name = anim_control_dict_.begin()->first;
     const auto& controls = get_anim_controls(true, part_name);
     if (controls.empty())
         return {};

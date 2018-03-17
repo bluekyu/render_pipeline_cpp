@@ -70,7 +70,7 @@ void OnscreenImage::set_image(const std::shared_ptr<ImageInput>& image, NodePath
             case ImageInput::ImageInputType::NODEPATH:
             {
                 // Assign geometry
-                NodePath::operator=(std::move(image->get_nodepath().copy_to(parent, sort)));
+                NodePath::operator=(image->get_nodepath().copy_to(parent, sort));
                 break;
             }
 
@@ -85,7 +85,7 @@ void OnscreenImage::set_image(const std::shared_ptr<ImageInput>& image, NodePath
 
                 CardMaker cm = CardMaker("OnscreenImage");
                 cm.set_frame(-1, 1, -1, 1);
-                NodePath::operator=(std::move(parent.attach_new_node(cm.generate(), sort)));
+                NodePath::operator=(parent.attach_new_node(cm.generate(), sort));
                 set_texture(tex);
 
                 break;

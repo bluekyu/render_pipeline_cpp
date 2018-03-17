@@ -138,7 +138,7 @@ DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::s
     // Attach button to parent and make that self
     if (parent.is_empty())
         parent = ShowBase::get_global_ptr()->get_aspect_2d();
-    NodePath::operator=(std::move(parent.attach_new_node(_gui_item, options->sort_order)));
+    NodePath::operator=(parent.attach_new_node(_gui_item, options->sort_order));
 
     // Override automatically generated guiId
     //if (_gui_id.empty())
@@ -219,9 +219,9 @@ void DirectGuiWidget::disable_edit()
 
 void DirectGuiWidget::edit_start()
 {
-    ShowBase* base = ShowBase::get_global_ptr();
-
     // TODO: implement
+    //ShowBase* base = ShowBase::get_global_ptr();
+
     //dgw->remove_task("guiEditTask");
     //const LPoint3f& widget2_render2d = dgw->get_pos(base->get_render_2d());
     //LPoint3f mouse2_render2d(
