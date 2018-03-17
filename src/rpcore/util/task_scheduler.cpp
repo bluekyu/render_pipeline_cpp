@@ -33,7 +33,7 @@
 
 namespace rpcore {
 
-TaskScheduler::TaskScheduler(RenderPipeline& pipeline): RPObject("TaskScheduler"), pipeline_(pipeline)
+TaskScheduler::TaskScheduler(): RPObject("TaskScheduler")
 {
     frame_index_ = 0;
 

@@ -28,8 +28,6 @@
 
 namespace rpcore {
 
-class RenderPipeline;
-
 /**
  * This class manages the scheduled tasks and splits them over multiple
  * frames. Plugins can query whether their subtasks should be executed
@@ -39,7 +37,7 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL TaskScheduler : public RPObject
 {
 public:
-    TaskScheduler(RenderPipeline& pipeline);
+    TaskScheduler();
 
     /** Returns whether a given task is supposed to run this frame. */
     bool is_scheduled(const std::string& task_name) const;
@@ -62,7 +60,6 @@ private:
      */
     void check_missing_schedule(const std::string& task_name) const;
 
-    RenderPipeline& pipeline_;
     int frame_index_;
     std::vector<std::vector<std::string>> tasks_;
 };

@@ -136,11 +136,11 @@ void PipeViewer::populate_content()
             const std::shared_ptr<GroupedInputBlock>* group_input_data = nullptr;
 
             std::string output_pipe;
-            if (shader_input_data = boost::get<ShaderInput>(&pipe_tex))
+            if ((shader_input_data = boost::get<ShaderInput>(&pipe_tex)))
                 output_pipe = shader_input_data->get_name()->get_name();
-            else if (simple_input_data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_tex))
+            else if ((simple_input_data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_tex)))
                 output_pipe = (*simple_input_data)->get_name();
-            else if (group_input_data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_tex))
+            else if ((group_input_data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_tex)))
                 output_pipe = (*group_input_data)->get_name();
 
             long long pipe_idx = 0;

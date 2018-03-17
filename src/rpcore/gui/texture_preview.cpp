@@ -36,8 +36,8 @@
 
 namespace rpcore {
 
-TexturePreview::TexturePreview(RenderPipeline* pipeline, NodePath parent):
-    DraggableWindow(1600, 900, "Texture Viewer", parent), _pipeline(pipeline)
+TexturePreview::TexturePreview(NodePath parent):
+    DraggableWindow(1600, 900, "Texture Viewer", parent)
 {
     create_components();
 }

@@ -209,7 +209,7 @@ void MountManager::Impl::on_exit_cleanup(MountManager& self)
             // Check for further tempfiles in the write path
             // We explicitely use os.listdir here instead of panda's listdir,
             // to work with actual paths.
-            VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+            //VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
             const auto& write_path_os = rppanda::convert_path(write_path_);
             for (const auto& fpath: boost::filesystem::directory_iterator(write_path_os))
             {

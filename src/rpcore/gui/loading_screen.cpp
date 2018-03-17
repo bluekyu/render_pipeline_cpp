@@ -32,8 +32,8 @@ namespace rpcore {
 
 Filename LoadingScreen::Default::image_source = "/$$rp/data/gui/loading_screen_bg.txo";
 
-LoadingScreen::LoadingScreen(RenderPipeline* pipeline, const Filename& image_source): RPObject("LoadingScreen"),
-    pipeline_(pipeline), image_source_(image_source)
+LoadingScreen::LoadingScreen(const Filename& image_source): RPObject("LoadingScreen"),
+    image_source_(image_source)
 {
 }
 

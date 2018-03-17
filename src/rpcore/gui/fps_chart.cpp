@@ -36,7 +36,7 @@
 
 namespace rpcore {
 
-FPSChart::FPSChart(RenderPipeline* pipeline, NodePath parent): RPObject("FPSChart"), pipeline_(pipeline), parent_(parent)
+FPSChart::FPSChart(NodePath parent): RPObject("FPSChart"), parent_(parent)
 {
     node_ = parent_.attach_new_node("FPSChartNode");
     create_components();

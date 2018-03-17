@@ -281,7 +281,7 @@ void MovementController::setup()
     }, "RP_UpdateMovementController", -50);
 
     // Hotkeys to connect to pstats and reset the initial position
-    showbase->accept("1", [this](const Event* ev) { PStatClient::connect(); });
+    showbase->accept("1", [](const Event* ev) { PStatClient::connect(); });
     showbase->accept("3", [this](const Event* ev) { reset_to_initial(); });
 }
 

@@ -45,7 +45,7 @@ BufferViewer::BufferViewer(RenderPipeline* pipeline, NodePath parent): Draggable
 {
     create_components();
 
-    _tex_preview = std::make_shared<TexturePreview>(_pipeline, parent);
+    _tex_preview = std::make_shared<TexturePreview>(parent);
     _tex_preview->hide();
 
     hide();

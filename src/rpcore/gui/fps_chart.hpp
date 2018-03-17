@@ -35,7 +35,6 @@ class FunctionalTask;
 
 namespace rpcore {
 
-class RenderPipeline;
 class Image;
 class Sprite;
 class Text;
@@ -44,7 +43,7 @@ class Text;
 class FPSChart : public RPObject
 {
 public:
-    FPSChart(RenderPipeline* pipeline, NodePath parent);
+    FPSChart(NodePath parent);
     ~FPSChart();
 
 private:
@@ -60,7 +59,6 @@ private:
     /** Updates the widget. */
     AsyncTask::DoneStatus update(rppanda::FunctionalTask* task);
 
-    RenderPipeline* pipeline_;
     NodePath parent_;
     NodePath node_;
 

@@ -110,7 +110,7 @@ void Debugger::create_components()
 
     fps_node = fullscreen_node.attach_new_node("FPSChart");
     fps_node.set_pos(LVecBase3f(21, 1, -108 - 40));
-    fps_widget_ = std::make_unique<FPSChart>(pipeline, fps_node);
+    fps_widget_ = std::make_unique<FPSChart>(fps_node);
 
     pixel_widget_ = std::make_unique<PixelInspector>(pipeline);
     buffer_viewer_ = std::make_unique<BufferViewer>(pipeline, fullscreen_node);

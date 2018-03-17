@@ -28,7 +28,6 @@
 
 namespace rpcore {
 
-class RenderPipeline;
 class Sprite;
 
 class LoadingScreen : public RPObject
@@ -44,7 +43,7 @@ public:
      * Inits the loading screen with a given image source. By default,
      * this is the pipeline loading screen, but it can be overridden.
      */
-    LoadingScreen(RenderPipeline* pipeline, const Filename& image_source=Default::image_source);
+    LoadingScreen(const Filename& image_source=Default::image_source);
     ~LoadingScreen();
 
     /** Creates the gui components. */
@@ -54,7 +53,6 @@ public:
     void remove();
 
 private:
-    RenderPipeline* pipeline_;
     const Filename image_source_;
 
     NodePath fullscreen_node_;

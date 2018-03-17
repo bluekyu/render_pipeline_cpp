@@ -87,9 +87,8 @@ bool load_yaml_file(const Filename& filename, YAML::Node& result)
 
     vfs->close_read_file(file);
 
-    const float duration = (std::chrono::system_clock::now() - start).count();
-
     // Optionally print out profiling information
+    //const float duration = (std::chrono::system_clock::now() - start).count();
     //std::cout << "Took " << duration << " ms to load " << filename << std::endl;
 
     return true;

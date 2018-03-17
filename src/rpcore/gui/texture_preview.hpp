@@ -26,7 +26,6 @@
 
 namespace rpcore {
 
-class RenderPipeline;
 class Sprite;
 class LabeledCheckbox;
 class Slider;
@@ -34,7 +33,7 @@ class Slider;
 class TexturePreview : public DraggableWindow
 {
 public:
-    TexturePreview(RenderPipeline* pipeline, NodePath parent);
+    TexturePreview(NodePath parent);
 
     /** "Presents" a given texture and shows the window. */
     void present(Texture* tex);
@@ -50,7 +49,6 @@ private:
 
     void set_enable_tonemap(bool arg);
 
-    RenderPipeline* _pipeline;
     NodePath _content_node;
     Texture* _current_tex;
 

@@ -64,19 +64,6 @@ static boost::filesystem::path get_canonical_path(const boost::filesystem::path&
 #endif
 }
 
-// TODO: change to fs::canonical after canonical bug is fixed.
-static boost::filesystem::path get_weakly_canonical_path(const boost::filesystem::path& path)
-{
-#ifdef _WIN32
-    wchar_t path_buffer[32768] = {};
-    PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
-    return boost::filesystem::path(path_buffer);
-#else
-    return boost::filesystem::weakly_canonical(path);
-#endif
-}
-
-
 class PluginManager::Impl
 {
 public:

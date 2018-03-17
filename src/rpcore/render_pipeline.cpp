@@ -529,7 +529,7 @@ void RenderPipeline::Impl::create_managers()
 {
     self_.trace("Creating managers ...");
 
-    task_scheduler_ = std::make_unique<TaskScheduler>(self_);
+    task_scheduler_ = std::make_unique<TaskScheduler>();
     tag_mgr_ = std::make_unique<TagStateManager>(Globals::base->get_cam());
     plugin_mgr_ = std::make_unique<PluginManager>(self_);
     stage_mgr_ = std::make_unique<StageManager>(self_);
@@ -970,7 +970,7 @@ bool RenderPipeline::create()
 
 void RenderPipeline::set_loading_screen_image(const Filename& image_source)
 {
-    impl_->loading_screen_ = std::make_unique<LoadingScreen>(this, image_source);
+    impl_->loading_screen_ = std::make_unique<LoadingScreen>(image_source);
 }
 
 void RenderPipeline::add_light(RPLight* light)
