@@ -113,7 +113,7 @@ void Debugger::create_components()
     fps_widget_ = std::make_unique<FPSChart>(fps_node);
 
     pixel_widget_ = std::make_unique<PixelInspector>(pipeline);
-    buffer_viewer_ = std::make_unique<BufferViewer>(pipeline, fullscreen_node);
+    buffer_viewer_ = std::make_unique<BufferViewer>(fullscreen_node);
     pipe_viewer_ = std::make_unique<PipeViewer>(pipeline, fullscreen_node);
     rm_selector_ = std::make_unique<RenderModeSelector>(pipeline, fullscreen_node);
     error_msg_handler_ = std::make_unique<ErrorMessageDisplay>();

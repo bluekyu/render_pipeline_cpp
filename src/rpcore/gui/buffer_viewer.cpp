@@ -41,7 +41,7 @@
 
 namespace rpcore {
 
-BufferViewer::BufferViewer(RenderPipeline* pipeline, NodePath parent): DraggableWindow(1400, 800, "Buffer- and Image-Browser", parent), _pipeline(pipeline)
+BufferViewer::BufferViewer(NodePath parent): DraggableWindow(1400, 800, "Buffer- and Image-Browser", parent)
 {
     create_components();
 

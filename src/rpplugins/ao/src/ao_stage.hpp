@@ -47,7 +47,6 @@ private:
     static RequireType required_pipes;
 
     bool stereo_mode_ = false;
-    bool enable_small_scale_ao_;
 
     std::string quality_;
 

@@ -31,7 +31,6 @@ class DirectFrame;
 
 namespace rpcore {
 
-class RenderPipeline;
 class TexturePreview;
 class RenderStage;
 class LabeledCheckbox;
@@ -48,7 +47,7 @@ class BufferViewer : public DraggableWindow
 public:
     using EntryType = std::pair<void*, EntryID>;
 
-    BufferViewer(RenderPipeline* pipeline, NodePath parent);
+    BufferViewer(NodePath parent);
 
     void toggle();
 
@@ -85,7 +84,6 @@ private:
     /** Renders the stages to the window. */
     void render_stages();
 
-    RenderPipeline* _pipeline;
     int _scroll_height = 3000;
     bool _display_images = false;
     PT(rppanda::DirectScrolledFrame) _content_frame;
