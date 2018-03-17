@@ -286,8 +286,6 @@ void ShowBase::Impl::setup_render_2dp(ShowBase* self)
     // many 2-d objects will be drawn over each other without
     // regard to depth position.
 
-    const RenderAttrib* dt = DepthTestAttrib::make(DepthTestAttrib::M_none);
-    const RenderAttrib* dw = DepthWriteAttrib::make(DepthWriteAttrib::M_off);
     render_2dp_.set_depth_test(0);
     render_2dp_.set_depth_write(0);
 

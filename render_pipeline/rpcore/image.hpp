@@ -69,7 +69,6 @@ public:
     static std::shared_ptr<Image> create_cube_array(const std::string& name, int size, int num_cubemaps, const std::string& component_format);
 
     static const ComponentFormatType& convert_texture_format(const std::string& comp_type);
-    static std::string convert_texture_format(ComponentFormatType comp_format_type);
 
     Image(const std::string& name);
     ~Image();
@@ -83,8 +82,6 @@ public:
     void setup_cube_array(int size, int num_cubemaps, const std::string& component_format);
 
     int get_sort() const;
-
-    std::string get_texture_format() const;
 
     Texture* get_texture() const;
 

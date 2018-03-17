@@ -142,81 +142,6 @@ const Image::ComponentFormatType& Image::convert_texture_format(const std::strin
     }
 }
 
-std::string Image::convert_texture_format(ComponentFormatType comp_format_type)
-{
-    std::string comp_type = "";
-
-    switch (comp_format_type.first)
-    {
-    case Texture::T_unsigned_byte:
-        {
-            switch (comp_format_type.second)
-            {
-            case Texture::F_rgba8:
-                comp_type = "RGBA8";
-                break;
-            case Texture::F_red:
-                comp_type = "R8";
-                //comp_type = "R8UI";
-                break;
-            }
-        }
-        break;
-
-    case Texture::T_unsigned_short:
-        {
-            switch (comp_format_type.second)
-            {
-            case Texture::F_r16i:
-                comp_type = "R16UI";
-                break;
-            }
-        }
-        break;
-
-    case Texture::T_float:
-        {
-            switch (comp_format_type.second)
-            {
-            case Texture::F_r11_g11_b10:
-                comp_type = "R11G11B10";
-                break;
-            case Texture::F_rgba16:
-                comp_type = "RGBA16";
-                break;
-            case Texture::F_rgba32:
-                comp_type = "RGBA32";
-                break;
-            case Texture::F_r16:
-                comp_type = "R16";
-                break;
-            case Texture::F_r32:
-                comp_type = "R32";
-                break;
-            }
-        }
-        break;
-
-    case Texture::T_int:
-        {
-            switch (comp_format_type.second)
-            {
-            case Texture::F_r32i:
-                comp_type = "R32I";
-                break;
-            }
-        }
-        break;
-    };
-
-    if (comp_type.empty())
-    {
-        RPObject::global_error("Image", std::string("Unsupported texture component & format."));
-    }
-
-    return comp_type;
-}
-
 Image::Image(const std::string& name): RPObject(name), texture_(new Texture(name))
 {
     Image::REGISTERED_IMAGES.push_back(this);
@@ -228,11 +153,6 @@ Image::Image(const std::string& name): RPObject(name), texture_(new Texture(name
 Image::~Image()
 {
     Image::REGISTERED_IMAGES.erase(std::find(Image::REGISTERED_IMAGES.begin(), Image::REGISTERED_IMAGES.end(), this));
-}
-
-std::string Image::get_texture_format() const
-{
-    return convert_texture_format(ComponentFormatType{ texture_->get_component_type(), texture_->get_format() });
 }
 
 }

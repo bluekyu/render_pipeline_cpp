@@ -386,8 +386,8 @@ bool StageManager::Impl::create_previous_pipes()
             // re-setup for layered texture when stereo mode.
             if (src_tex->get_texture_type() == Texture::TextureType::TT_2d_texture_array)
             {
-                const std::string& pipe_type = dest_tex->get_texture_format();
-                dest_tex->setup_2d_array(0, 0, 1, pipe_type);
+                Texture* dest_raw_tex = dest_tex->get_texture();
+                dest_raw_tex->setup_2d_texture_array(0, 0, 1, dest_raw_tex->get_component_type(), dest_raw_tex->get_format());
                 dest_tex->clear_image();
             }
 
