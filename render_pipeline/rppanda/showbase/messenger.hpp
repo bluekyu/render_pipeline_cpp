@@ -39,6 +39,7 @@
 
 #include <throw_event.h>
 
+#include <list>
 #include <unordered_map>
 #include <functional>
 
