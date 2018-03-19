@@ -5,7 +5,7 @@
 See also:
 - [Data Loop and Node](data_loop_and_node.md).
 
-### Call Tree
+### Call Stack
 #### main_loop
 ```cpp
 PandaFramework::main_loop()
@@ -76,35 +76,31 @@ PandaFramework::task_igloop()
 {
     GraphicsEngine::render_frame()
     {
-        GraphicsEngine::do_flip_frame()
-        {
-            GraphicsEngine::WindowRenderer::do_flip()
-            {
-                GraphicsEngine::flip_windows()
-                {
-                    for_each(WINDOWS)
-                    {
-                        GraphicsOutput::begin_flip()
-                        {
-                        }
-                    }
-
-                    for_each(WINDOWS)
-                    {
-                        GraphicsOutput::end_flip()
-                        {
-                            // swap buffer
-                        }
-                    }
-                }
-            }
-        }
-
         GraphicsEngine::WindowRenderer::do_frame()
         {
             GraphicsEngine::cull_to_bins();
             GraphicsEngine::cull_and_draw_together();
-            GraphicsEngine::draw_bins();
+            GraphicsEngine::draw_bins()
+            {
+                for_each(WINDOWS)
+                {
+                    GraphicsOutput::begin_flip();
+                    GraphicsOutput::end_flip();         // swap buffers
+
+                    if (GraphicsOutput::begin_frame())
+                    {
+                        for_each(DisplayRegion)
+                        {
+                            GraphicsEngine::do_draw()
+                            {
+                                CullResult::draw();
+                            }
+                        }
+                    }
+                    GraphicsOutput::end_frame();
+                }
+            }
+
             GraphicsEngine::process_events()
             {
                 for_each(WINDOWS)
@@ -113,6 +109,8 @@ PandaFramework::task_igloop()
                 }
             }
         }
+
+        ClockObject::tick();                            // frame number increment
     }
 }
 ```
