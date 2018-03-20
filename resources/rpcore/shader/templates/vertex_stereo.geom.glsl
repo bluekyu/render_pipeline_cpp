@@ -34,13 +34,16 @@
 #if defined(USE_POINTS_LAYOUT)
 layout(points) in;
 layout(points, max_vertices=2) out;
+#elif defined(USE_LINES_LAYOUT)
+layout(lines) in;
+layout(line_strip, max_vertices=4) out;
 #else
 layout(triangles) in;
 layout(triangle_strip, max_vertices=6) out;
 #endif
 
-in VertexOutput vInput[];
-out VertexOutput vOutput;
+layout(location = 0) in VertexOutput vInput[];
+layout(location = 0) out VertexOutput vOutput;
 
 %includes%
 %inout%

@@ -1,0 +1,5 @@
+# Square Point Effect
+
+geometry:
+    defines: |
+        #define USE_LINES_LAYOUT 1

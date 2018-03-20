@@ -125,6 +125,7 @@ set(header_rpcore_stages
 set(header_rpcore_util
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/line_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/instancing_node.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/movement_controller.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/points_node.hpp"
@@ -326,6 +327,7 @@ set(source_rpcore_util
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/generic.cpp"
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/line_node.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/ies_profile_loader.hpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/instancing_node.cpp"

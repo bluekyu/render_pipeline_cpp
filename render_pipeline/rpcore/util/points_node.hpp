@@ -30,6 +30,11 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL PointsNode
 {
 public:
+    static void set_square_point_effect(NodePath np);
+    static void set_disk_point_effect(NodePath np);
+    static void set_sphere_point_effect(NodePath np);
+
+public:
     PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius = 1.0f,
         GeomEnums::UsageHint buffer_hint = GeomEnums::UH_static);
 

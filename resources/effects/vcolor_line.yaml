@@ -1,0 +1,28 @@
+# Square Point Effect
+
+vertex:
+    inout: |
+        in vec4 p3d_Color;
+        layout(location = 4) out vec4 RP_line_color;
+
+    main_end: |
+        RP_line_color = p3d_Color;
+
+geometry:
+    defines: |
+        #define USE_LINES_LAYOUT 1
+
+    inout: |
+        layout(location = 4) in vec4 RP_line_color_input[];
+        layout(location = 4) out vec4 RP_line_color;
+
+    post_transform: |
+        RP_line_color = RP_line_color_input[i];
+
+fragment:
+    inout: |
+        layout(location = 4) in vec4 RP_line_color;
+
+    material: |
+        m.basecolor = RP_line_color.xyz;
+        m.normal = vec3(0, -1, 0);

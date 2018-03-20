@@ -34,11 +34,12 @@
 #pragma include "render_pipeline_base.inc.glsl"
 
 %includes%
-%inout%
 
 #pragma include "includes/nonviewspace_shading_pipeline.inc.glsl"
 
 layout(location = 0) out vec4 result;
+
+%inout%
 
 void main() {
 

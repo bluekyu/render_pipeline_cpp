@@ -29,7 +29,7 @@
 #define USE_TIME_OF_DAY 1
 #pragma include "render_pipeline_base.inc.glsl"
 
-layout(r11f_g11f_b10f) uniform imageCube RESTRICT DestCubemap;
+layout(r11f_g11f_b10f) uniform writeonly imageCube RESTRICT DestCubemap;
 uniform sampler2D DefaultSkydome;
 uniform samplerCube DefaultEnvmap;
 
@@ -55,7 +55,7 @@ void main() {
 
     if (horizon > 0.0) {
         inscattered_light *= 2.0; // XXX: This makes it look better, but has no physical background.
-        
+
         // Render clouds to provide more variance for the cubemap
         vec3 cloud_color = textureLod(DefaultSkydome, get_skydome_coord(view_vector), 0).xyz;
         // inscattered_light = cloud_color * 15;
