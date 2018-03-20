@@ -988,7 +988,7 @@ size_t RenderPipeline::load_ies_profile(const Filename& filename)
     return impl_->ies_loader_->load(filename);
 }
 
-void RenderPipeline::set_effect(NodePath& nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
+void RenderPipeline::set_effect(const NodePath& nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
     decltype(Impl::applied_effects)::value_type args(NodePath(nodepath), effect_src, options, sort);
     impl_->applied_effects.push_back(args);

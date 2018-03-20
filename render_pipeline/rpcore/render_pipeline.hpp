@@ -143,7 +143,7 @@ public:
      * current effect sort is less than the new effect sort (passed by the
      * sort parameter).
      */
-    void set_effect(NodePath& nodepath, const Filename& effect_src,
+    void set_effect(const NodePath& nodepath, const Filename& effect_src,
         const Effect::OptionType& options={}, int sort=30);
 
     /**

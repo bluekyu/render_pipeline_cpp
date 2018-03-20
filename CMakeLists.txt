@@ -72,7 +72,7 @@ if(MSVC)
         PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>
     )
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/utf-8 /std:c++14>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive- /utf-8 /std:c++14>
     )
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
