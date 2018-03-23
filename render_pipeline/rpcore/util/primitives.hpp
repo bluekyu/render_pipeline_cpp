@@ -27,6 +27,11 @@
 
 namespace rpcore {
 
+RENDER_PIPELINE_DECL NodePath create_line(const std::string& name,
+    const std::vector<LVecBase3>& vertices,
+    float thickness = 1.0f,
+    GeomEnums::UsageHint vertex_buffer_hint = Geom::UsageHint::UH_static);
+
 /**
  * Create a mesh has a general geometry using triangle primitive.
  *

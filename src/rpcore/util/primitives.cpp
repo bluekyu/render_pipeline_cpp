@@ -23,6 +23,7 @@
 
 #include <cardMaker.h>
 #include <geomVertexWriter.h>
+#include <geomLinestrips.h>
 #include <geomTriangles.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
@@ -48,6 +49,47 @@ static NodePath create_geom_node(const std::string& name, PT(Geom) geom)
 }
 
 // ************************************************************************************************
+
+NodePath create_line(const std::string& name, const std::vector<LVecBase3>& vertices,
+    float thickness, GeomEnums::UsageHint vertex_buffer_hint)
+{
+    if (vertices.size() > (std::numeric_limits<int>::max)())
+    {
+        LoggerManager::get_instance().get_logger()->error(fmt::format("The size {} of points is more than the maximum size ({}).",
+            vertices.size(), (std::numeric_limits<int>::max)()));
+        return NodePath();
+    }
+
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), vertex_buffer_hint);
+    PT(GeomLinestrips) prim = new GeomLinestrips(GeomEnums::UsageHint::UH_static);
+
+    const int count = static_cast<int>(vertices.size());
+
+    vdata->unclean_set_num_rows(count);
+    vdata->modify_array(0)->modify_handle()->copy_data_from(
+        reinterpret_cast<const unsigned char*>(vertices.data()),
+        count * sizeof(std::remove_reference<decltype(vertices)>::type::value_type));
+
+    prim->clear_vertices();
+    prim->add_consecutive_vertices(0, count);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    CPT(RenderAttrib) thick = RenderModeAttrib::make(RenderModeAttrib::M_unchanged, thickness);
+    CPT(RenderState) state = RenderState::make(thick);
+
+    PT(GeomNode) geom_node = new GeomNode(name);
+    geom_node->add_geom(geom, state);
+
+    // default material
+    NodePath np = NodePath(geom_node);
+    RPGeomNode gn(geom_node);
+    gn.set_material(0, RPMaterial());
+
+    return np;
+}
 
 NodePath create_triangle_mesh(
     const std::string& name,

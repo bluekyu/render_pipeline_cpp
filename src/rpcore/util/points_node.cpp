@@ -64,7 +64,7 @@ void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPo
     set_positions(positions);
 
     PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3(), buffer_hint);
-    PT(GeomPoints) prim = new GeomPoints(buffer_hint);
+    PT(GeomPoints) prim = new GeomPoints(GeomEnums::UsageHint::UH_static);
 
     const int count = static_cast<int>(positions_.size());
 
