@@ -70,15 +70,15 @@ render_pipeline_generate_version_hpp()
 if(MSVC)
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
         PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:cxx_std_14>
     )
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive- /utf-8 /std:c++14>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive- /utf-8>
     )
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-        PRIVATE cxx_std_17)
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
