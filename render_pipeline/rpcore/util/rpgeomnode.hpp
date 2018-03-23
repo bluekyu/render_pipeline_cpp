@@ -55,9 +55,19 @@ public:
 
     bool has_texture(int geom_index) const;
     Texture* get_texture(int geom_index) const;
+    Texture* get_texture(int geom_index, TextureStage* stage) const;
 
     /** Set the texture on the first TextureStage or default stage if texture does not exist. */
-    void set_texture(int geom_index, Texture* texture);
+    void set_texture(int geom_index, Texture* texture, int priority = 0);
+
+    /** Set the texture on the given TextureStage. */
+    void set_texture(int geom_index, TextureStage* stage, Texture* texture, int priority = 0);
+
+    /** Set the texture on specific type. */
+    void set_basecolor_texture(int geom_index, Texture* texture, int priority = 0);
+    void set_normal_texture(int geom_index, Texture* texture, int priority = 0);
+    void set_specular_texture(int geom_index, Texture* texture, int priority = 0);
+    void set_roughness_texture(int geom_index, Texture* texture, int priority = 0);
 
     /** Functions for vertex data. */
     ///@{

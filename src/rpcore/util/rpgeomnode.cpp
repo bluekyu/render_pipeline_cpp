@@ -98,25 +98,193 @@ Texture* RPGeomNode::get_texture(int geom_index) const
     return DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()))->get_texture();
 }
 
-void RPGeomNode::set_texture(int geom_index, Texture* texture)
+Texture* RPGeomNode::get_texture(int geom_index, TextureStage* stage) const
+{
+    if (!check_index_bound(geom_index))
+        return nullptr;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
+    if (!state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        RPObject::global_warn("RPGeomNode", fmt::format("Geom {} has no texture!", node_->get_name()));
+        return nullptr;
+    }
+
+    return DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()))->get_on_texture(stage);
+}
+
+void RPGeomNode::set_texture(int geom_index, Texture* texture, int priority)
 {
     if (!check_index_bound(geom_index))
         return;
 
     const RenderState* state = node_->get_geom_state(geom_index);
 
-    CPT(RenderAttrib) new_attrib;
+    if (state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(tex_attrib->filter_to_max(1)->get_on_stage(0), texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib, 
+            state->get_override(TextureAttrib::get_class_type())));
+    }
+    else
+    {
+        CPT(RenderAttrib) new_attrib = TextureAttrib::make(texture);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib));
+    }
+}
+
+void RPGeomNode::set_texture(int geom_index, TextureStage* stage, Texture* texture, int priority)
+{
+    if (!check_index_bound(geom_index))
+        return;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
+    if (state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(stage, texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib,
+            state->get_override(TextureAttrib::get_class_type())));
+    }
+    else
+    {
+        CPT(TextureAttrib) new_attrib = DCAST(TextureAttrib, TextureAttrib::make());
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib->add_on_stage(stage, texture, priority)));
+    }
+}
+
+void RPGeomNode::set_basecolor_texture(int geom_index, Texture* texture, int priority)
+{
+    if (!check_index_bound(geom_index))
+        return;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
+    if (state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
+        auto stage = tex_attrib->get_on_stage(0);
+
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(stage, texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib,
+            state->get_override(TextureAttrib::get_class_type())));
+    }
+    else
+    {
+        CPT(TextureAttrib) new_attrib = DCAST(TextureAttrib, TextureAttrib::make());
+        PT(TextureStage) stage = new TextureStage("basecolor-0");
+        stage->set_sort(0);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib->add_on_stage(stage, texture, priority)));
+    }
+}
+
+void RPGeomNode::set_normal_texture(int geom_index, Texture* texture, int priority)
+{
+    if (!check_index_bound(geom_index))
+        return;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
     if (state->has_attrib(TextureAttrib::get_class_type()))
     {
         const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
 
-        new_attrib = tex_attrib->add_on_stage(tex_attrib->filter_to_max(1)->get_on_stage(0), texture);
+        PT(TextureStage) stage;
+        if (tex_attrib->get_num_on_stages() < 2)
+        {
+            stage = new TextureStage("normal-10");
+            stage->set_sort(10);
+        }
+        else
+        {
+            stage = tex_attrib->get_on_stage(1);
+        }
+
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(stage, texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib,
+            state->get_override(TextureAttrib::get_class_type())));
     }
     else
     {
-        new_attrib = TextureAttrib::make(texture);
+        RPObject::global_error("RPGeomNode", "The geom does NOT have any texture.");
     }
-    node_->set_geom_state(geom_index, state->set_attrib(new_attrib));
+}
+
+void RPGeomNode::set_specular_texture(int geom_index, Texture* texture, int priority)
+{
+    if (!check_index_bound(geom_index))
+        return;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
+    if (state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
+
+        PT(TextureStage) stage;
+        const auto num_on_stages = tex_attrib->get_num_on_stages();
+        if (num_on_stages > 2)
+        {
+            stage = tex_attrib->get_on_stage(2);
+        }
+        else if (num_on_stages > 1)
+        {
+            stage = new TextureStage("specular-20");
+            stage->set_sort(20);
+        }
+        else
+        {
+            RPObject::global_error("RPGeomNode", "The geom does NOT have 'basecolor' or 'normal' texture.");
+        }
+
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(stage, texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib,
+            state->get_override(TextureAttrib::get_class_type())));
+    }
+    else
+    {
+        RPObject::global_error("RPGeomNode", "The geom does NOT have any texture.");
+    }
+}
+
+void RPGeomNode::set_roughness_texture(int geom_index, Texture* texture, int priority)
+{
+    if (!check_index_bound(geom_index))
+        return;
+
+    const RenderState* state = node_->get_geom_state(geom_index);
+
+    if (state->has_attrib(TextureAttrib::get_class_type()))
+    {
+        const TextureAttrib* tex_attrib = DCAST(TextureAttrib, state->get_attrib(TextureAttrib::get_class_type()));
+
+        PT(TextureStage) stage;
+        const auto num_on_stages = tex_attrib->get_num_on_stages();
+        if (num_on_stages > 3)
+        {
+            stage = tex_attrib->get_on_stage(3);
+        }
+        else if (num_on_stages > 2)
+        {
+            stage = new TextureStage("roughness-30");
+            stage->set_sort(30);
+        }
+        else
+        {
+            RPObject::global_error("RPGeomNode", "The geom does NOT have 'basecolor', 'normal' or 'specular' texture.");
+        }
+
+        CPT(RenderAttrib) new_attrib = tex_attrib->add_on_stage(stage, texture, priority);
+        node_->set_geom_state(geom_index, state->set_attrib(new_attrib,
+            state->get_override(TextureAttrib::get_class_type())));
+    }
+    else
+    {
+        RPObject::global_error("RPGeomNode", "The geom does NOT have any texture.");
+    }
 }
 
 size_t RPGeomNode::get_vertex_data_size(int geom_index, size_t array_index) const
