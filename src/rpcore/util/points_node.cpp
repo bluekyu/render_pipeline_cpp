@@ -80,16 +80,17 @@ void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPo
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
+    CPT(RenderState) state = RenderState::make(DCAST(ShaderAttrib, ShaderAttrib::make_default())->set_flag(ShaderAttrib::F_shader_point_size, true));
+
     PT(GeomNode) geom_node = new GeomNode(name);
-    geom_node->add_geom(geom);
+    geom_node->add_geom(geom, state);
 
     // default material
     points_np_ = NodePath(geom_node);
-    RPGeomNode gn(points_np_);
+    RPGeomNode gn(geom_node);
     gn.set_material(0, RPMaterial());
 
     set_radius(radius);
-    points_np_.set_attrib(DCAST(ShaderAttrib, points_np_.get_attrib(ShaderAttrib::get_class_type()))->set_flag(ShaderAttrib::F_shader_point_size, true));
 }
 
 int PointsNode::Impl::get_active_point_count() const

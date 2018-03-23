@@ -1,7 +1,7 @@
 /**
  * Render Pipeline C++
  *
- * Copyright (c) 2016-2017 Center of Human-centered Interaction for Coexistence.
+ * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -27,6 +27,12 @@
 
 namespace rpcore {
 
+/**
+ * Line Primitive.
+ *
+ * Note that, this line is rasterized line, so the thickness means filled pixels.
+ * Therefore, the line cannot be magnified or minimized from different views.
+ */
 class RENDER_PIPELINE_DECL LineNode
 {
 public:
@@ -47,7 +53,69 @@ public:
      * Therefore, in non-stereo mode, this does not apply the effect actually.
      */
     static void set_line_effect(NodePath np);
+
+public:
+    LineNode(const std::string& name, const std::vector<LPoint3f>& points,
+        float thickness = 1.0f, GeomEnums::UsageHint buffer_hint = GeomEnums::UH_static);
+
+    LineNode(const LineNode&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    LineNode(LineNode&&);
+#endif
+
+    ~LineNode();
+
+    LineNode& operator=(const LineNode&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    LineNode& operator=(LineNode&& other);
+#endif
+
+    NodePath get_nodepath() const;
+
+    void set_line_effect() const;
+
+    /** Get position. */
+    const LPoint3f& get_position(int point_index) const;
+
+    /** Get positions. */
+    const std::vector<LPoint3f>& get_positions() const;
+
+    std::vector<LPoint3f>& modify_positions();
+
+    /** Set the position on the point_index-th point. */
+    void set_position(const LPoint3f& positions, int point_index);
+
+    /**
+    * Set the positions.
+    *
+    * If the size is different with the original size,
+    * then re-create the vertex memory and the index memory.
+    */
+    void set_positions(const std::vector<LPoint3f>& positions);
+
+    /** Upload transform buffer texture to GPU. */
+    void upload_positions();
+
+    /** Get the total count of points. */
+    int get_point_count() const;
+
+    /** Get the active count of points. */
+    int get_active_point_count() const;
+
+    /**
+    * Set a count of active points.
+    *
+    * Panda3D will draw points as given counts.
+    * If @a count is -1, all points will be used.
+    */
+    void set_active_point_count(int count);
+
+    float get_thickness() const;
+    void set_thickness(float thickness);
+
+private:
+    class Impl;
+    std::unique_ptr<Impl> impl_;
 };
 
 }
-
