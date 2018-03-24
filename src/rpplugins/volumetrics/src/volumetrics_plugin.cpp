@@ -63,9 +63,9 @@ void VolumentricsPlugin::on_stage_setup()
         impl_->stage_->get_required_pipes().push_back("PSSMShadowAtlas");
 }
 
-const std::shared_ptr<VolumetricsStage>& VolumentricsPlugin::get_stage() const
+VolumetricsStage* VolumentricsPlugin::get_stage() const
 {
-    return impl_->stage_;
+    return impl_->stage_.get();
 }
 
 }

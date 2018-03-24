@@ -37,7 +37,7 @@ public:
 
     void on_stage_setup() final;
 
-    virtual const std::shared_ptr<VolumetricsStage>& get_stage() const;
+    virtual VolumetricsStage* get_stage() const;
 
 private:
     class Impl;

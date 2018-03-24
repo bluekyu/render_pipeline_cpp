@@ -223,7 +223,7 @@ void PSSMPlugin::on_pipeline_created()
 
     if (is_plugin_enabled("volumetrics"))
     {
-        const auto& stage = dynamic_cast<VolumentricsPlugin*>(get_plugin_instance("volumetrics"))->get_stage();
+        auto stage = dynamic_cast<VolumentricsPlugin*>(get_plugin_instance("volumetrics"))->get_stage();
         stage->set_shader_input(ShaderInput("pssm_mvps", impl_->camera_rig_->get_mvp_array()));
         stage->set_shader_input(ShaderInput("pssm_nearfar", impl_->camera_rig_->get_nearfar_array()));
     }
