@@ -37,6 +37,15 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPGeomNode
 {
 public:
+    enum class TextureStageIndex : int
+    {
+        basecolor = 0,
+        normal,
+        specular,
+        roughness,
+    };
+
+public:
     RPGeomNode(const NodePath& nodepath);
     RPGeomNode(PT(GeomNode) geomnode);
 
@@ -56,6 +65,15 @@ public:
     bool has_texture(int geom_index) const;
     Texture* get_texture(int geom_index) const;
     Texture* get_texture(int geom_index, TextureStage* stage) const;
+
+    /**
+     * Get the texture on specific type.
+     * @return  Texture pointer or nullptr if empty or failed.
+     */
+    Texture* get_basecolor_texture(int geom_index) const;
+    Texture* get_normal_texture(int geom_index) const;
+    Texture* get_specular_texture(int geom_index) const;
+    Texture* get_roughness_texture(int geom_index) const;
 
     /** Set the texture on the first TextureStage or default stage if texture does not exist. */
     void set_texture(int geom_index, Texture* texture, int priority = 0);
