@@ -88,7 +88,7 @@ void PSSMPlugin::Impl::toggle_update_enabled()
 
 void PSSMPlugin::Impl::on_pre_render_update()
 {
-    const LVecBase3f& sun_vector = std::dynamic_pointer_cast<rpplugins::ScatteringPlugin>(self_.get_plugin_instance("scattering"))->get_sun_vector();
+    const LVecBase3f& sun_vector = dynamic_cast<rpplugins::ScatteringPlugin*>(self_.get_plugin_instance("scattering"))->get_sun_vector();
 
     if (sun_vector.get_z() < 0.0f)
     {
@@ -223,7 +223,7 @@ void PSSMPlugin::on_pipeline_created()
 
     if (is_plugin_enabled("volumetrics"))
     {
-        const auto& stage = std::dynamic_pointer_cast<VolumentricsPlugin>(get_plugin_instance("volumetrics"))->get_stage();
+        const auto& stage = dynamic_cast<VolumentricsPlugin*>(get_plugin_instance("volumetrics"))->get_stage();
         stage->set_shader_input(ShaderInput("pssm_mvps", impl_->camera_rig_->get_mvp_array()));
         stage->set_shader_input(ShaderInput("pssm_nearfar", impl_->camera_rig_->get_nearfar_array()));
     }

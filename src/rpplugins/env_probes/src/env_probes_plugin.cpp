@@ -188,7 +188,7 @@ void EnvProbesPlugin::on_pre_render_update()
 
             if (is_plugin_enabled("pssm"))
             {
-                std::dynamic_pointer_cast<PSSMPlugin>(get_plugin_instance("pssm"))->request_focus(probe->get_bounds()->get_center(), probe->get_bounds()->get_radius());
+                dynamic_cast<PSSMPlugin*>(get_plugin_instance("pssm"))->request_focus(probe->get_bounds()->get_center(), probe->get_bounds()->get_radius());
             }
         }
         else

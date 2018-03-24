@@ -86,7 +86,7 @@ DayBaseType::ValueType BasePlugin::get_daytime_setting(const std::string& settin
     return handle->get_scaled_value_at(pipeline_.get_daytime_mgr()->get_time());
 }
 
-const std::shared_ptr<BasePlugin>& BasePlugin::get_plugin_instance(const std::string& plugin_id) const
+BasePlugin* BasePlugin::get_plugin_instance(const std::string& plugin_id) const
 {
     return pipeline_.get_plugin_mgr()->get_instance(plugin_id);
 }

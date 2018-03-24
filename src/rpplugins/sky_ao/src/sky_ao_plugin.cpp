@@ -77,7 +77,7 @@ void SkyAOPlugin::on_post_stage_setup()
 {
     if (is_plugin_enabled("env_probes"))
     {
-        const auto& capture_stage = std::dynamic_pointer_cast<EnvProbesPlugin>(get_plugin_instance("env_probes"))->get_capture_stage();
+        const auto& capture_stage = dynamic_cast<EnvProbesPlugin*>(get_plugin_instance("env_probes"))->get_capture_stage();
 
         capture_stage->get_required_inputs().push_back("SkyAOCapturePosition");
         capture_stage->get_required_pipes().push_back("SkyAOHeight");

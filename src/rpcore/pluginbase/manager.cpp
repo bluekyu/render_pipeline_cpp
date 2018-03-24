@@ -518,9 +518,9 @@ void PluginManager::init_defines()
     }
 }
 
-const std::shared_ptr<BasePlugin>& PluginManager::get_instance(const std::string& plugin_id) const
+BasePlugin* PluginManager::get_instance(const std::string& plugin_id) const
 {
-    return impl_->instances_.at(plugin_id);
+    return impl_->instances_.at(plugin_id).get();
 }
 
 size_t PluginManager::get_enabled_plugins_count() const NOEXCEPT

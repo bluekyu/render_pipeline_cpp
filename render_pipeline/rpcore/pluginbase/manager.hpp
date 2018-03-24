@@ -116,7 +116,7 @@ public:
     const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings() const;
 
     /** Get plugin instance. */
-    const std::shared_ptr<BasePlugin>& get_instance(const std::string& plugin_id) const;
+    BasePlugin* get_instance(const std::string& plugin_id) const;
 
     /** Trigger hook. */
     ///@{

@@ -356,7 +356,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     LVecBase3f sun_vector(0);
     if (pipeline->get_plugin_mgr()->is_plugin_enabled("scattering"))
     {
-        sun_vector = dynamic_pointer_cast<rpplugins::ScatteringPlugin>(pipeline->get_plugin_mgr()->get_instance("scattering"))->get_sun_vector();
+        sun_vector = dynamic_cast<rpplugins::ScatteringPlugin*>(pipeline->get_plugin_mgr()->get_instance("scattering"))->get_sun_vector();
     }
 
     const NodePath& camera = Globals::base->get_cam();
@@ -380,11 +380,11 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     debug_lines_5_text = "Scene shadows:  ";
     if (pipeline->get_plugin_mgr()->is_plugin_enabled("pssm"))
     {
-        const std::shared_ptr<BasePlugin>& pssm_plugin = pipeline->get_plugin_mgr()->get_instance("pssm");
+        BasePlugin* pssm_plugin = pipeline->get_plugin_mgr()->get_instance("pssm");
 
         LVecBase3f focus_point;
         float focus_size;
-        bool exist = std::dynamic_pointer_cast<rpplugins::PSSMPlugin>(pssm_plugin)->get_last_focus(focus_point, focus_size);
+        bool exist = dynamic_cast<rpplugins::PSSMPlugin*>(pssm_plugin)->get_last_focus(focus_point, focus_size);
 
         if (exist)
         {

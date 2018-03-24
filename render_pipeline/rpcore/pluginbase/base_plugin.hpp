@@ -86,7 +86,7 @@ public:
 
     DayBaseType::ValueType get_daytime_setting(const std::string& setting_id, const std::string& plugin_id="") const;
 
-    const std::shared_ptr<BasePlugin>& get_plugin_instance(const std::string& plugin_id) const;
+    BasePlugin* get_plugin_instance(const std::string& plugin_id) const;
 
     /** Returns whether a plugin is enabled and loaded, given is plugin id. */
     bool is_plugin_enabled(const std::string& plugin_id) const;
