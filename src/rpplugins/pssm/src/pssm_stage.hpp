@@ -54,8 +54,8 @@ private:
     bool stereo_mode_ = false;
 
     bool _enabled;
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_shadows = nullptr;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target_shadows;
 };
 
 }    // namespace rpplugins

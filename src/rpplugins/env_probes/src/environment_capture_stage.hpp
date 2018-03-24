@@ -82,11 +82,11 @@ private:
     PT(Texture) _storage_tex_diffuse = nullptr;
     std::shared_ptr<rpcore::Image> _temporary_diffuse_map;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_store = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_store_diff = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _filter_diffuse_target = nullptr;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _filter_targets;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target_store;
+    rpcore::RenderTarget* _target_store_diff;
+    rpcore::RenderTarget* _filter_diffuse_target;
+    std::vector<rpcore::RenderTarget*> _filter_targets;
 };
 
 inline void EnvironmentCaptureStage::set_resolution(int resolution)

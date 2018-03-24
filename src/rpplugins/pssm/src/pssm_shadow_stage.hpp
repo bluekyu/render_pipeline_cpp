@@ -59,7 +59,7 @@ private:
     int _split_resolution = 512;
     std::vector<PT(DisplayRegion)> _split_regions;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    rpcore::RenderTarget* _target;
 };
 
 inline void PSSMShadowStage::set_num_splits(int num_splits)

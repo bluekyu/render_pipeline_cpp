@@ -42,9 +42,9 @@ public:
 
     bool enable_volumetric_shadows_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_upscale_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_combine_ = nullptr;
+    rpcore::RenderTarget* target_;
+    rpcore::RenderTarget* target_upscale_;
+    rpcore::RenderTarget* target_combine_;
 };
 
 VolumetricsStage::RequireType VolumetricsStage::Impl::required_inputs;

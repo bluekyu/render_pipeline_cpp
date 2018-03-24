@@ -45,9 +45,9 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<rpcore::RenderTarget> _render_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _upscale_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_apply_clouds = nullptr;
+    rpcore::RenderTarget* _render_target;
+    rpcore::RenderTarget* _upscale_target;
+    rpcore::RenderTarget* _target_apply_clouds;
 };
 
 }    // namespace rpplugins

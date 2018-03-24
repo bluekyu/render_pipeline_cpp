@@ -55,7 +55,7 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<rpcore::RenderTarget> target_cube_;
+    rpcore::RenderTarget* target_cube_;
     std::unique_ptr<rpcore::CubemapFilter> cubemap_filter_;
 };
 

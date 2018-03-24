@@ -69,10 +69,10 @@ private:
     PT(OrthographicLens) _cam_lens;
     NodePath _cam_node;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_convert = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_blur_v = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_blur_h = nullptr;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target_convert;
+    rpcore::RenderTarget* _target_blur_v;
+    rpcore::RenderTarget* _target_blur_h;
 };
 
 inline void PSSMDistShadowStage::set_resolution(int resolution)

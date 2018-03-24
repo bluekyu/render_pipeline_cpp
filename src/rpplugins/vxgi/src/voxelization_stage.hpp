@@ -87,9 +87,9 @@ private:
     PT(OrthographicLens) _voxel_cam_lens;
     NodePath _voxel_cam_np;
 
-    std::shared_ptr<rpcore::RenderTarget> _voxel_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _copy_target = nullptr;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _mip_targets;
+    rpcore::RenderTarget* _voxel_target;
+    rpcore::RenderTarget* _copy_target;
+    std::vector<rpcore::RenderTarget*> _mip_targets;
 };
 
 inline VoxelizationStage::VoxelizationStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "VoxelizationStage")

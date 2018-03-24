@@ -43,7 +43,7 @@ void ApplyLightsStage::create()
 {
     stereo_mode_ = pipeline_.is_stereo_mode();
 
-    target_ = create_target("ApplyLights").get();
+    target_ = create_target("ApplyLights");
     target_->add_color_attachment(16);
     if (stereo_mode_)
         target_->set_layers(2);

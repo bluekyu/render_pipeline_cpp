@@ -59,8 +59,8 @@ private:
     float capture_height_ = 100.0f;
     float max_radius_ = 100.0f;
 
-    std::shared_ptr<rpcore::RenderTarget> target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_convert_ = nullptr;
+    rpcore::RenderTarget* target_;
+    rpcore::RenderTarget* target_convert_;
 
     PT(Camera) _camera;
     PT(OrthographicLens) _cam_lens;

@@ -47,13 +47,13 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> _target_lum = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_analyze = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_apply = nullptr;
+    rpcore::RenderTarget* _target_lum;
+    rpcore::RenderTarget* _target_analyze;
+    rpcore::RenderTarget* _target_apply;
     std::shared_ptr<rpcore::Image> _tex_exposure;
     PT(Shader) _mip_shader;
 
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _mip_targets;
+    std::vector<rpcore::RenderTarget*> _mip_targets;
 };
 
 }    // namespace rpplugins

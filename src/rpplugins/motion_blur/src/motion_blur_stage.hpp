@@ -50,12 +50,12 @@ private:
 
     bool per_object_blur_;
     int _tile_size;
-    std::shared_ptr<rpcore::RenderTarget> _tile_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _tile_target_horiz = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _minmax_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _pack_target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_cam_blur = nullptr;
+    rpcore::RenderTarget* _tile_target;
+    rpcore::RenderTarget* _tile_target_horiz;
+    rpcore::RenderTarget* _minmax_target;
+    rpcore::RenderTarget* _pack_target;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target_cam_blur;
 };
 
 inline void MotionBlurStage::set_per_object_blur(bool per_object_blur)

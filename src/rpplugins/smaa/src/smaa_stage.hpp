@@ -58,10 +58,10 @@ private:
     bool use_reprojection_ = true;
     PTA_int jitter_index_;
 
-    std::shared_ptr<rpcore::RenderTarget> edge_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> blend_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> neighbor_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> resolve_target_ = nullptr;
+    rpcore::RenderTarget* edge_target_;
+    rpcore::RenderTarget* blend_target_;
+    rpcore::RenderTarget* neighbor_target_;
+    rpcore::RenderTarget* resolve_target_;
 
     PT(Texture) area_tex_ = nullptr;
     PT(Texture) search_tex_ = nullptr;

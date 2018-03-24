@@ -74,7 +74,7 @@ void RenderStage::set_active(bool state)
     }
 }
 
-std::shared_ptr<RenderTarget> RenderStage::create_target(const std::string& name)
+RenderTarget* RenderStage::create_target(const std::string& name)
 {
     const std::string& target_name = get_plugin_id() + ":" + stage_id_ + ":" + name;
 
@@ -85,9 +85,10 @@ std::shared_ptr<RenderTarget> RenderStage::create_target(const std::string& name
     }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-    return targets_.insert_or_assign(target_name, std::make_shared<RenderTarget>(target_name)).first->second;
+    return targets_.insert_or_assign(target_name, std::make_shared<RenderTarget>(target_name)).first->second.get();
 #else
-    return targets_[target_name] = std::make_shared<RenderTarget>(target_name);
+    targets_[target_name] = std::make_shared<RenderTarget>(target_name);
+    return targets_.at(target_name).get();
 #endif
 }
 

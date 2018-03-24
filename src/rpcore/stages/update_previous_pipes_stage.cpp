@@ -44,7 +44,7 @@ UpdatePreviousPipesStage::RequireType& UpdatePreviousPipesStage::get_required_pi
 void UpdatePreviousPipesStage::create()
 {
     debug("Creating previous pipes stage ..");
-    target_ = create_target("StorePreviousPipes").get();
+    target_ = create_target("StorePreviousPipes");
     target_->prepare_buffer();
 
     // Set inputs

@@ -45,12 +45,12 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<rpcore::RenderTarget> _target_spec = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_diff = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_blur_v = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_blur_h = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_upscale_diff = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_resolve = nullptr;
+    rpcore::RenderTarget* _target_spec;
+    rpcore::RenderTarget* _target_diff;
+    rpcore::RenderTarget* _target_blur_v;
+    rpcore::RenderTarget* _target_blur_h;
+    rpcore::RenderTarget* _target_upscale_diff;
+    rpcore::RenderTarget* _target_resolve;
 };
 
 }

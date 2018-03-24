@@ -46,7 +46,7 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> target_ = nullptr;
+    rpcore::RenderTarget* target_;
 };
 
 }    // namespace rpplugins

@@ -46,7 +46,7 @@ private:
     static RequireType required_pipes;
 
     PT(Texture) _final_tex = nullptr;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _blur_targets;
+    std::vector<rpcore::RenderTarget*> _blur_targets;
 };
 
 }    // namespace rpplugins

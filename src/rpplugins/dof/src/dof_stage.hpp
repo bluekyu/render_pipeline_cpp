@@ -45,13 +45,13 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<rpcore::RenderTarget> target_prefilter_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> tile_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> tile_target_horiz_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> minmax_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> presort_target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_merge_ = nullptr;
+    rpcore::RenderTarget* target_prefilter_;
+    rpcore::RenderTarget* tile_target_;
+    rpcore::RenderTarget* tile_target_horiz_;
+    rpcore::RenderTarget* minmax_target_;
+    rpcore::RenderTarget* presort_target_;
+    rpcore::RenderTarget* target_;
+    rpcore::RenderTarget* target_merge_;
 };
 
 }    // namespace rpplugins

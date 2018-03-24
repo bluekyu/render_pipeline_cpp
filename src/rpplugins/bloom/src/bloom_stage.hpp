@@ -56,12 +56,12 @@ private:
     int _num_mips = 6;
     bool _remove_fireflies = false;
 
-    std::shared_ptr<rpcore::RenderTarget> _target_firefly = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_apply = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_extract = nullptr;
+    rpcore::RenderTarget* _target_firefly;
+    rpcore::RenderTarget* _target_apply;
+    rpcore::RenderTarget* _target_extract;
     std::shared_ptr<rpcore::Image> _scene_target_img;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _downsample_targets;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> _upsample_targets;
+    std::vector<rpcore::RenderTarget*> _downsample_targets;
+    std::vector<rpcore::RenderTarget*> _upsample_targets;
 };
 
 inline void BloomStage::set_num_mips(int num_mips)

@@ -80,7 +80,7 @@ private:
     PT(OrthographicLens) _cam_lens;
     NodePath _cam_node;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    rpcore::RenderTarget* _target;
 };
 
 inline void PSSMSceneShadowStage::set_resolution(int resolution)

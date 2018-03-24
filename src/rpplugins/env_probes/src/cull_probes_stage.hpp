@@ -57,7 +57,7 @@ private:
     int _max_probes_per_cell = 4;
     int _slice_width;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    rpcore::RenderTarget* _target;
     std::shared_ptr<rpcore::Image> _per_cell_probes;
 };
 

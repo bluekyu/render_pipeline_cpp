@@ -49,7 +49,7 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    rpcore::RenderTarget* _target;
 };
 
 }

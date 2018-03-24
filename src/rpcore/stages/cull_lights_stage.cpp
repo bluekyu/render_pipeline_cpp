@@ -64,15 +64,15 @@ CullLightsStage::DefinesType CullLightsStage::get_produced_defines() const
 
 void CullLightsStage::create()
 {
-    target_visible_ = create_target("GetVisibleLights").get();
+    target_visible_ = create_target("GetVisibleLights");
     target_visible_->set_size(16);
     target_visible_->prepare_buffer();
 
-    target_cull_ = create_target("CullLights").get();
+    target_cull_ = create_target("CullLights");
     target_cull_->set_size(0);
     target_cull_->prepare_buffer();
 
-    target_group_ = create_target("GroupLightsByClass").get();
+    target_group_ = create_target("GroupLightsByClass");
     target_group_->set_size(0);
     target_group_->prepare_buffer();
 

@@ -50,8 +50,8 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> target_;
-    std::shared_ptr<rpcore::RenderTarget> target_upscale_;
+    rpcore::RenderTarget* target_;
+    rpcore::RenderTarget* target_upscale_;
 };
 
 }

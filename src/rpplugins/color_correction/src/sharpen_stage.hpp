@@ -49,8 +49,8 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target2 = nullptr;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target2;
 
     bool _sharpen_twice = true;
 };

@@ -94,9 +94,8 @@ public:
 
     /**
      * Create target and store it to RenderStage::targets.
-     * @warning DO NOT delete the target.
      */
-    std::shared_ptr<RenderTarget> create_target(const std::string& name);
+    RenderTarget* create_target(const std::string& name);
 
     /**
      * Removes a previously registered target. This unregisters the

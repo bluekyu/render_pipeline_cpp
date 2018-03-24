@@ -63,7 +63,7 @@ GraphicsOutput* ShadowStage::get_atlas_buffer() const
 
 void ShadowStage::create()
 {
-    target_ = create_target("ShadowAtlas").get();
+    target_ = create_target("ShadowAtlas");
     target_->set_size(size_);
     target_->add_depth_attachment(16);
     target_->prepare_render(NodePath());

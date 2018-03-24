@@ -43,7 +43,7 @@ void FinalStage::create()
 {
     stereo_mode_ = pipeline_.is_stereo_mode();
 
-    target_ = create_target("FinalStage").get();
+    target_ = create_target("FinalStage");
     target_->add_color_attachment(16);
     if (stereo_mode_)
         target_->set_layers(2);
@@ -58,7 +58,7 @@ void FinalStage::create()
     // also has the nice side effect that when taking screenshots(or using
     // the pixel inspector), we get the srgb corrected data, so its not too
     // much of a disadvantage.
-    present_target_ = create_target("FinalPresentStage").get();
+    present_target_ = create_target("FinalPresentStage");
     present_target_->present_on_screen();
     present_target_->set_shader_input(ShaderInput("SourceTex", target_->get_color_tex()));
 }

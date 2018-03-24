@@ -57,8 +57,8 @@ private:
     PT(Camera) _forward_cam;
     NodePath _forward_cam_np;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> _target_merge = nullptr;
+    rpcore::RenderTarget* _target;
+    rpcore::RenderTarget* _target_merge;
 };
 
 }    // namespace rpplugins

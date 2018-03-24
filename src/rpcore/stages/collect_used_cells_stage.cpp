@@ -41,7 +41,7 @@ CollectUsedCellsStage::ProduceType CollectUsedCellsStage::get_produced_pipes() c
 
 void CollectUsedCellsStage::create()
 {
-    target_ = create_target("CollectUsedCells").get();
+    target_ = create_target("CollectUsedCells");
     target_->set_size(0);
     target_->prepare_buffer();
 

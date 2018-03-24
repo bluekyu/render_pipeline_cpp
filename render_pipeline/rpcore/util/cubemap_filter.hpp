@@ -95,11 +95,11 @@ private:
     std::shared_ptr<Image> _spec_pref_map;
     std::shared_ptr<Image> _specular_map;
 
-    std::vector<std::shared_ptr<RenderTarget>> _targets_spec;
-    std::vector<std::shared_ptr<RenderTarget>> _targets_spec_filter;
+    std::vector<RenderTarget*> _targets_spec;
+    std::vector<RenderTarget*> _targets_spec_filter;
 
-    std::shared_ptr<RenderTarget> _diffuse_target;
-    std::shared_ptr<RenderTarget> _diff_filter_target;
+    RenderTarget* _diffuse_target;
+    RenderTarget* _diff_filter_target;
 };
 
 // ************************************************************************************************

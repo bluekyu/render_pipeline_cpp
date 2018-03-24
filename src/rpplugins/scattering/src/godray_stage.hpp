@@ -47,7 +47,7 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<rpcore::RenderTarget> _target = nullptr;
+    rpcore::RenderTarget* _target;
 };
 
 }

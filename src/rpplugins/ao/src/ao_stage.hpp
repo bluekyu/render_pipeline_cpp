@@ -50,11 +50,11 @@ private:
 
     std::string quality_;
 
-    std::shared_ptr<rpcore::RenderTarget> target_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_upscale_ = nullptr;
-    std::shared_ptr<rpcore::RenderTarget> target_detail_ao_ = nullptr;
-    std::vector<std::shared_ptr<rpcore::RenderTarget>> blur_targets_;
-    std::shared_ptr<rpcore::RenderTarget> target_resolve_ = nullptr;
+    rpcore::RenderTarget* target_;
+    rpcore::RenderTarget* target_upscale_;
+    rpcore::RenderTarget* target_detail_ao_;
+    std::vector<rpcore::RenderTarget*> blur_targets_;
+    rpcore::RenderTarget* target_resolve_;
 };
 
 inline AOStage::RequireType& AOStage::get_required_inputs() const
