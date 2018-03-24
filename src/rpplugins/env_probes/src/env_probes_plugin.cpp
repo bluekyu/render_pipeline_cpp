@@ -159,14 +159,14 @@ void EnvProbesPlugin::on_prepare_scene(NodePath scene)
     const NodePathCollection& ep_npc = scene.find_all_matches("**/ENVPROBE*");
     for (int k=0, k_end=ep_npc.get_num_paths(); k < k_end; ++k)
     {
-        auto probe = std::make_shared<EnvironmentProbe>();
-        impl_->probe_mgr_->add_probe(probe);
+        auto probe = std::make_unique<EnvironmentProbe>();
+        auto probe_raw = probe.get();
 
-        if (probe)
+        if (impl_->probe_mgr_->add_probe(std::move(probe)))
         {
-            probe->set_mat(ep_npc.get_path(k).get_mat());
-            probe->set_border_smoothness(0.0001f);
-            probe->set_parallax_correction(true);
+            probe_raw->set_mat(ep_npc.get_path(k).get_mat());
+            probe_raw->set_border_smoothness(0.0001f);
+            probe_raw->set_parallax_correction(true);
             ep_npc.get_path(k).remove_node();
         }
     }
@@ -178,7 +178,7 @@ void EnvProbesPlugin::on_pre_render_update()
     {
         impl_->probe_mgr_->update();
         impl_->pta_probes_[0] = impl_->probe_mgr_->get_num_probes();
-        const auto& probe = impl_->probe_mgr_->find_probe_to_update();
+        auto probe = impl_->probe_mgr_->find_probe_to_update();
 
         if (probe)
         {

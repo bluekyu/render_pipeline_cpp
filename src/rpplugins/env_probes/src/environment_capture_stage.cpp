@@ -178,7 +178,7 @@ void EnvironmentCaptureStage::set_shader_input(const ShaderInput& inp)
     rpcore::Globals::render.set_shader_input(inp);
 }
 
-void EnvironmentCaptureStage::set_probe(const std::shared_ptr<EnvironmentProbe>& probe)
+void EnvironmentCaptureStage::set_probe(EnvironmentProbe* probe)
 {
     rig_node.set_mat(probe->get_matrix());
     _pta_index[0] = probe->get_index();

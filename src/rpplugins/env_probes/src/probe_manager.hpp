@@ -55,7 +55,7 @@ public:
     void init();
 
     /** Adds a new probe. */
-    bool add_probe(const std::shared_ptr<EnvironmentProbe>& probe);
+    bool add_probe(std::unique_ptr<EnvironmentProbe> probe);
 
     /** Updates the manager, updating all probes. */
     void update();
@@ -63,10 +63,11 @@ public:
     size_t get_num_probes() const;
 
     /** Finds the next probe which requires an update, or returns None. */
-    std::shared_ptr<EnvironmentProbe> find_probe_to_update() const;
+    EnvironmentProbe* find_probe_to_update();
 
 private:
-    std::vector<std::shared_ptr<EnvironmentProbe>> _probes;
+    std::vector<std::unique_ptr<EnvironmentProbe>> probes_;
+    std::vector<EnvironmentProbe*> sorted_probes_;
     int _max_probes = 3;
     int _resolution = 128;
     int _diffuse_resolution = 4;
@@ -108,7 +109,7 @@ inline std::shared_ptr<rpcore::Image> ProbeManager::get_dataset_storage() const
 
 inline size_t ProbeManager::get_num_probes() const
 {
-    return _probes.size();
+    return probes_.size();
 }
 
 }    // namespace rpplugins

@@ -55,45 +55,58 @@ void ProbeManager::init()
     _dataset_storage->clear_image();
 }
 
-bool ProbeManager::add_probe(const std::shared_ptr<EnvironmentProbe>& probe)
+bool ProbeManager::add_probe(std::unique_ptr<EnvironmentProbe> probe)
 {
-    if (_probes.size() >= _max_probes)
+    if (probes_.size() >= _max_probes)
     {
         error("Cannot attach probe, out of slots!");
         return false;
     }
 
     probe->set_last_update(-1);
-    probe->set_index(_probes.size());
-    _probes.push_back(probe);
+    probe->set_index(probes_.size());
+    sorted_probes_.push_back(probe.get());
+    probes_.push_back(std::move(probe));
 
     return true;
 }
 
 void ProbeManager::update()
 {
+    bool modified = false;
+    for (const auto& probe: probes_)
+    {
+        if (probe->is_modified())
+        {
+            modified = true;
+            break;
+        }
+    }
+    
+    if (!modified)
+        return;
+
     PTA_uchar buffer_ptr = _dataset_storage->get_texture()->modify_ram_image();
-    for (auto&& probe: _probes)
+    for (const auto& probe: probes_)
     {
         if (probe->is_modified())
             probe->write_to_buffer(buffer_ptr);
     }
 }
 
-std::shared_ptr<EnvironmentProbe> ProbeManager::find_probe_to_update() const
+EnvironmentProbe* ProbeManager::find_probe_to_update()
 {
-    if (_probes.empty())
+    if (probes_.empty())
         return nullptr;
 
     PT(GeometricBoundingVolume) view_frustum = DCAST(GeometricBoundingVolume, rpcore::Globals::base->get_cam_lens()->make_bounds());
     view_frustum->xform(rpcore::Globals::base->get_cam().get_transform(rpcore::Globals::base->get_render())->get_mat());
 
-    auto probes = _probes;
-    std::sort(probes.begin(), probes.end(), [](const decltype(probes)::value_type& lhs, const decltype(probes)::value_type& rhs) {
+    std::sort(sorted_probes_.begin(), sorted_probes_.end(), [](const decltype(sorted_probes_)::value_type& lhs, const decltype(sorted_probes_)::value_type& rhs) {
         return lhs->get_last_update() < rhs->get_last_update();
     });
 
-    for (const auto& candidate: probes)
+    for (const auto& candidate: sorted_probes_)
     {
         if (view_frustum->contains(candidate->get_bounds()) == BoundingVolume::IF_no_intersection)
             continue;

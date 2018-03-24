@@ -47,7 +47,7 @@ public:
 
     void set_shader_input(const ShaderInput& inp) final;
 
-    void set_probe(const std::shared_ptr<EnvironmentProbe>& probe);
+    void set_probe(EnvironmentProbe* probe);
 
     void set_resolution(int resolution);
     void set_diffuse_resolution(int diffuse_resolution);
