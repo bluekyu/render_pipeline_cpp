@@ -147,7 +147,7 @@ GroupedInputBlock::PTA_ID GroupedInputBlock::glsl_type_to_pta(const std::string&
 struct BindToVisitor : public boost::static_visitor<>
 {
 public:
-    BindToVisitor(const std::shared_ptr<RenderStage>& target): target(target)
+    BindToVisitor(RenderStage* target): target(target)
     {
     }
 
@@ -160,7 +160,7 @@ public:
     std::string input_name;
 
 private:
-    const std::shared_ptr<RenderStage>& target;
+    RenderStage* target;
 };
 #endif
 

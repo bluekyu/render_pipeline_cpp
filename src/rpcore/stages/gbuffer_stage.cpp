@@ -56,7 +56,7 @@ void GBufferStage::create()
 {
     const bool stereo_mode = pipeline_.is_stereo_mode();
 
-    target_ = create_target("GBuffer");
+    target_ = create_target("GBuffer").get();
     target_->add_color_attachment(16, true);
     target_->add_depth_attachment(32);
     target_->add_aux_attachments(16, 2);

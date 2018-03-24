@@ -42,7 +42,7 @@ void UpscaleStage::create()
 {
     stereo_mode_ = pipeline_.is_stereo_mode();
 
-    target_ = create_target("Upscale");
+    target_ = create_target("Upscale").get();
     target_->set_size(Globals::native_resolution);
     target_->add_color_attachment(16);
     if (stereo_mode_)

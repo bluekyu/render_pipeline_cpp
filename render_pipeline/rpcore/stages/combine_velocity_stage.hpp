@@ -26,8 +26,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-
 /** This stage combines the per-object velocity with the camera velocity. */
 class CombineVelocityStage : public RenderStage
 {
@@ -49,7 +47,7 @@ private:
     static RequireType required_pipes_;
 
     bool stereo_mode_ = false;
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
 };
 
 }

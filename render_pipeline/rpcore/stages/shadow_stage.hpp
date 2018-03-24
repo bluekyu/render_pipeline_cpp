@@ -56,7 +56,7 @@ private:
     static RequireType required_pipes_;
 
     size_t size_;
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
 };
 
 // ************************************************************************************************

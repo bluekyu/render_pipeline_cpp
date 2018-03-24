@@ -102,7 +102,7 @@ public:
      * Removes a previously registered target. This unregisters the
      * target, as well as removing it from the list of assigned targets.
      */
-    void remove_target(const std::shared_ptr<RenderTarget>& target);
+    void remove_target(RenderTarget* target);
 
     PT(Shader) load_shader(const std::vector<Filename>& args, bool stereo_post=false, bool use_post_gs=false) const;
 

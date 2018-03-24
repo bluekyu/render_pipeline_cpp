@@ -27,9 +27,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-class Image;
-
 /** This stage flags all used cells based on the depth buffer. */
 class FlagUsedCellsStage : public RenderStage
 {
@@ -54,7 +51,7 @@ private:
 
     std::shared_ptr<Image> cell_grid_flags_;
 
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
 };
 
 }

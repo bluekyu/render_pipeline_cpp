@@ -91,12 +91,12 @@ std::shared_ptr<RenderTarget> RenderStage::create_target(const std::string& name
 #endif
 }
 
-void RenderStage::remove_target(const std::shared_ptr<RenderTarget>& target)
+void RenderStage::remove_target(RenderTarget* target)
 {
     target->remove();
     for (auto&& key_value: targets_)
     {
-        if (target == key_value.second)
+        if (target == key_value.second.get())
         {
             targets_.erase(key_value.first);
             break;

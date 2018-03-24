@@ -27,8 +27,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-
 /**
  * This stage collects the flagged cells from the FlagUsedCellsStage and
  * makes a list of them.
@@ -57,7 +55,7 @@ private:
     std::shared_ptr<Image> cell_list_buffer_;
     std::shared_ptr<Image> cell_index_buffer_;
 
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
 };
 
 }

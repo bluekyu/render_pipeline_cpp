@@ -26,8 +26,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-
 /**
  * This stage is constructed by the StageManager and stores all the
  * current pipes in the previous pipe storage.
@@ -74,7 +72,7 @@ public:
 private:
     std::string get_plugin_id() const final;
 
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
     std::vector<std::pair<Texture*, Texture*>> transfers_;
 };
 

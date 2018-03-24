@@ -40,7 +40,7 @@ FlagUsedCellsStage::ProduceType FlagUsedCellsStage::get_produced_pipes() const
 
 void FlagUsedCellsStage::create()
 {
-    target_ = create_target("FlagUsedCells");
+    target_ = create_target("FlagUsedCells").get();
     target_->prepare_buffer();
 
     int culling_grid_slices = pipeline_.get_setting<int>("lighting.culling_grid_slices");

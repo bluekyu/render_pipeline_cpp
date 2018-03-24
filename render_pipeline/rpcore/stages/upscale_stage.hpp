@@ -26,8 +26,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-
 /** This stage upscales the scene to native resolution, using a bicubic filter. */
 class RENDER_PIPELINE_DECL UpscaleStage : public RenderStage
 {
@@ -54,7 +52,7 @@ private:
 
     bool stereo_mode_ = false;
 
-    std::shared_ptr<RenderTarget> target_;
+    RenderTarget* target_;
 };
 
 }

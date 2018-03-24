@@ -27,8 +27,6 @@
 
 namespace rpcore {
 
-class RenderTarget;
-
 /** This stage takes the list of used cells and creates a list of lights for each cell.*/
 class RENDER_PIPELINE_DECL CullLightsStage : public RenderStage
 {
@@ -67,9 +65,9 @@ private:
     std::shared_ptr<Image> grouped_cell_lights_;
     std::shared_ptr<Image> grouped_cell_lights_counts_;
 
-    std::shared_ptr<RenderTarget> target_visible_;
-    std::shared_ptr<RenderTarget> target_cull_;
-    std::shared_ptr<RenderTarget> target_group_;
+    RenderTarget* target_visible_;
+    RenderTarget* target_cull_;
+    RenderTarget* target_group_;
 };
 
 }

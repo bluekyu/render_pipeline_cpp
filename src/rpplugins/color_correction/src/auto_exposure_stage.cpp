@@ -84,7 +84,7 @@ void AutoExposureStage::create()
 void AutoExposureStage::set_dimensions()
 {
     for (auto&& old_target: _mip_targets)
-        remove_target(old_target);
+        remove_target(old_target.get());
 
     int wsize_x = (rpcore::Globals::resolution.get_x() + 3) / 4;
     int wsize_y = (rpcore::Globals::resolution.get_y() + 3) / 4;
