@@ -57,7 +57,7 @@ public:
     template <class T>
     void add_input(const std::string& id, const T& np);
 
-    void bind_to(const std::shared_ptr<RenderStage>& target) const;
+    void bind_to(RenderStage* target) const;
 
     const std::string& get_name() const;
 
@@ -160,7 +160,7 @@ public:
      * Binds all inputs of this UBO to the given target, which may be
      * either a RenderTarget or a NodePath.
      */
-    void bind_to(const std::shared_ptr<RenderStage>& target) const;
+    void bind_to(RenderStage* target) const;
 
     /** Updates an existing input. */
     void update_input(const std::string& name, int value, size_t index=0);

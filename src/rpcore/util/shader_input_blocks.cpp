@@ -31,7 +31,7 @@
 
 namespace rpcore {
 
-void SimpleInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) const
+void SimpleInputBlock::bind_to(RenderStage* target) const
 {
     for (const auto& key_val: inputs_)
         target->set_shader_input(key_val.second);
@@ -164,7 +164,7 @@ private:
 };
 #endif
 
-void GroupedInputBlock::bind_to(const std::shared_ptr<RenderStage>& target) const
+void GroupedInputBlock::bind_to(RenderStage* target) const
 {
     std::string name_prefix = name_;
     if (use_ubo_)

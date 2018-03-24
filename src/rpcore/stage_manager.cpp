@@ -52,16 +52,16 @@ public:
     void prepare_stages();
 
     /** Sets all required pipes on a stage. */
-    bool bind_pipes_to_stage(const std::shared_ptr<RenderStage>& stage);
+    bool bind_pipes_to_stage(RenderStage* stage);
 
     /** Binds all inputs including common inputs to the given stage. */
-    bool bind_inputs_to_stage(const std::shared_ptr<RenderStage>& stage);
+    bool bind_inputs_to_stage(RenderStage* stage);
 
     /**
      * Registers all produced pipes, inputs and defines from the given
      * stage, so they can be used by later stages.
      */
-    void register_stage_result(const std::shared_ptr<RenderStage>& stage);
+    void register_stage_result(RenderStage* stage);
 
     /**
      * Creates a target for each last-frame's pipe, any pipe starting
@@ -95,7 +95,7 @@ public:
         std::shared_ptr<GroupedInputBlock>>> input_block_list_;
     std::unordered_map<std::string, std::shared_ptr<Image>> previous_pipes_;
 
-    std::vector<std::pair<std::string, std::shared_ptr<RenderStage>>> future_bindings_;
+    std::vector<std::pair<std::string, RenderStage*>> future_bindings_;
     DefinesType defines_;
 
     std::shared_ptr<UpdatePreviousPipesStage> prev_stage_;
@@ -113,7 +113,7 @@ struct VisitorBindToStage : public boost::static_visitor<>
         block->bind_to(stage);
     }
 
-    std::shared_ptr<RenderStage> stage;
+    RenderStage* stage;
 };
 
 struct VisitorInsertToInputBlocks : public boost::static_visitor<>
@@ -180,7 +180,7 @@ void StageManager::Impl::prepare_stages()
     });
 }
 
-bool StageManager::Impl::bind_pipes_to_stage(const std::shared_ptr<RenderStage>& stage)
+bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
@@ -251,7 +251,7 @@ bool StageManager::Impl::bind_pipes_to_stage(const std::shared_ptr<RenderStage>&
     return true;
 }
 
-bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>& stage)
+bool StageManager::Impl::bind_inputs_to_stage(RenderStage* stage)
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 #else
@@ -299,7 +299,7 @@ bool StageManager::Impl::bind_inputs_to_stage(const std::shared_ptr<RenderStage>
     return true;
 }
 
-void StageManager::Impl::register_stage_result(const std::shared_ptr<RenderStage>& stage)
+void StageManager::Impl::register_stage_result(RenderStage* stage)
 {
     self_.trace(fmt::format("Registring the result of stage ({}).", stage->get_debug_name()));
 
@@ -534,12 +534,12 @@ void StageManager::setup()
         stage->handle_window_resize();
 
         // Rely on the methods to print an appropriate error message
-        if (!impl_->bind_pipes_to_stage(stage))
+        if (!impl_->bind_pipes_to_stage(stage.get()))
             continue;
-        if (!impl_->bind_inputs_to_stage(stage))
+        if (!impl_->bind_inputs_to_stage(stage.get()))
             continue;
 
-        impl_->register_stage_result(stage);
+        impl_->register_stage_result(stage.get());
     }
 
     impl_->create_previous_pipes();
