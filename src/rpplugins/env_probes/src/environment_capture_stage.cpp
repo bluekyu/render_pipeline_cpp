@@ -153,7 +153,7 @@ void EnvironmentCaptureStage::create_filter_targets()
 void EnvironmentCaptureStage::update()
 {
     // First, disable all targets
-    for (auto&& id_target: targets_)
+    for (const auto& id_target: get_targets())
         id_target.second->set_active(false);
 
     // Check for updated faces

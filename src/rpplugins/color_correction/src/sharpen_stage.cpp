@@ -71,7 +71,7 @@ void SharpenStage::create()
 void SharpenStage::reload_shaders()
 {
     auto sharpen_shader = load_plugin_shader({"sharpen.frag.glsl"}, stereo_mode_);
-    for (auto&& target: targets_)
+    for (const auto& target: get_targets())
         target.second->set_shader(sharpen_shader);
 }
 

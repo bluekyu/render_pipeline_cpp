@@ -66,7 +66,7 @@ public:
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
     RenderStage(const RenderStage&) = delete;
 
-    virtual ~RenderStage() {}
+    virtual ~RenderStage();
 
     RenderStage& operator=(const RenderStage&) = delete;
 
@@ -123,18 +123,21 @@ public:
 
 protected:
     RenderPipeline& pipeline_;
-    std::unordered_map<std::string, std::shared_ptr<RenderTarget>> targets_;
+
+    const std::unordered_map<std::string, std::unique_ptr<RenderTarget>>& get_targets() const;
 
     virtual std::string get_plugin_id() const = 0;
 
 private:
     PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const;
 
+    std::unordered_map<std::string, std::unique_ptr<RenderTarget>> targets_;
     const std::string stage_id_;
     bool active_ = true;
 };
 
 // ************************************************************************************************
+
 inline const std::string& RenderStage::get_stage_id() const
 {
     return stage_id_;
@@ -143,6 +146,11 @@ inline const std::string& RenderStage::get_stage_id() const
 inline bool RenderStage::get_active() const
 {
     return active_;
+}
+
+inline const std::unordered_map<std::string, std::unique_ptr<RenderTarget>>& RenderStage::get_targets() const
+{
+    return targets_;
 }
 
 }

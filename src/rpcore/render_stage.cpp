@@ -43,6 +43,8 @@ RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id):
 {
 }
 
+RenderStage::~RenderStage() = default;
+
 RenderStage::ProduceType RenderStage::get_produced_inputs() const
 {
     return {};
@@ -60,7 +62,7 @@ RenderStage::DefinesType RenderStage::get_produced_defines() const
 
 void RenderStage::set_shader_input(const ShaderInput& inp)
 {
-    for (auto&& target: targets_)
+    for (const auto& target: targets_)
         target.second->set_shader_input(inp);
 }
 
@@ -69,7 +71,7 @@ void RenderStage::set_active(bool state)
     if (active_ != state)
     {
         active_ = state;
-        for (auto&& target: targets_)
+        for (const auto& target: targets_)
             target.second->set_active(active_);
     }
 }
@@ -85,7 +87,7 @@ RenderTarget* RenderStage::create_target(const std::string& name)
     }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-    return targets_.insert_or_assign(target_name, std::make_shared<RenderTarget>(target_name)).first->second.get();
+    return targets_.insert_or_assign(target_name, std::make_unique<RenderTarget>(target_name)).first->second.get();
 #else
     targets_[target_name] = std::make_shared<RenderTarget>(target_name);
     return targets_.at(target_name).get();
@@ -95,7 +97,7 @@ RenderTarget* RenderStage::create_target(const std::string& name)
 void RenderStage::remove_target(RenderTarget* target)
 {
     target->remove();
-    for (auto&& key_value: targets_)
+    for (const auto& key_value: targets_)
     {
         if (target == key_value.second.get())
         {
@@ -119,7 +121,7 @@ PT(Shader) RenderStage::load_plugin_shader(const std::vector<Filename>& args, bo
 void RenderStage::handle_window_resize()
 {
     set_dimensions();
-    for (auto&& target: targets_)
+    for (const auto& target: targets_)
         target.second->consider_resize();
 }
 
