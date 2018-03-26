@@ -37,7 +37,7 @@ public:
     void on_prepare_scene(NodePath scene) final;
     void on_pre_render_update() final;
 
-    virtual std::shared_ptr<rpcore::RenderStage> get_capture_stage();
+    virtual rpcore::RenderStage* get_capture_stage();
 
 private:
     class Impl;

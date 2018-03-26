@@ -36,7 +36,7 @@ class VolumentricsPlugin::Impl
 public:
     static RequrieType require_plugins_;
 
-    std::shared_ptr<VolumetricsStage> stage_;
+    VolumetricsStage* stage_;
 };
 
 VolumentricsPlugin::RequrieType VolumentricsPlugin::Impl::require_plugins_ = { "pssm" };
@@ -52,8 +52,9 @@ VolumentricsPlugin::RequrieType& VolumentricsPlugin::get_required_plugins() cons
 
 void VolumentricsPlugin::on_stage_setup()
 {
-    impl_->stage_ = std::make_shared<VolumetricsStage>(pipeline_);
-    add_stage(impl_->stage_);
+    auto stage = std::make_unique<VolumetricsStage>(pipeline_);
+    impl_->stage_ = stage.get();
+    add_stage(std::move(stage));
 
     impl_->stage_->set_enable_volumetric_shadows(boost::any_cast<bool>(get_setting("enable_volumetric_shadows")));
 
@@ -65,7 +66,7 @@ void VolumentricsPlugin::on_stage_setup()
 
 VolumetricsStage* VolumentricsPlugin::get_stage() const
 {
-    return impl_->stage_.get();
+    return impl_->stage_;
 }
 
 }

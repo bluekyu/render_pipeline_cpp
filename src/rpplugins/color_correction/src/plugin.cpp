@@ -45,28 +45,30 @@ void Plugin::on_pipeline_created()
 
 void Plugin::on_stage_setup()
 {
-    _stage = std::make_shared<ColorCorrectionStage>(pipeline_);
-    add_stage(_stage);
+    auto stage = std::make_unique<ColorCorrectionStage>(pipeline_);
+    stage_ = stage.get();
+    add_stage(std::move(stage));
 
-    _tonemapping_stage = std::make_shared<TonemappingStage>(pipeline_);
-    add_stage(_tonemapping_stage);
+    auto tonemapping_stage = std::make_unique<TonemappingStage>(pipeline_);
+    tonemapping_stage_ = tonemapping_stage.get();
+    add_stage(std::move(tonemapping_stage));
 
     if (boost::any_cast<bool>(get_setting("use_sharpen")))
     {
-        _sharpen_stage = std::make_shared<SharpenStage>(pipeline_);
-        add_stage(_sharpen_stage);
-        _sharpen_stage->set_sharpen_twice(boost::any_cast<bool>(get_setting("sharpen_twice")));
+        auto sharpen_stage = std::make_unique<SharpenStage>(pipeline_);
+        sharpen_stage->set_sharpen_twice(boost::any_cast<bool>(get_setting("sharpen_twice")));
+        add_stage(std::move(sharpen_stage));
     }
 
     if (boost::any_cast<bool>(get_setting("manual_camera_parameters")))
     {
-        _exposure_stage_manual = std::make_shared<ManualExposureStage>(pipeline_);
-        add_stage(_exposure_stage_manual);
+        auto exposure_stage_manual = std::make_unique<ManualExposureStage>(pipeline_);
+        add_stage(std::move(exposure_stage_manual));
     }
     else
     {
-        _exposure_stage_auto = std::make_shared<AutoExposureStage>(pipeline_);
-        add_stage(_exposure_stage_auto);
+        auto exposure_stage_auto = std::make_unique<AutoExposureStage>(pipeline_);
+        add_stage(std::move(exposure_stage_auto));
     }
 }
 
@@ -80,7 +82,7 @@ void Plugin::load_lut()
     lut->set_minfilter(SamplerState::FT_linear);
     lut->set_magfilter(SamplerState::FT_linear);
     lut->set_anisotropic_degree(0);
-    _tonemapping_stage->set_shader_input(ShaderInput("ColorLUT", lut));
+    tonemapping_stage_->set_shader_input(ShaderInput("ColorLUT", lut));
 }
 
 void Plugin::load_grain()
@@ -91,7 +93,7 @@ void Plugin::load_grain()
     grain_tex->set_wrap_u(SamplerState::WM_repeat);
     grain_tex->set_wrap_v(SamplerState::WM_repeat);
     grain_tex->set_anisotropic_degree(0);
-    _stage->set_shader_input(ShaderInput("PrecomputedGrain", grain_tex));
+    stage_->set_shader_input(ShaderInput("PrecomputedGrain", grain_tex));
 }
 
 void Plugin::update_color_lut()

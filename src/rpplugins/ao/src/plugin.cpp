@@ -41,10 +41,11 @@ Plugin::~Plugin() = default;
 
 void Plugin::on_stage_setup()
 {
-    stage_ = std::make_shared<AOStage>(pipeline_);
-    add_stage(stage_);
+    auto stage = std::make_unique<AOStage>(pipeline_);
 
-    stage_->set_quality(boost::any_cast<std::string>(get_setting("blur_quality")));
+    stage->set_quality(boost::any_cast<std::string>(get_setting("blur_quality")));
+
+    add_stage(std::move(stage));
 
     // Make the stages use our output
     rpcore::AmbientStage::get_global_required_pipes().push_back("AmbientOcclusion");

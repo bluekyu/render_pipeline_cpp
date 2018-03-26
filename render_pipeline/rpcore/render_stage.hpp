@@ -65,10 +65,12 @@ public:
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
     RenderStage(const RenderStage&) = delete;
+    RenderStage(RenderStage&&);
 
     virtual ~RenderStage();
 
     RenderStage& operator=(const RenderStage&) = delete;
+    RenderStage& operator=(RenderStage&&) = delete;
 
     virtual RequireType& get_required_inputs() const = 0;
     virtual RequireType& get_required_pipes() const = 0;

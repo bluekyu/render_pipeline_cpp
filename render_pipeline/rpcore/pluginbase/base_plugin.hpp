@@ -80,7 +80,7 @@ public:
     /** Converts a local path from the plugins shader directory into an absolute path. */
     Filename get_shader_resource(const Filename& pth) const;
 
-    void add_stage(const std::shared_ptr<RenderStage>& stage);
+    void add_stage(std::unique_ptr<RenderStage> stage);
 
     const boost::any& get_setting(const std::string& setting_id, const std::string& plugin_id="") const;
 

@@ -54,6 +54,16 @@ LightManager::~LightManager()
 {
     internal_mgr_.reset();
     shadow_manager_.reset();
+
+    StageManager* stage_mgr = pipeline_.get_stage_mgr();
+    if (!stage_mgr)
+        return;
+
+    stage_mgr->remove_stage(flag_cells_stage_.get());
+    stage_mgr->remove_stage(collect_cells_stage_.get());
+    stage_mgr->remove_stage(cull_lights_stage_.get());
+    stage_mgr->remove_stage(apply_lights_stage_.get());
+    stage_mgr->remove_stage(shadow_stage_.get());
 }
 
 int LightManager::get_total_tiles() const
@@ -171,14 +181,21 @@ void LightManager::init_stages()
 {
     StageManager* stage_mgr = pipeline_.get_stage_mgr();
     
-    stage_mgr->add_stage(std::make_shared<FlagUsedCellsStage>(pipeline_));
-    stage_mgr->add_stage(std::make_shared<CollectUsedCellsStage>(pipeline_));
-    stage_mgr->add_stage(std::make_shared<CullLightsStage>(pipeline_));
-    stage_mgr->add_stage(std::make_shared<ApplyLightsStage>(pipeline_));
+    flag_cells_stage_ = std::make_unique<FlagUsedCellsStage>(pipeline_);
+    stage_mgr->add_stage(flag_cells_stage_.get());
+
+    collect_cells_stage_ = std::make_unique<CollectUsedCellsStage>(pipeline_);
+    stage_mgr->add_stage(collect_cells_stage_.get());
+
+    cull_lights_stage_ = std::make_unique<CullLightsStage>(pipeline_);
+    stage_mgr->add_stage(cull_lights_stage_.get());
+
+    apply_lights_stage_ = std::make_unique<ApplyLightsStage>(pipeline_);
+    stage_mgr->add_stage(apply_lights_stage_.get());
     
-    shadow_stage_ = std::make_shared<ShadowStage>(pipeline_);
+    shadow_stage_ = std::make_unique<ShadowStage>(pipeline_);
     shadow_stage_->set_size(shadow_manager_->get_atlas_size());
-    stage_mgr->add_stage(shadow_stage_);
+    stage_mgr->add_stage(shadow_stage_.get());
 }
 
 void LightManager::init_defines()

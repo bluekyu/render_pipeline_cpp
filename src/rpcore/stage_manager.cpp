@@ -80,7 +80,7 @@ public:
     RenderPipeline& pipeline_;
 
     bool created_ = false;
-    std::vector<std::shared_ptr<RenderStage>> stages_;
+    std::vector<RenderStage*> stages_;
     std::unordered_map<std::string, ShaderInput> inputs_;
 
     std::unordered_map<std::string, ShaderInput> pipes_;
@@ -166,16 +166,16 @@ void StageManager::Impl::prepare_stages()
     self_.debug("Preparing stages ..");
 
     // Remove all disabled stages
-    std::vector<std::shared_ptr<RenderStage>> enabled_stages;
+    std::vector<RenderStage*> enabled_stages;
     for (auto&& stage: stages_)
     {
         if (!stage->disabled_)
             enabled_stages.push_back(stage);
     }
 
-    stages_ = std::move(enabled_stages);
+    stages_.swap(enabled_stages);
 
-    std::sort(stages_.begin(), stages_.end(), [this](const std::shared_ptr<RenderStage>& lhs, const std::shared_ptr<RenderStage>& rhs) {
+    std::sort(stages_.begin(), stages_.end(), [this](RenderStage* lhs, RenderStage* rhs) {
         return std::find(stage_order_.begin(), stage_order_.end(), lhs->get_stage_id()) < std::find(stage_order_.begin(), stage_order_.end(), rhs->get_stage_id());
     });
 }
@@ -398,7 +398,7 @@ bool StageManager::Impl::create_previous_pipes()
 
         prev_stage_->create();
         prev_stage_->set_dimensions();
-        stages_.push_back(prev_stage_);
+        stages_.push_back(prev_stage_.get());
     }
 
     return true;
@@ -467,12 +467,12 @@ void StageManager::add_input_blocks(const std::shared_ptr<GroupedInputBlock>& in
     impl_->input_block_list_.push_back(input_block);
 }
 
-const std::vector<std::shared_ptr<RenderStage>>& StageManager::get_stages() const
+const std::vector<RenderStage*>& StageManager::get_stages() const
 {
     return impl_->stages_;
 }
 
-void StageManager::add_stage(const std::shared_ptr<RenderStage>& stage)
+void StageManager::add_stage(RenderStage* stage)
 {
     trace(fmt::format("Adding stage ({}) ...", stage->get_debug_name()));
 
@@ -491,12 +491,21 @@ void StageManager::add_stage(const std::shared_ptr<RenderStage>& stage)
     impl_->stages_.push_back(stage);
 }
 
-std::shared_ptr<RenderStage> StageManager::get_stage(const std::string& stage_id) const
+void StageManager::remove_stage(RenderStage* stage)
+{
+    trace(fmt::format("Removing stage ({}) ...", stage->get_debug_name()));
+
+    auto found = std::find(impl_->stages_.begin(), impl_->stages_.end(), stage);
+    if (found != std::end(impl_->stages_))
+        impl_->stages_.erase(found);
+}
+
+RenderStage* StageManager::get_stage(const std::string& stage_id) const
 {
     for (const auto& stage: impl_->stages_)
         if (stage->get_stage_id() == stage_id)
             return stage;
-    return std::shared_ptr<RenderStage>(nullptr);
+    return nullptr;
 }
 
 void StageManager::setup()
@@ -534,12 +543,12 @@ void StageManager::setup()
         stage->handle_window_resize();
 
         // Rely on the methods to print an appropriate error message
-        if (!impl_->bind_pipes_to_stage(stage.get()))
+        if (!impl_->bind_pipes_to_stage(stage))
             continue;
-        if (!impl_->bind_inputs_to_stage(stage.get()))
+        if (!impl_->bind_inputs_to_stage(stage))
             continue;
 
-        impl_->register_stage_result(stage.get());
+        impl_->register_stage_result(stage);
     }
 
     impl_->create_previous_pipes();

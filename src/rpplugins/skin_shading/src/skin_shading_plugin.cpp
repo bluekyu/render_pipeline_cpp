@@ -30,31 +30,22 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
 
 namespace rpplugins {
 
-class SkinShadingPlugin::Impl
-{
-public:
-    static RequrieType require_plugins_;
-
-    std::shared_ptr<SkinShadingStage> stage_;
-};
-
-SkinShadingPlugin::RequrieType SkinShadingPlugin::Impl::require_plugins_;
+SkinShadingPlugin::RequrieType SkinShadingPlugin::require_plugins_;
 
 // ************************************************************************************************
 
-SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
 {
 }
 
 SkinShadingPlugin::RequrieType& SkinShadingPlugin::get_required_plugins() const
 {
-    return impl_->require_plugins_;
+    return require_plugins_;
 }
 
 void SkinShadingPlugin::on_stage_setup()
 {
-    impl_->stage_ = std::make_shared<SkinShadingStage>(pipeline_);
-    add_stage(impl_->stage_);
+    add_stage(std::make_unique<SkinShadingStage>(pipeline_));
 }
 
 }

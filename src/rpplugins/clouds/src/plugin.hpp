@@ -41,7 +41,7 @@ public:
 private:
     static RequrieType require_plugins;
 
-    std::shared_ptr<ApplyCloudsStage> _apply_stage;
+    ApplyCloudsStage* apply_stage_;
 };
 
 }

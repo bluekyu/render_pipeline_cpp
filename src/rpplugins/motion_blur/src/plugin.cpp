@@ -25,6 +25,8 @@
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
 
+#include "motion_blur_stage.hpp"
+
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
@@ -37,10 +39,11 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, R
 
 void Plugin::on_stage_setup()
 {
-    _stage = std::make_shared<MotionBlurStage>(pipeline_);
-    add_stage(_stage);
-    _stage->set_tile_size(boost::any_cast<int>(get_setting("tile_size")));
-    _stage->set_per_object_blur(boost::any_cast<bool>(get_setting("enable_object_blur")));
+    auto stage = std::make_unique<MotionBlurStage>(pipeline_);
+    stage->set_tile_size(boost::any_cast<int>(get_setting("tile_size")));
+    stage->set_per_object_blur(boost::any_cast<bool>(get_setting("enable_object_blur")));
+
+    add_stage(std::move(stage));
 }
 
 }

@@ -40,8 +40,6 @@ public:
 
 private:
     static RequrieType require_plugins;
-
-    std::shared_ptr<AOStage> stage_;
 };
 
 }

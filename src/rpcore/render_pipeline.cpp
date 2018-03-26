@@ -251,6 +251,13 @@ public:
     std::unique_ptr<LoadingScreen> loading_screen_;
     std::unique_ptr<CommonResources> common_resources_;
 
+    std::unique_ptr<AmbientStage> ambient_stage_;
+    std::unique_ptr<GBufferStage> gbuffer_stage_;
+    std::unique_ptr<FinalStage> final_stage_;
+    std::unique_ptr<DownscaleZStage> downscale_stage_;
+    std::unique_ptr<CombineVelocityStage> combine_velocity_stage_;
+    std::unique_ptr<UpscaleStage> upscale_stage_;
+
     PT(rppanda::ShowBase) showbase_ = nullptr;
     std::unique_ptr<TaskScheduler> task_scheduler_;
     std::unique_ptr<TagStateManager> tag_mgr_;
@@ -275,8 +282,8 @@ RenderPipeline::Impl::~Impl()
     common_resources_.reset();
     ies_loader_.reset();
     daytime_mgr_.reset();
-    light_mgr_.reset();
     stage_mgr_.reset();
+    light_mgr_.reset();
     tag_mgr_.reset();
     task_scheduler_.reset();
     debugger_.reset();
@@ -754,15 +761,27 @@ void RenderPipeline::Impl::init_common_stages()
 {
     self_.trace("Initailizing common stages ...");
 
-    stage_mgr_->add_stage(std::make_shared<AmbientStage>(self_));
-    stage_mgr_->add_stage(std::make_shared<GBufferStage>(self_));
-    stage_mgr_->add_stage(std::make_shared<FinalStage>(self_));
-    stage_mgr_->add_stage(std::make_shared<DownscaleZStage>(self_));
-    stage_mgr_->add_stage(std::make_shared<CombineVelocityStage>(self_));
+    ambient_stage_ = std::make_unique<AmbientStage>(self_);
+    stage_mgr_->add_stage(ambient_stage_.get());
+
+    gbuffer_stage_ = std::make_unique<GBufferStage>(self_);
+    stage_mgr_->add_stage(gbuffer_stage_.get());
+
+    final_stage_ = std::make_unique<FinalStage>(self_);
+    stage_mgr_->add_stage(final_stage_.get());
+
+    downscale_stage_ = std::make_unique<DownscaleZStage>(self_);
+    stage_mgr_->add_stage(downscale_stage_.get());
+
+    combine_velocity_stage_ = std::make_unique<CombineVelocityStage>(self_);
+    stage_mgr_->add_stage(combine_velocity_stage_.get());
 
     // Add an upscale/downscale stage in case we render at a different resolution
     if (Globals::resolution != Globals::native_resolution)
-        stage_mgr_->add_stage(std::make_shared<UpscaleStage>(self_));
+    {
+        upscale_stage_ = std::make_unique<UpscaleStage>(self_);
+        stage_mgr_->add_stage(upscale_stage_.get());
+    }
 }
 
 NodePath RenderPipeline::Impl::create_default_skybox(float size)

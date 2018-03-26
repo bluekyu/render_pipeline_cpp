@@ -27,6 +27,8 @@
 
 #include <render_pipeline/rpcore/loader.hpp>
 
+#include "dof_stage.hpp"
+
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
@@ -39,8 +41,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 
 void Plugin::on_stage_setup()
 {
-    _bloom_stage = std::make_shared<DoFStage>(pipeline_);
-    add_stage(_bloom_stage);
+    add_stage(std::move(std::make_unique<DoFStage>(pipeline_)));
 }
 
 }

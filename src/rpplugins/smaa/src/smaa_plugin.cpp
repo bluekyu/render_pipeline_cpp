@@ -63,7 +63,7 @@ public:
 
     std::vector<LVecBase2> jitters_;
     int jitter_index_;
-    std::shared_ptr<SMAAStage> smaa_stage_;
+    SMAAStage* smaa_stage_;
 };
 
 SMAAPlugin::RequrieType SMAAPlugin::Impl::require_plugins_;
@@ -151,8 +151,10 @@ void SMAAPlugin::on_stage_setup()
     if (use_reprojection)
         impl_->compute_jitters();
 
-    impl_->smaa_stage_ = std::make_shared<SMAAStage>(pipeline_, use_reprojection);
-    add_stage(impl_->smaa_stage_);
+    auto smaa_stage = std::make_unique<SMAAStage>(pipeline_, use_reprojection);
+    impl_->smaa_stage_ = smaa_stage.get();
+    add_stage(std::move(smaa_stage));
+
     impl_->load_textures();
 }
 

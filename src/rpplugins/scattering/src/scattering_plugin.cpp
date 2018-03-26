@@ -46,10 +46,9 @@ class ScatteringPlugin::Impl
 public:
     static RequrieType require_plugins_;
 
-    std::shared_ptr<ScatteringStage> display_stage_;
-    std::shared_ptr<ScatteringEnvmapStage> envmap_stage_;
-    std::shared_ptr<GodrayStage> godray_stage_;
-    std::shared_ptr<ScatteringMethod> scattering_model_;
+    ScatteringStage* display_stage_;
+    ScatteringEnvmapStage* envmap_stage_;
+    std::unique_ptr<ScatteringMethod> scattering_model_;
 };
 
 ScatteringPlugin::RequrieType ScatteringPlugin::Impl::require_plugins_;
@@ -73,15 +72,17 @@ void ScatteringPlugin::on_pipeline_created()
 
 void ScatteringPlugin::on_stage_setup()
 {
-    impl_->display_stage_ = std::make_shared<ScatteringStage>(pipeline_);
-    add_stage(impl_->display_stage_);
-    impl_->envmap_stage_ = std::make_shared<ScatteringEnvmapStage>(pipeline_);
-    add_stage(impl_->envmap_stage_);
+    auto display_stage = std::make_unique<ScatteringStage>(pipeline_);
+    impl_->display_stage_ = display_stage.get();
+    add_stage(std::move(display_stage));
+
+    auto envmap_stage = std::make_unique<ScatteringEnvmapStage>(pipeline_);
+    impl_->envmap_stage_ = envmap_stage.get();
+    add_stage(std::move(envmap_stage));
 
     if (boost::any_cast<bool>(get_setting("enable_godrays")))
     {
-        impl_->godray_stage_ = std::make_shared<GodrayStage>(pipeline_);
-        add_stage(impl_->godray_stage_);
+        add_stage(std::make_unique<GodrayStage>(pipeline_));
     }
 
     // Load scattering method
@@ -91,7 +92,7 @@ void ScatteringPlugin::on_stage_setup()
 
     if (method == "eric_bruneton")
     {
-        impl_->scattering_model_ = std::make_shared<ScatteringMethodEricBruneton>(*this);
+        impl_->scattering_model_ = std::make_unique<ScatteringMethodEricBruneton>(*this);
     }
 //  TODO: implement.
 //  else if (method == "hosek_wilkie")
@@ -130,12 +131,12 @@ LVecBase3f ScatteringPlugin::get_sun_vector()
 
 ScatteringStage* ScatteringPlugin::get_display_stage() const
 {
-    return impl_->display_stage_.get();
+    return impl_->display_stage_;
 }
 
 ScatteringEnvmapStage* ScatteringPlugin::get_envmap_stage() const
 {
-    return impl_->envmap_stage_.get();
+    return impl_->envmap_stage_;
 }
 
 }

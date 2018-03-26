@@ -42,7 +42,7 @@ namespace rpcore {
 class BasePlugin::Impl
 {
 public:
-    std::vector<std::shared_ptr<RenderStage>> assigned_stages_;
+    std::vector<std::unique_ptr<RenderStage>> assigned_stages_;
     std::vector<std::shared_ptr<boost::dll::shared_library>> shared_libs_;
 };
 
@@ -52,7 +52,15 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id):
 {
 }
 
-BasePlugin::~BasePlugin() = default;
+BasePlugin::~BasePlugin()
+{
+    auto manager = pipeline_.get_stage_mgr();
+    if (!manager)
+        return;
+
+    for (const auto& stage: impl_->assigned_stages_)
+        manager->remove_stage(stage.get());
+}
 
 Filename BasePlugin::get_base_path() const
 {
@@ -69,10 +77,10 @@ Filename BasePlugin::get_shader_resource(const Filename& pth) const
     return get_base_path() / "shader" / pth;
 }
 
-void BasePlugin::add_stage(const std::shared_ptr<RenderStage>& stage)
+void BasePlugin::add_stage(std::unique_ptr<RenderStage> stage)
 {
-    pipeline_.get_stage_mgr()->add_stage(stage);
-    impl_->assigned_stages_.push_back(stage);
+    pipeline_.get_stage_mgr()->add_stage(stage.get());
+    impl_->assigned_stages_.push_back(std::move(stage));
 }
 
 const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const

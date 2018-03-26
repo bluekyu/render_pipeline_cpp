@@ -65,10 +65,10 @@ public:
     PTA_LVecBase3f pta_sun_vector_;
     int last_cache_reset_;
 
-    std::shared_ptr<PSSMShadowStage> shadow_stage_;
-    std::shared_ptr<PSSMStage> pssm_stage_;
-    std::shared_ptr<PSSMSceneShadowStage> scene_shadow_stage_;
-    std::shared_ptr<PSSMDistShadowStage> dist_shadow_stage_;
+    PSSMShadowStage* shadow_stage_;
+    PSSMStage* pssm_stage_;
+    PSSMSceneShadowStage* scene_shadow_stage_;
+    PSSMDistShadowStage* dist_shadow_stage_;
 
     NodePath node_;
     std::shared_ptr<rpcore::PSSMCameraRig> camera_rig_;
@@ -148,28 +148,33 @@ void PSSMPlugin::on_stage_setup()
     impl_->pta_sun_vector_ = PTA_LVecBase3f::empty_array(1);
     impl_->last_cache_reset_ = 0;
 
-    impl_->shadow_stage_ = std::make_shared<PSSMShadowStage>(pipeline_);
-    add_stage(impl_->shadow_stage_);
+    auto shadow_stage = std::make_unique<PSSMShadowStage>(pipeline_);
+    impl_->shadow_stage_ = shadow_stage.get();
+    add_stage(std::move(shadow_stage));
 
-    impl_->pssm_stage_ = std::make_shared<PSSMStage>(pipeline_);
-    add_stage(impl_->pssm_stage_);
+    auto pssm_stage = std::make_unique<PSSMStage>(pipeline_);
+    impl_->pssm_stage_ = pssm_stage.get();
+    add_stage(std::move(pssm_stage));
 
     impl_->shadow_stage_->set_num_splits(boost::any_cast<int>(get_setting("split_count")));
     impl_->shadow_stage_->set_split_resolution(boost::any_cast<int>(get_setting("resolution")));
 
-    impl_->scene_shadow_stage_ = std::make_shared<PSSMSceneShadowStage>(pipeline_);
-    add_stage(impl_->scene_shadow_stage_);
+    auto scene_shadow_stage = std::make_unique<PSSMSceneShadowStage>(pipeline_);
+    impl_->scene_shadow_stage_ = scene_shadow_stage.get();
+    add_stage(std::move(scene_shadow_stage));
+
     impl_->scene_shadow_stage_->set_resolution(boost::any_cast<int>(get_setting("scene_shadow_resolution")));
     impl_->scene_shadow_stage_->set_sun_distance(boost::any_cast<float>(get_setting("scene_shadow_sundist")));
 
     if (boost::any_cast<bool>(get_setting("use_distant_shadows")))
     {
-        impl_->dist_shadow_stage_ = std::make_shared<PSSMDistShadowStage>(pipeline_);
-        add_stage(impl_->dist_shadow_stage_);
+        auto dist_shadow_stage = std::make_unique<PSSMDistShadowStage>(pipeline_);
+        dist_shadow_stage->set_resolution(boost::any_cast<int>(get_setting("dist_shadow_resolution")));
+        dist_shadow_stage->set_clip_size(boost::any_cast<float>(get_setting("dist_shadow_clipsize")));
+        dist_shadow_stage->set_sun_distance(boost::any_cast<float>(get_setting("dist_shadow_sundist")));
 
-        impl_->dist_shadow_stage_->set_resolution(boost::any_cast<int>(get_setting("dist_shadow_resolution")));
-        impl_->dist_shadow_stage_->set_clip_size(boost::any_cast<float>(get_setting("dist_shadow_clipsize")));
-        impl_->dist_shadow_stage_->set_sun_distance(boost::any_cast<float>(get_setting("dist_shadow_sundist")));
+        impl_->dist_shadow_stage_ = dist_shadow_stage.get();
+        add_stage(std::move(dist_shadow_stage));
 
         impl_->pssm_stage_->get_global_required_pipes().push_back("PSSMDistSunShadowMap");
         impl_->pssm_stage_->get_global_required_inputs().push_back("PSSMDistSunShadowMapMVP");

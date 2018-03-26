@@ -53,11 +53,8 @@ private:
 
     void update_color_lut();
 
-    std::shared_ptr<ColorCorrectionStage> _stage;
-    std::shared_ptr<TonemappingStage> _tonemapping_stage;
-    std::shared_ptr<SharpenStage> _sharpen_stage;
-    std::shared_ptr<AutoExposureStage> _exposure_stage_auto;
-    std::shared_ptr<ManualExposureStage> _exposure_stage_manual;
+    ColorCorrectionStage* stage_;
+    TonemappingStage* tonemapping_stage_;
 };
 
 }

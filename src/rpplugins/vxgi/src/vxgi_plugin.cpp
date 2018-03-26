@@ -65,8 +65,7 @@ public:
 
     VXGIPlugin& self_;
 
-    std::shared_ptr<VoxelizationStage> voxel_stage_;
-    std::shared_ptr<VXGIStage> vxgi_stage_;
+    VoxelizationStage* voxel_stage_;
 
     std::deque<std::function<void()>> queue_;
 };
@@ -136,11 +135,11 @@ VXGIPlugin::RequrieType& VXGIPlugin::get_required_plugins() const
 
 void VXGIPlugin::on_stage_setup()
 {
-    impl_->voxel_stage_ = std::make_shared<VoxelizationStage>(pipeline_);
-    add_stage(impl_->voxel_stage_);
+    auto voxel_stage = std::make_unique<VoxelizationStage>(pipeline_);
+    impl_->voxel_stage_ = voxel_stage.get();
+    add_stage(std::move(voxel_stage));
 
-    impl_->vxgi_stage_ = std::make_shared<VXGIStage>(pipeline_);
-    add_stage(impl_->vxgi_stage_);
+    add_stage(std::make_unique<VXGIStage>(pipeline_));
 
     impl_->voxel_stage_->set_voxel_resolution(boost::any_cast<int>(get_setting("grid_resolution")));
     impl_->voxel_stage_->set_voxel_world_size(boost::any_cast<float>(get_setting("grid_ws_size")));

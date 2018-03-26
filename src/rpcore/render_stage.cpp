@@ -43,6 +43,8 @@ RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id):
 {
 }
 
+RenderStage::RenderStage(RenderStage&&) = default;
+
 RenderStage::~RenderStage() = default;
 
 RenderStage::ProduceType RenderStage::get_produced_inputs() const

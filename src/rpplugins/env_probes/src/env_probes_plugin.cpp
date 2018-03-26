@@ -67,9 +67,7 @@ public:
     PTA_int pta_probes_;
     std::shared_ptr<rpcore::SimpleInputBlock> data_ubo_;
 
-    std::shared_ptr<EnvironmentCaptureStage> capture_stage_;
-    std::shared_ptr<CullProbesStage> cull_stage_;
-    std::shared_ptr<ApplyEnvprobesStage> apply_stage_;
+    EnvironmentCaptureStage* capture_stage_;
 };
 
 EnvProbesPlugin::RequrieType EnvProbesPlugin::Impl::require_plugins_;
@@ -101,20 +99,19 @@ void EnvProbesPlugin::Impl::on_stage_setup()
 void EnvProbesPlugin::Impl::setup_stages()
 {
     // Create the stage to generate and update the cubemaps
-    capture_stage_ = std::make_shared<EnvironmentCaptureStage>(self_.pipeline_);
-    self_.add_stage(capture_stage_);
+    auto capture_stage = std::make_unique<EnvironmentCaptureStage>(self_.pipeline_);
+    capture_stage_ = capture_stage.get();
+    self_.add_stage(std::move(capture_stage));
     capture_stage_->set_resolution(probe_mgr_->get_resolution());
     capture_stage_->set_diffuse_resolution(probe_mgr_->get_diffuse_resolution());
     capture_stage_->set_storage_tex(probe_mgr_->get_cubemap_storage()->get_texture());
     capture_stage_->set_storage_tex_diffuse(probe_mgr_->get_diffuse_storage()->get_texture());
 
     // Create the stage to cull the cubemaps
-    cull_stage_ = std::make_shared<CullProbesStage>(self_.pipeline_);
-    self_.add_stage(cull_stage_);
+    self_.add_stage(std::move(std::make_unique<CullProbesStage>(self_.pipeline_)));
 
     // Create the stage to apply the cubemaps
-    apply_stage_ = std::make_shared<ApplyEnvprobesStage>(self_.pipeline_);
-    self_.add_stage(apply_stage_);
+    self_.add_stage(std::move(std::make_unique<ApplyEnvprobesStage>(self_.pipeline_)));
 
     if (self_.is_plugin_enabled("scattering"))
     {
@@ -198,7 +195,7 @@ void EnvProbesPlugin::on_pre_render_update()
     }
 }
 
-std::shared_ptr<rpcore::RenderStage> EnvProbesPlugin::get_capture_stage()
+rpcore::RenderStage* EnvProbesPlugin::get_capture_stage()
 {
     return impl_->capture_stage_;
 }

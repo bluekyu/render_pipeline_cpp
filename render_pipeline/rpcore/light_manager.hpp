@@ -36,6 +36,10 @@ class ShadowManager;
 class GPUCommandQueue;
 class Image;
 
+class FlagUsedCellsStage;
+class CollectUsedCellsStage;
+class CullLightsStage;
+class ApplyLightsStage;
 class ShadowStage;
 
 /**
@@ -126,7 +130,11 @@ private:
 
     PTA_int pta_max_light_index_;
 
-    std::shared_ptr<ShadowStage> shadow_stage_;
+    std::unique_ptr<FlagUsedCellsStage> flag_cells_stage_;
+    std::unique_ptr<CollectUsedCellsStage> collect_cells_stage_;
+    std::unique_ptr<CullLightsStage> cull_lights_stage_;
+    std::unique_ptr<ApplyLightsStage> apply_lights_stage_;
+    std::unique_ptr<ShadowStage> shadow_stage_;
 };
 
 // ************************************************************************************************

@@ -41,7 +41,7 @@ public:
 private:
     static RequrieType require_plugins;
 
-    std::shared_ptr<BloomStage> _bloom_stage;
+    BloomStage* bloom_stage_;
 };
 
 }

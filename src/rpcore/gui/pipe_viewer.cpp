@@ -110,7 +110,7 @@ void PipeViewer::populate_content()
     const auto& stages = _pipeline->get_stage_mgr()->get_stages();
     for (size_t offs=0, offs_end=stages.size(); offs < offs_end; ++offs)
     {
-        const std::shared_ptr<RenderStage>& stage = stages[offs];
+        RenderStage* stage = stages[offs];
 
         NodePath node = _content_node.attach_new_node("stage");
         node.set_pos(220 + offs * 200.0, 0, 20);

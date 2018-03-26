@@ -36,8 +36,7 @@ public:
     void on_stage_setup() final;
 
 private:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
+    static RequrieType require_plugins_;
 };
 
 }

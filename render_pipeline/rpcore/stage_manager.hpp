@@ -59,12 +59,13 @@ public:
     const ShaderInput& get_pipe(const std::string& pipe_name) const;
 
     /** Add a new stage. */
-    void add_stage(const std::shared_ptr<RenderStage>& stage);
+    void add_stage(RenderStage* stage);
+    void remove_stage(RenderStage* stage);
 
-    const std::vector<std::shared_ptr<RenderStage>>& get_stages() const;
+    const std::vector<RenderStage*>& get_stages() const;
 
     /** Returns a handle to an instantiated stage. */
-    std::shared_ptr<RenderStage> get_stage(const std::string& stage_id) const;
+    RenderStage* get_stage(const std::string& stage_id) const;
 
     void add_input_blocks(const std::shared_ptr<SimpleInputBlock>& input_block);
     void add_input_blocks(const std::shared_ptr<GroupedInputBlock>& input_block);

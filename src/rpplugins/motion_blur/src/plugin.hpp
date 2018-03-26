@@ -24,8 +24,6 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-#include "motion_blur_stage.hpp"
-
 namespace rpplugins {
 
 class Plugin : public rpcore::BasePlugin
@@ -39,8 +37,6 @@ public:
 
 private:
     static RequrieType require_plugins;
-
-    std::shared_ptr<MotionBlurStage> _stage;
 };
 
 }
