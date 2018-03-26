@@ -65,7 +65,9 @@ public:
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
     RenderStage(const RenderStage&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     RenderStage(RenderStage&&);
+#endif
 
     virtual ~RenderStage();
 

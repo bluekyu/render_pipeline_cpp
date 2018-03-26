@@ -43,7 +43,9 @@ RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id):
 {
 }
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 RenderStage::RenderStage(RenderStage&&) = default;
+#endif
 
 RenderStage::~RenderStage() = default;
 
@@ -91,7 +93,7 @@ RenderTarget* RenderStage::create_target(const std::string& name)
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     return targets_.insert_or_assign(target_name, std::make_unique<RenderTarget>(target_name)).first->second.get();
 #else
-    targets_[target_name] = std::make_shared<RenderTarget>(target_name);
+    targets_[target_name] = std::make_unique<RenderTarget>(target_name);
     return targets_.at(target_name).get();
 #endif
 }
