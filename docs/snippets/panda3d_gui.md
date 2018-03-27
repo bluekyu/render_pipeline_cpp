@@ -1,6 +1,6 @@
 # Panda3D GUI
 
-You can see full source codes in https://github.com/bluekyu/rpcpp_snippets/tree/master/GUIs.
+You can see full source codes in https://github.com/bluekyu/rpcpp_samples/tree/master/snippets/GUIs
 
 ## Text
 ```cpp

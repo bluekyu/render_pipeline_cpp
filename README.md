@@ -31,15 +31,16 @@ See [docs/index.md](docs/index.md) document.
 ### Optional Third-party
 These are required when you include related headers to access internal data.
 
-- YAML-CPP: required when to access YAML node.
-- spdlog: required when to access the internal logger of spdlog.
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): required when to access YAML node.
+- [spdlog](https://github.com/gabime/spdlog): required when to access the internal logger of spdlog.
 
 
 
 ## Tested Platforms
 I tested it in the following platforms:
-- Intel CPU, NVIDIA GPU, Windows 10 64-bit, VS2013 / VS2015 / VS2017
+- Intel CPU, NVIDIA GPU, Windows 10 64-bit, Visual Studio 2013 / Visual Studio 2017
 
+Visual Studio 2015 may be able to compile it, but I did not test.
 
 
 ## Build
@@ -51,7 +52,7 @@ See [docs/build_rpcpp.md](docs/build_rpcpp.md) document.
 - Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
 - (patched) Panda3D: https://github.com/bluekyu/panda3d
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
-- Samples for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
+- Samples and snippets for Render Pipeline C++: https://github.com/bluekyu/rpcpp_samples
 
 
 
