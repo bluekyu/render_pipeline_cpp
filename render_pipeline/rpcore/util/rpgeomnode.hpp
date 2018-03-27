@@ -23,8 +23,7 @@
 
 #include <geomNode.h>
 
-#include <render_pipeline/rpcore/config.hpp>
-#include <render_pipeline/rpcore/util/rpmaterial.hpp>
+#include <render_pipeline/rpcore/util/rprender_state.hpp>
 
 class Texture;
 class NodePath;
@@ -37,15 +36,6 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPGeomNode
 {
 public:
-    enum class TextureStageIndex : int
-    {
-        basecolor = 0,
-        normal,
-        specular,
-        roughness,
-    };
-
-public:
     RPGeomNode(const NodePath& nodepath);
     RPGeomNode(PT(GeomNode) geomnode);
 
@@ -57,6 +47,10 @@ public:
     GeomNode* get_node() const;
 
     int get_num_geoms() const;
+
+    RPRenderState get_state(int geom_index) const;
+    void set_state(int geom_index, const RPRenderState& state);
+    void set_state(int geom_index, const RenderState* state);
 
     bool has_material(int geom_index) const;
     RPMaterial get_material(int geom_index) const;
@@ -218,6 +212,21 @@ inline GeomNode* RPGeomNode::get_node() const
 inline int RPGeomNode::get_num_geoms() const
 {
     return node_->get_num_geoms();
+}
+
+inline RPRenderState RPGeomNode::get_state(int geom_index) const
+{
+    return RPRenderState(node_->get_geom_state(geom_index));
+}
+
+inline void RPGeomNode::set_state(int geom_index, const RPRenderState& state)
+{
+    node_->set_geom_state(geom_index, state.get_state());
+}
+
+inline void RPGeomNode::set_state(int geom_index, const RenderState* state)
+{
+    node_->set_geom_state(geom_index, state);
 }
 
 // ************************************************************************************************
