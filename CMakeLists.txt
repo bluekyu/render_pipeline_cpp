@@ -15,7 +15,7 @@ include(git-utils)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # version
-set(render_pipeline_VERSION "0.3.1")
+set(render_pipeline_VERSION "0.4.0")
 set(render_pipeline_SEMANTIC_VERSION "${render_pipeline_VERSION}")
 set(PROJECT_VERSION "${render_pipeline_SEMANTIC_VERSION}")
 message("[render_pipeline] build version: ${render_pipeline_SEMANTIC_VERSION}")
