@@ -104,6 +104,8 @@ public:
      */
     void set_alpha_texture_mode();
 
+    void output(std::ostream& out) const;
+
 private:
     PT(Material) material_;
 };
@@ -261,6 +263,18 @@ inline void RPMaterial::set_alpha_texture_mode()
         set_arbitrary0(2.0f);
 }
 
+inline void RPMaterial::output(std::ostream& out) const
+{
+    out << "RPMaterial " << material_->get_name()
+        << " shading_model(" << static_cast<int>(get_shading_model()) << ")"
+        << " base_color(" << get_base_color() << ")"
+        << " normal_factor(" << get_normal_factor() << ")"
+        << " roughness(" << get_roughness() << ")"
+        << " specular_ior(" << get_specular_ior() << ")"
+        << " metallic(" << get_metallic() << ")"
+        << " arbitrary0(" << get_arbitrary0() << ")";
+}
+
 // ************************************************************************************************
 
 inline bool operator==(const RPMaterial& a, const RPMaterial& b)
@@ -291,6 +305,12 @@ inline bool operator!=(const RPMaterial& m, std::nullptr_t)
 inline bool operator!=(std::nullptr_t, const RPMaterial& m)
 {
     return m.get_material() != nullptr;
+}
+
+inline std::ostream& operator<<(std::ostream& out, const RPMaterial& m)
+{
+    m.output(out);
+    return out;
 }
 
 }
