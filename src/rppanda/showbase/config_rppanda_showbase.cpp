@@ -21,21 +21,18 @@
 
 #include "rppanda/showbase/config_rppanda_showbase.hpp"
 
+#include <dconfig.h>
+
 #include "render_pipeline/rppanda/showbase/direct_object.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 #include "render_pipeline/rppanda/showbase/messenger.hpp"
 
-ConfigureDef(config_rppanda_showbase);
+Configure(config_rppanda_showbase);
 NotifyCategoryDef(rppanda_showbase, "");
 
 ConfigureFn(config_rppanda_showbase)
-{
-    init_librppanda_showbase();
-}
-
-void init_librppanda_showbase()
 {
     static bool initialized = false;
     if (initialized)

@@ -21,21 +21,18 @@
 
 #include "rppanda/interval/config_rppanda_interval.hpp"
 
+#include <dconfig.h>
+
 #include "render_pipeline/rppanda/actor/actor.hpp"
 #include "render_pipeline/rppanda/interval/actor_interval.hpp"
 #include "render_pipeline/rppanda/interval/lerp_interval.hpp"
 #include "render_pipeline/rppanda/interval/meta_interval.hpp"
 #include "render_pipeline/rppanda/interval/sound_interval.hpp"
 
-ConfigureDef(config_rppanda_interval);
+Configure(config_rppanda_interval);
 NotifyCategoryDef(rppanda_interval, "");
 
 ConfigureFn(config_rppanda_interval)
-{
-    init_librppanda_interval();
-}
-
-void init_librppanda_interval()
 {
     static bool initialized = false;
     if (initialized)

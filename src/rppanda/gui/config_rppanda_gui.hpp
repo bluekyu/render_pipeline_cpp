@@ -21,10 +21,6 @@
 
 #pragma once
 
-#include <dconfig.h>
 #include <notifyCategoryProxy.h>
 
-ConfigureDecl(config_rppanda_gui, EXPORT_CLASS, EXPORT_TEMPL);
 NotifyCategoryDecl(rppanda_gui, EXPORT_CLASS, EXPORT_TEMPL);
-
-extern EXPORT_CLASS void init_librppanda_gui();

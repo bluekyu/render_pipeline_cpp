@@ -21,18 +21,15 @@
 
 #include "rppanda/task/config_rppanda_task.hpp"
 
+#include <dconfig.h>
+
 #include "render_pipeline/rppanda/task/task_manager.hpp"
 #include "render_pipeline/rppanda/task/functional_task.hpp"
 
-ConfigureDef(config_rppanda_task);
+Configure(config_rppanda_task);
 NotifyCategoryDef(rppanda_task, "");
 
 ConfigureFn(config_rppanda_task)
-{
-    init_librppanda_task();
-}
-
-void init_librppanda_task()
 {
     static bool initialized = false;
     if (initialized)
