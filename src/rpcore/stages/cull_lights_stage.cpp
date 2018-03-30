@@ -77,7 +77,7 @@ void CullLightsStage::create()
     target_group_->prepare_buffer();
 
     frustum_lights_ctr_ = Image::create_counter("VisibleLightCount");
-    frustum_lights_ = Image::create_buffer("FrustumLights", pipeline_.get_light_mgr()->max_lights_, "R16UI");
+    frustum_lights_ = Image::create_buffer("FrustumLights", pipeline_.get_light_mgr()->MAX_LIGHTS, "R16UI");
     per_cell_lights_ = Image::create_buffer("PerCellLights", 0, "R16UI");
     // Needs to be R32 for atomic add in cull stage
     per_cell_light_counts_ = Image::create_buffer("PerCellLightCounts", 0, "R32I");
