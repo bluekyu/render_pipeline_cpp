@@ -50,10 +50,13 @@ BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id):
     RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id),
     impl_(std::make_unique<Impl>())
 {
+    trace(fmt::format("Constructing '{}' plugin", plugin_id_));
 }
 
 BasePlugin::~BasePlugin()
 {
+    trace(fmt::format("Destructing '{}' plugin", plugin_id_));
+
     auto manager = pipeline_.get_stage_mgr();
     if (!manager)
         return;

@@ -26,23 +26,23 @@
 #include <geomTriangles.h>
 #include <omniBoundingVolume.h>
 #include <orthographicLens.h>
+#include <graphicsOutput.h>
 
 namespace rpcore {
 
-PostProcessRegion* PostProcessRegion::make(GraphicsOutput* internal_buffer)
+std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer)
 {
-    return new PostProcessRegion(internal_buffer);
+    return std::make_unique<PostProcessRegion>(internal_buffer);
 }
 
-PostProcessRegion* PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions)
+std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions)
 {
-    return new PostProcessRegion(internal_buffer, dimensions);
+    return std::make_unique<PostProcessRegion>(internal_buffer, dimensions);
 }
 
 PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer)
 {
-    _buffer = internal_buffer;
-    region = _buffer->make_display_region();
+    region_ = internal_buffer->make_display_region();
     node = NodePath("RTRoot");
 
     make_fullscreen_tri();
@@ -52,8 +52,7 @@ PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer)
 
 PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions)
 {
-    _buffer = internal_buffer;
-    region = _buffer->make_display_region(dimensions);
+    region_ = internal_buffer->make_display_region(dimensions);
     node = NodePath("RTRoot");
 
     make_fullscreen_tri();
@@ -65,15 +64,15 @@ void PostProcessRegion::init_function_pointers()
 {
     using namespace std::placeholders;
     
-    set_sort = std::bind(&DisplayRegion::set_sort, region, _1);
-    disable_clears = std::bind(&DisplayRegion::disable_clears, region);
-    set_active = std::bind(&DisplayRegion::set_active, region, _1);
-    set_clear_depth_active = std::bind(&DisplayRegion::set_clear_depth_active, region, _1);
-    set_clear_depth = std::bind(&DisplayRegion::set_clear_depth, region, _1);
-    set_camera = std::bind(&DisplayRegion::set_camera, region, _1);
-    set_clear_color_active = std::bind(&DisplayRegion::set_clear_color_active, region, _1);
-    set_clear_color = std::bind(&DisplayRegion::set_clear_color, region, _1);
-    set_draw_callback = std::bind(&DisplayRegion::set_draw_callback, region, _1);
+    set_sort = std::bind(&DisplayRegion::set_sort, region_, _1);
+    disable_clears = std::bind(&DisplayRegion::disable_clears, region_);
+    set_active = std::bind(&DisplayRegion::set_active, region_, _1);
+    set_clear_depth_active = std::bind(&DisplayRegion::set_clear_depth_active, region_, _1);
+    set_clear_depth = std::bind(&DisplayRegion::set_clear_depth, region_, _1);
+    set_camera = std::bind(&DisplayRegion::set_camera, region_, _1);
+    set_clear_color_active = std::bind(&DisplayRegion::set_clear_color_active, region_, _1);
+    set_clear_color = std::bind(&DisplayRegion::set_clear_color, region_, _1);
+    set_draw_callback = std::bind(&DisplayRegion::set_draw_callback, region_, _1);
 
     set_instance_count = std::bind(&NodePath::set_instance_count, tri, _1);
     set_shader = std::bind(&NodePath::set_shader, tri, _1, _2);
@@ -119,7 +118,7 @@ void PostProcessRegion::make_fullscreen_cam()
     PT(OmniBoundingVolume) obv = new OmniBoundingVolume();
     buffer_cam->set_cull_bounds(obv);
     camera = node.attach_new_node(buffer_cam);
-    region->set_camera(camera);
+    region_->set_camera(camera);
 }
 
 }

@@ -44,6 +44,7 @@ class RENDER_PIPELINE_DECL Globals
 {
 public:
     static void load(rppanda::ShowBase* showbase);
+    static void unload();
 
     static rppanda::ShowBase* base;
     static NodePath render;

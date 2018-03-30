@@ -43,7 +43,7 @@ GBufferStage::ProduceType GBufferStage::get_produced_pipes() const
 
 std::shared_ptr<SimpleInputBlock> GBufferStage::make_gbuffer_ubo() const
 {
-    std::shared_ptr<SimpleInputBlock> ubo(new SimpleInputBlock("GBuffer"));
+    std::shared_ptr<SimpleInputBlock> ubo = std::make_shared<SimpleInputBlock>("GBuffer");
     ubo->add_input("Depth", target_->get_depth_tex());
     ubo->add_input("Data0", target_->get_color_tex());
     ubo->add_input("Data1", target_->get_aux_tex(0));

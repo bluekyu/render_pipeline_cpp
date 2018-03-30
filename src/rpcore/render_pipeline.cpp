@@ -251,14 +251,9 @@ public:
     std::unique_ptr<LoadingScreen> loading_screen_;
     std::unique_ptr<CommonResources> common_resources_;
 
-    std::unique_ptr<AmbientStage> ambient_stage_;
-    std::unique_ptr<GBufferStage> gbuffer_stage_;
-    std::unique_ptr<FinalStage> final_stage_;
-    std::unique_ptr<DownscaleZStage> downscale_stage_;
-    std::unique_ptr<CombineVelocityStage> combine_velocity_stage_;
-    std::unique_ptr<UpscaleStage> upscale_stage_;
+    std::vector<std::unique_ptr<RenderStage>> internal_stages_;
 
-    PT(rppanda::ShowBase) showbase_ = nullptr;
+    PT(rppanda::ShowBase) showbase_;
     std::unique_ptr<TaskScheduler> task_scheduler_;
     std::unique_ptr<TagStateManager> tag_mgr_;
     std::unique_ptr<PluginManager> plugin_mgr_;
@@ -288,6 +283,12 @@ RenderPipeline::Impl::~Impl()
     task_scheduler_.reset();
     debugger_.reset();
     loading_screen_.reset();
+
+    plugin_mgr_->unload();
+
+    internal_stages_.clear();
+
+    Globals::unload();
 
     showbase_.clear();
 
@@ -761,26 +762,32 @@ void RenderPipeline::Impl::init_common_stages()
 {
     self_.trace("Initailizing common stages ...");
 
-    ambient_stage_ = std::make_unique<AmbientStage>(self_);
-    stage_mgr_->add_stage(ambient_stage_.get());
+    auto ambient_stage = std::make_unique<AmbientStage>(self_);
+    stage_mgr_->add_stage(ambient_stage.get());
+    internal_stages_.push_back(std::move(ambient_stage));
 
-    gbuffer_stage_ = std::make_unique<GBufferStage>(self_);
-    stage_mgr_->add_stage(gbuffer_stage_.get());
+    auto gbuffer_stage = std::make_unique<GBufferStage>(self_);
+    stage_mgr_->add_stage(gbuffer_stage.get());
+    internal_stages_.push_back(std::move(gbuffer_stage));
 
-    final_stage_ = std::make_unique<FinalStage>(self_);
-    stage_mgr_->add_stage(final_stage_.get());
+    auto final_stage = std::make_unique<FinalStage>(self_);
+    stage_mgr_->add_stage(final_stage.get());
+    internal_stages_.push_back(std::move(final_stage));
 
-    downscale_stage_ = std::make_unique<DownscaleZStage>(self_);
-    stage_mgr_->add_stage(downscale_stage_.get());
+    auto downscale_stage = std::make_unique<DownscaleZStage>(self_);
+    stage_mgr_->add_stage(downscale_stage.get());
+    internal_stages_.push_back(std::move(downscale_stage));
 
-    combine_velocity_stage_ = std::make_unique<CombineVelocityStage>(self_);
-    stage_mgr_->add_stage(combine_velocity_stage_.get());
+    auto combine_velocity_stage = std::make_unique<CombineVelocityStage>(self_);
+    stage_mgr_->add_stage(combine_velocity_stage.get());
+    internal_stages_.push_back(std::move(combine_velocity_stage));
 
     // Add an upscale/downscale stage in case we render at a different resolution
     if (Globals::resolution != Globals::native_resolution)
     {
-        upscale_stage_ = std::make_unique<UpscaleStage>(self_);
-        stage_mgr_->add_stage(upscale_stage_.get());
+        auto upscale_stage = std::make_unique<UpscaleStage>(self_);
+        stage_mgr_->add_stage(upscale_stage.get());
+        internal_stages_.push_back(std::move(upscale_stage));
     }
 }
 

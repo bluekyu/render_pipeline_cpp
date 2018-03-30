@@ -30,9 +30,9 @@
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
 #define RENDER_PIPELINE_PLUGIN_CREATOR(PLUGIN_TYPE) \
-    static std::shared_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \
+    static std::unique_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \
     { \
-        return std::make_shared<PLUGIN_TYPE>(pipeline); \
+        return std::make_unique<PLUGIN_TYPE>(pipeline); \
     } \
     BOOST_DLL_ALIAS(::rpcpp_plugin_creator__, create_plugin)
 

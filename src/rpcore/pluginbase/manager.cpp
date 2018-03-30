@@ -72,7 +72,7 @@ public:
     void unload();
 
     /** Internal method to load a plugin. */
-    std::shared_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
+    std::unique_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
     void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
 
@@ -137,11 +137,10 @@ void PluginManager::Impl::unload()
     day_settings_.clear();
     enabled_plugins_.clear();
 
-    // unload DLL of plugins.
-    plugin_creators_.clear();
+    // NOTE: DLLs are not unloaded, yet.
 }
 
-std::shared_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& plugin_id)
+std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& plugin_id)
 {
     boost::filesystem::path plugin_path = get_canonical_path(plugin_dir_ / plugin_id);
 
@@ -381,6 +380,8 @@ PluginManager::~PluginManager()
     trace("Destructing PluginManager");
 
     unload();
+
+    // unload DLL of plugins.
 }
 
 void PluginManager::load()
@@ -401,10 +402,10 @@ void PluginManager::load()
             continue;
         }
 
-        std::shared_ptr<BasePlugin> handle = impl_->load_plugin(plugin_id);
+        auto handle = impl_->load_plugin(plugin_id);
 
         if (handle)
-            impl_->instances_[plugin_id] = handle;
+            impl_->instances_[plugin_id] = std::move(handle);
         else
             disable_plugin(plugin_id);
     }

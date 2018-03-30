@@ -50,7 +50,7 @@ public:
     using SettingsDataType = std::map<std::string, std::shared_ptr<BaseType>>;
     using DaySettingsDataType = std::map<std::string, std::shared_ptr<DayBaseType>>;
 
-    typedef std::shared_ptr<BasePlugin> (PluginCreatorType)(RenderPipeline&);
+    typedef std::unique_ptr<BasePlugin> (PluginCreatorType)(RenderPipeline&);
 
 public:
     /**

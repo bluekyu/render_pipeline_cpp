@@ -22,6 +22,8 @@
 
 #include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 
+#include <graphicsOutput.h>
+
 #include <regex>
 
 #include <boost/format.hpp>

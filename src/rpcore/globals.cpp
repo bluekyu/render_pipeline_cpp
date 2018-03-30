@@ -43,4 +43,12 @@ void Globals::load(rppanda::ShowBase* showbase)
     Globals::resolution = LVecBase2i(0, 0);
 }
 
+void Globals::unload()
+{
+    Globals::base = nullptr;
+    Globals::render.clear();
+    Globals::clock = nullptr;
+    Globals::font = nullptr;
+}
+
 }

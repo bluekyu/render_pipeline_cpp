@@ -23,13 +23,13 @@
 #pragma once
 
 #include <nodePath.h>
-#include <graphicsOutput.h>
 
 #include <unordered_map>
 #include <functional>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
+class GraphicsOutput;
 class CallbackObject;
 
 namespace rpcore {
@@ -37,8 +37,8 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL PostProcessRegion
 {
 public:
-    static PostProcessRegion* make(GraphicsOutput* internal_buffer);
-    static PostProcessRegion* make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions);
+    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer);
+    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions);
 
 public:
     PostProcessRegion(GraphicsOutput* internal_buffer);
@@ -67,16 +67,15 @@ public:
     std::function<void(const RenderAttrib*,int)> set_attrib;
     ///@}
 
-    DisplayRegion* get_region() { return region; }
-    NodePath get_node() const { return node; }
+    DisplayRegion* get_region() const;
+    NodePath get_node() const;
 
 private:
     void init_function_pointers();
     void make_fullscreen_tri();
     void make_fullscreen_cam();
 
-    PT(GraphicsOutput) _buffer;
-    PT(DisplayRegion) region;
+    PT(DisplayRegion) region_;
     NodePath node;
     NodePath tri;
     NodePath camera;
@@ -88,6 +87,16 @@ inline void PostProcessRegion::set_shader_input(const ShaderInput& inp, bool ove
         node.set_shader_input(inp);
     else
         tri.set_shader_input(inp);
+}
+
+inline DisplayRegion* PostProcessRegion::get_region() const
+{
+    return region_;
+}
+
+inline NodePath PostProcessRegion::get_node() const
+{
+    return node;
 }
 
 }

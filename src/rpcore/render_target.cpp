@@ -67,11 +67,11 @@ public:
 public:
     RenderTarget& self_;
 
-    PT(GraphicsBuffer) internal_buffer_ = nullptr;
+    GraphicsBuffer* internal_buffer_ = nullptr;
     GraphicsWindow* source_window_ = nullptr;
 
     PT(DisplayRegion) source_display_region_ = nullptr;
-    PostProcessRegion* source_postprocess_region_ = nullptr;
+    std::unique_ptr<PostProcessRegion> source_postprocess_region_;
 
     GraphicsEngine* engine_ = nullptr;
 
@@ -120,11 +120,7 @@ void RenderTarget::Impl::prepare_render(const NodePath& camera_np)
     create_default_region_ = false;
     create_buffer();
     source_display_region_ = internal_buffer_->get_display_region(0);
-    if (source_postprocess_region_)
-    {
-        delete source_postprocess_region_;
-        source_postprocess_region_ = nullptr;
-    }
+    source_postprocess_region_.reset();
 
     if (!camera_np.is_empty())
     {
@@ -176,13 +172,10 @@ void RenderTarget::Impl::remove()
         engine_->remove_window(internal_buffer_);
 
         RenderTarget::REGISTERED_TARGETS.erase(std::find(RenderTarget::REGISTERED_TARGETS.begin(), RenderTarget::REGISTERED_TARGETS.end(), &self_));
-        internal_buffer_.clear();
+        internal_buffer_ = nullptr;
     }
-    else
-    {
-        delete source_postprocess_region_;
-        source_postprocess_region_ = nullptr;
-    }
+
+    source_postprocess_region_.reset();
 
     active_ = false;
     for (const auto& target: targets_)
@@ -558,7 +551,7 @@ DisplayRegion* RenderTarget::get_display_region() const
 
 PostProcessRegion* RenderTarget::get_postprocess_region() const
 {
-    return impl_->source_postprocess_region_;
+    return impl_->source_postprocess_region_.get();
 }
 
 void RenderTarget::consider_resize()
