@@ -46,13 +46,13 @@
 
 namespace rppanda {
 
-const std::vector<std::string> DirectEntry::allow_cap_name_prefixes_ = {
+const std::vector<std::string> DirectEntry::ALLOW_CAP_NAME_PREFIXES = {
     "Al", "Ap", "Ben", "De", "Del", "Della", "Delle", "Der", "Di", "Du",
     "El", "Fitz", "La", "Las", "Le", "Les", "Lo", "Los",
     "Mac", "St", "Te", "Ten", "Van", "Von",
 };
 
-const std::vector<std::string> DirectEntry::force_cap_name_prefixes_ = {
+const std::vector<std::string> DirectEntry::FORCE_CAP_NAME_PREFIXES = {
     "D'", "DeLa", "Dell'", "L'", "M'", "Mc", "O'",
 };
 
@@ -63,8 +63,8 @@ DirectEntry::Options::Options()
     num_states = 3;
     state = DGG_NORMAL;
 
-    auto_capitalize_allow_prefixes = DirectEntry::allow_cap_name_prefixes_;
-    auto_capitalize_force_prefixes = DirectEntry::force_cap_name_prefixes_;
+    auto_capitalize_allow_prefixes = DirectEntry::ALLOW_CAP_NAME_PREFIXES;
+    auto_capitalize_force_prefixes = DirectEntry::FORCE_CAP_NAME_PREFIXES;
 }
 
 DirectEntry::DirectEntry(NodePath parent, const std::shared_ptr<Options>& options): DirectEntry(new PGEntry(""), parent, options, get_class_type())

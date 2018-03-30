@@ -155,7 +155,7 @@ void LightManager::init_internal_manager()
     
     // Storage for the Lights
     const int per_light_vec4s = 4;
-    img_light_data_ = Image::create_buffer("LightData", max_lights_ * per_light_vec4s, "RGBA16");
+    img_light_data_ = Image::create_buffer("LightData", MAX_LIGHTS * per_light_vec4s, "RGBA16");
     img_light_data_->clear_image();
     
     pta_max_light_index_ = PTA_int::empty_array(1);
@@ -166,7 +166,7 @@ void LightManager::init_internal_manager()
     
     // IMPORTANT: RGBA32 is really required here.Otherwise artifacts and bad
     // shadow filtering occur due to precision issues
-    img_source_data_ = Image::create_buffer("ShadowSourceData", max_sources_ * per_source_vec4s, "RGBA32");
+    img_source_data_ = Image::create_buffer("ShadowSourceData", MAX_SOURCES * per_source_vec4s, "RGBA32");
 
     // TODO: check if this is right.
     img_source_data_->clear_image();

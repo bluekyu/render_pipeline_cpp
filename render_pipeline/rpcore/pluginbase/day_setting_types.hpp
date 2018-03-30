@@ -84,7 +84,7 @@ class ScalarType : public DayBaseType
 public:
     ScalarType(YAML::Node& data);
 
-    virtual const std::string& get_glsl_type() const { return glsl_type; }
+    virtual const std::string& get_glsl_type() const { return GLSL_TYPE; }
 
     /** Scales a linear value. */
     ValueType get_scaled_value(const ValueType& values) const final;
@@ -93,7 +93,7 @@ public:
     float get_linear_value(float scaled_value);
 
 private:
-    static const std::string glsl_type;
+    static const std::string GLSL_TYPE;
 
     std::string _unit;
     float _minvalue;
@@ -108,14 +108,14 @@ class ColorType : public DayBaseType
 public:
     ColorType(YAML::Node& data);
 
-    virtual const std::string& get_glsl_type() const { return glsl_type; }
+    virtual const std::string& get_glsl_type() const { return GLSL_TYPE; }
 
     ValueType get_scaled_value(const ValueType& values) const final;
 
     std::vector<float> get_linear_value(const std::vector<float>& scaled_value);
 
 private:
-    static const std::string glsl_type;
+    static const std::string GLSL_TYPE;
 
     std::vector<float> _default;
 };

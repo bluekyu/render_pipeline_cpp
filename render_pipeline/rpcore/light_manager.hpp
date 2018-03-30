@@ -50,10 +50,10 @@ class RENDER_PIPELINE_DECL LightManager : public RPObject
 {
 public:
     // Maximum amount of lights, has to match the definitions in the native code
-    static const int max_lights_ = 65535;
+    static const int MAX_LIGHTS = 65535;
 
     // Maximum amount of shadow sources
-    static const int max_sources_ = 2048;
+    static const int MAX_SOURCES = 2048;
 
 public:
     LightManager(RenderPipeline& pipeline);

@@ -147,7 +147,7 @@ std::string DayBaseType::serialize() const
 }
 
 // ************************************************************************************************
-const std::string ScalarType::glsl_type = "float";
+const std::string ScalarType::GLSL_TYPE = "float";
 
 ScalarType::ScalarType(YAML::Node& data): DayBaseType(data, "ScalarType")
 {
@@ -197,7 +197,7 @@ float ScalarType::get_linear_value(float scaled_value)
 }
 
 // ************************************************************************************************
-const std::string ColorType::glsl_type = "vec3";
+const std::string ColorType::GLSL_TYPE = "vec3";
 
 ColorType::ColorType(YAML::Node& data): DayBaseType(data, "ColorType")
 {

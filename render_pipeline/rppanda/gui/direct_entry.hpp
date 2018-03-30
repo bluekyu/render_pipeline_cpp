@@ -50,8 +50,8 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectEntry : public DirectFrame
 {
 public:
-    static const std::vector<std::string> allow_cap_name_prefixes_;
-    static const std::vector<std::string> force_cap_name_prefixes_;
+    static const std::vector<std::string> ALLOW_CAP_NAME_PREFIXES;
+    static const std::vector<std::string> FORCE_CAP_NAME_PREFIXES;
 
     /** @see DirectGuiWidget::Options */
     struct RENDER_PIPELINE_DECL Options : public DirectFrame::Options
