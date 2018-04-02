@@ -228,25 +228,37 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'settings'?");
 
-    SettingsDataType& settings = settings_[plugin_id];
+    auto& settings_map = settings_[plugin_id].get<1>();
     for (auto settings_node: config["settings"])
     {
         // XXX: omap of yaml-cpp is list.
         for (auto key_val: settings_node)
         {
-            settings[key_val.first.as<std::string>()] = make_setting_from_data(key_val.second);
+            const auto& key = key_val.first.as<std::string>();
+
+            auto found = settings_map.find(key);
+            if (found == settings_map.end())
+                settings_map.insert({ key, make_setting_from_data(key_val.second) });
+            else
+                settings_map.replace(found, { key, make_setting_from_data(key_val.second) });
         }
     }
 
     if (requires_daytime_settings_)
     {
-        DaySettingsDataType& day_settings = day_settings_[plugin_id];
+        auto& day_settings_map = day_settings_[plugin_id].get<1>();
         for (auto daytime_settings_node: config["daytime_settings"])
         {
             // XXX: omap of yaml-cpp is list.
             for (auto key_val : daytime_settings_node)
             {
-                day_settings[key_val.first.as<std::string>()] = make_daysetting_from_data(key_val.second);
+                const auto& key = key_val.first.as<std::string>();
+
+                auto found = day_settings_map.find(key);
+                if (found == day_settings_map.end())
+                    day_settings_map.insert({ key, make_daysetting_from_data(key_val.second) });
+                else
+                    day_settings_map.replace(found, { key, make_daysetting_from_data(key_val.second) });
             }
         }
     }
@@ -280,13 +292,14 @@ void PluginManager::Impl::load_setting_overrides(const Filename& override_path)
         for (const auto& id_val: id_settings.second)
         {
             const std::string setting_id(id_val.first.as<std::string>());
-            const auto& plugin_setting = settings_.at(plugin_id);
-            if (plugin_setting.find(setting_id) == plugin_setting.end())
+            auto& plugin_setting_map = settings_.at(plugin_id).get<1>();
+            auto found = plugin_setting_map.find(setting_id);
+            if (found == plugin_setting_map.end())
             {
                 self_.warn(fmt::format("Unknown override: {}:{}", plugin_id, setting_id));
                 continue;
             }
-            plugin_setting.at(setting_id)->set_value(id_val.second);
+            found->value->set_value(id_val.second);
         }
     }
 }
@@ -472,8 +485,10 @@ void PluginManager::load_daytime_overrides(const Filename& override_path)
         for (const auto& id_points: key_val.second)
         {
             const std::string setting_id(id_points.first.as<std::string>());
-            const auto& plugin_day_setting = impl_->day_settings_.at(plugin_id);
-            if (plugin_day_setting.find(setting_id) == plugin_day_setting.end())
+            const auto& plugin_day_setting_map = impl_->day_settings_.at(plugin_id).get<1>();
+
+            auto found = plugin_day_setting_map.find(setting_id);
+            if (found == plugin_day_setting_map.end())
             {
                 warn(fmt::format("Unknown daytime override: {}:{}", plugin_id, setting_id));
                 continue;
@@ -490,7 +505,7 @@ void PluginManager::load_daytime_overrides(const Filename& override_path)
                 }
             }
 
-            plugin_day_setting.at(setting_id)->set_control_points(control_points);
+            found->value->set_control_points(control_points);
         }
     }
 }
@@ -504,16 +519,16 @@ void PluginManager::init_defines()
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
     {
-        const auto& pluginsettings = impl_->settings_.at(plugin_id);
+        const auto& pluginsettings_vector = impl_->settings_.at(plugin_id).get<0>();
         auto& defines = impl_->pipeline_.get_stage_mgr()->get_defines();
-        defines[std::string("HAVE_PLUGIN_" + plugin_id)] = std::string("1");
-        for (const auto& id_setting: pluginsettings)
+        defines["HAVE_PLUGIN_" + plugin_id] = std::string("1");
+        for (const auto& id_setting: pluginsettings_vector)
         {
-            if (id_setting.second->is_shader_runtime() || !id_setting.second->is_runtime())
+            if (id_setting.value->is_shader_runtime() || !id_setting.value->is_runtime())
             {
                 // Only store settings which either never change, or trigger
                 // a shader reload when they change
-                id_setting.second->add_defines(plugin_id, id_setting.first, defines);
+                id_setting.value->add_defines(plugin_id, id_setting.key, defines);
             }
         }
     }

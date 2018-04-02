@@ -25,12 +25,12 @@
 #include <nodePath.h>
 
 #include <memory>
-#include <map>
 #include <unordered_map>
 #include <functional>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
+#include <render_pipeline/rplibs/ordered_map.hpp>
 
 namespace rpcore {
 
@@ -46,9 +46,8 @@ class DayBaseType;
 class RENDER_PIPELINE_DECL PluginManager : public RPObject
 {
 public:
-    // TODO: FIX map --> OrderedDict (use boost multi-index)
-    using SettingsDataType = std::map<std::string, std::shared_ptr<BaseType>>;
-    using DaySettingsDataType = std::map<std::string, std::shared_ptr<DayBaseType>>;
+    using SettingsDataType = rplibs::OrderedMap<std::string, std::shared_ptr<BaseType>>;
+    using DaySettingsDataType = rplibs::OrderedMap<std::string, std::shared_ptr<DayBaseType>>;
 
     typedef std::unique_ptr<BasePlugin> (PluginCreatorType)(RenderPipeline&);
 

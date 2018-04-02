@@ -140,6 +140,7 @@ set(header_rpcore_util
 )
 
 set(header_rplibs
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rplibs/ordered_map.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rplibs/py_to_cpp.hpp"
 )
 

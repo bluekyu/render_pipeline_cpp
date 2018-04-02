@@ -100,13 +100,13 @@ void DayTimeManager::load_settings()
     const auto& day_settings = impl_->pipeline_.get_plugin_mgr()->get_day_settings();
     for (const auto& id_settings: day_settings)
     {
-        const std::string plugin_id(id_settings.first);
+        const std::string& plugin_id = id_settings.first;
 
-        for (const auto& setting_handle: id_settings.second)
+        for (const auto& setting_handle: id_settings.second.get<0>())
         {
-            const std::string setting_id = plugin_id + "." + setting_handle.first;
-            impl_->input_ubo_->register_pta(setting_id, setting_handle.second->get_glsl_type());
-            impl_->setting_handles_[setting_id] = setting_handle.second;
+            const std::string setting_id = plugin_id + "." + setting_handle.key;
+            impl_->input_ubo_->register_pta(setting_id, setting_handle.value->get_glsl_type());
+            impl_->setting_handles_[setting_id] = setting_handle.value;
         }
     }
     impl_->pipeline_.get_stage_mgr()->add_input_blocks(impl_->input_ubo_);
