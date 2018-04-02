@@ -140,7 +140,10 @@ public:
      */
     std::string get(bool plane = false) const;
 
+    int get_cursor_position() const;
     void set_cursor_position(int pos);
+
+    int get_num_characters() const;
 
     /** sets the entry's text, and moves the cursor to the end. */
     void enter_text(const std::string& text);

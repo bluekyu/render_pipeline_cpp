@@ -272,6 +272,11 @@ std::string DirectEntry::get(bool plane) const
         return get_gui_item()->get_text();
 }
 
+int DirectEntry::get_cursor_position() const
+{
+    return get_gui_item()->get_cursor_position();
+}
+
 void DirectEntry::set_cursor_position(int pos)
 {
     auto gui_item = get_gui_item();
@@ -279,6 +284,11 @@ void DirectEntry::set_cursor_position(int pos)
         gui_item->set_cursor_position(gui_item->get_num_characters() + pos);
     else
         gui_item->set_cursor_position(pos);
+}
+
+int DirectEntry::get_num_characters() const
+{
+    return get_gui_item()->get_num_characters();
 }
 
 void DirectEntry::enter_text(const std::string& text)
