@@ -7,7 +7,7 @@
 - CMake (빌드 도구)
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
-- Boost: 1.65.1
+- Boost: 1.66.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.1
 - [spdlog](https://github.com/gabime/spdlog): 0.16.2
 

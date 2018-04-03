@@ -44,7 +44,7 @@ init:
 # environment variables
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
-    BOOST_ROOT: C:\Libraries\boost_1_65_1
+    BOOST_ROOT: C:\Libraries\boost_1_66_0
     PATH: C:\Python36-x64;%PATH%
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
 

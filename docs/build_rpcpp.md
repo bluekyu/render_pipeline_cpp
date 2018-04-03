@@ -2,12 +2,12 @@
 **Translation**: [한국어](ko_kr/build_rpcpp.md)
 
 ## Requirements
-The **Versions** are used by a build system and does **NOT** need to match.
+The **Versions** are used by a build system and does **NOT** need to match. You can use another versions.
 
 - CMake (build tool)
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
-- Boost: 1.65.1
+- Boost: 1.66.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.1
 - [spdlog](https://github.com/gabime/spdlog): 0.16.2
 
