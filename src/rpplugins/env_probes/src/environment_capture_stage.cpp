@@ -34,7 +34,7 @@
 
 namespace rpplugins {
 
-EnvironmentCaptureStage::RequireType EnvironmentCaptureStage::required_inputs = { "DefaultEnvmap", "AllLightsData", "maxLightIndex" };
+EnvironmentCaptureStage::RequireType EnvironmentCaptureStage::required_inputs = { "DefaultEnvmap", "AllLightsData", "maxLightIndex", "IESDatasetTex" };
 EnvironmentCaptureStage::RequireType EnvironmentCaptureStage::required_pipes;
 
 EnvironmentCaptureStage::EnvironmentCaptureStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "EnvironmentCaptureStage")
