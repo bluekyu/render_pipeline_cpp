@@ -2,3 +2,5 @@
 #version 430
 #define SHADER_NUM_SAMPLES 364
 #pragma include "../filter_cubemap.frag.glsl"
+#if 0
+#endif

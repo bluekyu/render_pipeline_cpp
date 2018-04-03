@@ -15,3 +15,9 @@ for i in range(12):
         handle.write('#version 430\n')
         handle.write('#define SHADER_NUM_SAMPLES {}\n'.format(num_samples))
         handle.write('#pragma include "../filter_cubemap.frag.glsl"\n')
+
+        # Panda3D adds "#line" directive after processing "#pragma include", but there is no code after the line.
+        # However, Intel GLSL compiler occurs "no newline at end of directive #line" error.
+        # This suppresses the error. (comments does not work)
+        handle.write('#if 0\n')
+        handle.write('#endif\n')
