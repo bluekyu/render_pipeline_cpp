@@ -159,7 +159,8 @@ public:
     bool backface_culling_enabled_;
     bool wireframe_enabled_;
 
-    std::vector<std::function<void()>> final_exit_callbacks;
+    std::function<void()> exit_func_;
+    std::vector<std::function<void()>> final_exit_callbacks_;
 };
 
 ShowBase* ShowBase::Impl::global_ptr = nullptr;
@@ -204,6 +205,15 @@ void ShowBase::Impl::initailize(ShowBase* self)
     sfx_active_ = ConfigVariableBool("audio-sfx-active", true).get_value();
     music_active_ = ConfigVariableBool("audio-music-active", true).get_value();
     want_render_2dp_ = ConfigVariableBool("want-render2dp", true).get_value();
+
+    // Fill this in with a function to invoke when the user "exits"
+    // the program by closing the main window.
+    exit_func_ = std::function<void()>();
+
+    // Add final-exit callbacks to this list.  These will be called
+    // when sys.exit() is called, after Panda has unloaded, and
+    // just before Python is about to shut down.
+    final_exit_callbacks_.clear();
 
     // screenshot_extension in config_display.h
 
@@ -500,7 +510,7 @@ ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
 
 ShowBase::~ShowBase()
 {
-    for (const auto& cb: impl_->final_exit_callbacks)
+    for (const auto& cb: impl_->final_exit_callbacks_)
         cb();
 
     get_aspect_2d().node()->remove_all_children();
@@ -1046,19 +1056,38 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
     return "";
 }
 
+void ShowBase::user_exit()
+{
+    // The user has requested we exit the program.Deal with this.
+    if (impl_->exit_func_)
+        impl_->exit_func_();
+    rppanda_showbase_cat.info() << "Exiting ShowBase." << std::endl;
+    finalize_exit();
+}
+
+void ShowBase::finalize_exit()
+{
+    impl_->panda_framework_->set_exit_flag();
+}
+
 void ShowBase::run()
 {
     impl_->panda_framework_->main_loop();
 }
 
+void ShowBase::set_exit_func(const std::function<void()>& exit_func)
+{
+    impl_->exit_func_ = exit_func;
+}
+
 std::vector<std::function<void()>>& ShowBase::get_final_exit_callbacks()
 {
-    return impl_->final_exit_callbacks;
+    return impl_->final_exit_callbacks_;
 }
 
 const std::vector<std::function<void()>>& ShowBase::get_final_exit_callbacks() const
 {
-    return impl_->final_exit_callbacks;
+    return impl_->final_exit_callbacks_;
 }
 
 }

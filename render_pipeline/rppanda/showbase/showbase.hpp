@@ -282,7 +282,12 @@ public:
     Filename screenshot(DisplayRegion* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
 
+    void user_exit();
+    void finalize_exit();
+
     void run();
+
+    void set_exit_func(const std::function<void()>& exit_func);
 
     /**
      * Add final-exit callbacks to this list. These will be called

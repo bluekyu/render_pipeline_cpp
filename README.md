@@ -39,6 +39,7 @@ These are required when you include related headers to access internal data.
 ## Tested Platforms
 I tested it in the following platforms:
 - Intel CPU, NVIDIA GPU, Windows 10 64-bit, Visual Studio 2013 / Visual Studio 2017
+- Intel CPU, Intel GPU (HD 620), Windows 10 64-bit, Visual Studio 2017
 
 Visual Studio 2015 may be able to compile it, but I did not test.
 
