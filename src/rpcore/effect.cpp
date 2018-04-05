@@ -44,7 +44,7 @@ namespace rpcore {
 class Effect::Impl
 {
 public:
-    using InjectionType = std::map<std::string, std::vector<std::string>>;
+    using InjectionType = std::unordered_map<std::string, std::vector<std::string>>;
 
     static std::string generate_hash(const Filename& filename, const OptionType& options);
 
@@ -59,7 +59,7 @@ public:
     using PassType = std::pair<std::string, bool>;
     static const std::vector<PassType> passes_;
 
-    static std::map<std::string, std::shared_ptr<Effect>> global_cache_;
+    static std::unordered_map<std::string, std::shared_ptr<Effect>> global_cache_;
 
     /**
      * Global counter to store the amount of generated effects, used to create
@@ -101,9 +101,9 @@ public:
     std::string effect_name_;
     std::string effect_hash_;
     OptionType options_;
-    std::map<std::string, std::string> generated_shader_paths_;
+    std::unordered_map<std::string, std::string> generated_shader_paths_;
 
-    std::map<std::string, PT(Shader)> shader_objs_;
+    std::unordered_map<std::string, PT(Shader)> shader_objs_;
 };
 
 const Effect::OptionType Effect::Impl::default_options_ =
@@ -120,17 +120,18 @@ const Effect::OptionType Effect::Impl::default_options_ =
 
 const std::vector<Effect::Impl::PassType> Effect::Impl::passes_ = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
 
-std::map<std::string, std::shared_ptr<Effect>> Effect::Impl::global_cache_;
+std::unordered_map<std::string, std::shared_ptr<Effect>> Effect::Impl::global_cache_;
 int Effect::Impl::effect_id_ = 0;
 
 std::string Effect::Impl::generate_hash(const Filename& filename, const OptionType& options)
 {
     // Set all options which are not present in the dict to its defaults
     OptionType opt = default_options_;
-    for (const auto& pair: opt)
+    for (auto&& pair: opt)
     {
-        if (options.find(pair.first) != options.end())
-            opt[pair.first] = options.at(pair.first);
+        auto found = options.find(pair.first);
+        if (found != options.end())
+            pair.second = found->second;
     }
 
     // Hash filename, make sure it has the right format and also resolve
@@ -145,10 +146,10 @@ std::string Effect::Impl::generate_hash(const Filename& filename, const OptionTy
     // are always in the same order, and then convert the flags to strings using
     // '1' for a set flag, and '0' for a unset flag
     std::string options_hash;
+    options_hash.reserve(opt.size());
     for (const auto& pair: opt)
-    {
-        options_hash += opt[pair.first] ? "1" : "0";
-    }
+        options_hash += pair.second ? "1" : "0";
+
     return file_hash + "-" + options_hash;
 }
 
@@ -389,8 +390,10 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 std::shared_ptr<Effect> Effect::load(const Filename& filename, const OptionType& options)
 {
     const std::string& effect_hash = Impl::generate_hash(filename, options);
-    if (Impl::global_cache_.find(effect_hash) != Impl::global_cache_.end())
-        return Impl::global_cache_[effect_hash];
+
+    auto found = Impl::global_cache_.find(effect_hash);
+    if (found != Impl::global_cache_.end())
+        return found->second;
 
     auto effect = std::make_shared<Effect>();
     effect->set_options(options);

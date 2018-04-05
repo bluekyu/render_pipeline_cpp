@@ -38,7 +38,7 @@ const LVecBase3 TextNode::Default::color(1);
 const std::string TextNode::Default::align = "left";
 const std::string TextNode::Default::font = "/$$rp/data/font/Roboto-Bold.ttf";
 
-static const std::map<std::string, ::TextNode::Alignment> text_align_map ={
+static const std::unordered_map<std::string, ::TextNode::Alignment> text_align_map ={
     {"left", ::TextNode::Alignment::A_left},
     {"right", ::TextNode::Alignment::A_right},
     {"center", ::TextNode::Alignment::A_center},

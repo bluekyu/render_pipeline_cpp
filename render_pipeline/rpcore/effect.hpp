@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
@@ -39,7 +39,7 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL Effect : public RPObject
 {
 public:
-    using OptionType = std::map<std::string, bool>;
+    using OptionType = std::unordered_map<std::string, bool>;
 
 public:
     static std::shared_ptr<Effect> load(const Filename& filename, const OptionType& options);
