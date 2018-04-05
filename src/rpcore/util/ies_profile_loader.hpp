@@ -23,13 +23,16 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+class Filename;
 
 namespace rpcore {
 
 class RenderPipeline;
+class Image;
 
 /**
  * Loader class to load .IES files and create an IESDataset from it.
@@ -43,6 +46,7 @@ public:
     static const std::vector<std::string> PROFILES;
 
     IESProfileLoader(RenderPipeline& pipeline);
+    ~IESProfileLoader();
 
     /**
      * Loads a profile from a given filename and returns the internal
@@ -56,7 +60,7 @@ private:
 
     RenderPipeline& pipeline_;
     int max_entries_ = 32;
-    std::shared_ptr<Image> storage_tex_;
+    std::unique_ptr<Image> storage_tex_;
 };
 
 inline IESProfileLoader::IESProfileLoader(RenderPipeline& pipeline): RPObject("IESProfileLoader"), pipeline_(pipeline)

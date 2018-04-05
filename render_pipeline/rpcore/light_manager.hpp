@@ -125,8 +125,8 @@ private:
     std::unique_ptr<ShadowManager> shadow_manager_;
     std::unique_ptr<GPUCommandQueue> cmd_queue_;
 
-    std::shared_ptr<Image> img_light_data_;
-    std::shared_ptr<Image> img_source_data_;
+    std::unique_ptr<Image> img_light_data_;
+    std::unique_ptr<Image> img_source_data_;
 
     PTA_int pta_max_light_index_;
 

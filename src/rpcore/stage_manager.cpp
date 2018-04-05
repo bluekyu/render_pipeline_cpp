@@ -93,7 +93,7 @@ public:
     std::vector<boost::variant<
         std::shared_ptr<SimpleInputBlock>,
         std::shared_ptr<GroupedInputBlock>>> input_block_list_;
-    std::unordered_map<std::string, std::shared_ptr<Image>> previous_pipes_;
+    std::unordered_map<std::string, std::unique_ptr<Image>> previous_pipes_;
 
     std::vector<std::pair<std::string, RenderStage*>> future_bindings_;
     DefinesType defines_;
@@ -221,7 +221,11 @@ bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
                 if (boost::to_lower_copy(pipe_name).find("depth") != std::string::npos)
                     tex_format = "R32";
 
-                previous_pipes_[pipe_name] = Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format);
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+                previous_pipes_.insert_or_assign(pipe_name, Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format));
+#else
+                previous_pipes_.insert({ pipe_name, Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format) });
+#endif
                 previous_pipes_.at(pipe_name)->clear_image();
             }
             stage->set_shader_input(ShaderInput(std::string("Previous_") + pipe_name, previous_pipes_.at(pipe_name)->get_texture()));

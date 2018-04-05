@@ -23,7 +23,10 @@
 #pragma once
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -59,7 +62,7 @@ private:
     rpcore::RenderTarget* _target_firefly;
     rpcore::RenderTarget* _target_apply;
     rpcore::RenderTarget* _target_extract;
-    std::shared_ptr<rpcore::Image> _scene_target_img;
+    std::unique_ptr<rpcore::Image> _scene_target_img;
     std::vector<rpcore::RenderTarget*> _downsample_targets;
     std::vector<rpcore::RenderTarget*> _upsample_targets;
 };

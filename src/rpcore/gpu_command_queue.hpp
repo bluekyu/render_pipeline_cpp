@@ -23,15 +23,18 @@
 #pragma once
 
 #include <pta_int.h>
+#include <internalName.h>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+class Texture;
 
 namespace rpcore {
 
 class RenderPipeline;
 class GPUCommandList;
 class RenderTarget;
+class Image;
 
 /**
  * This class offers an interface to the gpu, allowing commands to be
@@ -76,7 +79,7 @@ private:
     std::unique_ptr<GPUCommandList> command_list_;
     PTA_int pta_num_commands_;
     std::unique_ptr<RenderTarget> command_target_;
-    std::shared_ptr<Image> data_texture_;
+    std::unique_ptr<Image> data_texture_;
 };
 
 // ************************************************************************************************

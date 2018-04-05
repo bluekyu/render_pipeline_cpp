@@ -27,6 +27,7 @@
 
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/stdpy/file.hpp>
 
@@ -166,17 +167,26 @@ void ScatteringMethodEricBruneton::create_textures()
 {
     const std::string tex_format = _use_32_bit ? "RGBA32" : "RGBA16";
 
-    _textures = std::unordered_map<std::string, std::shared_ptr<rpcore::Image>>({
-        { "transmittance", rpcore::Image::create_2d("scat-trans", _trans_w, _trans_h, tex_format) },
-        { "irradiance", rpcore::Image::create_2d("scat-irrad", _sky_w, _sky_h, tex_format) },
-        { "inscatter", rpcore::Image::create_3d("scat-inscat", _res_mu_s_nu, _res_mu, _res_r, tex_format) },
-        { "delta_e", rpcore::Image::create_2d("scat-dx-e", _sky_w, _sky_h, tex_format) },
-        { "delta_sr", rpcore::Image::create_3d("scat-dx-sr", _res_mu_s_nu, _res_mu, _res_r, tex_format) },
-        { "delta_sm", rpcore::Image::create_3d("scat-dx-sm", _res_mu_s_nu, _res_mu, _res_r, tex_format) },
-        { "delta_j", rpcore::Image::create_3d("scat-dx-j", _res_mu_s_nu, _res_mu, _res_r, tex_format) },
-    });
+    _textures.clear();
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    _textures.insert_or_assign("transmittance", rpcore::Image::create_2d("scat-trans", _trans_w, _trans_h, tex_format));
+    _textures.insert_or_assign("irradiance", rpcore::Image::create_2d("scat-irrad", _sky_w, _sky_h, tex_format));
+    _textures.insert_or_assign("inscatter", rpcore::Image::create_3d("scat-inscat", _res_mu_s_nu, _res_mu, _res_r, tex_format));
+    _textures.insert_or_assign("delta_e", rpcore::Image::create_2d("scat-dx-e", _sky_w, _sky_h, tex_format));
+    _textures.insert_or_assign("delta_sr", rpcore::Image::create_3d("scat-dx-sr", _res_mu_s_nu, _res_mu, _res_r, tex_format));
+    _textures.insert_or_assign("delta_sm", rpcore::Image::create_3d("scat-dx-sm", _res_mu_s_nu, _res_mu, _res_r, tex_format));
+    _textures.insert_or_assign("delta_j", rpcore::Image::create_3d("scat-dx-j", _res_mu_s_nu, _res_mu, _res_r, tex_format));
+#else
+    _textures.insert({ "transmittance", rpcore::Image::create_2d("scat-trans", _trans_w, _trans_h, tex_format) });
+    _textures.insert({ "irradiance", rpcore::Image::create_2d("scat-irrad", _sky_w, _sky_h, tex_format) });
+    _textures.insert({ "inscatter", rpcore::Image::create_3d("scat-inscat", _res_mu_s_nu, _res_mu, _res_r, tex_format) });
+    _textures.insert({ "delta_e", rpcore::Image::create_2d("scat-dx-e", _sky_w, _sky_h, tex_format) });
+    _textures.insert({ "delta_sr", rpcore::Image::create_3d("scat-dx-sr", _res_mu_s_nu, _res_mu, _res_r, tex_format) });
+    _textures.insert({ "delta_sm", rpcore::Image::create_3d("scat-dx-sm", _res_mu_s_nu, _res_mu, _res_r, tex_format) });
+    _textures.insert({ "delta_j", rpcore::Image::create_3d("scat-dx-j", _res_mu_s_nu, _res_mu, _res_r, tex_format) });
+#endif
 
-    for (auto&& key_img: _textures)
+    for (const auto& key_img: _textures)
     {
         key_img.second->set_minfilter(SamplerState::FT_linear);
         key_img.second->set_magfilter(SamplerState::FT_linear);

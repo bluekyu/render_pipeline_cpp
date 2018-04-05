@@ -23,9 +23,10 @@
 #pragma once
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {
+
+class Image;
 
 /** This stage takes the list of used cells and creates a list of lights for each cell.*/
 class RENDER_PIPELINE_DECL CullLightsStage : public RenderStage
@@ -58,12 +59,12 @@ private:
     int cull_threads_;
     int num_light_classes_;
 
-    std::shared_ptr<Image> frustum_lights_ctr_;
-    std::shared_ptr<Image> frustum_lights_;
-    std::shared_ptr<Image> per_cell_lights_;
-    std::shared_ptr<Image> per_cell_light_counts_;
-    std::shared_ptr<Image> grouped_cell_lights_;
-    std::shared_ptr<Image> grouped_cell_lights_counts_;
+    std::unique_ptr<Image> frustum_lights_ctr_;
+    std::unique_ptr<Image> frustum_lights_;
+    std::unique_ptr<Image> per_cell_lights_;
+    std::unique_ptr<Image> per_cell_light_counts_;
+    std::unique_ptr<Image> grouped_cell_lights_;
+    std::unique_ptr<Image> grouped_cell_lights_counts_;
 
     RenderTarget* target_visible_;
     RenderTarget* target_cull_;

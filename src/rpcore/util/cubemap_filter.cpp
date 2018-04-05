@@ -71,7 +71,7 @@ void CubemapFilter::make_maps()
     _specular_map = Image::create_cube(_name + "IBLSpec", _size, "R11G11B10");
 
     // Set the correct filtering modes
-    for (auto&& tex: {_diffuse_map, _specular_map, _prefilter_map, _spec_pref_map})
+    for (const auto& tex: {_diffuse_map.get(), _specular_map.get(), _prefilter_map.get(), _spec_pref_map.get()})
     {
         tex->set_minfilter(SamplerState::FT_linear);
         tex->set_magfilter(SamplerState::FT_linear);

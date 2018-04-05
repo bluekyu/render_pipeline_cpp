@@ -50,16 +50,16 @@ public:
      * Returns the generated specular cubemap. The specular cubemap is
      * mipmapped and provides the specular IBL components of the input cubemap.
      */
-    std::shared_ptr<Image> get_specular_cubemap() const;
+    Image* get_specular_cubemap() const;
 
     /**
      * Returns the generated diffuse cubemap. The diffuse cubemap has no
      * mipmaps and contains the filtered diffuse component of the input cubemap.
      */
-    std::shared_ptr<Image> get_diffuse_cubemap() const;
+    Image* get_diffuse_cubemap() const;
 
     /** Returns the target where the caller should write the initial cubemap data to. */
-    std::shared_ptr<Image> get_target_cubemap() const;
+    Image* get_target_cubemap() const;
 
     /**
      * Returns the size of the created cubemap, previously passed to the
@@ -90,10 +90,10 @@ private:
     const std::string _name;
     int _size;
 
-    std::shared_ptr<Image> _prefilter_map;
-    std::shared_ptr<Image> _diffuse_map;
-    std::shared_ptr<Image> _spec_pref_map;
-    std::shared_ptr<Image> _specular_map;
+    std::unique_ptr<Image> _prefilter_map;
+    std::unique_ptr<Image> _diffuse_map;
+    std::unique_ptr<Image> _spec_pref_map;
+    std::unique_ptr<Image> _specular_map;
 
     std::vector<RenderTarget*> _targets_spec;
     std::vector<RenderTarget*> _targets_spec_filter;
@@ -103,19 +103,19 @@ private:
 };
 
 // ************************************************************************************************
-inline std::shared_ptr<Image> CubemapFilter::get_specular_cubemap() const
+inline Image* CubemapFilter::get_specular_cubemap() const
 {
-    return _specular_map;
+    return _specular_map.get();
 }
 
-inline std::shared_ptr<Image> CubemapFilter::get_diffuse_cubemap() const
+inline Image* CubemapFilter::get_diffuse_cubemap() const
 {
-    return _diffuse_map;
+    return _diffuse_map.get();
 }
 
-inline std::shared_ptr<Image> CubemapFilter::get_target_cubemap() const
+inline Image* CubemapFilter::get_target_cubemap() const
 {
-    return _specular_map;
+    return _specular_map.get();
 }
 
 inline int CubemapFilter::get_size() const

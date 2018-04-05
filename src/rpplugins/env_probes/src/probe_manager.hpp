@@ -24,10 +24,14 @@
 
 #include <dtoolbase.h>
 
+#include <vector>
 #include <memory>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -47,9 +51,9 @@ public:
     int get_resolution() const;
     int get_diffuse_resolution() const;
 
-    std::shared_ptr<rpcore::Image> get_cubemap_storage() const;
-    std::shared_ptr<rpcore::Image> get_diffuse_storage() const;
-    std::shared_ptr<rpcore::Image> get_dataset_storage() const;
+    rpcore::Image* get_cubemap_storage() const;
+    rpcore::Image* get_diffuse_storage() const;
+    rpcore::Image* get_dataset_storage() const;
 
     /** Creates the cubemap storage. */
     void init();
@@ -72,9 +76,9 @@ private:
     int _resolution = 128;
     int _diffuse_resolution = 4;
 
-    std::shared_ptr<rpcore::Image> _cubemap_storage;
-    std::shared_ptr<rpcore::Image> _diffuse_storage;
-    std::shared_ptr<rpcore::Image> _dataset_storage;
+    std::unique_ptr<rpcore::Image> _cubemap_storage;
+    std::unique_ptr<rpcore::Image> _diffuse_storage;
+    std::unique_ptr<rpcore::Image> _dataset_storage;
 };
 
 inline int ProbeManager::get_max_probes() const
@@ -92,19 +96,19 @@ inline int ProbeManager::get_diffuse_resolution() const
     return _diffuse_resolution;
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_cubemap_storage() const
+inline rpcore::Image* ProbeManager::get_cubemap_storage() const
 {
-    return _cubemap_storage;
+    return _cubemap_storage.get();
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_diffuse_storage() const
+inline rpcore::Image* ProbeManager::get_diffuse_storage() const
 {
-    return _diffuse_storage;
+    return _diffuse_storage.get();
 }
 
-inline std::shared_ptr<rpcore::Image> ProbeManager::get_dataset_storage() const
+inline rpcore::Image* ProbeManager::get_dataset_storage() const
 {
-    return _dataset_storage;
+    return _dataset_storage.get();
 }
 
 inline size_t ProbeManager::get_num_probes() const

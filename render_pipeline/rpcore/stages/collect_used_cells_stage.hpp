@@ -23,9 +23,10 @@
 #pragma once
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {
+
+class Image;
 
 /**
  * This stage collects the flagged cells from the FlagUsedCellsStage and
@@ -52,8 +53,8 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    std::shared_ptr<Image> cell_list_buffer_;
-    std::shared_ptr<Image> cell_index_buffer_;
+    std::unique_ptr<Image> cell_list_buffer_;
+    std::unique_ptr<Image> cell_index_buffer_;
 
     RenderTarget* target_;
 };

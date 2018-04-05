@@ -27,9 +27,12 @@
 #include <shader.h>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
-#include <render_pipeline/rpcore/image.hpp>
 
 #include "../include/scattering_plugin.hpp"
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -93,7 +96,7 @@ private:
 
     int _res_mu_s_nu;
 
-    std::unordered_map<std::string, std::shared_ptr<rpcore::Image>> _textures;
+    std::unordered_map<std::string, std::unique_ptr<rpcore::Image>> _textures;
     std::unordered_map<std::string, PT(Shader)> _shaders;
 };
 

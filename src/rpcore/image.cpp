@@ -41,9 +41,9 @@ const std::unordered_map<std::string, Image::ComponentFormatType> Image::FORMAT_
 
 std::vector<Image*> Image::REGISTERED_IMAGES;
 
-std::shared_ptr<Image> Image::create_buffer(const std::string& name, int size, const std::string& component_format)
+std::unique_ptr<Image> Image::create_buffer(const std::string& name, int size, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>("ImgBuffer-" + name);
+    auto img = std::make_unique<Image>("ImgBuffer-" + name);
     img->setup_buffer(size, component_format);
     return img;
 }
@@ -54,7 +54,7 @@ void Image::setup_buffer(int size, const std::string& component_format)
     texture_->setup_buffer_texture(size, comp_type_format.first, comp_type_format.second, GeomEnums::UH_static);
 }
 
-std::shared_ptr<Image> Image::create_counter(const std::string& name)
+std::unique_ptr<Image> Image::create_counter(const std::string& name)
 {
     return Image::create_buffer(name, 1, "R32I");
 }
@@ -64,9 +64,9 @@ void Image::setup_counter()
     Image::setup_buffer(1, "R32I");
 }
 
-std::shared_ptr<Image> Image::create_2d(const std::string& name, int w, int h, const std::string& component_format)
+std::unique_ptr<Image> Image::create_2d(const std::string& name, int w, int h, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>("Img2D-" + name);
+    auto img = std::make_unique<Image>("Img2D-" + name);
     img->setup_2d(w, h, component_format);
     return img;
 }
@@ -77,9 +77,9 @@ void Image::setup_2d(int w, int h, const std::string& component_format)
     texture_->setup_2d_texture(w, h, comp_type_format.first, comp_type_format.second);
 }
 
-std::shared_ptr<Image> Image::create_2d_array(const std::string& name, int w, int h, int slices, const std::string& component_format)
+std::unique_ptr<Image> Image::create_2d_array(const std::string& name, int w, int h, int slices, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>(std::string("Img2DArr-") + name);
+    auto img = std::make_unique<Image>(std::string("Img2DArr-") + name);
     img->setup_2d_array(w, h, slices, component_format);
     return img;
 }
@@ -90,9 +90,9 @@ void Image::setup_2d_array(int w, int h, int slices, const std::string& componen
     texture_->setup_2d_texture_array(w, h, slices, comp_type_format.first, comp_type_format.second);
 }
 
-std::shared_ptr<Image> Image::create_3d(const std::string& name, int w, int h, int slices, const std::string& component_format)
+std::unique_ptr<Image> Image::create_3d(const std::string& name, int w, int h, int slices, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>(std::string("Img3D-") + name);
+    auto img = std::make_unique<Image>(std::string("Img3D-") + name);
     img->setup_3d(w, h, slices, component_format);
     return img;
 }
@@ -103,9 +103,9 @@ void Image::setup_3d(int w, int h, int slices, const std::string& component_form
     texture_->setup_3d_texture(w, h, slices, comp_type_format.first, comp_type_format.second);
 }
 
-std::shared_ptr<Image> Image::create_cube(const std::string& name, int size, const std::string& component_format)
+std::unique_ptr<Image> Image::create_cube(const std::string& name, int size, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>(std::string("ImgCube-") + name);
+    auto img = std::make_unique<Image>(std::string("ImgCube-") + name);
     img->setup_cube(size, component_format);
     return img;
 }
@@ -116,9 +116,9 @@ void Image::setup_cube(int size, const std::string& component_format)
     texture_->setup_cube_map(size, comp_type_format.first, comp_type_format.second);
 }
 
-std::shared_ptr<Image> Image::create_cube_array(const std::string& name, int size, int num_cubemaps, const std::string& component_format)
+std::unique_ptr<Image> Image::create_cube_array(const std::string& name, int size, int num_cubemaps, const std::string& component_format)
 {
-    auto img = std::make_shared<Image>(std::string("ImgCubeArr-") + name);
+    auto img = std::make_unique<Image>(std::string("ImgCubeArr-") + name);
     img->setup_cube_array(size, num_cubemaps, component_format);
     return img;
 }

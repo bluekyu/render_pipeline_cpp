@@ -23,7 +23,10 @@
 #pragma once
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -58,7 +61,7 @@ private:
     int _slice_width;
 
     rpcore::RenderTarget* _target;
-    std::shared_ptr<rpcore::Image> _per_cell_probes;
+    std::unique_ptr<rpcore::Image> _per_cell_probes;
 };
 
 }    // namespace rpplugins

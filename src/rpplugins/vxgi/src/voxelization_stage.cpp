@@ -30,11 +30,14 @@
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpplugins {
 
 VoxelizationStage::RequireType VoxelizationStage::required_inputs = { "DefaultEnvmap", "AllLightsData", "maxLightIndex" };
 VoxelizationStage::RequireType VoxelizationStage::required_pipes;
+
+VoxelizationStage::~VoxelizationStage() = default;
 
 VoxelizationStage::ProduceType VoxelizationStage::get_produced_inputs() const
 {

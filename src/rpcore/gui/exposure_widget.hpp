@@ -62,7 +62,7 @@ private:
     NodePath parent_;
     NodePath node_;
 
-    std::shared_ptr<Image> storage_tex_;
+    std::unique_ptr<Image> storage_tex_;
     PT(rppanda::DirectFrame) bg_frame_;
     std::unique_ptr<Sprite> display_img_;
     std::unique_ptr<Text> display_txt_;

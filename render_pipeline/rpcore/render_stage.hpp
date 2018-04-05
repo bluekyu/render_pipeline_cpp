@@ -120,7 +120,7 @@ public:
      * Prepares the two textures required for processing invalid pixels
      * after executing the upscale pass.
      */
-    std::pair<std::shared_ptr<Image>, std::shared_ptr<Image>> prepare_upscaler(int max_invalid_pixels=2048) const;
+    std::pair<std::unique_ptr<Image>, std::unique_ptr<Image>> prepare_upscaler(int max_invalid_pixels=2048) const;
 
     void handle_window_resize();
     virtual void set_dimensions() {}

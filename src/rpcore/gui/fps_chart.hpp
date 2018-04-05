@@ -62,11 +62,11 @@ private:
     NodePath parent_;
     NodePath node_;
 
-    std::shared_ptr<Image> storage_buffer_;
+    std::unique_ptr<Image> storage_buffer_;
     PTA_int store_index_;
     PTA_float current_ftime_;
     PTA_float chart_ms_max_;
-    std::shared_ptr<Image> display_tex_;
+    std::unique_ptr<Image> display_tex_;
     std::unique_ptr<Sprite> display_img_;
 
     std::unique_ptr<Text> display_txt_;

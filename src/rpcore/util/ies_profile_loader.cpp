@@ -26,6 +26,7 @@
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
+#include "render_pipeline/rpcore/image.hpp"
 
 namespace rpcore {
 
@@ -38,6 +39,8 @@ const std::vector<std::string> IESProfileLoader::PROFILES = {
     "ERCO Leuchten GmbH  BY: ERCO/LUM650/8701",
     "ERCO Leuchten GmbH"
 };
+
+IESProfileLoader::~IESProfileLoader() = default;
 
 size_t IESProfileLoader::load(const Filename& filename)
 {

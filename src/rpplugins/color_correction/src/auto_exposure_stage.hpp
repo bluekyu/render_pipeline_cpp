@@ -24,6 +24,10 @@
 
 #include <render_pipeline/rpcore/render_stage.hpp>
 
+namespace rpcore {
+class Image;
+}
+
 namespace rpplugins {
 
 class AutoExposureStage : public rpcore::RenderStage
@@ -50,7 +54,7 @@ private:
     rpcore::RenderTarget* _target_lum;
     rpcore::RenderTarget* _target_analyze;
     rpcore::RenderTarget* _target_apply;
-    std::shared_ptr<rpcore::Image> _tex_exposure;
+    std::unique_ptr<rpcore::Image> _tex_exposure;
     PT(Shader) _mip_shader;
 
     std::vector<rpcore::RenderTarget*> _mip_targets;

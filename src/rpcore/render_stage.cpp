@@ -129,12 +129,12 @@ void RenderStage::handle_window_resize()
         target.second->consider_resize();
 }
 
-std::pair<std::shared_ptr<Image>, std::shared_ptr<Image>> RenderStage::prepare_upscaler(int max_invalid_pixels) const
+std::pair<std::unique_ptr<Image>, std::unique_ptr<Image>> RenderStage::prepare_upscaler(int max_invalid_pixels) const
 {
-    std::shared_ptr<Image> counter = Image::create_counter(get_stage_id() + "-BadPixelsCounter");
+    std::unique_ptr<Image> counter = Image::create_counter(get_stage_id() + "-BadPixelsCounter");
     counter->set_clear_color(LColor(0));
-    std::shared_ptr<Image> buf = Image::create_buffer(get_stage_id() + "-BadPixels", max_invalid_pixels, "R32I");
-    return{ counter, buf };
+    std::unique_ptr<Image> buf = Image::create_buffer(get_stage_id() + "-BadPixels", max_invalid_pixels, "R32I");
+    return std::make_pair<std::unique_ptr<Image>, std::unique_ptr<Image>>(std::move(counter), std::move(buf));
 }
 
 PT(Shader) RenderStage::get_shader_handle(const Filename& base_path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const

@@ -26,7 +26,10 @@
 #include <orthographicLens.h>
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -45,6 +48,7 @@ public:
     };
 
     VoxelizationStage(rpcore::RenderPipeline& pipeline);
+    ~VoxelizationStage();
 
     RequireType& get_required_inputs() const final { return required_inputs; }
     RequireType& get_required_pipes() const final { return required_pipes; }
@@ -79,9 +83,9 @@ private:
     PTA_LVecBase3 _pta_next_grid_pos;
     PTA_LVecBase3 _pta_grid_pos;
 
-    std::shared_ptr<rpcore::Image> _voxel_temp_grid;
-    std::shared_ptr<rpcore::Image> _voxel_temp_nrm_grid;
-    std::shared_ptr<rpcore::Image> _voxel_grid;
+    std::unique_ptr<rpcore::Image> _voxel_temp_grid;
+    std::unique_ptr<rpcore::Image> _voxel_temp_nrm_grid;
+    std::unique_ptr<rpcore::Image> _voxel_grid;
 
     PT(Camera) _voxel_cam;
     PT(OrthographicLens) _voxel_cam_lens;

@@ -48,25 +48,25 @@ public:
     static std::vector<Image*> REGISTERED_IMAGES;
 
     /** Creates a new buffer texture. */
-    static std::shared_ptr<Image> create_buffer(const std::string& name, int size, const std::string& component_format);
+    static std::unique_ptr<Image> create_buffer(const std::string& name, int size, const std::string& component_format);
 
     /** Creates a new 1x1 R32I texture to be used as an atomic counter. */
-    static std::shared_ptr<Image> create_counter(const std::string& name);
+    static std::unique_ptr<Image> create_counter(const std::string& name);
 
     /** Creates a new 2D texture. */
-    static std::shared_ptr<Image> create_2d(const std::string& name, int w, int h, const std::string& component_format);
+    static std::unique_ptr<Image> create_2d(const std::string& name, int w, int h, const std::string& component_format);
 
     /** Creates a new 2D-array texture. */
-    static std::shared_ptr<Image> create_2d_array(const std::string& name, int w, int h, int slices, const std::string& component_format);
+    static std::unique_ptr<Image> create_2d_array(const std::string& name, int w, int h, int slices, const std::string& component_format);
 
     /** Creates a new 3D texture. */
-    static std::shared_ptr<Image> create_3d(const std::string& name, int w, int h, int slices, const std::string& component_format);
+    static std::unique_ptr<Image> create_3d(const std::string& name, int w, int h, int slices, const std::string& component_format);
 
     /** Creates a new cubemap */
-    static std::shared_ptr<Image> create_cube(const std::string& name, int size, const std::string& component_format);
+    static std::unique_ptr<Image> create_cube(const std::string& name, int size, const std::string& component_format);
 
     /** Creates a new cubemap. */
-    static std::shared_ptr<Image> create_cube_array(const std::string& name, int size, int num_cubemaps, const std::string& component_format);
+    static std::unique_ptr<Image> create_cube_array(const std::string& name, int size, int num_cubemaps, const std::string& component_format);
 
     static const ComponentFormatType& convert_texture_format(const std::string& comp_type);
 

@@ -25,7 +25,10 @@
 #include <nodePath.h>
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
+
+namespace rpcore {
+class Image;
+}
 
 namespace rpplugins {
 
@@ -80,7 +83,7 @@ private:
 
     PT(Texture) _storage_tex = nullptr;
     PT(Texture) _storage_tex_diffuse = nullptr;
-    std::shared_ptr<rpcore::Image> _temporary_diffuse_map;
+    std::unique_ptr<rpcore::Image> _temporary_diffuse_map;
 
     rpcore::RenderTarget* _target;
     rpcore::RenderTarget* _target_store;

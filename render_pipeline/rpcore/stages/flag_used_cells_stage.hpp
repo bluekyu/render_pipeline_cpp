@@ -23,9 +23,10 @@
 #pragma once
 
 #include <render_pipeline/rpcore/render_stage.hpp>
-#include <render_pipeline/rpcore/image.hpp>
 
 namespace rpcore {
+
+class Image;
 
 /** This stage flags all used cells based on the depth buffer. */
 class FlagUsedCellsStage : public RenderStage
@@ -49,7 +50,7 @@ private:
     static RequireType required_inputs_;
     static RequireType required_pipes_;
 
-    std::shared_ptr<Image> cell_grid_flags_;
+    std::unique_ptr<Image> cell_grid_flags_;
 
     RenderTarget* target_;
 };

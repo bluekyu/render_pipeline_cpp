@@ -27,6 +27,7 @@
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/render_target.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rpcore/util/task_scheduler.hpp>
 
