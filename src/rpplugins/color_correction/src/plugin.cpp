@@ -26,6 +26,7 @@
 #include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/loader.hpp>
+#include <render_pipeline/rpcore/image.hpp>
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
