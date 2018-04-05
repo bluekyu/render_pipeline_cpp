@@ -1,5 +1,4 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2016-08-02
 
 function(_find_boost required_component)
     if(NOT TARGET Boost::boost)
@@ -18,11 +17,11 @@ function(_find_boost required_component)
     endforeach()
 
     if(missed_component)
-        find_package(Boost 1.62.0 REQUIRED ${missed_component})
+        find_package(Boost REQUIRED ${missed_component})
     endif()
 
     if(NOT TARGET Boost::boost)
-        find_package(Boost 1.62.0 REQUIRED)
+        find_package(Boost REQUIRED)
     endif()
 endfunction()
 

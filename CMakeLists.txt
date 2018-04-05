@@ -15,17 +15,17 @@ include(git-utils)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # version
-set(render_pipeline_VERSION "0.4.0")
-set(render_pipeline_SEMANTIC_VERSION "${render_pipeline_VERSION}")
-set(PROJECT_VERSION "${render_pipeline_SEMANTIC_VERSION}")
-message("[render_pipeline] build version: ${render_pipeline_SEMANTIC_VERSION}")
+set(${PROJECT_NAME}_VERSION "0.4.0")
+set(${PROJECT_NAME}_SEMANTIC_VERSION "${${PROJECT_NAME}_VERSION}")
+set(PROJECT_VERSION "${${PROJECT_NAME}_SEMANTIC_VERSION}")
+message("[${PROJECT_NAME}] build version: ${${PROJECT_NAME}_SEMANTIC_VERSION}")
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
     # git commit
-    get_git_head_hash(${CMAKE_CURRENT_SOURCE_DIR} render_pipeline_GIT_COMMIT)
-    message("[render_pipeline] git commit: ${render_pipeline_GIT_COMMIT}")
+    get_git_head_hash(${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_NAME}_GIT_COMMIT)
+    message("[${PROJECT_NAME}] git commit: ${${PROJECT_NAME}_GIT_COMMIT}")
 else()
-    set(render_pipeline_GIT_COMMIT "")
+    set(${PROJECT_NAME}_GIT_COMMIT "")
 endif()
 
 # configure project package
@@ -48,7 +48,7 @@ if(FREETYPE_FOUND)
     message(STATUS "freetype include path: ${FREETYPE_INCLUDE_DIRS}")
 endif()
 
-set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/render_pipeline-macro.cmake")
+set(${PROJECT_NAME}_MACRO_CMAKE_FILE "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-macro.cmake")
 include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
 # ==================================================================================================
 
@@ -122,7 +122,7 @@ set(PACKAGE_NAME "${PROJECT_NAME}")
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
-set(${PROJECT_NAME}_TARGET_NAMESPACE "render_pipeline::")
+set(${PROJECT_NAME}_TARGET_NAMESPACE "${PROJECT_NAME}::")
 set(${PROJECT_NAME}_TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PACKAGE_NAME}")
 
