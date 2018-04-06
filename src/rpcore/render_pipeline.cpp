@@ -355,8 +355,9 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
         return;
 
     // override options
-    auto options = Effect::get_default_options();
-    options.insert(std::get<2>(*iter).begin(), std::get<2>(*iter).end());
+    auto options = std::get<2>(*iter);      // copy
+    const auto& default_options = Effect::get_default_options();
+    options.insert(default_options.begin(), default_options.end());
 
     for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
     {

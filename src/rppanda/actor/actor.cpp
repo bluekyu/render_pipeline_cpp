@@ -1256,8 +1256,7 @@ void Actor::build_anim_dict_items(std::vector<PartDictType::iterator>& anim_dict
                 const auto& subpart_dict_iter = subpart_dict_.find(pname);
                 if (subpart_dict_iter != subpart_dict_.end())
                 {
-                    part_dict.insert({ pname,{} });
-                    part_dict_iter = part_dict.find(pname);
+                    part_dict_iter = part_dict.insert({ pname,{} }).first;
                     map_changed = true;
                 }
             }
@@ -1305,11 +1304,19 @@ bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, c
                     if (anim_found != part_dict.at(true_part_name).end())
                     {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-                        anim_dict.insert_or_assign(anim_name, anim_found->second.make_copy());
+                        found = anim_dict.insert_or_assign(anim_name, anim_found->second.make_copy()).first;
 #else
-                        anim_dict.insert({ anim_name, anim_found->second.make_copy() });
+                        auto anim_dict_found = anim_dict.find(anim_name);
+                        if (anim_dict_found == anim_dict.end())
+                        {
+                            found = anim_dict.insert({ anim_name, anim_found->second.make_copy() }).first;
+                        }
+                        else
+                        {
+                            anim_dict_found->second = anim_found->second.make_copy();
+                            found = anim_dict_found;
+                        }
 #endif
-                        found = anim_dict.find(anim_name);
                     }
                 }
             }
@@ -1438,7 +1445,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
             anim_control_dict_.at(new_lod_name).at(part_name).insert_or_assign(anim_name, anim_def);
 #else
-            anim_control_dict_.at(new_lod_name).at(part_name).insert({ anim_name, anim_def });
+            anim_control_dict_.at(new_lod_name).at(part_name)[anim_name] = anim_def;
 #endif
         }
     }
@@ -1494,7 +1501,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
             common_bundle_handles_.insert_or_assign(part_name, bundle_handle);
 #else
-            common_bundle_handles_.insert({ part_name, bundle_handle });
+            common_bundle_handles_[part_name] = bundle_handle;
 #endif
         }
     }
@@ -1502,7 +1509,7 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     bundle_dict.insert_or_assign(part_name, PartDef{ bundle_np, bundle_handle, part_model });
 #else
-    bundle_dict.insert({ part_name, PartDef{ bundle_np, bundle_handle, part_model } });
+    bundle_dict[part_name] = PartDef{ bundle_np, bundle_handle, part_model };
 #endif
 }
 
@@ -1547,8 +1554,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
     if (anim_dict_found == part_dict.end())
     {
         // It must be a subpart that hasn't been bound yet.
-        part_dict.insert({part_name, {}});
-        anim_dict_found = part_dict.find(part_name);
+        anim_dict_found = part_dict.insert({part_name, {}}).first;
     }
 
     auto anim_found = anim_dict_found->second.find(anim_name);
@@ -1557,11 +1563,11 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
         // It must be a subpart that hasn't been bound yet.
         auto& anim = part_dict[true_part_name].at(anim_name);
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-        anim_dict_found->second.insert_or_assign(anim_name, anim.make_copy());
+        anim_found = anim_dict_found->second.insert_or_assign(anim_name, anim.make_copy()).first;
 #else
-        anim_dict_found->second.insert({anim_name, anim.make_copy()});
-#endif
+        anim_dict_found->second[anim_name] = anim.make_copy();
         anim_found = anim_dict_found->second.find(anim_name);
+#endif
     }
 
     if (anim_found == anim_dict_found->second.end())
