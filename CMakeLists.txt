@@ -1,8 +1,8 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
 project(render_pipeline
+    VERSION 0.4.0
     DESCRIPTION "Render Pipeline C++ project"
 )
 
@@ -15,9 +15,7 @@ include(git-utils)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # version
-set(${PROJECT_NAME}_VERSION "0.4.0")
 set(${PROJECT_NAME}_SEMANTIC_VERSION "${${PROJECT_NAME}_VERSION}")
-set(PROJECT_VERSION "${${PROJECT_NAME}_SEMANTIC_VERSION}")
 message("[${PROJECT_NAME}] build version: ${${PROJECT_NAME}_SEMANTIC_VERSION}")
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
