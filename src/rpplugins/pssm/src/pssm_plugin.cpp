@@ -71,7 +71,7 @@ public:
     PSSMDistShadowStage* dist_shadow_stage_;
 
     NodePath node_;
-    std::shared_ptr<rpcore::PSSMCameraRig> camera_rig_;
+    std::unique_ptr<rpcore::PSSMCameraRig> camera_rig_;
 };
 
 PSSMPlugin::RequrieType PSSMPlugin::Impl::require_plugins_ = { "scattering" };
@@ -192,7 +192,7 @@ void PSSMPlugin::on_pipeline_created()
     const int split_count = boost::any_cast<int>(get_setting("split_count"));
 
     // Construct the actual PSSM rig
-    impl_->camera_rig_ = std::make_shared<rpcore::PSSMCameraRig>(split_count);
+    impl_->camera_rig_ = std::make_unique<rpcore::PSSMCameraRig>(split_count);
     impl_->camera_rig_->set_sun_distance(boost::any_cast<float>(get_setting("sun_distance")));
     impl_->camera_rig_->set_pssm_distance(boost::any_cast<float>(get_setting("max_distance")));
     impl_->camera_rig_->set_logarithmic_factor(boost::any_cast<float>(get_setting("logarithmic_factor")));
