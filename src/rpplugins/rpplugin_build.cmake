@@ -34,7 +34,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
 )
 
-configure_debugging_information(${PROJECT_NAME})
+configure_debugging_information(TARGET ${PROJECT_NAME})
 # ==================================================================================================
 
 # === target =======================================================================================

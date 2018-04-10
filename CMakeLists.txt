@@ -113,7 +113,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
 )
 
-configure_debugging_information(${PROJECT_NAME})
+configure_debugging_information(TARGET ${PROJECT_NAME})
 
 # === configure package ===
 set(PACKAGE_NAME "${PROJECT_NAME}")
@@ -170,7 +170,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/"
 )
 
-install_debugging_information(${PROJECT_NAME} "${CMAKE_INSTALL_BINDIR}")
+install_debugging_information(TARGET ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # ==================================================================================================
 
 # === subdirectory =================================================================================
