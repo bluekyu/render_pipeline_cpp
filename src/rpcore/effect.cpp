@@ -485,11 +485,12 @@ bool Effect::do_load(const Filename& filename)
 
 Shader* Effect::get_shader_obj(const std::string& pass_id) const
 {
-    try
+    auto found = impl_->shader_objs_.find(pass_id);
+    if (found != impl_->shader_objs_.end())
     {
-        return impl_->shader_objs_.at(pass_id);
+        return found->second;
     }
-    catch (const std::out_of_range&)
+    else
     {
         warn(std::string("Pass '") + pass_id + "' not found!");
         return nullptr;
