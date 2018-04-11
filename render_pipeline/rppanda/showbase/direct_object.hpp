@@ -104,6 +104,8 @@ public:
     void remove_task(const std::string& task_name);
     void remove_task(AsyncTask* task);
 
+    void remove_all_tasks();
+
 private:
     void do_add_task(AsyncTask* task);
 

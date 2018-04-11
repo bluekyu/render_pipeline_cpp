@@ -122,6 +122,13 @@ void DirectObject::remove_task(AsyncTask* task)
     task_list_.erase(id);
 }
 
+void DirectObject::remove_all_tasks()
+{
+    for (const auto& task : task_list_)
+        task.second->remove();
+    task_list_.clear();
+}
+
 void DirectObject::do_add_task(AsyncTask* task)
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900

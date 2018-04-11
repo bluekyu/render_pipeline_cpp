@@ -58,6 +58,36 @@ TaskManager::TaskManager() : mgr_(AsyncTaskManager::get_global_ptr()),
 {
 }
 
+TypedReferenceCount* TaskManager::get_current_task() const
+{
+    return Thread::get_current_thread()->get_current_task();
+}
+
+bool TaskManager::has_task_chain(const std::string& chain_name) const
+{
+    return mgr_->find_task_chain(chain_name) != nullptr;
+}
+
+void TaskManager::setup_task_chain(const std::string& chain_name, boost::optional<int> num_threads,
+    boost::optional<bool> tick_clock, boost::optional<ThreadPriority> thread_priority,
+    boost::optional<double> frame_budget, boost::optional<bool> frame_sync,
+    boost::optional<bool> timeslice_priority)
+{
+    auto chain = mgr_->make_task_chain(chain_name);
+    if (num_threads)
+        chain->set_num_threads(num_threads.value());
+    if (tick_clock)
+        chain->set_tick_clock(tick_clock.value());
+    if (thread_priority)
+        chain->set_thread_priority(thread_priority.value());
+    if (frame_budget)
+        chain->set_frame_budget(frame_budget.value());
+    if (frame_sync)
+        chain->set_frame_sync(frame_sync.value());
+    if (timeslice_priority)
+        chain->set_timeslice_priority(timeslice_priority.value());
+}
+
 bool TaskManager::has_task_named(const std::string& task_name) const
 {
     return mgr_->find_task(task_name) != nullptr;
@@ -66,6 +96,26 @@ bool TaskManager::has_task_named(const std::string& task_name) const
 AsyncTaskCollection TaskManager::get_task_named(const std::string& task_name) const
 {
     return mgr_->find_tasks(task_name);
+}
+
+AsyncTaskCollection TaskManager::get_task_matching(const GlobPattern& task_pattern) const
+{
+    return mgr_->find_tasks_matching(task_pattern);
+}
+
+AsyncTaskCollection TaskManager::get_all_tasks() const
+{
+    return mgr_->get_tasks();
+}
+
+AsyncTaskCollection TaskManager::get_tasks() const
+{
+    return mgr_->get_active_tasks();
+}
+
+AsyncTaskCollection TaskManager::get_do_laters() const
+{
+    return mgr_->get_sleeping_tasks();
 }
 
 AsyncTask* TaskManager::do_method_later(float delay_time, AsyncTask* task,
@@ -128,14 +178,19 @@ FunctionalTask* TaskManager::add(const FunctionalTask::TaskFunc& func, const std
     return task;
 }
 
-int TaskManager::remove(const std::string& task_name)
+size_t TaskManager::remove(const std::string& task_name)
 {
     return mgr_->remove(mgr_->find_tasks(task_name));
 }
 
-int TaskManager::remove(AsyncTask* task)
+bool TaskManager::remove(AsyncTask* task)
 {
     return mgr_->remove(task);
+}
+
+size_t TaskManager::remove_task_matching(const GlobPattern& task_pattern)
+{
+    return mgr_->remove(mgr_->find_tasks_matching(task_pattern));
 }
 
 AsyncTask* TaskManager::setup_task(AsyncTask* task, const std::string& name,

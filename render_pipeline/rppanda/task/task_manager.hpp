@@ -57,9 +57,65 @@ public:
     AsyncTaskManager* get_mgr() const;
     ClockObject* get_global_clock() const;
 
+    /**
+     * Returns the task currently executing on this thread, or
+     * nullptr if this is being called outside of the task manager.
+     */
+    TypedReferenceCount* get_current_task() const;
+
+    /**
+     * Returns true if a task chain with the indicated name has
+     * already been defined, or false otherwise.  Note that
+     * setupTaskChain() will implicitly define a task chain if it has
+     * not already been defined, or modify an existing one if it has,
+     * so in most cases there is no need to check this method
+     * first.
+     */
+    bool has_task_chain(const std::string& chain_name) const;
+
+    /**
+     * Defines a new task chain.  Each task chain executes tasks
+     * potentially in parallel with all of the other task chains (if
+     * numThreads is more than zero).  When a new task is created, it
+     * may be associated with any of the task chains, by name (or you
+     * can move a task to another task chain with
+     * task::set_task_chain()).  You can have any number of task chains,
+     * but each must have a unique name.
+     */
+    void setup_task_chain(const std::string& chain_name, boost::optional<int> num_thread = boost::none,
+        boost::optional<bool> tick_clock = boost::none, boost::optional<ThreadPriority> thread_priority = boost::none,
+        boost::optional<double> frame_budget = boost::none, boost::optional<bool> frame_sync = boost::none,
+        boost::optional<bool> timeslice_priority = boost::none);
+
+    /**
+     * Returns true if there is at least one task, active or
+     * sleeping, with the indicated name.
+     */
     bool has_task_named(const std::string& task_name) const;
 
+    /**
+     * Returns a list of all tasks, active or sleeping, with the
+     * indicated name.
+     */
     AsyncTaskCollection get_task_named(const std::string& task_name) const;
+
+    /**
+     * Returns a list of all tasks, active or sleeping, with a
+     * name that matches the pattern, which can include standard
+     * shell globbing characters like *, ?, and [].
+     */
+    AsyncTaskCollection get_task_matching(const GlobPattern& task_pattern) const;
+
+    /**
+     * Returns list of all tasks, active and sleeping, in arbitrary order.
+     */
+    AsyncTaskCollection get_all_tasks() const;
+
+    /** eturns list of all active tasks in arbitrary order. */
+    AsyncTaskCollection get_tasks() const;
+
+    /** Returns list of all sleeping tasks in arbitrary order. */
+    AsyncTaskCollection get_do_laters() const;
 
     /**
      * Add a task to be performed at some time in the future.
@@ -127,8 +183,17 @@ public:
         const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death = nullptr);
 
-    int remove(const std::string& task_name);
-    int remove(AsyncTask* task);
+    size_t remove(const std::string& task_name);
+    bool remove(AsyncTask* task);
+
+    /**
+     * Removes all tasks whose names match the pattern, which can
+     * include standard shell globbing characters like *, ?, and [].
+     * See also remove().
+     *
+     * @return  the number of tasks removed.
+     */
+    size_t remove_task_matching(const GlobPattern& task_pattern);
 
 private:
     AsyncTask* setup_task(AsyncTask* task, const std::string& name = {},
