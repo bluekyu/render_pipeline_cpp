@@ -430,8 +430,6 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::F
 
 void RenderPipeline::Impl::handle_window_event()
 {
-    auto last_resolution = Globals::resolution;
-
     LVecBase2i window_dims(showbase_->get_win()->get_size());
     if (window_dims != last_window_dims && window_dims != Globals::native_resolution)
     {
@@ -1147,16 +1145,19 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
 
 void RenderPipeline::compute_render_resolution(float resolution_scale)
 {
-    impl_->settings["pipeline.resolution_scale"].reset(YAML::Node(resolution_scale));
-
-    auto last_resolution = Globals::resolution;
-    impl_->compute_render_resolution();
-    if (Globals::resolution != last_resolution)
-        impl_->handle_window_resize();
+    const int resolution_width = get_setting<int>("pipeline.resolution_width", Globals::native_resolution.get_x());
+    const int resolution_height = get_setting<int>("pipeline.resolution_height", Globals::native_resolution.get_y());
+    compute_render_resolution(resolution_scale, resolution_width, resolution_height);
 }
 
 void RenderPipeline::compute_render_resolution(int width, int height)
 {
+    compute_render_resolution(get_setting<float>("pipeline.resolution_scale", 1.0f), width, height);
+}
+
+void RenderPipeline::compute_render_resolution(float resolution_scale, int width, int height)
+{
+    impl_->settings["pipeline.resolution_scale"].reset(YAML::Node(resolution_scale));
     impl_->settings["pipeline.resolution_width"].reset(YAML::Node(width));
     impl_->settings["pipeline.resolution_height"].reset(YAML::Node(height));
 

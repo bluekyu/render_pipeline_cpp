@@ -170,6 +170,7 @@ public:
 
     void compute_render_resolution(float resolution_scale);
     void compute_render_resolution(int width, int height);
+    void compute_render_resolution(float resolution_scale, int width, int height);
 
     bool is_stereo_mode() const;
     StereoMode get_stereo_mode() const;
