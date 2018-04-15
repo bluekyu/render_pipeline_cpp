@@ -39,7 +39,10 @@ public:
 public:
     FunctionalTask(const TaskFunc& func = nullptr, const std::string& name = {});
     FunctionalTask(TaskFunc&& func, const std::string& name = {});
+
     ALLOC_DELETED_CHAIN(FunctionalTask);
+
+    virtual ~FunctionalTask();
 
     void set_function(const TaskFunc& func);
     void set_function(TaskFunc&& func);

@@ -45,7 +45,7 @@ private:
     static RequireType required_inputs;
     static RequireType required_pipes;
 
-    rpcore::RenderTarget* _target_spec;
+    //rpcore::RenderTarget* _target_spec;
     rpcore::RenderTarget* _target_diff;
     rpcore::RenderTarget* _target_blur_v;
     rpcore::RenderTarget* _target_blur_h;

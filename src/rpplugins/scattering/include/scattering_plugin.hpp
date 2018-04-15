@@ -36,6 +36,8 @@ class ScatteringPlugin : public rpcore::BasePlugin
 public:
     ScatteringPlugin(rpcore::RenderPipeline& pipeline);
 
+    virtual ~ScatteringPlugin();
+
     RequrieType& get_required_plugins() const final;
 
     void on_pipeline_created() final;

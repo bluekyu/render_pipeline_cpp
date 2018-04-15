@@ -25,4 +25,6 @@ namespace rppanda {
 
 TypeHandle FunctionalTask::type_handle_;
 
+FunctionalTask::~FunctionalTask() = default;
+
 }

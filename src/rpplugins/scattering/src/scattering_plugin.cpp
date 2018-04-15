@@ -59,6 +59,8 @@ ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin
 {
 }
 
+ScatteringPlugin::~ScatteringPlugin() = default;
+
 ScatteringPlugin::RequrieType& ScatteringPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;

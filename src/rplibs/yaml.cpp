@@ -56,7 +56,7 @@ bool load_yaml_file(const Filename& filename, YAML::Node& result)
 {
     const VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
 
-    const std::chrono::system_clock::time_point& start = std::chrono::system_clock::now();
+    //const std::chrono::system_clock::time_point& start = std::chrono::system_clock::now();
 
     std::istream* file = nullptr;
     try

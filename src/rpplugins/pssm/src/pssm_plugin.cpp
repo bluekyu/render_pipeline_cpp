@@ -137,6 +137,8 @@ PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, R
 {
 }
 
+PSSMPlugin::~PSSMPlugin() = default;
+
 PSSMPlugin::RequrieType& PSSMPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;

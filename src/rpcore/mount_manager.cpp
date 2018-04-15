@@ -263,12 +263,12 @@ void MountManager::mount() { impl_->mount(*this); }
 void MountManager::set_write_path(const Filename& pth) { impl_->set_write_path(pth); }
 bool MountManager::get_lock() { return impl_->get_lock(); }
 
-inline const Filename& MountManager::get_write_path() const
+const Filename& MountManager::get_write_path() const
 {
     return impl_->write_path_;
 }
 
-inline const Filename& MountManager::get_base_path() const
+const Filename& MountManager::get_base_path() const
 {
     return impl_->base_path_;
 }
@@ -280,7 +280,7 @@ void MountManager::set_base_path(const Filename& pth)
     impl_->base_path_.make_absolute();
 }
 
-inline const Filename& MountManager::get_config_dir() const
+const Filename& MountManager::get_config_dir() const
 {
     return impl_->config_dir_;
 }
@@ -290,17 +290,17 @@ void MountManager::set_config_dir(const Filename& pth)
     impl_->config_dir_ = pth.get_fullpath();
 }
 
-inline bool MountManager::get_do_cleanup() const
+bool MountManager::get_do_cleanup() const
 {
     return impl_->do_cleanup_;
 }
 
-inline void MountManager::set_do_cleanup(bool cleanup)
+void MountManager::set_do_cleanup(bool cleanup)
 {
     impl_->do_cleanup_ = cleanup;
 }
 
-inline bool MountManager::is_mounted() const
+bool MountManager::is_mounted() const
 {
     return impl_->mounted_;
 }

@@ -78,7 +78,8 @@ public:
     static Messenger* get_global_instance();
 
     Messenger();
-    ~Messenger();
+    
+    virtual ~Messenger();
 
     size_t get_num_listners() const;
     size_t get_num_listners(const EventName& event_name) const;
@@ -147,11 +148,6 @@ private:
 
 inline Messenger::Messenger() : handler_(EventHandler::get_global_event_handler())
 {
-}
-
-inline Messenger::~Messenger()
-{
-    clear();
 }
 
 inline size_t Messenger::get_num_listners() const

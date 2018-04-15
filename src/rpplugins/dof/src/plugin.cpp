@@ -41,7 +41,7 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 
 void Plugin::on_stage_setup()
 {
-    add_stage(std::move(std::make_unique<DoFStage>(pipeline_)));
+    add_stage(std::make_unique<DoFStage>(pipeline_));
 }
 
 }

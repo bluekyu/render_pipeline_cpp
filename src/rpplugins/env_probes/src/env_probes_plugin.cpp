@@ -109,10 +109,10 @@ void EnvProbesPlugin::Impl::setup_stages()
     capture_stage_->set_storage_tex_diffuse(probe_mgr_->get_diffuse_storage()->get_texture());
 
     // Create the stage to cull the cubemaps
-    self_.add_stage(std::move(std::make_unique<CullProbesStage>(self_.pipeline_)));
+    self_.add_stage(std::make_unique<CullProbesStage>(self_.pipeline_));
 
     // Create the stage to apply the cubemaps
-    self_.add_stage(std::move(std::make_unique<ApplyEnvprobesStage>(self_.pipeline_)));
+    self_.add_stage(std::make_unique<ApplyEnvprobesStage>(self_.pipeline_));
 
     if (self_.is_plugin_enabled("scattering"))
     {

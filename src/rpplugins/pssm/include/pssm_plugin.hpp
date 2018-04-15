@@ -31,6 +31,8 @@ class PSSMPlugin : public rpcore::BasePlugin
 public:
     PSSMPlugin(rpcore::RenderPipeline& pipeline);
 
+    virtual ~PSSMPlugin();
+
     RequrieType& get_required_plugins() const final;
 
     void on_stage_setup() final;

@@ -43,6 +43,11 @@ namespace rppanda {
 
 TypeHandle Messenger::type_handle_;
 
+Messenger::~Messenger()
+{
+    clear();
+}
+
 Messenger* Messenger::get_global_instance()
 {
     static Messenger instance;
