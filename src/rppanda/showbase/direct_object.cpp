@@ -46,6 +46,11 @@ namespace rppanda {
 
 TypeHandle DirectObject::type_handle_;
 
+DirectObject::~DirectObject()
+{
+    ignore_all();
+}
+
 void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
 {
     Messenger::get_global_instance()->accept(ev_name, func, this, true);

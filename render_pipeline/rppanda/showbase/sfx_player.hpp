@@ -61,7 +61,7 @@ public:
     static bool use_inverse_suqare_;
 
     SfxPlayer();
-    ~SfxPlayer();
+    virtual ~SfxPlayer();
 
     /** Return the curent cutoff distance. */
     float get_cutoff_distance();

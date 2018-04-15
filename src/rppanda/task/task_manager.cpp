@@ -58,6 +58,8 @@ TaskManager::TaskManager() : mgr_(AsyncTaskManager::get_global_ptr()),
 {
 }
 
+TaskManager::~TaskManager() = default;
+
 TypedReferenceCount* TaskManager::get_current_task() const
 {
     return Thread::get_current_thread()->get_current_task();

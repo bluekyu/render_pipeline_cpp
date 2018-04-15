@@ -57,7 +57,7 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 {
 public:
-    ~DirectObject();
+    virtual ~DirectObject();
 
     ALLOC_DELETED_CHAIN(DirectObject);
 
@@ -122,11 +122,6 @@ private:
 };
 
 // ************************************************************************************************
-
-inline DirectObject::~DirectObject()
-{
-    ignore_all();
-}
 
 inline TypeHandle DirectObject::get_class_type()
 {

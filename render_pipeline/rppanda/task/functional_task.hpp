@@ -79,14 +79,6 @@ private:
 
 // ************************************************************************************************
 
-inline FunctionalTask::FunctionalTask(const TaskFunc& func, const std::string& name) : AsyncTask(name), function_(func)
-{
-}
-
-inline FunctionalTask::FunctionalTask(TaskFunc&& func, const std::string& name) : AsyncTask(name), function_(func)
-{
-}
-
 inline void FunctionalTask::set_function(const TaskFunc& func)
 {
     function_ = func;
@@ -140,42 +132,6 @@ inline bool FunctionalTask::is_runnable()
 inline AsyncTask::DoneStatus FunctionalTask::do_task()
 {
     return function_(this);
-}
-
-inline void FunctionalTask::upon_birth(AsyncTaskManager* manager)
-{
-    AsyncTask::upon_birth(manager);
-    if (upon_birth_)
-        upon_birth_(this);
-}
-
-inline void FunctionalTask::upon_death(AsyncTaskManager* manager, bool clean_exit)
-{
-    AsyncTask::upon_death(manager, clean_exit);
-    if (upon_death_)
-        upon_death_(this, clean_exit);
-}
-
-inline TypeHandle FunctionalTask::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void FunctionalTask::init_type()
-{
-    AsyncTask::init_type();
-    register_type(type_handle_, "rppanda::FunctionalTask", AsyncTask::get_class_type());
-}
-
-inline TypeHandle FunctionalTask::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle FunctionalTask::force_init_type()
-{
-    init_type();
-    return get_class_type();
 }
 
 }

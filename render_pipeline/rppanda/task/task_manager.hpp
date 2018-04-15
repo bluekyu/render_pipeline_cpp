@@ -54,6 +54,8 @@ public:
 
     TaskManager();
 
+    virtual ~TaskManager();
+
     AsyncTaskManager* get_mgr() const;
     ClockObject* get_global_clock() const;
 
