@@ -203,8 +203,11 @@ RPRenderState& RPRenderState::set_normal_texture(Texture* texture, int priority)
             RPObject::global_error("RPRenderState", "The state does NOT have 'basecolor' texture.");
         }
 
-        state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
-            state_->get_override(TextureAttrib::get_class_type()));
+        if (stage)
+        {
+            state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
+                state_->get_override(TextureAttrib::get_class_type()));
+        }
     }
     else
     {
@@ -236,8 +239,11 @@ RPRenderState& RPRenderState::set_specular_texture(Texture* texture, int priorit
             RPObject::global_error("RPRenderState", "The state does NOT have 'basecolor' or 'normal' texture.");
         }
 
-        state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
-            state_->get_override(TextureAttrib::get_class_type()));
+        if (stage)
+        {
+            state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
+                state_->get_override(TextureAttrib::get_class_type()));
+        }
     }
     else
     {
@@ -269,8 +275,11 @@ RPRenderState& RPRenderState::set_roughness_texture(Texture* texture, int priori
             RPObject::global_error("RPRenderState", "The state does NOT have 'basecolor', 'normal' or 'specular' texture.");
         }
 
-        state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
-            state_->get_override(TextureAttrib::get_class_type()));
+        if (stage)
+        {
+            state_ = state_->set_attrib(tex_attrib->add_on_stage(stage, texture, priority),
+                state_->get_override(TextureAttrib::get_class_type()));
+        }
     }
     else
     {
