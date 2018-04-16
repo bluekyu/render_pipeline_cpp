@@ -130,7 +130,7 @@ struct VisitorInsertToInputBlocks : public boost::static_visitor<>
         std::string block_name = block->get_name();
         auto found = input_blocks_.find(block_name);
         if (found == input_blocks_.end())
-            input_blocks_.emplace({block_name, block});
+            input_blocks_.insert({block_name, block});
         else
             found->second = block;
     }
@@ -228,7 +228,7 @@ bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
                 previous_pipes_.insert_or_assign(pipe_name, Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format));
 #else
-                previous_pipes_[pipe_name].reset(Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format));
+                previous_pipes_[pipe_name] = Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format);
 #endif
                 previous_pipes_.at(pipe_name)->clear_image();
             }

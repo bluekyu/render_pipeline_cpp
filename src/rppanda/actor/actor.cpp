@@ -1509,7 +1509,13 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     bundle_dict.insert_or_assign(part_name, PartDef{ bundle_np, bundle_handle, part_model });
 #else
-    bundle_dict[part_name] = PartDef{ bundle_np, bundle_handle, part_model };
+    {
+        auto found = bundle_dict.find(part_name);
+        if (found == bundle_dict.end())
+            bundle_dict.insert({ part_name, PartDef{ bundle_np, bundle_handle, part_model } });
+        else
+            found->second = PartDef{ bundle_np, bundle_handle, part_model };
+    }
 #endif
 }
 
