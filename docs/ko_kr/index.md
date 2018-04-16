@@ -21,6 +21,7 @@
 ## 프레임워크
 - [파이프라인](framework/pipeline.md)
   - [Data Loop 및 Node](framework/data_loop_and_node.md)
+- [Tasks](framework/tasks.md)
 
 ## 기타
 - [문제점 및 해결방법](issues_and_solutions.md)

@@ -21,6 +21,7 @@
 ## Framework
 - [Pipeline](framework/pipeline.md)
   - [Data Loop and Node](framework/data_loop_and_node.md)
+- [Tasks](framework/tasks.md)
 
 ## Others
 - [Issues and Solutions](issues_and_solutions.md)

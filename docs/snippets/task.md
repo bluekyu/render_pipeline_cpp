@@ -1,7 +1,9 @@
 # Task
 
 ## Panda3D Native
-See https://www.panda3d.org/manual/index.php?title=Tasks&language=cxx
+See the following:
+- https://www.panda3d.org/manual/index.php?title=Tasks&language=cxx
+- https://www.panda3d.org/manual/index.php?title=Task_Chains&language=cxx
 
 
 
