@@ -41,6 +41,8 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 
 namespace rpplugins {
 
+RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(ScatteringPlugin);
+
 class ScatteringPlugin::Impl
 {
 public:
@@ -116,7 +118,7 @@ void ScatteringPlugin::on_shader_reload()
     impl_->scattering_model_->compute();
 }
 
-LVecBase3f ScatteringPlugin::get_sun_vector()
+LVecBase3f ScatteringPlugin::get_sun_vector() const
 {
     float sun_altitude = get_daytime_setting("sun_altitude").first[0];
     float sun_azimuth = get_daytime_setting("sun_azimuth").first[0];

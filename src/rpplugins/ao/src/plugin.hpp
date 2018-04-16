@@ -32,9 +32,11 @@ class Plugin : public rpcore::BasePlugin
 {
 public:
     Plugin(rpcore::RenderPipeline& pipeline);
-    ~Plugin() final;
+    virtual ~Plugin();
 
-    RequrieType& get_required_plugins() const final { return require_plugins; }
+    RequrieType& get_required_plugins() const final;
+
+    RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL();
 
     void on_stage_setup() final;
 

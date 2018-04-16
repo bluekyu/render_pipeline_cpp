@@ -35,6 +35,8 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 
 namespace rpplugins {
 
+RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(SkyAOPlugin);
+
 SkyAOPlugin::RequrieType SkyAOPlugin::require_plugins_;
 
 // ************************************************************************************************
@@ -66,7 +68,7 @@ void SkyAOPlugin::on_post_stage_setup()
 {
     if (is_plugin_enabled("env_probes"))
     {
-        auto capture_stage = dynamic_cast<EnvProbesPlugin*>(get_plugin_instance("env_probes"))->get_capture_stage();
+        auto capture_stage = static_cast<EnvProbesPlugin*>(get_plugin_instance("env_probes")->downcast())->get_capture_stage();
 
         capture_stage->get_required_inputs().push_back("SkyAOCapturePosition");
         capture_stage->get_required_pipes().push_back("SkyAOHeight");

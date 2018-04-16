@@ -31,6 +31,8 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
 
+RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(Plugin);
+
 Plugin::RequrieType Plugin::require_plugins;
 
 Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
@@ -38,6 +40,11 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_
 }
 
 Plugin::~Plugin() = default;
+
+Plugin::RequrieType& Plugin::get_required_plugins() const
+{
+    return require_plugins;
+}
 
 void Plugin::on_stage_setup()
 {
