@@ -29,6 +29,8 @@
 #include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
+// ************************************************************************************************
+
 #define RENDER_PIPELINE_PLUGIN_CREATOR(PLUGIN_TYPE) \
     static std::unique_ptr<::rpcore::BasePlugin> rpcpp_plugin_creator__(::rpcore::RenderPipeline& pipeline) \
     { \
@@ -39,7 +41,13 @@
 // ************************************************************************************************
 
 namespace boost {
+
 class any;
+
+namespace dll {
+class shared_library;
+}
+
 }
 
 namespace rpcore {
@@ -118,9 +126,11 @@ protected:
      * Load a shared library and manage the handle.
      *
      * A extension (.dll or .so, etc) can be omitted.
+     *
+     * @return  Handle of shared_library or nullptr if failed.
      * @throw   boost::system::system_error from boost::dll library.
      */
-    bool load_shared_library(const Filename& path);
+    boost::dll::shared_library* load_shared_library(const Filename& path);
 
     RenderPipeline& pipeline_;
     const std::string plugin_id_;
