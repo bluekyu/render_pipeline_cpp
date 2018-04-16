@@ -96,7 +96,7 @@ public:
 
     bool requires_daytime_settings_;
 
-    std::unordered_map<std::string, std::shared_ptr<BasePlugin>> instances_;
+    std::unordered_map<std::string, std::unique_ptr<BasePlugin>> instances_;
 
     std::unordered_set<std::string> enabled_plugins_;
     std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
@@ -124,10 +124,6 @@ void PluginManager::Impl::unload()
 
     for (auto&& id_handle: instances_)
     {
-        const auto count = id_handle.second.use_count();
-        if (count != 1)
-            self_.warn(fmt::format("Plugin ({}) is used as {} on somewhere before unloading.", id_handle.first, count));
-
         // delete plugin instance.
         id_handle.second.reset();
     }
@@ -154,12 +150,18 @@ std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 
     try
     {
-        plugin_creators_[plugin_id] = boost::dll::import_alias<PluginCreatorType>(
+        auto result = plugin_creators_.insert({plugin_id, boost::dll::import_alias<PluginCreatorType>(
             plugin_path,
             "create_plugin",
-            boost::dll::load_mode::append_decorations);
+            boost::dll::load_mode::rtld_global | boost::dll::load_mode::append_decorations)});
 
-        auto instance = plugin_creators_.at(plugin_id)(pipeline_);
+        if (!result.second)
+        {
+            self_.error(fmt::format("Plugin '{}' was already loaded.", plugin_id));
+            return nullptr;
+        }
+
+        auto instance = result.first->second(pipeline_);
 
         for (const auto& required_plugin: instance->get_required_plugins())
         {
