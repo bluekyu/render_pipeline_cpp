@@ -34,6 +34,7 @@ public:
     VolumentricsPlugin(rpcore::RenderPipeline& pipeline);
 
     RequrieType& get_required_plugins() const final;
+    RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL();
 
     void on_stage_setup() final;
 

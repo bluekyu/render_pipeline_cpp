@@ -47,6 +47,8 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
 namespace rpplugins {
 
+RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(EnvProbesPlugin);
+
 class EnvProbesPlugin::Impl
 {
 public:
@@ -186,7 +188,7 @@ void EnvProbesPlugin::on_pre_render_update()
 
             if (is_plugin_enabled("pssm"))
             {
-                dynamic_cast<PSSMPlugin*>(get_plugin_instance("pssm"))->request_focus(probe->get_bounds()->get_center(), probe->get_bounds()->get_radius());
+                static_cast<PSSMPlugin*>(get_plugin_instance("pssm")->downcast())->request_focus(probe->get_bounds()->get_center(), probe->get_bounds()->get_radius());
             }
         }
         else

@@ -30,6 +30,8 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
 namespace rpplugins {
 
+RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(Plugin);
+
 Plugin::RequrieType Plugin::require_plugins = { "scattering" };
 
 Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)

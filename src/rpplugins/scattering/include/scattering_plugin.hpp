@@ -39,13 +39,14 @@ public:
     virtual ~ScatteringPlugin();
 
     RequrieType& get_required_plugins() const final;
+    RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL();
 
     void on_pipeline_created() final;
     void on_stage_setup() final;
     void on_pre_render_update() final;
     void on_shader_reload() final;
 
-    virtual LVecBase3f get_sun_vector();
+    virtual LVecBase3f get_sun_vector() const;
 
     virtual ScatteringStage* get_display_stage() const;
     virtual ScatteringEnvmapStage* get_envmap_stage() const;

@@ -38,6 +38,20 @@
     } \
     BOOST_DLL_ALIAS(::rpcpp_plugin_creator__, create_plugin)
 
+#define RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL() \
+    void* downcast() override; \
+    const void* downcast() const override;
+
+#define RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(PLUGIN_TYPE) \
+    void* PLUGIN_TYPE::downcast() \
+    { \
+        return dynamic_cast<PLUGIN_TYPE*>(this); \
+    } \
+    const void* PLUGIN_TYPE::downcast() const \
+    { \
+        return dynamic_cast<const PLUGIN_TYPE*>(this); \
+    }
+
 // ************************************************************************************************
 
 namespace boost {
@@ -106,6 +120,14 @@ public:
     const PluginInfo& get_plugin_info() const;
 
     virtual RequrieType& get_required_plugins() const = 0;
+
+    /**
+     * Downcast instance of plugin.
+     *
+     * Use static_cast<Plugin*>(BasePlugin::downcast()) to access downcasted instance.
+     */
+    virtual void* downcast() = 0;
+    virtual const void* downcast() const = 0;
 
     /** Trigger hook. */
     ///@{

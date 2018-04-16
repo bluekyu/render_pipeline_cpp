@@ -357,7 +357,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     LVecBase3f sun_vector(0);
     if (pipeline->get_plugin_mgr()->is_plugin_enabled("scattering"))
     {
-        sun_vector = dynamic_cast<rpplugins::ScatteringPlugin*>(pipeline->get_plugin_mgr()->get_instance("scattering"))->get_sun_vector();
+        sun_vector = static_cast<rpplugins::ScatteringPlugin*>(pipeline->get_plugin_mgr()->get_instance("scattering")->downcast())->get_sun_vector();
     }
 
     const NodePath& camera = Globals::base->get_cam();
@@ -385,7 +385,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
 
         LVecBase3f focus_point;
         float focus_size;
-        bool exist = dynamic_cast<rpplugins::PSSMPlugin*>(pssm_plugin)->get_last_focus(focus_point, focus_size);
+        bool exist = static_cast<rpplugins::PSSMPlugin*>(pssm_plugin->downcast())->get_last_focus(focus_point, focus_size);
 
         if (exist)
         {
