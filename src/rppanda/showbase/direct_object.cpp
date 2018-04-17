@@ -44,12 +44,27 @@
 
 namespace rppanda {
 
+DirectObject::TaskContainer::TaskContainer(DirectObject* owner, AsyncTask* task) : owner_(owner), task_(task), task_id_(task->get_task_id())
+{
+    task_.set_callback(this);
+}
+
+// ************************************************************************************************
+
 TypeHandle DirectObject::type_handle_;
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+DirectObject::DirectObject(DirectObject&&) = default;
+#endif
 
 DirectObject::~DirectObject()
 {
     ignore_all();
 }
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+DirectObject& DirectObject::operator=(DirectObject&&) = default;
+#endif
 
 void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
 {
@@ -113,31 +128,37 @@ FunctionalTask* DirectObject::do_method_later(float delay_time,
 
 void DirectObject::remove_task(const std::string& task_name)
 {
-    for (const auto& task: task_list_)
+    for (const auto& task_container: task_list_)
     {
-        if (task.second->get_name() == task_name)
-            remove_task(task.second);
+        auto& task = task_container.second.task_;
+        if (task->get_name() == task_name)
+            remove_task(task);
     }
 }
 
 void DirectObject::remove_task(AsyncTask* task)
 {
-    auto id = task->get_task_id();
+    task_list_.erase(task->get_task_id());
     task->remove();
-    task_list_.erase(id);
 }
 
 void DirectObject::remove_all_tasks()
 {
+    std::vector<AsyncTask*> tasks;
+    tasks.reserve(task_list_.size());
     for (const auto& task : task_list_)
-        task.second->remove();
+        tasks.push_back(task.second.task_.p());
+
     task_list_.clear();
+
+    for (const auto& task : tasks)
+        task->remove();
 }
 
 void DirectObject::do_add_task(AsyncTask* task)
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-    task_list_.insert_or_assign(task->get_task_id(), task);
+    task_list_.insert_or_assign(task->get_task_id(), TaskContainer(this, task));
 #else
     task_list_[task->get_task_id()] = task;
 #endif

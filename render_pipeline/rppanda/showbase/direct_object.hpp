@@ -57,7 +57,18 @@ namespace rppanda {
 class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 {
 public:
+    DirectObject() = default;
+    DirectObject(const DirectObject&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    DirectObject(DirectObject&&);
+#endif
+
     virtual ~DirectObject();
+
+    DirectObject& operator=(const DirectObject&) = delete;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    DirectObject& operator=(DirectObject&&);
+#endif
 
     ALLOC_DELETED_CHAIN(DirectObject);
 
@@ -107,9 +118,23 @@ public:
     void remove_all_tasks();
 
 private:
+    class TaskContainer : public WeakPointerCallback
+    {
+    public:
+        TaskContainer(DirectObject* owner, AsyncTask* task);
+        void wp_callback(void*) final { owner_->task_list_.erase(task_id_); }
+
+        WPT(AsyncTask) task_;
+
+    private:
+        DirectObject* owner_;
+        AtomicAdjust::Integer task_id_;     // While destructing AsyncTask, ID already is deleted
+                                            // So, we save it.
+    };
+
     void do_add_task(AsyncTask* task);
 
-    std::unordered_map<AtomicAdjust::Integer, PT(AsyncTask)> task_list_;
+    std::unordered_map<AtomicAdjust::Integer, TaskContainer> task_list_;
 
 public:
     static TypeHandle get_class_type();

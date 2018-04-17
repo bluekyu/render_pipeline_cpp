@@ -198,9 +198,9 @@ public:
     size_t remove_task_matching(const GlobPattern& task_pattern);
 
 private:
-    AsyncTask* setup_task(AsyncTask* task, const std::string& name = {},
-        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
-        const boost::optional<std::string>& task_chain = boost::none);
+    AsyncTask* setup_task(AsyncTask* task, const std::string& name,
+        boost::optional<int> sort, boost::optional<int> priority,
+        const boost::optional<std::string>& task_chain);
 
     AsyncTaskManager* mgr_;
     ClockObject* global_clock_;
