@@ -25,6 +25,8 @@
 #include <regex>
 #include <unordered_set>
 
+#include <spdlog/fmt/ostr.h>
+
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
@@ -101,7 +103,7 @@ std::pair<size_t, int> BufferViewer::get_stage_information() const
         }
         else
         {
-            warn(std::string("Unkown type: ") + std::to_string(static_cast<int>(entry.second)));
+            warn(fmt::format("Unknown type: {}", static_cast<int>(entry.second)));
         }
     }
 
@@ -259,7 +261,7 @@ void BufferViewer::render_stages()
         if (stage_tex_id.second == EntryID::TEXTURE)
             rgb = LVecBase3f(0.2f, 0.4f, 0.6f);
 
-        const std::string internal_name("render_pipeline_internal:");
+        static const std::string internal_name("render_pipeline_internal:");
         auto pos = stage_name.find(internal_name);
         if (pos != std::string::npos)
             stage_name.replace(pos, internal_name.size(), "");
