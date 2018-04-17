@@ -34,6 +34,7 @@ class TexturePreview : public DraggableWindow
 {
 public:
     TexturePreview(NodePath parent);
+    virtual ~TexturePreview();
 
     /** "Presents" a given texture and shows the window. */
     void present(Texture* tex);
@@ -52,16 +53,16 @@ private:
     NodePath _content_node;
     Texture* _current_tex;
 
-    std::shared_ptr<Sprite> _preview_image;
-    std::shared_ptr<LabeledCheckbox> _tonemap_box;
+    std::unique_ptr<Sprite> _preview_image;
+    std::unique_ptr<LabeledCheckbox> _tonemap_box;
 
-    std::shared_ptr<Text> _mip_text;
-    std::shared_ptr<Text> _slice_text;
-    std::shared_ptr<Text> _bright_text;
+    std::unique_ptr<Text> _mip_text;
+    std::unique_ptr<Text> _slice_text;
+    std::unique_ptr<Text> _bright_text;
 
-    std::shared_ptr<Slider> _mip_slider;
-    std::shared_ptr<Slider> _slice_slider;
-    std::shared_ptr<Slider> _bright_slider;
+    std::unique_ptr<Slider> _mip_slider;
+    std::unique_ptr<Slider> _slice_slider;
+    std::unique_ptr<Slider> _bright_slider;
 };
 
 }

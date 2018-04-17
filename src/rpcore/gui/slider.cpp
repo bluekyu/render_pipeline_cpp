@@ -52,6 +52,8 @@ Slider::Slider(float x, float y, NodePath parent, float size, float min_value, f
     node_ = new rppanda::DirectSlider(parent, options);
 }
 
+Slider::~Slider() = default;
+
 float Slider::get_value() const
 {
     return node_->get_value();

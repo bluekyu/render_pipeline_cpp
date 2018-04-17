@@ -42,6 +42,8 @@ TexturePreview::TexturePreview(NodePath parent):
     create_components();
 }
 
+TexturePreview::~TexturePreview() = default;
+
 void TexturePreview::present(Texture* tex)
 {
     _current_tex = tex;
@@ -63,7 +65,7 @@ void TexturePreview::present(Texture* tex)
         display_h = scale_f * h;
     }
 
-    std::shared_ptr<Sprite> image = std::make_shared<Sprite>(tex, display_w, display_h, _content_node, 20, 90, false, true, false);
+    auto image = std::make_unique<Sprite>(tex, display_w, display_h, _content_node, 20, 90, false, true, false);
 
     std::string description;
 
@@ -90,13 +92,13 @@ void TexturePreview::present(Texture* tex)
     // Slider for viewing different mipmaps
     if (tex->uses_mipmaps())
     {
-        _mip_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, 0,
+        _mip_slider = std::make_unique<Slider>(x_pos, 65, _content_node, 140, 0,
             tex->get_expected_num_mipmap_levels()-1, 0, Slider::Default::page_size,
             std::bind(&TexturePreview::set_mip, this));
 
         x_pos += 140 + 5;
 
-        _mip_text = std::make_shared<Text>("MIP: 5", _content_node, x_pos, 72, 18,
+        _mip_text = std::make_unique<Text>("MIP: 5", _content_node, x_pos, 72, 18,
             Text::Default::align,
             LVecBase3(1.0f, 0.4f, 0.4f), true);
 
@@ -106,13 +108,13 @@ void TexturePreview::present(Texture* tex)
     // Slider for viewing different Z-layers
     if (tex->get_z_size() > 1)
     {
-        _slice_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 250, 0,
+        _slice_slider = std::make_unique<Slider>(x_pos, 65, _content_node, 250, 0,
             tex->get_z_size() - 1, 0, Slider::Default::page_size,
             std::bind(&TexturePreview::set_slice, this));
 
         x_pos += 250 + 5;
 
-        _slice_text = std::make_shared<Text>("Z: 5", _content_node, x_pos, 72, 18,
+        _slice_text = std::make_unique<Text>("Z: 5", _content_node, x_pos, 72, 18,
             Text::Default::align,
             LVecBase3(0.4f, 1.0f, 0.4f), true);
 
@@ -120,17 +122,17 @@ void TexturePreview::present(Texture* tex)
     }
 
     // Slider to adjust brightness
-    _bright_slider = std::make_shared<Slider>(x_pos, 65, _content_node, 140, -14, 14,
+    _bright_slider = std::make_unique<Slider>(x_pos, 65, _content_node, 140, -14, 14,
         0, Slider::Default::page_size,
         std::bind(&TexturePreview::set_brightness, this));
 
     x_pos += 140 + 5;
-    _bright_text = std::make_shared<Text>("Bright: 1", _content_node, x_pos, 72, 18,
+    _bright_text = std::make_unique<Text>("Bright: 1", _content_node, x_pos, 72, 18,
         Text::Default::align, LVecBase3(0.4f, 0.4f, 1.0f), true);
     x_pos += 100 + 30;
 
     // Slider to enable reinhard tonemapping
-    _tonemap_box = std::make_shared<LabeledCheckbox>(_content_node, x_pos, 60,
+    _tonemap_box = std::make_unique<LabeledCheckbox>(_content_node, x_pos, 60,
         std::bind(&TexturePreview::set_enable_tonemap, this, std::placeholders::_1),
         false, "Tonemap", 18, false, LVecBase3(1.0f, 0.4f, 0.4f), 90);
     x_pos += 90 + 30;
@@ -144,7 +146,7 @@ void TexturePreview::present(Texture* tex)
     PT(Shader) preview_shader = DisplayShaderBuilder::build(tex, display_w, display_h);
     image->set_shader(preview_shader);
 
-    _preview_image = image;
+    _preview_image = std::move(image);
 
     show();
 }

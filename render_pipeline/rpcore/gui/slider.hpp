@@ -51,6 +51,7 @@ public:
         float min_value=0, float max_value=Default::max_value,
         float value=Default::value, float page_size=Default::page_size,
         const std::function<void()>& callback={});
+    ~Slider();
 
     /** Returns the currently assigned value. */
     float get_value() const;

@@ -51,7 +51,7 @@ public:
 public:
     DraggableWindow(int width=Default::width, int height=Default::height,
                     const std::string& title=Default::title, NodePath parent={});
-    ~DraggableWindow();
+    virtual ~DraggableWindow();
 
     /** Centers the window on screen. */
     void center_on_screen();
