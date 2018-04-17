@@ -40,14 +40,13 @@
 
 #pragma once
 
-#include <eventHandler.h>
+#include <typedReferenceCount.h>
 
 #include <string>
 #include <unordered_map>
 
 #include <boost/optional.hpp>
 
-#include <render_pipeline/rpcore/config.hpp>
 #include <render_pipeline/rppanda/task/functional_task.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
 

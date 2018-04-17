@@ -37,8 +37,6 @@
 
 #include "render_pipeline/rppanda/showbase/direct_object.hpp"
 
-#include <asyncTaskManager.h>
-
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/task/task_manager.hpp"
 
