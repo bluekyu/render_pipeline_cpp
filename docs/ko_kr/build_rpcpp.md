@@ -8,8 +8,8 @@
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.66.0
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.1
-- [spdlog](https://github.com/gabime/spdlog): 0.16.2
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.2
+- [spdlog](https://github.com/gabime/spdlog): 0.16.3
 
 ### 선택사항
 - Doxygen (Doxygen 문서 생성)
@@ -73,7 +73,7 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 ### 2. CMakeLists.txt 파일
 ```
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 project(render_pipeline_projects)
 
 # 개인 시스템에 맞는 경로 및 옵션을 사용

@@ -8,8 +8,8 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: 1.66.0
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.1
-- [spdlog](https://github.com/gabime/spdlog): 0.16.2
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.2
+- [spdlog](https://github.com/gabime/spdlog): 0.16.3
 
 ### Optional
 - Doxygen (to create doxygen documents)
@@ -73,7 +73,7 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 2. CMakeLists.txt File
 ```
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 project(render_pipeline_projects)
 
 # write paths and use options on your system
