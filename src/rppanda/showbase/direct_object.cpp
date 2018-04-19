@@ -158,7 +158,7 @@ void DirectObject::do_add_task(AsyncTask* task)
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     task_list_.insert_or_assign(task->get_task_id(), TaskContainer(this, task));
 #else
-    task_list_[task->get_task_id()] = task;
+    task_list_[task->get_task_id()] = TaskContainer(this, task);
 #endif
 }
 
