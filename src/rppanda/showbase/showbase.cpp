@@ -76,6 +76,8 @@ public:
     Filename get_screenshot_filename(const std::string& name_prefix, bool default_filename) const;
     void send_screenshot_event(const Filename& filename) const;
 
+    void window_event(ShowBase* self, const Event* ev);
+
 public:
     static ShowBase* global_ptr;
 
@@ -158,6 +160,8 @@ public:
 
     bool backface_culling_enabled_;
     bool wireframe_enabled_;
+
+    WindowProperties prev_window_properties_;
 
     std::function<void()> exit_func_;
     std::vector<std::function<void()>> final_exit_callbacks_;
@@ -262,6 +266,14 @@ void ShowBase::Impl::initailize(ShowBase* self)
     app_has_audio_focus_ = true;
 
     self->create_base_audio_managers();
+
+    // Now hang a hook on the window-event from Panda. This allows
+    // us to detect when the user resizes, minimizes, or closes the
+    // main window.
+    prev_window_properties_.clear();
+    self->accept("window-event", [self](const Event* ev) {
+        self->window_event(ev);
+    });
 
     self->restart();
 }
@@ -482,6 +494,37 @@ void ShowBase::Impl::send_screenshot_event(const Filename& filename) const
     messenger_->send("screenshot", EventParameter(filename));
 }
 
+void ShowBase::Impl::window_event(ShowBase* self, const Event* ev)
+{
+    // See PandaFramework::event_window_event
+    if (ev->get_num_parameters() != 1)
+        return;
+
+    EventParameter param = ev->get_parameter(0);
+    const GraphicsWindow* win;
+    DCAST_INTO_V(win, param.get_ptr());
+
+    if (win != self->get_win())
+    {
+        // This event isn't about our window.
+        return;
+    }
+
+    auto properties = win->get_properties();
+    if (properties == prev_window_properties_)
+        return;
+
+    prev_window_properties_ = properties;
+
+    rppanda_showbase_cat.debug() << "Got Window event: " << properties << std::endl;
+    if (!properties.get_open())
+    {
+        // If the user closes the main window, we should exit.
+        rppanda_showbase_cat.info("User closed main window.");
+        self->user_exit();
+    }
+}
+
 // ************************************************************************************************
 
 TypeHandle ShowBase::type_handle_;
@@ -533,10 +576,16 @@ ShowBase::~ShowBase()
         impl_->loader_.clear();
     }
 
-    // will remove in PandaFramework::~PandaFramework
+    // will remove in PandaFramework::close_framework() or PandaFramework::~PandaFramework()
     //impl_->graphics_engine_->remove_all_windows();
 
     Impl::global_ptr = nullptr;
+
+    // clear all data in ShowBase::Impl except PandaFramework
+    auto hold = impl_->panda_framework_;
+    impl_.reset();
+
+    // PandaFramework::~PandaFramework() calls PandaFramework::close_framework()
 }
 
 void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
@@ -1054,6 +1103,11 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
     }
 
     return "";
+}
+
+void ShowBase::window_event(const Event* ev)
+{
+    impl_->window_event(this, ev);
 }
 
 void ShowBase::user_exit()

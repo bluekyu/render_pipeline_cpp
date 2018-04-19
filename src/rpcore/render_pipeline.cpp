@@ -119,7 +119,7 @@ public:
      * Checks for window events. This mainly handles incoming resizes,
      * and calls the required handlers.
      */
-    void handle_window_event();
+    void handle_window_event(const Event* ev);
 
     void reload_shaders();
 
@@ -428,8 +428,9 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::F
     return AsyncTask::DS_cont;
 }
 
-void RenderPipeline::Impl::handle_window_event()
+void RenderPipeline::Impl::handle_window_event(const Event* ev)
 {
+    showbase_->window_event(ev);
     LVecBase2i window_dims(showbase_->get_win()->get_size());
     if (window_dims != last_window_dims && window_dims != Globals::native_resolution)
     {
@@ -719,7 +720,7 @@ void RenderPipeline::Impl::init_bindings()
     // igloop has 50 sorting value.
     showbase_->add_task(std::bind(&Impl::plugin_post_render_update, this, std::placeholders::_1), "RP_Plugin_AfterRender", 55);
     showbase_->get_task_mgr()->do_method_later(0.5f, std::bind(&Impl::clear_state_cache, this, std::placeholders::_1), "RP_ClearStateCache");
-    showbase_->accept("window-event", [this](const Event*) { handle_window_event(); });
+    showbase_->accept("window-event", [this](const Event* ev) { handle_window_event(ev); });
 }
 
 void RenderPipeline::Impl::create_common_defines()

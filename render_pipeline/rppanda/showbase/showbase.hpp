@@ -78,7 +78,7 @@ public:
     ShowBase(const ShowBase&) = delete;
     ShowBase(ShowBase&&) = delete;
 
-    ~ShowBase();
+    virtual ~ShowBase();
 
     ALLOC_DELETED_CHAIN(ShowBase);
 
@@ -281,6 +281,8 @@ public:
      */
     Filename screenshot(DisplayRegion* source, const std::string& name_prefix="screenshot", bool default_filename=true,
         const std::string& image_comment="");
+
+    void window_event(const Event* ev);
 
     void user_exit();
     void finalize_exit();
