@@ -33,6 +33,18 @@ RENDER_PIPELINE_DECL NodePath create_line(const std::string& name,
     GeomEnums::UsageHint vertex_buffer_hint = Geom::UsageHint::UH_static);
 
 /**
+ * Create a mesh has a general geometry using triangle primitive without index.
+ *
+ * @return  NodePath of GeomNode. If failed, return empty NodePath.
+ */
+RENDER_PIPELINE_DECL NodePath create_triangle_mesh(const std::string& name,
+    const std::vector<LVecBase3>& vertices,
+    const std::vector<LVecBase3>& normals,
+    const std::vector<LVecBase2>& texcoords,
+    GeomEnums::UsageHint vertex_buffer_hint = Geom::UsageHint::UH_static,
+    GeomEnums::UsageHint index_buffer_hint = Geom::UsageHint::UH_static);
+
+/**
  * Create a mesh has a general geometry using triangle primitive.
  *
  * @return  NodePath of GeomNode. If failed, return empty NodePath.

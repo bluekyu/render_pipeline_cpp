@@ -96,6 +96,59 @@ NodePath create_triangle_mesh(
     const std::vector<LVecBase3>& vertices,
     const std::vector<LVecBase3>& normals,
     const std::vector<LVecBase2>& texcoords,
+    GeomEnums::UsageHint vertex_buffer_hint, GeomEnums::UsageHint index_buffer_hint)
+{
+    if (!(vertices.size() == normals.size() && normals.size() == texcoords.size()))
+    {
+        LoggerManager::get_instance().get_logger()->error("The counts of vertices, normal, texcoords is NOT same.");
+        return NodePath();
+    }
+
+    if (vertices.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+        LoggerManager::get_instance().get_logger()->error(fmt::format(
+            "The number {} of vertices is more than the maximum size ({}).",
+            vertices.size(),
+            (std::numeric_limits<int>::max)()));
+    }
+
+    // Add vertices
+    int vertices_count = static_cast<int>(vertices.size());
+
+    PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::get_v3n3t2(), vertex_buffer_hint);
+    vdata->unclean_set_num_rows(vertices_count);
+
+    GeomVertexWriter geom_vertices(vdata, InternalName::get_vertex());
+    GeomVertexWriter geom_normals(vdata, InternalName::get_normal());
+    GeomVertexWriter geom_texcoord0(vdata, InternalName::get_texcoord());
+
+    for (int k = 0, k_end = vertices_count; k < k_end; ++k)
+    {
+        const auto& v = vertices[k];
+        const auto& n = normals[k];
+        const auto& t = texcoords[k];
+
+        geom_vertices.add_data3(v[0], v[1], v[2]);
+        geom_normals.add_data3(n[0], n[1], n[2]);
+        geom_texcoord0.add_data2(t[0], t[1]);
+    }
+
+    // Add indices
+    PT(GeomTriangles) prim = new GeomTriangles(index_buffer_hint);
+    prim->add_consecutive_vertices(0, vertices_count);
+    prim->close_primitive();
+
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(prim);
+
+    return create_geom_node(name, geom);
+}
+
+NodePath create_triangle_mesh(
+    const std::string& name,
+    const std::vector<LVecBase3>& vertices,
+    const std::vector<LVecBase3>& normals,
+    const std::vector<LVecBase2>& texcoords,
     const std::vector<int>& indices,
     GeomEnums::UsageHint vertex_buffer_hint, GeomEnums::UsageHint index_buffer_hint)
 {
@@ -111,6 +164,14 @@ NodePath create_triangle_mesh(
     {
         LoggerManager::get_instance().get_logger()->error("The counts of vertices, normal, texcoords is NOT same.");
         return NodePath();
+    }
+
+    if (vertices.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+        LoggerManager::get_instance().get_logger()->error(fmt::format(
+            "The number {} of vertices is more than the maximum size ({}).",
+            vertices.size(),
+            (std::numeric_limits<int>::max)()));
     }
 
     // Add vertices
