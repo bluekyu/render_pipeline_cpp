@@ -20,7 +20,7 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 Render Pipeline C++ uses CMake build system.
 CMake will find required libraries and generate build tools (ex, Unix Makefiles or Visual Studio solutions.)
 
-While configuring CMake, the first configuration may be failed because it cannot found some libraries.
+While configuring CMake, the first configuration may be failed because it cannot find some libraries.
 To solve this problem, you can give hints for the path of the libraries in CMake configuration (or advanced tab).
 
 ### Third-party Guide

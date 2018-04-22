@@ -3,6 +3,34 @@
 
 ## Windows
 
+### Windows API 버전 매크로 문제
+Boost 1.60 이상 라이브러리와 같이 Windows API 버전이 다를 경우 링크에러가 발생할 수 있는데,
+이는 `WINVER` 및 `_WIN32_WINNT` 매크로가 일치하지 않아서 생기는 문제이다.
+
+Boost 의 경우에는 다음 페이지의 내용에서 API 버전을 수정해서 빌드하는 방법을 알 수 있다.
+
+    https://www.boost.org/users/history/version_1_60_0.html
+
+그리고 Panda3D 에서는 아래에서 해당 매크로들을 사용하고 있으며, 이를 수정해서 빌드하면 된다.
+
+#### dtoolbase.h
+```
+//#define _WIN32_WINNT 0x0502   // original code
+#define _WIN32_WINNT 0x0600
+```
+
+#### makepanda.py
+```
+/DWINVER=0x600
+```
+
+#### fcollada Library
+```
+#define _WIN32_WINNT 0x0600
+```
+
+
+
 ### 긴 경로 문제
 Windows 에서 일반적인 경로 길이는 `MAX_PATH` 값인 260자이다. 이를 넘어서게 되면 기존의 API에서는 인식을 할 수 없다.
 
