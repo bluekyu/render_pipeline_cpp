@@ -22,8 +22,11 @@
 
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#else
 // XXX: fix compile error for std::vector<std::string>
 #include <vector_string.h>
+#endif
 #include <filename.h>
 
 #include <numeric>
