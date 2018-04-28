@@ -39,8 +39,8 @@ namespace rpcore {
  * @details This class manages the shadow atlas. It handles finding and reserving
  *   space for new shadow maps.
  */
-class ShadowAtlas {
-
+class ShadowAtlas
+{
 PUBLISHED:
     ShadowAtlas(size_t size, size_t tile_size = 32);
     ~ShadowAtlas();
@@ -52,7 +52,6 @@ PUBLISHED:
     MAKE_PROPERTY(coverage, get_coverage);
 
 public:
-
     LVecBase4i find_and_reserve_region(size_t tile_width, size_t tile_height);
     void free_region(const LVecBase4i& region);
     inline LVecBase4f region_to_uv(const LVecBase4i& region);
@@ -61,7 +60,6 @@ public:
     inline int get_required_tiles(size_t resolution) const;
 
 protected:
-
     void init_tiles();
 
     inline void set_tile(size_t x, size_t y, bool flag);

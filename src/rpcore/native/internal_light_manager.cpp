@@ -116,7 +116,6 @@ void InternalLightManager::add_light(PT(RPLight) light) {
  * @param light The light to init the shadow sources for
  */
 void InternalLightManager::setup_shadows(RPLight* light) {
-
     // Init the lights shadow sources, and also call update once to make sure
     // the sources are properly initialized
     light->init_shadow_sources();
@@ -189,7 +188,6 @@ void InternalLightManager::remove_light(PT(RPLight) light) {
 
     // Clear shadow related stuff, in case the light casts shadows
     if (light->get_casts_shadows()) {
-
         // Free the slots of all sources, and also unregister their regions from
         // the shadow atlas.
         for (size_t i = 0; i < light->get_num_shadow_sources(); ++i) {
@@ -355,7 +353,6 @@ bool InternalLightManager::compare_shadow_sources(const ShadowSource* a, const S
  *   max_updates of the ShadowManager.
  */
 void InternalLightManager::update_shadow_sources() {
-
     // Find all dirty shadow sources and make a list of them
     vector<ShadowSource*> sources_to_update;
      for (auto iter = _shadow_sources.begin(); iter != _shadow_sources.end(); ++iter) {
@@ -370,7 +367,6 @@ void InternalLightManager::update_shadow_sources() {
                     sources_to_update.push_back(source);
                 }
             } else {
-
                 // Free regions of sources which are out of the update radius,
                 // to make space for other regions
                 if (source->has_region()) {
@@ -379,7 +375,6 @@ void InternalLightManager::update_shadow_sources() {
                 }
             }
         }
-
     }
 
     // Sort the sources based on their importance, so that sources with a bigger

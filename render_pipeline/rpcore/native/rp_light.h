@@ -42,10 +42,9 @@ namespace rpcore {
  *   stores common properties, and provides methods to modify these.
  *   It also defines some interface functions which subclasses have to implement.
  */
-class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount {
-
+class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount
+{
     PUBLISHED:
-
         /**
          * Different types of light.
          */
@@ -121,7 +120,6 @@ class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount {
         MAKE_PROPERTY(near_plane, get_near_plane, set_near_plane);
 
     protected:
-
         int _slot;
         int _ies_profile;
         size_t _source_resolution;

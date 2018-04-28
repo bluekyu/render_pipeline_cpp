@@ -285,7 +285,7 @@ void BufferViewer::render_stages()
         frame_hovers_.push_back(frame_hover);
         frame_hover->bind(rppanda::DGG_ENTER, [frame_hover, this](const Event*) { on_texture_hovered(frame_hover); });
         frame_hover->bind(rppanda::DGG_EXIT, [frame_hover, this](const Event*) { on_texture_blurred(frame_hover); });
-        
+
         //frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
         frame_hover->bind(rppanda::DGG_B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
 

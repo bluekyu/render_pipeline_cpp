@@ -79,7 +79,6 @@ void ShadowManager::init() {
 
     // Create the cameras and regions
     for(size_t i = 0; i < _max_updates; ++i) {
-
         // Create the camera
         PT(Camera) camera = new Camera("ShadowCam-" + to_string(static_cast<long long>(i)));
         camera->set_lens(new MatrixLens());

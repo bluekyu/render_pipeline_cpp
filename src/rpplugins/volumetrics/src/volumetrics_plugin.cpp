@@ -47,7 +47,7 @@ VolumentricsPlugin::VolumentricsPlugin(rpcore::RenderPipeline& pipeline): rpcore
 {
 }
 
-VolumentricsPlugin::RequrieType& VolumentricsPlugin::get_required_plugins() const 
+VolumentricsPlugin::RequrieType& VolumentricsPlugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }

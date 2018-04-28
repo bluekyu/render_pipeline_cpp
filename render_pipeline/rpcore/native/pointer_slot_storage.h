@@ -52,10 +52,9 @@ namespace rpcore {
  * @tparam SIZE Size of the storage
  */
 template < typename T, int SIZE >
-class PointerSlotStorage {
-
+class PointerSlotStorage
+{
 public:
-
     /**
      * @brief Constructs a new PointerSlotStorage
      * @details This constructs a new PointerSlotStorage, with all slots

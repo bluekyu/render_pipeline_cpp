@@ -77,7 +77,7 @@ void RPLight::write_to_command(GPUCommand &cmd) {
 
     // Get the lights color by multiplying color with energy. Divide by
     // 100, since 16bit floating point buffers only go up to 65000.0, which
-    // prevents very bright lights 
+    // prevents very bright lights
     cmd.push_vec3(_color * _energy / 100.0);
 }
 
@@ -102,7 +102,6 @@ RPLight::~RPLight() {
  * @param temperature Light temperature
  */
 void RPLight::set_color_from_temperature(float temperature) {
-
     // Thanks to rdb for this conversion script
     float mm = 1000.0 / temperature;
     float mm2 = mm * mm;

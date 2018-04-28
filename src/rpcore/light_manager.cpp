@@ -152,25 +152,25 @@ void LightManager::init_internal_manager()
 {
     internal_mgr_ = std::make_unique<InternalLightManager>();
     internal_mgr_->set_shadow_update_distance(pipeline_.get_setting<float>("shadows.max_update_distance"));
-    
+
     // Storage for the Lights
     const int per_light_vec4s = 4;
     img_light_data_ = Image::create_buffer("LightData", MAX_LIGHTS * per_light_vec4s, "RGBA16");
     img_light_data_->clear_image();
-    
+
     pta_max_light_index_ = PTA_int::empty_array(1);
     pta_max_light_index_[0] = 0;
-    
+
     // Storage for the shadow sources
     const int per_source_vec4s = 5;
-    
+
     // IMPORTANT: RGBA32 is really required here.Otherwise artifacts and bad
     // shadow filtering occur due to precision issues
     img_source_data_ = Image::create_buffer("ShadowSourceData", MAX_SOURCES * per_source_vec4s, "RGBA32");
 
     // TODO: check if this is right.
     img_source_data_->clear_image();
-    
+
     // Register the buffer
     pipeline_.get_stage_mgr()->add_input(ShaderInput("AllLightsData", img_light_data_->get_texture()));
     pipeline_.get_stage_mgr()->add_input(ShaderInput("ShadowSourceData", img_source_data_->get_texture()));
@@ -180,7 +180,7 @@ void LightManager::init_internal_manager()
 void LightManager::init_stages()
 {
     StageManager* stage_mgr = pipeline_.get_stage_mgr();
-    
+
     flag_cells_stage_ = std::make_unique<FlagUsedCellsStage>(pipeline_);
     stage_mgr->add_stage(flag_cells_stage_.get());
 
@@ -192,7 +192,7 @@ void LightManager::init_stages()
 
     apply_lights_stage_ = std::make_unique<ApplyLightsStage>(pipeline_);
     stage_mgr->add_stage(apply_lights_stage_.get());
-    
+
     shadow_stage_ = std::make_unique<ShadowStage>(pipeline_);
     shadow_stage_->set_size(shadow_manager_->get_atlas_size());
     stage_mgr->add_stage(shadow_stage_.get());

@@ -50,7 +50,6 @@ namespace rpcore {
  *   GPUCommandQueue to store light and shadow source data.
  */
 class InternalLightManager {
-
     PUBLISHED:
         InternalLightManager();
 
@@ -78,7 +77,6 @@ class InternalLightManager {
         inline void set_command_list(GPUCommandList *cmd_list);
 
     protected:
-
         void gpu_update_light(RPLight* light);
         void gpu_update_source(ShadowSource* source);
         void gpu_remove_light(RPLight* light);
@@ -98,7 +96,6 @@ class InternalLightManager {
 
         LPoint3f _camera_pos;
         float _shadow_update_distance;
-
 };
 
 }

@@ -19,7 +19,6 @@ double srgb_clamp(double v) {
 BEGIN_PUBLISH
 INLINE void generate_table()
 {
-
     const double min_elevation = 0.0; // degree
     const double max_elevation = 40.0; // degree
     double turbidity = 3.0;
@@ -52,7 +51,6 @@ INLINE void generate_table()
 
         for (size_t i = 0; i < 512; ++i) {
             for (size_t k = 0; k < 128; ++k) {
-
                 double factor_x = ((double)i) / 512.0;
                 double factor_y = ((double)k) / 128.0;
 

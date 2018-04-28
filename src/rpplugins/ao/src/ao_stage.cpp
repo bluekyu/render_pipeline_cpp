@@ -136,7 +136,7 @@ void AOStage::reload_shaders()
         target_upscale_->set_shader(load_plugin_shader({"/$$rp/shader/bilateral_upscale_stereo.frag.glsl"}, stereo_mode_));
     else
         target_upscale_->set_shader(load_plugin_shader({"/$$rp/shader/bilateral_upscale.frag.glsl"}));
-    
+
     PT(Shader) blur_shader;
     if (stereo_mode_)
         blur_shader = load_plugin_shader({"/$$rp/shader/bilateral_blur_stereo.frag.glsl"}, stereo_mode_);

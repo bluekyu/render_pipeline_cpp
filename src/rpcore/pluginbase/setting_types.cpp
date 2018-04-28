@@ -104,7 +104,7 @@ BaseType::BaseType(YAML::Node& data): RPObject("BaseType")
 {
     _type = data["type"].as<std::string>();
     data.remove("type");
-    
+
     _label = boost::trim_copy(data["label"].as<std::string>());
     data.remove("label");
 
@@ -211,7 +211,7 @@ void EnumType::add_defines(const std::string& plugin_id,
 {
     auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const std::string&>(_value)));
     defines[plugin_id + "_" + setting_id] = std::to_string(1000 + index);
-    
+
     for (size_t i=0, i_end=_values.size(); i < i_end; ++i)
         defines[std::string("enum_") + plugin_id + "_" + setting_id + "_" + _values[i]] = std::to_string(1000 + i);
 }

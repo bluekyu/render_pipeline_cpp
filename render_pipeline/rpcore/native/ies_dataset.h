@@ -44,8 +44,8 @@ namespace rpcore {
  *   and horizontal angles, as well as a set of candela values, which then are
  *   lineary interpolated onto a 2D LUT Texture.
  */
-class IESDataset {
-
+class IESDataset
+{
     PUBLISHED:
         IESDataset();
 
@@ -56,9 +56,8 @@ class IESDataset {
         void generate_dataset_texture_into(Texture* dest_tex, size_t z) const;
 
     public:
-
         float get_candela_value(float vertical_angle, float horizontal_angle) const;
-		float get_candela_value_from_index(size_t vertical_angle_idx, size_t horizontal_angle_idx) const;
+        float get_candela_value_from_index(size_t vertical_angle_idx, size_t horizontal_angle_idx) const;
         float get_vertical_candela_value(size_t horizontal_angle_idx, float vertical_angle) const;
 
     private:

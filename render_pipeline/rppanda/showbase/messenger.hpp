@@ -78,7 +78,7 @@ public:
     static Messenger* get_global_instance();
 
     Messenger();
-    
+
     virtual ~Messenger();
 
     size_t get_num_listners() const;

@@ -36,8 +36,8 @@
 /**
  * @brief Class to generate projection matrices.
  */
-class PSSMHelper {
-
+class PSSMHelper
+{
     PUBLISHED:
         static LMatrix4f find_projection_mat(
             const LVector4f &near_ul,

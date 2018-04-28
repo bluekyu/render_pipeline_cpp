@@ -80,8 +80,8 @@ LMatrix4f PSSMHelper::find_projection_mat(
             const LVector4f &far_ul,
             const LVector4f &far_ur,
             const LVector4f &far_ll,
-            const LVector4f &far_lr) {
-
+            const LVector4f &far_lr)
+{
     // We have 8*4 = 32 equations, which require 16 coefficients each
     Eigen::MatrixXf equation_system(32, 16);
     Eigen::VectorXf equation_results(32);

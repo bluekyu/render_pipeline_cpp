@@ -86,13 +86,13 @@ std::string SmoothConnectedCurve::serialize() const
     std::string result;
     result.reserve(_cv_points.size() * 40);
     result += "[";
-    
+
     for (const auto& point: _cv_points)
     {
         result += (point_formats % (point[0]) % (point[1])).str();
         result += ",";
     }
-    
+
     if (_cv_points.size() > 0)
         result.pop_back();
     result += "]";

@@ -83,7 +83,7 @@ void ProbeManager::update()
             break;
         }
     }
-    
+
     if (!modified)
         return;
 

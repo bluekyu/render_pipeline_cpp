@@ -38,8 +38,8 @@ namespace rpcore {
  *   radius. Checkout the RenderPipeline documentation for more information
  *   about this type of light.
  */
-class RENDER_PIPELINE_DECL RPPointLight  : public RPLight {
-
+class RENDER_PIPELINE_DECL RPPointLight  : public RPLight
+{
     PUBLISHED:
         RPPointLight();
 
@@ -57,7 +57,6 @@ class RENDER_PIPELINE_DECL RPPointLight  : public RPLight {
         virtual void init_shadow_sources();
 
     protected:
-
         float _radius;
         float _inner_radius;
 

@@ -50,8 +50,8 @@ namespace rpcore {
  *   and a view-projection matrix. The shadow manager regenerates the shadow maps
  *   using the data from the shadow sources.
  */
-class ShadowSource {
-
+class ShadowSource
+{
 public:
     ShadowSource();
 

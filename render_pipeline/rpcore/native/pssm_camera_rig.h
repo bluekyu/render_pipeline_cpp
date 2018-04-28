@@ -60,8 +60,8 @@ namespace rpcore {
  *   To understand the functionality of this class, a detailed knowledge of the
  *   PSSM algorithm is helpful.
  */
-class RENDER_PIPELINE_DECL PSSMCameraRig {
-
+class RENDER_PIPELINE_DECL PSSMCameraRig
+{
     PUBLISHED:
         PSSMCameraRig(size_t num_splits);
         ~PSSMCameraRig();
@@ -84,7 +84,6 @@ class RENDER_PIPELINE_DECL PSSMCameraRig {
         inline const PTA_LVecBase2f &get_nearfar_array();
 
     public:
-
         // Used to access the near and far points in the array
         enum CoordinateOrigin {
             UpperLeft = 0,
@@ -94,7 +93,6 @@ class RENDER_PIPELINE_DECL PSSMCameraRig {
         };
 
     protected:
-
         void init_cam_nodes();
         void compute_pssm_splits(const LMatrix4f& transform, float max_distance,
                                  const LVecBase3f &light_vector);
@@ -125,7 +123,6 @@ class RENDER_PIPELINE_DECL PSSMCameraRig {
         PTA_LVecBase2f _camera_nearfar;
 
         static PStatCollector _update_collector;
-
 };
 
 }

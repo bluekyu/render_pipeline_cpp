@@ -63,7 +63,7 @@ PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVec
 void PostProcessRegion::init_function_pointers()
 {
     using namespace std::placeholders;
-    
+
     set_sort = std::bind(&DisplayRegion::set_sort, region_, _1);
     disable_clears = std::bind(&DisplayRegion::disable_clears, region_);
     set_active = std::bind(&DisplayRegion::set_active, region_, _1);

@@ -104,7 +104,6 @@ float IESDataset::get_candela_value_from_index(size_t vertical_angle_idx, size_t
  * @return Candela value between 0 .. 1
  */
 float IESDataset::get_candela_value(float vertical_angle, float horizontal_angle) const {
-
     // Special case for datasets without horizontal angles
     if (_horizontal_angles.size() == 1) {
         return get_vertical_candela_value(0, vertical_angle);
@@ -127,7 +126,6 @@ float IESDataset::get_candela_value(float vertical_angle, float horizontal_angle
         float curr_angle = _horizontal_angles[horizontal_index];
 
         if (curr_angle >= horizontal_angle) {
-
             // Get previous angle data
             float prev_angle = _horizontal_angles[horizontal_index - 1];
             float prev_value = get_vertical_candela_value(horizontal_index - 1, vertical_angle);
@@ -178,7 +176,6 @@ float IESDataset::get_vertical_candela_value(size_t horizontal_angle_idx, float 
 
         // Found value
         if (curr_angle > vertical_angle) {
-
             // Get previous angle data
             float prev_angle = _vertical_angles[vertical_index - 1];
             float prev_value = get_candela_value_from_index(vertical_index - 1, horizontal_angle_idx);
@@ -212,7 +209,6 @@ float IESDataset::get_vertical_candela_value(size_t horizontal_angle_idx, float 
  *   2D Texture Array.
  */
 void IESDataset::generate_dataset_texture_into(Texture* dest_tex, size_t z) const {
-
     size_t resolution_vertical = dest_tex->get_y_size();
     size_t resolution_horizontal = dest_tex->get_x_size();
 

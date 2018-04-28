@@ -279,7 +279,7 @@ bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
 
     if (static_cast<size_t>(vdata->get_num_rows()) != vertices.size())
     {
-        RPObject::global_error("RPGeomNode", 
+        RPObject::global_error("RPGeomNode",
             fmt::format("The size ({}) of vertices is not same as the original size ({}) of vertices in Geom.",
                 vertices.size(), static_cast<size_t>(vdata->get_num_rows())));
         return false;
@@ -313,7 +313,7 @@ bool RPGeomNode::modify_vertex_data(const std::vector<LVecBase3>& vertices,
 
     if (static_cast<size_t>(vdata->get_num_rows()) != vertices.size())
     {
-        RPObject::global_error("RPGeomNode", 
+        RPObject::global_error("RPGeomNode",
             fmt::format("The size ({}) of vertices is not same as the original size ({}) of vertices in Geom.",
                 vertices.size(), static_cast<size_t>(vdata->get_num_rows())));
         return false;

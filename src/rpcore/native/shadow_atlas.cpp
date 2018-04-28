@@ -130,7 +130,6 @@ void ShadowAtlas::reserve_region(size_t x, size_t y, size_t w, size_t h) {
  * @return Region, see description, or -1 when no region is found.
  */
 LVecBase4i ShadowAtlas::find_and_reserve_region(size_t tile_width, size_t tile_height) {
-
     // Check for empty region
     if (tile_width < 1 || tile_height < 1) {
         shadowatlas_cat.error() << "Called find_and_reserve_region with null-region!" << endl;

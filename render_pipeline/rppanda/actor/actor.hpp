@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2008, Carnegie Mellon University.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
@@ -15,7 +15,7 @@
  *    other contributors may be used to endorse or promote products
  *    derived from this software without specific prior written
  *    permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHORS "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -26,7 +26,7 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * (This is the Modified BSD License.  See also
  * http://www.opensource.org/licenses/bsd-license.php )
  */
@@ -206,10 +206,10 @@ public:
      * Updates all of the Actor's joints in the indicated LOD.
      * The LOD may be specified by name, or by number, where 0 is the
      * highest level of detail, 1 is the next highest, and so on.
-     * 
+     *
      * If force is True, this will update every joint, even if we
      * don't believe it's necessary.
-     * 
+     *
      * Returns True if any joint has changed as a result of this,
      * False otherwise.
      */

@@ -39,8 +39,8 @@ namespace rpcore {
  * @details This is a class to store a list of GPUCommands. It provides
  *   functionality to only provide the a given amount of commands at one time.
  */
-class GPUCommandList {
-
+class GPUCommandList
+{
     PUBLISHED:
         GPUCommandList();
 

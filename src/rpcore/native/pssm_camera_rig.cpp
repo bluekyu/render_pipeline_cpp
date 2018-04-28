@@ -193,7 +193,6 @@ LPoint3f get_average_of_points(LVecBase3f const (&starts)[4], LVecBase3f const (
  * @param cam The camera to be used to project the points
  */
 void find_min_max_extents(LVecBase3f &min_extent, LVecBase3f &max_extent, const LMatrix4f &transform, LVecBase3f const (&proj_points)[8], Camera *cam) {
-
     min_extent.fill(1e10);
     max_extent.fill(-1e10);
     LPoint2f screen_points[8];

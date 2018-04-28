@@ -117,7 +117,7 @@ DayBaseType::ValueType DayBaseType::get_value_at(float offset) const
         _curves[0]->get_value(offset),
         _curves[1]->get_value(offset),
         _curves[2]->get_value(offset));
-    
+
     return { result, 3 };
 }
 

@@ -262,7 +262,7 @@ std::string GroupedInputBlock::generate_shader_code() const
                 inputs.push_back(struct_name + "_UBOSTRUCT " + struct_name + ";");
             }
             //else    Struct is already defined, add member definition
-            
+
             if (array_size == 1)
                 structs[struct_name].push_back(pta_to_glsl_type(static_cast<PTA_ID>(handle.which())) + " " + actual_input_name + ";");
             else

@@ -380,7 +380,6 @@ void CommonResources::setup_inputs()
         input_ubo_->register_pta("proj_mat", "mat4");
         input_ubo_->register_pta("inv_proj_mat", "mat4");
         input_ubo_->register_pta("view_mat_billboard", "mat4");
-        
     }
 
     input_ubo_->register_pta("frame_delta", "float");

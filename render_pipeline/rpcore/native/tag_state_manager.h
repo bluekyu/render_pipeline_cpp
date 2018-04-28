@@ -51,8 +51,8 @@ namespace rpcore {
  *   The Manager also stores a list of all cameras used in the different stages,
  *   to keep track of the states used and to be able to attach new states.
  */
-class RENDER_PIPELINE_DECL TagStateManager {
-
+class RENDER_PIPELINE_DECL TagStateManager
+{
     PUBLISHED:
         TagStateManager(NodePath main_cam_node);
         ~TagStateManager();
@@ -66,7 +66,6 @@ class RENDER_PIPELINE_DECL TagStateManager {
         inline BitMask32 get_mask(const string &container_name);
 
     private:
-
         typedef vector<Camera*> CameraList;
         typedef pmap<string, CPT(RenderState)> TagStateList;
 

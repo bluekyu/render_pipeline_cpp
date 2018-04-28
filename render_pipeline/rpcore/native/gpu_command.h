@@ -47,10 +47,9 @@ namespace rpcore {
  *   It has a command type, which tells the GPU what to do once it recieved this
  *   "packet". It stores a limited amount of floating point components.
  */
-class GPUCommand {
-
+class GPUCommand
+{
     PUBLISHED:
-
         /**
          * The different types of GPUCommands. Each type has a special case in
          * the command queue processor. When adding new types, those need to
@@ -83,7 +82,6 @@ class GPUCommand {
         void write(ostream &out) const;
 
     private:
-
         inline float convert_int_to_float(int v) const;
 
         CommandType _command_type;

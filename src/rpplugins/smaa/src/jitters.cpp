@@ -32,7 +32,6 @@ const JitterType JITTERS;
 JitterType::JitterType()
 {
     insert({
-
         { "still", {
             LVecBase2(0.0, 0.0)
         }},
@@ -115,7 +114,6 @@ JitterType::JitterType()
             LVecBase2(-0.500000 * 0.5,  0.162460 * 0.5),    // larm
             LVecBase2(0.309017 * 0.5, -0.425325 * 0.5),     // rleg
         }}
-
     });
 
     // Initialize halton sequences
