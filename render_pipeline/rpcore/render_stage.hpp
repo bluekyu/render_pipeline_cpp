@@ -61,8 +61,6 @@ public:
         std::shared_ptr<GroupedInputBlock>>>;
     using DefinesType = std::unordered_map<std::string, std::string>;
 
-    static bool disabled_;
-
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
     RenderStage(const RenderStage&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -96,6 +94,8 @@ public:
     bool get_active() const;
     void set_active(bool state);
 
+    bool get_disabled() const;
+
     /**
      * Create target and store it to RenderStage::targets.
      */
@@ -126,11 +126,12 @@ public:
     virtual void set_dimensions() {}
 
 protected:
-    RenderPipeline& pipeline_;
-
     const std::unordered_map<std::string, std::unique_ptr<RenderTarget>>& get_targets() const;
 
     virtual std::string get_plugin_id() const = 0;
+
+    RenderPipeline& pipeline_;
+    bool disabled_ = false;
 
 private:
     PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const;
@@ -150,6 +151,11 @@ inline const std::string& RenderStage::get_stage_id() const
 inline bool RenderStage::get_active() const
 {
     return active_;
+}
+
+inline bool RenderStage::get_disabled() const
+{
+    return disabled_;
 }
 
 inline const std::unordered_map<std::string, std::unique_ptr<RenderTarget>>& RenderStage::get_targets() const

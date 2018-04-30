@@ -37,8 +37,6 @@
 
 namespace rpcore {
 
-bool RenderStage::disabled_ = false;
-
 RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id): RPObject(stage_id), pipeline_(pipeline), stage_id_(stage_id)
 {
 }

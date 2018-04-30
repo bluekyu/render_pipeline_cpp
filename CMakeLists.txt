@@ -30,6 +30,8 @@ endif()
 include(FindPackages)
 
 # === project specific packages ===
+_find_boost("filesystem")
+
 # find spdlog
 if(NOT TARGET spdlog::spdlog)
     find_package(spdlog REQUIRED)

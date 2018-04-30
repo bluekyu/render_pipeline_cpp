@@ -173,7 +173,7 @@ void StageManager::Impl::prepare_stages()
     std::vector<RenderStage*> enabled_stages;
     for (auto&& stage: stages_)
     {
-        if (!stage->disabled_)
+        if (!stage->get_disabled())
             enabled_stages.push_back(stage);
     }
 

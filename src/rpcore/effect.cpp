@@ -57,8 +57,17 @@ public:
 
     /** { Pass ID, Multiview flag } */
     using PassType = std::pair<std::string, bool>;
+
+    /**
+     * All supported render passes, should match the available passes in the
+     * TagStateManager class.
+     */
     static const std::vector<PassType> passes_;
 
+    /**
+     * Effects are cached based on their source filename and options, this is
+     * the cache where compiled are effects stored.
+     */
     static std::unordered_map<std::string, std::shared_ptr<Effect>> global_cache_;
 
     /**

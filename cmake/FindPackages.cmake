@@ -25,8 +25,6 @@ function(_find_boost required_component)
     endif()
 endfunction()
 
-_find_boost("filesystem")
-
 # find panda3d
 set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
 find_package(panda3d REQUIRED p3framework p3direct)
