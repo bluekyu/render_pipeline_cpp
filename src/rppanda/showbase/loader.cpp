@@ -122,21 +122,7 @@ Loader& Loader::operator=(Loader&&) = default;
 NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
 {
-    rppanda_showbase_cat.debug() << "Loading model: " << model_path << std::endl;
-
-    LoaderOptions this_options(loader_options);
-    bool this_ok_missing;
-    impl_->pre_load_model(this_options, this_ok_missing, no_cache, allow_instance, ok_missing);
-
-    PT(PandaNode) node = impl_->loader_->load_sync(model_path, this_options);
-    NodePath result;
-    if (node)
-        result = NodePath(node);
-
-    if (!this_ok_missing && result.is_empty())
-        throw std::runtime_error(std::string("Could not load model file(s): ") + model_path.c_str());
-
-    return result;
+    return load_model(std::vector<Filename>{model_path}, loader_options, no_cache, allow_instance, ok_missing).front();
 }
 
 std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
