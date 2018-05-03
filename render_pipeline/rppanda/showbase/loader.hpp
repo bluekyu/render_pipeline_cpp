@@ -41,6 +41,8 @@
 #include <audioSound.h>
 #include <textFont.h>
 
+#include <unordered_set>
+
 #include <boost/optional.hpp>
 
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
@@ -54,6 +56,41 @@ class ShowBase;
 
 class RENDER_PIPELINE_DECL Loader : public DirectObject
 {
+public:
+    /**
+     * Returned by loadModel when used asynchronously. This class is
+     * modelled after Future, and can be awaited.
+     */
+    class RENDER_PIPELINE_DECL Callback
+    {
+    public:
+        Callback(Loader* loader, int num_objects,
+            const std::function<void(const std::vector<NodePath>&)>& callback);
+
+        void got_object(size_t index, NodePath object);
+
+        /** Cancels the request. Callback won't be called. */
+        void cancel();
+
+        /** Returns true if the request was cancelled. */
+        bool cancelled() const;
+
+        /** Returns true if all the requests were finished or cancelled. */
+        bool done() const;
+
+        /** Suspending the thread to wait if necessary. */
+        void wait() const;
+
+    private:
+        friend class Loader;
+
+        Loader* loader_;
+        std::vector<NodePath> objects_;
+        std::function<void(const std::vector<NodePath>&)> callback_;
+        std::unordered_set<AsyncTask*> requests_;
+        std::vector<AsyncTask*> request_list_;
+    };
+
 public:
     Loader(ShowBase& base);
     Loader(const Loader&) = delete;
@@ -75,6 +112,16 @@ public:
 
     std::vector<NodePath> load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none);
+
+    std::shared_ptr<Callback> load_model_async(const Filename& model_path, const LoaderOptions& loader_options={},
+        boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
+        const std::function<void(const std::vector<NodePath>&)>& callback={},
+        boost::optional<int> priority=boost::none);
+
+    std::shared_ptr<Callback> load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
+        boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
+        const std::function<void(const std::vector<NodePath>&)>& callback={},
+        boost::optional<int> priority = boost::none);
 
     /**
      * This loads a special model as a TextFont object, for rendering

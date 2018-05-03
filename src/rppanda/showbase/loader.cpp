@@ -63,14 +63,28 @@ public:
     void pre_load_model(LoaderOptions& this_options, bool& this_ok_missing,
         boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing);
 
+    /**
+     * A model or sound file or some such thing has just been
+     * loaded asynchronously by the sub-thread.  Add it to the list
+     * of loaded objects, and call the appropriate callback when it's
+     * time.
+     */
+    void got_async_object(const Event* ev);
+
 public:
+    static size_t loader_index_;
+
     ShowBase& base_;
     ::Loader* loader_;
+
+    std::string hook_;
+    std::unordered_map<AsyncTask*, std::pair<std::shared_ptr<Callback>, size_t>> requests_; 
 };
+
+size_t Loader::Impl::loader_index_ = 0;
 
 Loader::Impl::Impl(ShowBase& base): base_(base)
 {
-    loader_ = ::Loader::get_global_ptr();
 }
 
 void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_missing,
@@ -101,19 +115,114 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
         this_options.set_flags(this_options.get_flags() | LoaderOptions::LF_allow_instance);
 }
 
+void Loader::Impl::got_async_object(const Event* ev)
+{
+    if (ev->get_num_parameters() != 1)
+    {
+        rppanda_showbase_cat.error() << "Invalid number of paramter: " << ev->get_num_parameters() << std::endl;
+        return;
+    }
+
+    const auto& param = ev->get_parameter(0);
+    auto request = DCAST(AsyncTask, param.get_typed_ref_count_value());
+
+    auto found = requests_.find(request);
+    if (found == requests_.end())
+        return;
+
+    auto cb = found->second.first;          // should hold callback for Callback::get_object
+    auto i = found->second.second;
+
+    if (cb->cancelled() || request->cancelled())
+    {
+        // Shouldn't be here.
+        requests_.erase(request);
+        return;
+    }
+
+    cb->requests_.erase(request);
+    if (!cb->requests_.empty())
+        requests_.erase(request);
+
+    PandaNode* result = DCAST(PandaNode, request->get_result());
+
+    cb->got_object(i, NodePath(result));
+}
+
+// ************************************************************************************************
+
+Loader::Callback::Callback(Loader* loader, int num_objects,
+    const std::function<void(const std::vector<NodePath>&)>& callback) : loader_(loader), callback_(callback)
+{
+    objects_.resize(num_objects);
+}
+
+void Loader::Callback::got_object(size_t index, NodePath object)
+{
+    objects_[index] = object;
+
+    if (!done())
+        return;
+
+    loader_ = nullptr;
+    if (callback_)
+        callback_(objects_);
+}
+
+void Loader::Callback::cancel()
+{
+    if (!loader_)
+        return;
+
+    for (const auto& request : requests_)
+    {
+        loader_->impl_->loader_->remove(request);
+        loader_->impl_->requests_.erase(request);
+    }
+
+    loader_ = nullptr;
+    requests_.clear();
+    request_list_.clear();
+}
+
+bool Loader::Callback::cancelled() const
+{
+    return request_list_.empty();
+}
+
+bool Loader::Callback::done() const
+{
+    return requests_.empty();
+}
+
+void Loader::Callback::wait() const
+{
+    for (const auto& r : requests_)
+        r->wait();
+}
+
 // ************************************************************************************************
 
 TypeHandle Loader::type_handle_;
 
 Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
+    impl_->loader_ = ::Loader::get_global_ptr();
+
+    impl_->hook_ = "async_loader_" + std::to_string(Loader::Impl::loader_index_);
+    Loader::Impl::loader_index_ += 1;
+    accept(impl_->hook_, std::bind(&Impl::got_async_object, impl_.get(), std::placeholders::_1));
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 Loader::Loader(Loader&&) = default;
 #endif
 
-Loader::~Loader() = default;
+Loader::~Loader()
+{
+    ignore(impl_->hook_);
+    impl_->loader_->stop_threads();
+}
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 Loader& Loader::operator=(Loader&&) = default;
@@ -122,7 +231,8 @@ Loader& Loader::operator=(Loader&&) = default;
 NodePath Loader::load_model(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing)
 {
-    return load_model(std::vector<Filename>{model_path}, loader_options, no_cache, allow_instance, ok_missing).front();
+    return load_model(std::vector<Filename>{model_path}, loader_options, no_cache,
+        allow_instance, ok_missing).front();
 }
 
 std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
@@ -134,6 +244,7 @@ std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list
     bool this_ok_missing;
     impl_->pre_load_model(this_options, this_ok_missing, no_cache, allow_instance, ok_missing);
 
+    // We got no callback, so it's a synchronous load.
     std::vector<NodePath> result;
     for (const auto& model_path: model_list)
     {
@@ -149,6 +260,50 @@ std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list
     }
 
     return result;
+}
+
+std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model_path, const LoaderOptions& loader_options,
+    boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
+    const std::function<void(const std::vector<NodePath>&)>& callback,
+    boost::optional<int> priority)
+{
+    return load_model_async(std::vector<Filename>{model_path}, loader_options, no_cache,
+        allow_instance, ok_missing);
+}
+
+std::shared_ptr<Loader::Callback> Loader::load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
+    boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
+    const std::function<void(const std::vector<NodePath>&)>& callback,
+    boost::optional<int> priority)
+{
+    rppanda_showbase_cat.debug() << "Loading model: " << join_to_string(model_list) << std::endl;
+
+    LoaderOptions this_options(loader_options);
+    bool this_ok_missing;
+    impl_->pre_load_model(this_options, this_ok_missing, no_cache, allow_instance, ok_missing);
+
+    // We got a callback, so we want an asynchronous(threaded)
+    // load.We'll return immediately, but when all of the
+    // requested models have been loaded, we'll invoke the
+    // callback(passing it the models on the parameter list).
+
+    auto cb = std::make_shared<Callback>(this, model_list.size(), callback);
+
+    size_t i = 0;
+    for (const auto& model_path: model_list)
+    {
+        PT(AsyncTask) request = impl_->loader_->make_async_request(model_path, this_options);
+        if (priority)
+            request->set_priority(priority.value());
+        request->set_done_event(impl_->hook_);
+        impl_->loader_->load_async(request);
+        cb->requests_.insert(request);
+        cb->request_list_.push_back(request);
+        impl_->requests_.insert({request.p(), {cb, i}});
+        i += 1;
+    }
+
+    return cb;
 }
 
 PT(TextFont) Loader::load_font(const std::string& model_path,
