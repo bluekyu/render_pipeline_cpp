@@ -7,6 +7,8 @@ function(_find_boost required_component)
         option(Boost_USE_STATIC_RUNTIME "Boost uses static runtime" OFF)
 
         set(BOOST_ROOT "" CACHE PATH "Hint for finding boost root directory")
+
+        find_package(Boost REQUIRED)
     endif()
 
     set(missed_component "")
@@ -19,11 +21,9 @@ function(_find_boost required_component)
     if(missed_component)
         find_package(Boost REQUIRED ${missed_component})
     endif()
-
-    if(NOT TARGET Boost::boost)
-        find_package(Boost REQUIRED)
-    endif()
 endfunction()
+
+_find_boost("")
 
 # find panda3d
 set(panda3d_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
