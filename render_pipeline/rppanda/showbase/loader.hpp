@@ -49,6 +49,7 @@
 
 class AudioManager;
 class Shader;
+class ModelRoot;
 
 namespace rppanda {
 
@@ -122,6 +123,9 @@ public:
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
         const std::function<void(const std::vector<NodePath>&)>& callback={},
         boost::optional<int> priority = boost::none);
+
+    void unload_model(NodePath model);
+    void unload_model(ModelRoot* model);
 
     /**
      * This loads a special model as a TextFont object, for rendering

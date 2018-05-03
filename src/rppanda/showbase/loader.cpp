@@ -41,6 +41,7 @@
 #include <loader.h>
 #include <audioLoadRequest.h>
 #include <fontPool.h>
+#include <modelPool.h>
 #include <staticTextFont.h>
 #include <dynamicTextFont.h>
 #include <texturePool.h>
@@ -304,6 +305,21 @@ std::shared_ptr<Loader::Callback> Loader::load_model_async(const std::vector<Fil
     }
 
     return cb;
+}
+
+void Loader::unload_model(NodePath model)
+{
+    PandaNode* node = model.node();
+    if (node->is_of_type(ModelRoot::get_class_type()))
+        unload_model(DCAST(ModelRoot, node));
+    else
+        rppanda_showbase_cat.error() << "NodePath is NOT ModelRoot: " << model << std::endl;
+}
+
+void Loader::unload_model(ModelRoot* model)
+{
+    rppanda_showbase_cat.debug() << "Unloading model: " << model->get_fullpath() << std::endl;
+    ModelPool::release_model(model);
 }
 
 PT(TextFont) Loader::load_font(const std::string& model_path,
