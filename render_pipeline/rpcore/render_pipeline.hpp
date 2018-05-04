@@ -64,9 +64,10 @@ public:
     };
 
 public:
-    static const std::string& get_version(void);
-    static const std::string& get_build_data(void);
-    static const std::string& get_git_commit(void);
+    static const std::string& get_version();
+    static bool get_version(int& major, int& minor, int& patch);
+    static const std::string& get_build_data();
+    static const std::string& get_git_commit();
 
     static RenderPipeline* get_global_ptr();
 

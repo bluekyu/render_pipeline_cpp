@@ -26,6 +26,7 @@
 
 #include <cctype>
 #include <chrono>
+#include <regex>
 
 #include <pandaFramework.h>
 #include <graphicsWindow.h>
@@ -38,6 +39,7 @@
 #include <materialAttrib.h>
 #include <geomTristrips.h>
 
+#include "render_pipeline/rpcore/version.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/task/task_manager.hpp"
@@ -68,7 +70,6 @@
 #include "rpcore/gui/loading_screen.hpp"
 #include "rpcore/util/ies_profile_loader.hpp"
 #include "rplibs/yaml.hpp"
-#include "rpcore/version.hpp"
 
 namespace rpcore {
 
@@ -842,6 +843,22 @@ const std::string& RenderPipeline::get_version(void)
 {
     static const std::string version(RENDER_PIPELINE_VERSION);
     return version;
+}
+
+bool RenderPipeline::get_version(int& major, int& minor, int& patch)
+{
+    std::smatch version_match;
+    if (std::regex_match(RenderPipeline::get_version(), version_match, std::regex("^(\\d+)\\.(\\d+)\\.(\\d+)$")))
+    {
+        major = std::stoi(version_match[1].str());
+        minor = std::stoi(version_match[2].str());
+        patch = std::stoi(version_match[3].str());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 const std::string& RenderPipeline::get_build_data(void)

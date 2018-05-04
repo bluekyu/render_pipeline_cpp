@@ -55,11 +55,9 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE})
 
 # ==================================================================================================
 function(render_pipeline_generate_version_hpp)
-    configure_file("${PROJECT_SOURCE_DIR}/src/rpcore/version.hpp.in"
-        "${PROJECT_BINARY_DIR}/rpcore/version.hpp"
-        @ONLY
-    )
-    target_sources(${PROJECT_NAME} PRIVATE "${PROJECT_BINARY_DIR}/rpcore/version.hpp")
+    set(dest_file "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/render_pipeline/rpcore/version.hpp")
+    configure_file("${PROJECT_SOURCE_DIR}/src/rpcore/version.hpp.in" "${dest_file}" @ONLY)
+    target_sources(${PROJECT_NAME} PRIVATE "${dest_file}")
 endfunction()
 # ==================================================================================================
 
@@ -93,9 +91,10 @@ target_compile_definitions(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 
-    PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/src"
+    PRIVATE "${PROJECT_SOURCE_DIR}/src"
     ${FREETYPE_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR}
 )
 
@@ -156,6 +155,7 @@ export(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
 )
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(DIRECTORY "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config" DESTINATION "${render_pipeline_DATA_DIR}")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/data" DESTINATION "${render_pipeline_DATA_DIR}")
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/effects" DESTINATION "${render_pipeline_DATA_DIR}")

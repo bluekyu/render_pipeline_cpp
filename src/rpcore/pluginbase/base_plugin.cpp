@@ -42,15 +42,20 @@ namespace rpcore {
 class BasePlugin::Impl
 {
 public:
+    PipelineInfo pipeline_info_;
+
     std::vector<std::unique_ptr<RenderStage>> assigned_stages_;
     std::vector<std::unique_ptr<boost::dll::shared_library>> shared_libs_;
 };
 
-BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id):
+BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id,
+    const PipelineInfo& pipeline_info):
     RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id),
     impl_(std::make_unique<Impl>())
 {
     trace(fmt::format("Constructing '{}' plugin", plugin_id_));
+
+    impl_->pipeline_info_ = pipeline_info;
 }
 
 BasePlugin::~BasePlugin()
@@ -116,6 +121,11 @@ void BasePlugin::reload_shaders()
 const BasePlugin::PluginInfo& BasePlugin::get_plugin_info() const
 {
     return pipeline_.get_plugin_mgr()->get_plugin_info(plugin_id_);
+}
+
+const BasePlugin::PipelineInfo& BasePlugin::get_pipeline_info() const
+{
+    return impl_->pipeline_info_;
 }
 
 boost::dll::shared_library* BasePlugin::load_shared_library(const Filename& path)

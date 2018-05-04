@@ -23,6 +23,7 @@
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 
 #include <unordered_set>
+#include <regex>
 
 #ifdef _WIN32
 // TODO: remove fs::canonical bug is fixed.
@@ -162,6 +163,39 @@ std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
         }
 
         auto instance = result.first->second(pipeline_);
+
+        const auto& plugin_pipeline_info = instance->get_pipeline_info();
+
+        std::smatch version_match;
+        if (!std::regex_match(plugin_pipeline_info.version, version_match, std::regex("^(\\d+)\\.(\\d+)\\.(\\d+)$")))
+        {
+            self_.error(fmt::format("Plugin '{}' has invalid Render Pipeline version: {}", plugin_id, plugin_pipeline_info.version));
+            return nullptr;
+        }
+
+        const int version_major = std::stoi(version_match[1].str());
+        const int version_minor = std::stoi(version_match[2].str());
+
+        int pipeline_major;
+        int pipeline_minor;
+        int pipeline_patch;
+        pipeline_.get_version(pipeline_major, pipeline_minor, pipeline_patch);
+
+        if (version_major != pipeline_major)
+        {
+            self_.error(fmt::format("Pipeline version ({}) in Plugin '{}' is incompatible with current version ({})",
+                plugin_pipeline_info.version, plugin_id, pipeline_.get_version()));
+            return nullptr;
+        }
+
+        if (version_minor != pipeline_minor)
+        {
+            self_.warn(fmt::format("Pipeline version ({}) in Plugin '{}' may be incompatible with current version ({})",
+                plugin_pipeline_info.version, plugin_id, pipeline_.get_version()));
+        }
+
+        self_.trace(fmt::format("Pipeline information in Plugin '{}': Version ({}), Commit ({})",
+            plugin_id, plugin_pipeline_info.version, plugin_pipeline_info.commit));
 
         for (const auto& required_plugin: instance->get_required_plugins())
         {

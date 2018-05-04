@@ -26,6 +26,7 @@
 
 #include <vector>
 
+#include <render_pipeline/rpcore/version.hpp>
 #include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
@@ -83,8 +84,21 @@ public:
         std::string description;
     };
 
+    struct PipelineInfo
+    {
+        std::string version;
+        std::string commit;
+    };
+
 public:
-    BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id);
+    /**
+     * BasePlugin Constructor
+     *
+     * @WARN    DO NOT use @p pipeline_version parameter.
+     *          This parameter has used Render Pipeline information, automatically.
+     */
+    BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id,
+        const PipelineInfo& pipeline_version = PipelineInfo{ RENDER_PIPELINE_VERSION, RENDER_PIPELINE_GIT_COMMIT });
     BasePlugin(const BasePlugin&) = delete;
     BasePlugin(BasePlugin&&) = delete;
 
@@ -118,6 +132,7 @@ public:
 
     const std::string& get_plugin_id() const;
     const PluginInfo& get_plugin_info() const;
+    const PipelineInfo& get_pipeline_info() const;
 
     virtual RequrieType& get_required_plugins() const = 0;
 
