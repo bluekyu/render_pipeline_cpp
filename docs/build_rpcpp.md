@@ -74,7 +74,9 @@ If you want to build with plugins and samples, you can do it using the following
 ### 2. CMakeLists.txt File
 ```
 cmake_minimum_required(VERSION 3.9)
-project(render_pipeline_projects)
+project(render_pipeline_projects
+    LANGUAGES NONE
+)
 
 # write paths and use options on your system
 set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)

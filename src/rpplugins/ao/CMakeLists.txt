@@ -6,6 +6,7 @@ get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugin_${RPPLUGIN_ID}
     VERSION 0.1.0
     DESCRIPTION "Ambient Occlusion plugin"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

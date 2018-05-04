@@ -74,7 +74,9 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 ### 2. CMakeLists.txt 파일
 ```
 cmake_minimum_required(VERSION 3.9)
-project(render_pipeline_projects)
+project(render_pipeline_projects
+    LANGUAGES NONE
+)
 
 # 개인 시스템에 맞는 경로 및 옵션을 사용
 set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)

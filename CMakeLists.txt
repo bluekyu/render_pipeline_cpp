@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.9)
 project(render_pipeline
     VERSION 0.5.0
     DESCRIPTION "Render Pipeline C++ project"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================
@@ -129,7 +130,7 @@ set(PACKAGE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PACKAGE_NAME}")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PACKAGE_VERSION}
-    COMPATIBILITY SameMajorVersion
+    COMPATIBILITY SameMinorVersion
 )
 
 configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-config.cmake.in"
