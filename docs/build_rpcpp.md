@@ -1,5 +1,5 @@
 # Building Render Pipeline C++
-**Translation**: [한국어](ko_kr/build_rpcpp.md)
+**Languages**: [한국어](ko_kr/build_rpcpp.md)
 
 ## Requirements
 The **Versions** are used by a build system and does **NOT** need to match. You can use another versions.
@@ -8,11 +8,9 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: 1.66.0
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp): 0.6.2
-- [spdlog](https://github.com/gabime/spdlog): 0.16.3
-
-### Optional
-- Doxygen (to create doxygen documents)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [fmt](https://github.com/fmtlib/fmt)
+- [spdlog](https://github.com/gabime/spdlog)
 
 
 
@@ -24,25 +22,42 @@ While configuring CMake, the first configuration may be failed because it cannot
 To solve this problem, you can give hints for the path of the libraries in CMake configuration (or advanced tab).
 
 ### Third-party Guide
+In Windows, we recommend to use [vcpkg](https://github.com/Microsoft/vcpkg) for some third-party.
+If you does not use `vcpkg`, then build and install those and setup proper values for CMake cache.
+
+
 #### Panda3D
-Install or build Panda3D library and set `panda3d_ROOT` to installed directory.
+You can get the latest built files from [my Panda3d repository](https://github.com/bluekyu/panda3d) OR
+build Panda3D from source.
+
+And then set `panda3d_ROOT` to installed directory for CMake cache.
 
 #### FreeType2
-`FindPackage` function for FreeType2 does not have hint in configuration.
+You can get the latest built files from
+[my Panda3d-Thirdparty repository](https://github.com/bluekyu/panda3d-thirdparty) OR
+build it from [original panda3d-thirdparty repository](https://github.com/rdb/panda3d-thirdparty).
+
+And then, `FindPackage` function for FreeType2 does not have hint in configuration.
 Instead, it uses `FREETYPE_DIR` in System Environment Variable as hint.
 
 Therefore, use system environment variable OR set it in CMake (see Integration with Plugin & Samples)
 
 #### Boost
-Install Boost library and set `BOOST_ROOT` to installed directory (For details, see FindBoost usage in CMake)
+- Windows: use vcpkg OR install Boost library from official website and
+  set `BOOST_ROOT` to installed directory (For details, see FindBoost usage in CMake)
+- Ubuntu: install Boost packages using apt
 
-#### YAML-CPP
-Build and install the repository with CMake.
-And set `yaml-cpp_DIR` to CMake directory in installed directory.
+#### yaml-cpp
+- Windows: use vcpkg
+- Ubuntu: build from github
+
+#### fmt
+- Windows: use vcpkg
+- Ubuntu: install `libfmt-dev` using apt
 
 #### spdlog
-Build and install the repository with CMake.
-And set `spdlog_DIR` to CMake directory in installed directory.
+- Windows: use vcpkg
+- Ubuntu: install `libspdlog-dev` using apt
 
 
 
@@ -72,7 +87,7 @@ If you want to build with plugins and samples, you can do it using the following
 ```
 
 ### 2. CMakeLists.txt File
-```
+```.cmake
 cmake_minimum_required(VERSION 3.9)
 project(render_pipeline_projects
     LANGUAGES NONE
@@ -83,8 +98,10 @@ set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)
 #set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)    # Use static library for boost
 set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
 set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
-set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
-set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
+
+# if you use custom build, uncomment and write paths.
+#set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
+#set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
 
 # optional paths
 set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)

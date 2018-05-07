@@ -45,6 +45,7 @@ init:
     }
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
+- git checkout -qf 1c49195f789b7b8d7eaeb2542730a1f72cfbefcf
 - .\bootstrap-vcpkg.bat
 - ps: popd
 - git --version
