@@ -31,32 +31,30 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-- git --version
-- python --version
-- cmake --version
 - ps: >-
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
         $env:CMAKE_GENERATOR="Visual Studio 14 2015 Win64"
     } else {
         $env:CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
     }
-- ps: pushd C:\tools\vcpkg
-- git pull
 - ps: >-
-    if ($env:CONFIGURATION -eq "Debug") {
-        Add-Content -Path C:\tools\vcpkg\triplets\$env:PALTFORM-windows.cmake -Value "set(VCPKG_BUILD_TYPE debug)"
+    if ($env:CONFIGURATION -eq "RelWithDebInfo") {
+        $env:CONFIGURATION_THIRDPARTY="Release"
     } else {
-        Add-Content -Path C:\tools\vcpkg\triplets\$env:PALTFORM-windows.cmake -Value "set(VCPKG_BUILD_TYPE release)"
+        $env:CONFIGURATION_THIRDPARTY="$env:CONFIGURATION"
     }
+- ps: pushd C:\tools\vcpkg
+- git pull --quiet
 - .\bootstrap-vcpkg.bat
-- vcpkg version
 - ps: popd
+- git --version
+- cmake --version
+- vcpkg version
 
 # environment variables
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
     BOOST_ROOT: C:\Libraries\boost_1_66_0
-    PATH: C:\Python36-x64;%PATH%
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
     VCPKG_DEFAULT_TRIPLET: x64-windows
 
@@ -75,6 +73,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
+- ps: Add-Content -Path 'C:\tools\vcpkg\triplets\$env:PLATFORM-windows.cmake' -Value "set(VCPKG_BUILD_TYPE $($evn:CONFIGURATION_THIRDPARTY.ToLower()))"
 - vcpkg install fmt spdlog yaml-cpp
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: >-
@@ -84,12 +83,7 @@ install:
         Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
     }
 - 7z x -y panda3d-thirdparty.7z > nul
-- ps: >-
-    if ($env:CONFIGURATION -eq "Debug") {
-        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+Debug'
-    } else {
-        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+Release'
-    }
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION_THIRDPARTY")
 - 7z x -y panda3d.7z > nul
 - ps: popd
 
