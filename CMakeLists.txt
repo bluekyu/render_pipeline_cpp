@@ -107,7 +107,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost panda3d::p3framework panda3d::p3direct
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp fmt::fmt spdlog::spdlog
+    Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp fmt::fmt-header-only spdlog::spdlog
 
     $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )
