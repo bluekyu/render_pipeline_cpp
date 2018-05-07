@@ -48,16 +48,16 @@ Therefore, use system environment variable OR set it in CMake (see Integration w
 - Ubuntu: install Boost packages using apt
 
 #### yaml-cpp
-- Windows: use vcpkg
+- Windows: `vcpkg install yaml-cpp:x64-windows`
 - Ubuntu: build from github
 
 #### fmt
-- Windows: use vcpkg
-- Ubuntu: install `libfmt-dev` using apt
+- Windows: `vcpkg install fmt:x64-windows`
+- Ubuntu: `apt-get install libfmt-dev`
 
 #### spdlog
-- Windows: use vcpkg
-- Ubuntu: install `libspdlog-dev` using apt
+- Windows: `vcpkg install spdlog:x64-windows`
+- Ubuntu: `apt-get install libspdlog-dev`
 
 
 
@@ -111,3 +111,11 @@ add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")
 add_subdirectory("rpcpp_samples")
 ```
+
+### 3. Run CMake
+If `vcpkg` is used, select "Specify toolchain file for cross-compiling" and
+choose toolchain file (vcpkg.cmake) of vcpkg in CMake GUI.
+In command line, generate CMake project with
+`-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` option.
+
+If `vcpkg` is not used, just run CMake.

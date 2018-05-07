@@ -43,21 +43,21 @@ Panda3D 를 소스로부터 빌드하면 된다.
 따라서, 시스템 환경 변수를 사용하거나 CMake 에 해당 값을 설정하면 된다. (Integration with Plugin & Samples 참고)
 
 #### Boost
-- 윈도우: vcpkg 를 사용하건, 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
+- 윈도우: vcpkg 를 사용하거나, 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
   (자세한 것은, CMake 에서 FindBoost 사용법 참조)
 - Ubuntu: apt를 사용해서 Boost 패키지 설치
 
 #### yaml-cpp
-- 윈도우: vcpkg 사용
+- 윈도우: `vcpkg install yaml-cpp:x64-windows`
 - Ubuntu: github 저장소로부터 빌드
 
 #### fmt
-- 윈도우: vcpkg 사용
-- Ubuntu: apt 로 `libfmt-dev` 설치
+- 윈도우: `vcpkg install fmt:x64-windows`
+- Ubuntu: `apt-get install libfmt-dev`
 
 #### spdlog
-- 윈도우: vcpkg 사용
-- Ubuntu: apt 로 `libspdlog-dev` 설치
+- 윈도우: `vcpkg install spdlog:x64-windows`
+- Ubuntu: `apt-get install libspdlog-dev`
 
 
 
@@ -111,3 +111,11 @@ add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")
 add_subdirectory("rpcpp_samples")
 ```
+
+### 3. CMake 실행
+`vcpkg` 를 사용한다면, CMake GUI 에서 "Specify toolchain file for cross-compiling" 을 선택하고,
+vcpkg 에 설치된 toolchain 파일(vcpkg.cmake)을 선택.
+명령줄에서는 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` 옵션을
+사용해서 CMake 프로젝트 생성.
+
+`vcpkg` 를 사용하지 않으며, 바로 CMake 실행.
