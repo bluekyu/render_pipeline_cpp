@@ -44,9 +44,10 @@
 #include <auto_bind.h>
 #include <animBundleNode.h>
 
+#include <cctype>
 #include <unordered_set>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include <render_pipeline/rppanda/interval/actor_interval.hpp>
 

@@ -25,7 +25,7 @@
 #include <geomVertexReader.h>
 #include <geomVertexWriter.h>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/rpobject.hpp"
 #include "render_pipeline/rpcore/util/rprender_state.hpp"

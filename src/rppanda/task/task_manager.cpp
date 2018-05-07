@@ -39,7 +39,7 @@
 
 #include <asyncTaskManager.h>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "rppanda/task/config_rppanda_task.hpp"
 

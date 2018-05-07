@@ -47,7 +47,7 @@
 #include <texturePool.h>
 #include <shaderPool.h>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"

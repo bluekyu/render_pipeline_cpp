@@ -22,6 +22,7 @@
 
 #include "render_pipeline/rpcore/rpobject.hpp"
 
+#include <spdlog/tweakme.h>
 #include <spdlog/logger.h>
 
 namespace rpcore {

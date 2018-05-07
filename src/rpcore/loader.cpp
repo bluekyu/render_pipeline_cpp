@@ -29,7 +29,7 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"

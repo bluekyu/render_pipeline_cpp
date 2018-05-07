@@ -27,7 +27,7 @@
 #include <textNode.h>
 #include <dynamicTextFont.h>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"

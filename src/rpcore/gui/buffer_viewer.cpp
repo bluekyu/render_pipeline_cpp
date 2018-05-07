@@ -25,7 +25,7 @@
 #include <regex>
 #include <unordered_set>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"

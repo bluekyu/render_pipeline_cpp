@@ -42,7 +42,7 @@
 #include <texturePool.h>
 #include <nodePathCollection.h>
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rppanda/gui/direct_gui_globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"

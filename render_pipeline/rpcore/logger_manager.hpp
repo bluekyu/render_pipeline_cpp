@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <spdlog/tweakme.h>
 #include <spdlog/logger.h>
 
 #include <render_pipeline/rpcore/config.hpp>

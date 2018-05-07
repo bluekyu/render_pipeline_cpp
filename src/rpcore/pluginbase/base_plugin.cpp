@@ -24,7 +24,7 @@
 
 #include <boost/dll/import.hpp>
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"

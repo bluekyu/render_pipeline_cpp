@@ -28,7 +28,7 @@
 #include <filename.h>
 #include <virtualFileSystem.h>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/rpobject.hpp"
 

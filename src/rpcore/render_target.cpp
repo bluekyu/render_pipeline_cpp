@@ -29,7 +29,7 @@
 #include <auxBitplaneAttrib.h>
 #include <transparencyAttrib.h>
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"

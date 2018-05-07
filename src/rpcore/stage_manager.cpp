@@ -30,7 +30,7 @@
 #include <shaderInput.h>
 #include <texture.h>
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/ostream.h>
 
 #include "rplibs/yaml.hpp"
 #include "render_pipeline/rpcore/image.hpp"

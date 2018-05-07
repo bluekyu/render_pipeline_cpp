@@ -30,7 +30,7 @@
 #include <nodePathCollection.h>
 #include <computeNode.h>
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/ostream.h>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/gui/direct_scrolled_frame.hpp"

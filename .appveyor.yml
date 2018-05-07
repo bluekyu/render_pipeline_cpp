@@ -47,6 +47,7 @@ environment:
     BOOST_ROOT: C:\Libraries\boost_1_66_0
     PATH: C:\Python36-x64;%PATH%
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
+    VCPKG_DEFAULT_TRIPLET: x64-windows
 
 # this is how to allow failing jobs in the matrix
 matrix:
@@ -57,8 +58,14 @@ matrix:
         - configuration: RelWithDebInfo
           image: Visual Studio 2015
 
+# build cache to preserve files/folders between builds
+cache:
+    - c:\tools\vcpkg\installed\
+
 # scripts that run after cloning repository
 install:
+- vcpkg install spdlog
+- vcpkg install yaml-cpp
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: >-
     if ($env:CONFIGURATION -eq "Debug") {
@@ -74,10 +81,6 @@ install:
         Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+Release'
     }
 - 7z x -y panda3d.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/cpp-packages/artifacts/install/spdlog.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
-- 7z x -y spdlog.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/cpp-packages/artifacts/install/yaml-cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
-- 7z x -y yaml-cpp.7z > nul
 - ps: popd
 
 #---------------------------------#
@@ -101,6 +104,7 @@ build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
+    -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
 - cmake --build . --config %CONFIGURATION% --target install
