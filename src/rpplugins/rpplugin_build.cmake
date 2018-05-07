@@ -59,10 +59,17 @@ set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGIN_INSTALL_DIR}/cmake")
 
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMinorVersion
-)
+if(CMAKE_VERSION VERSION_LESS "3.11")
+    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+        VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+else()
+    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+        VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY SameMinorVersion
+    )
+endif()
 configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}

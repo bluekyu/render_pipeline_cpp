@@ -46,6 +46,8 @@ PipeViewer::PipeViewer(RenderPipeline* pipeline, NodePath parent): DraggableWind
     hide();
 }
 
+PipeViewer::~PipeViewer() = default;
+
 void PipeViewer::toggle()
 {
     static const std::string task_name("RP_GUI_UpdatePipeViewer");

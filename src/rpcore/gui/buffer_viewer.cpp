@@ -53,6 +53,8 @@ BufferViewer::BufferViewer(NodePath parent): DraggableWindow(1400, 800, "Buffer-
     hide();
 }
 
+BufferViewer::~BufferViewer() = default;
+
 void BufferViewer::toggle()
 {
     if (visible_)

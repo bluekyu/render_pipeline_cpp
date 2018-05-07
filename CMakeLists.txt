@@ -33,20 +33,15 @@ include(FindPackages)
 # === project specific packages ===
 _find_boost("filesystem")
 
-# find fmtlib
-if(NOT TARGET fmt::fmt)
-    find_package(fmt REQUIRED)
+find_package(fmt REQUIRED)
+if(TARGET fmt::fmt-header-only)
+    set(FMT_TARGET fmt::fmt-header-only)
+else()                                      # for ubuntu libfmt-dev package
+    set(FMT_TARGET fmt::fmt)
 endif()
 
-# find spdlog
-if(NOT TARGET spdlog::spdlog)
-    find_package(spdlog REQUIRED)
-endif()
-
-# find yaml-cpp
-if(NOT TARGET yaml-cpp)
-    find_package(yaml-cpp REQUIRED)
-endif()
+find_package(spdlog REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 # find freetype
 find_package(Freetype REQUIRED)
@@ -107,7 +102,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost panda3d::p3framework panda3d::p3direct
 
     PRIVATE $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
-    Boost::filesystem ${FREETYPE_LIBRARIES} yaml-cpp fmt::fmt-header-only spdlog::spdlog
+    Boost::filesystem ${FREETYPE_LIBRARIES} ${FMT_TARGET} yaml-cpp spdlog::spdlog
 
     $<$<PLATFORM_ID:Windows>:Shlwapi.lib>
 )

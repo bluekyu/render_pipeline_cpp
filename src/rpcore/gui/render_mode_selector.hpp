@@ -35,7 +35,7 @@ class RenderModeSelector : public DraggableWindow
 {
 public:
     RenderModeSelector(RenderPipeline* pipeline, NodePath parent);
-    ~RenderModeSelector();
+    virtual ~RenderModeSelector();
 
     /** Toggles the visibility of this windows. */
     void toggle();

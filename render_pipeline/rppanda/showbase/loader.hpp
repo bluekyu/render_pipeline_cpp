@@ -99,7 +99,7 @@ public:
     Loader(Loader&&);
 #endif
 
-    ~Loader();
+    virtual ~Loader();
 
     Loader& operator=(const Loader&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
