@@ -40,6 +40,12 @@ init:
     } else {
         $env:CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
     }
+- ps: >-
+    if ($env:CONFIGURATION -eq "Debug") {
+        Add-Content -Path C:\tools\vcpkg\triplets\$env:PALTFORM-windows.cmake -Value "set(VCPKG_BUILD_TYPE debug)"
+    } else {
+        Add-Content -Path C:\tools\vcpkg\triplets\$env:PALTFORM-windows.cmake -Value "set(VCPKG_BUILD_TYPE release)"
+    }
 
 # environment variables
 environment:
@@ -64,6 +70,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
+- vcpkg install fmt
 - vcpkg install spdlog
 - vcpkg install yaml-cpp
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
