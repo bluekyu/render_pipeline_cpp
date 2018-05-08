@@ -448,6 +448,7 @@ void PluginManager::load()
         if (impl_->settings_.find(plugin_id) == impl_->settings_.end())
         {
             error(fmt::format("Cannot find plugin ({}) in plugin directory.", plugin_id));
+            disable_plugin(plugin_id);
             continue;
         }
 
