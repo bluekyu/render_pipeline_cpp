@@ -70,7 +70,7 @@ if(MSVC)
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_std_14>
     )
-    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
     )
