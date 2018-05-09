@@ -10,14 +10,18 @@
 # @param    TARGET      target variable
 # @param    POSTFIX     postfix of file of full (private) debugging information
 function(configure_debugging_information)
-    cmake_parse_arguments(ARG "" "TARGET;POSTFIX" "" ${ARGN})
+    cmake_parse_arguments(ARG "" "TARGET;POSTFIX" "CONFIGURATIONS" ${ARGN})
+
+    if(NOT ARG_CONFIGURATIONS)
+        message(FATAL_ERROR "At least one configuration should be used in CONFIGURATIONS.")
+    endif()
 
     if(ARG_POSTFIX)
         set(private_debinfo_postfix ${ARG_POSTFIX})
         message("Target '${ARG_TARGET}' is set to strip private debugging information.")
     endif()
 
-    foreach(config "Debug" "RelWithDebInfo")
+    foreach(config ${ARG_CONFIGURATIONS})
         string(TOUPPER ${config} config_upper)
 
         define_property(TARGET PROPERTY DEBINFO_PATH_${config_upper}
@@ -42,6 +46,9 @@ function(configure_debugging_information)
             endif()
 
             get_target_property(POSTFIX ${ARG_TARGET} ${config_upper}_POSTFIX)
+            if(NOT POSTFIX)
+                set(POSTFIX "")
+            endif()
 
             if(private_debinfo_postfix)
                 set(DEBINFO_PATH "${LIBRARY_OUTPUT_DIRECTORY}/${OUTPUT_NAME}${POSTFIX}${private_debinfo_postfix}.pdb")
@@ -78,13 +85,17 @@ endfunction()
 # @param    DESTINATION         Installed destination
 # @param    INSTALL_PRIVATE     Install also full (private) debugging information
 function(install_debugging_information)
-    cmake_parse_arguments(ARG "INSTALL_PRIVATE" "TARGET;DESTINATION" "" ${ARGN})
+    cmake_parse_arguments(ARG "INSTALL_PRIVATE" "TARGET;DESTINATION" "CONFIGURATIONS" ${ARGN})
+
+    if(NOT ARG_CONFIGURATIONS)
+        message(FATAL_ERROR "At least one configuration should be used in CONFIGURATIONS.")
+    endif()
 
     if(ARG_INSTALL_PRIVATE)
         message("Target '${ARG_TARGET}' will install full (private) debugging information.")
     endif()
 
-    foreach(config "Debug" "RelWithDebInfo")
+    foreach(config ${ARG_CONFIGURATIONS})
         if(MSVC)
             string(TOUPPER ${config} config_upper)
 

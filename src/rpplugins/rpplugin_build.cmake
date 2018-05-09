@@ -2,16 +2,17 @@
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
 if(MSVC)
-    target_compile_features(${PROJECT_NAME} PRIVATE $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_generic_lambdas>
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:cxx_std_14>
-    )
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive- /utf-8>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
+
+        # note: windows.cmake in vcpkg
+        $<$<CONFIG:Release>:/Oi /Gy /Z7>
     )
+
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
-    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
+    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
@@ -34,7 +35,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
 )
 
-configure_debugging_information(TARGET ${PROJECT_NAME})
+configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
 # ==================================================================================================
 
 # === target =======================================================================================
