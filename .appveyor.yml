@@ -37,12 +37,6 @@ init:
     } else {
         $env:CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
     }
-- ps: >-
-    if ($env:CONFIGURATION -eq "RelWithDebInfo") {
-        $env:CONFIGURATION_THIRDPARTY="Release"
-    } else {
-        $env:CONFIGURATION_THIRDPARTY="$env:CONFIGURATION"
-    }
 # upgrade vcpkg
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
@@ -66,8 +60,6 @@ matrix:
     exclude:
         - configuration: Debug
           image: Visual Studio 2015
-        - configuration: RelWithDebInfo
-          image: Visual Studio 2015
 
 # build cache to preserve files/folders between builds
 cache:
@@ -84,7 +76,7 @@ install:
         Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
     }
 - 7z x -y panda3d-thirdparty.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION_THIRDPARTY")
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y panda3d.7z > nul
 - ps: popd
 
@@ -98,7 +90,6 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Debug
-- RelWithDebInfo
 - Release
 
 build:
