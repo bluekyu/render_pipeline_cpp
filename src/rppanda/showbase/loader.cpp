@@ -269,7 +269,7 @@ std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model
     boost::optional<int> priority)
 {
     return load_model_async(std::vector<Filename>{model_path}, loader_options, no_cache,
-        allow_instance, ok_missing);
+        allow_instance, ok_missing, callback, priority);
 }
 
 std::shared_ptr<Loader::Callback> Loader::load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
