@@ -66,7 +66,7 @@ public:
     {
     public:
         Callback(Loader* loader, int num_objects,
-            const std::function<void(const std::vector<NodePath>&)>& callback);
+            const std::function<void(std::vector<NodePath>&)>& callback);
 
         void got_object(size_t index, NodePath object);
 
@@ -87,7 +87,7 @@ public:
 
         Loader* loader_;
         std::vector<NodePath> objects_;
-        std::function<void(const std::vector<NodePath>&)> callback_;
+        std::function<void(std::vector<NodePath>&)> callback_;
         std::unordered_set<AsyncTask*> requests_;
         std::vector<AsyncTask*> request_list_;
     };
@@ -116,12 +116,12 @@ public:
 
     std::shared_ptr<Callback> load_model_async(const Filename& model_path, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
-        const std::function<void(const std::vector<NodePath>&)>& callback={},
+        const std::function<void(std::vector<NodePath>&)>& callback={},
         boost::optional<int> priority=boost::none);
 
     std::shared_ptr<Callback> load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
-        const std::function<void(const std::vector<NodePath>&)>& callback={},
+        const std::function<void(std::vector<NodePath>&)>& callback={},
         boost::optional<int> priority = boost::none);
 
     void unload_model(NodePath model);

@@ -153,7 +153,7 @@ void Loader::Impl::got_async_object(const Event* ev)
 // ************************************************************************************************
 
 Loader::Callback::Callback(Loader* loader, int num_objects,
-    const std::function<void(const std::vector<NodePath>&)>& callback) : loader_(loader), callback_(callback)
+    const std::function<void(std::vector<NodePath>&)>& callback) : loader_(loader), callback_(callback)
 {
     objects_.resize(num_objects);
 }
@@ -265,7 +265,7 @@ std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list
 
 std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
-    const std::function<void(const std::vector<NodePath>&)>& callback,
+    const std::function<void(std::vector<NodePath>&)>& callback,
     boost::optional<int> priority)
 {
     return load_model_async(std::vector<Filename>{model_path}, loader_options, no_cache,
@@ -274,7 +274,7 @@ std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model
 
 std::shared_ptr<Loader::Callback> Loader::load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
-    const std::function<void(const std::vector<NodePath>&)>& callback,
+    const std::function<void(std::vector<NodePath>&)>& callback,
     boost::optional<int> priority)
 {
     rppanda_showbase_cat.debug() << "Loading model: " << join_to_string(model_list) << std::endl;
