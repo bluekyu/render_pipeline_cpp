@@ -23,7 +23,7 @@
 
 #include <filename.h>
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <render_pipeline/rpcore/config.hpp>
 
