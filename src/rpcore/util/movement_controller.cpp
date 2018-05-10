@@ -200,7 +200,8 @@ MovementController::MovementController(rppanda::ShowBase* showbase): impl_(std::
 
 MovementController::~MovementController()
 {
-    impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
+    if (impl_->update_task_)
+        impl_->update_task_->remove();
 }
 
 void MovementController::reset_to_initial()
@@ -313,7 +314,8 @@ void MovementController::play_motion_path(const MotionPathType& points, float po
     impl_->showbase_->add_task([this](rppanda::FunctionalTask* task) {
         return impl_->camera_motion_update(this);
     }, "RP_CameraMotionPath", -50);
-    impl_->showbase_->get_task_mgr()->remove(impl_->update_task_);
+    impl_->update_task_->remove();
+    impl_->update_task_.clear();
 }
 
 void MovementController::set_initial_position(const LVecBase3& pos, const LVecBase3& target)
