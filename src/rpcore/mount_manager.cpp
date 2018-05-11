@@ -24,7 +24,6 @@
 
 #include <dcast.h>
 #include <filename.h>
-#include <virtualFileSystem.h>
 #include <virtualFileMountRamdisk.h>
 #include <virtualFileMountSystem.h>
 #include <config_util.h>

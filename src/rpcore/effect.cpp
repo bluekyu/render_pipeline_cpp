@@ -26,16 +26,16 @@
 
 #include <shader.h>
 #include <filename.h>
-#include <virtualFileSystem.h>
 #include <graphicsWindow.h>
 
 #include <boost/algorithm/string.hpp>
 
+#include "render_pipeline/rppanda/stdpy/file.hpp"
+#include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
-#include "render_pipeline/rppanda/showbase/showbase.hpp"
 
 #include "rplibs/yaml.hpp"
 
@@ -280,17 +280,14 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 {
     std::vector<std::string> shader_lines;
 
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
-        std::istream* file = vfs->open_read_file(template_src, true);
+        auto file = rppanda::open_read_file(template_src, true);
 
         do
         {
             shader_lines.push_back("");
         } while (std::getline(*file, shader_lines.back()));
-
-        vfs->close_read_file(file);
     }
     catch (const std::exception& err)
     {
@@ -380,12 +377,9 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 
     try
     {
-        std::ostream* file = vfs->open_write_file(temp_path, false, true);
-
+        auto file = rppanda::open_write_file(temp_path, false, true);
         for (const auto& shader_content: parsed_lines)
             *file << shader_content << std::endl;
-
-        vfs->close_write_file(file);
     }
     catch (const std::exception& err)
     {

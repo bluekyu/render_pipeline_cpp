@@ -22,8 +22,7 @@
 
 #include "render_pipeline/rpcore/stages/update_previous_pipes_stage.hpp"
 
-#include <virtualFileSystem.h>
-
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 
@@ -116,13 +115,10 @@ void UpdatePreviousPipesStage::reload_shaders()
     fragment += "}\n";
 
     // Write the shader
-    std::string shader_dest("/$$rptemp/$$update_previous_pipes.frag.glsl");
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+    const std::string shader_dest("/$$rptemp/$$update_previous_pipes.frag.glsl");
     try
     {
-        std::ostream* file = vfs->open_write_file(shader_dest, false, true);
-        *file << fragment;
-        vfs->close_write_file(file);
+        (*rppanda::open_write_file(shader_dest, false, true)) << fragment;
     }
     catch (const std::exception& err)
     {

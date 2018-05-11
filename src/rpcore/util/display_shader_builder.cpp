@@ -23,13 +23,12 @@
 #include "rpcore/util/display_shader_builder.hpp"
 
 #include <texture.h>
-#include <virtualFileSystem.h>
 
 #include <boost/format.hpp>
 
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/image.hpp"
-#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 namespace rpcore {
 
@@ -45,18 +44,13 @@ PT(Shader) DisplayShaderBuilder::build(Texture* texture, int view_width, int vie
         view_height).str();
 
     // Only regenerate the file when there is no cache entry for it
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     if (!rppanda::isfile(cache_key))
     {
         const std::string& fragment_shader = build_fragment_shader(texture, view_width, view_height);
 
         try
         {
-            std::ostream* file = vfs->open_write_file(cache_key, false, true);
-
-            *file << fragment_shader;
-
-            vfs->close_write_file(file);
+            (*rppanda::open_write_file(cache_key, false, true)) << fragment_shader;
         }
         catch (const std::exception& err)
         {

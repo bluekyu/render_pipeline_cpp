@@ -71,4 +71,34 @@ inline bool isdir(const Filename& path)
     return VirtualFileSystem::get_global_ptr()->is_directory(path);
 }
 
+inline std::shared_ptr<std::istream> open_read_file(const Filename& path, bool unwrap)
+{
+    return std::shared_ptr<std::istream>(
+        VirtualFileSystem::get_global_ptr()->open_read_file(path, unwrap),
+
+        // VirtualFileSystem deleter
+        [](std::istream* f) { VirtualFileSystem::close_read_file(f); }
+    );
+}
+
+inline std::shared_ptr<std::ostream> open_write_file(const Filename& path, bool auto_wrap, bool truncate)
+{
+    return std::shared_ptr<std::ostream>(
+        VirtualFileSystem::get_global_ptr()->open_write_file(path, auto_wrap, truncate),
+
+        // VirtualFileSystem deleter
+        [](std::ostream* f) { VirtualFileSystem::close_write_file(f); }
+    );
+}
+
+inline std::shared_ptr<std::iostream> open_read_write_file(const Filename& path, bool truncate)
+{
+    return std::shared_ptr<std::iostream>(
+        VirtualFileSystem::get_global_ptr()->open_read_write_file(path, truncate),
+
+        // VirtualFileSystem deleter
+        [](std::iostream* f) { VirtualFileSystem::close_read_write_file(f); }
+    );
+}
+
 }

@@ -26,13 +26,13 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <virtualFileSystem.h>
 #include <shaderInput.h>
 #include <texture.h>
 
 #include <fmt/ostream.h>
 
 #include "rplibs/yaml.hpp"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/stages/update_previous_pipes_stage.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
@@ -597,12 +597,9 @@ void StageManager::write_autoconfig()
     for (const auto& key_val: impl_->defines_)
         output += std::string("#define ") + key_val.first + " " + key_val.second + "\n";
 
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$pipeline_shader_config.inc.glsl", false, true);
-        *file << output;
-        vfs->close_write_file(file);
+        (*rppanda::open_write_file("/$$rptemp/$$pipeline_shader_config.inc.glsl", false, true)) << output;
     }
     catch (const std::exception& err)
     {

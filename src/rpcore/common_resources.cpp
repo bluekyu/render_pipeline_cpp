@@ -25,10 +25,10 @@
 #include <unordered_map>
 
 #include <lens.h>
-#include <virtualFileSystem.h>
 #include <clockObject.h>
 #include <dynamicTextFont.h>
 
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
@@ -51,13 +51,10 @@ CommonResources::CommonResources(RenderPipeline& pipeline): RPObject("CommonReso
 void CommonResources::write_config()
 {
     const std::string& content = input_ubo_->generate_shader_code();
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
         // Try to write the temporary file
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, true);
-        *file << content;
-        vfs->close_write_file(file);
+        (*rppanda::open_write_file("/$$rptemp/$$main_scene_data.inc.glsl", false, true)) << content;
     }
     catch (const std::exception& err)
     {

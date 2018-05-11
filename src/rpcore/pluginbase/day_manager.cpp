@@ -27,7 +27,6 @@
 #include <boost/format.hpp>
 
 #include <regex>
-#include <virtualFileSystem.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
@@ -35,6 +34,7 @@
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
 #include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
+#include "render_pipeline/rppanda/stdpy/file.hpp"
 
 namespace rpcore {
 
@@ -112,13 +112,11 @@ void DayTimeManager::load_settings()
     impl_->pipeline_.get_stage_mgr()->add_input_blocks(impl_->input_ubo_);
 
     // Generate UBO shader code
-    VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
     try
     {
         // Try to write the temporary file
-        std::ostream* file = vfs->open_write_file("/$$rptemp/$$daytime_config.inc.glsl", false, true);
-        *file << (impl_->input_ubo_->generate_shader_code());
-        vfs->close_write_file(file);
+        (*rppanda::open_write_file("/$$rptemp/$$daytime_config.inc.glsl", false, true)) <<
+            (impl_->input_ubo_->generate_shader_code());
     }
     catch (const std::exception& err)
     {
