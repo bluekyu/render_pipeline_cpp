@@ -784,7 +784,7 @@ void RenderPipeline::Impl::init_common_stages()
     internal_stages_.push_back(std::move(combine_velocity_stage));
 
     // Add an upscale/downscale stage in case we render at a different resolution
-    if (Globals::resolution != Globals::native_resolution)
+    if (!ConfigVariableBool("win-fixed-size", false) || Globals::resolution != Globals::native_resolution)
     {
         auto upscale_stage = std::make_unique<UpscaleStage>(self_);
         stage_mgr_->add_stage(upscale_stage.get());
