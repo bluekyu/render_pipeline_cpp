@@ -22,11 +22,11 @@
 
 #include "render_pipeline/rpcore/util/shader_input_blocks.hpp"
 
-#include <graphicsOutput.h>
-
 #include <regex>
 
-#include <boost/format.hpp>
+#include <fmt/format.h>
+
+#include <graphicsOutput.h>
 
 #include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/util/post_process_region.hpp"
@@ -293,8 +293,11 @@ std::string GroupedInputBlock::generate_shader_code() const
     {
         if (use_ubo_)
         {
-            content += (boost::format("layout(shared, binding=%1%) uniform %2%_UBO {\n") %
-                bind_id_ % name_).str();
+            content += fmt::format(
+                "layout(shared, binding={}) uniform {}_UBO {{\n",
+                bind_id_,
+                name_
+            );
             for (const auto& ipt: inputs)
                 content += std::string(4, ' ') + ipt + "\n";
             content += std::string("} ") + name_ + ";\n";

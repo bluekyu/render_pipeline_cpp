@@ -24,9 +24,9 @@
 
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 
-#include <boost/format.hpp>
-
 #include <regex>
+
+#include <fmt/format.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
@@ -89,10 +89,8 @@ void DayTimeManager::set_time(const std::string& time)
 
 std::string DayTimeManager::get_formatted_time() const
 {
-    static boost::format time_format("%02d:%02d");
-
     float total_minutes = impl_->time_ * 24 * 60;
-    return (time_format % (int(total_minutes) / 60) % (int(total_minutes) % 60)).str();
+    return fmt::format("{:02d}:{:02d}", (int(total_minutes) / 60), (int(total_minutes) % 60));
 }
 
 void DayTimeManager::load_settings()

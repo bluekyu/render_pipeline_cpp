@@ -22,8 +22,9 @@
 
 #include "rpcore/gui/texture_preview.hpp"
 
-#include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+
+#include <fmt/format.h>
 
 #include "render_pipeline/rpcore/gui/sprite.hpp"
 #include "render_pipeline/rpcore/gui/labeled_checkbox.hpp"
@@ -70,19 +71,18 @@ void TexturePreview::present(Texture* tex)
     std::string description;
 
     // Image size
-    description += (boost::format("%d x %d x %d") % tex->get_x_size() % tex->get_y_size() % tex->get_z_size()).str();
+    description += fmt::format("{} x {} x {}", tex->get_x_size(), tex->get_y_size(), tex->get_z_size());
 
     // Image type
-    description += (boost::format(", %s, %s") %
-        boost::to_upper_copy(Texture::format_format(tex->get_format())) %
-        boost::to_upper_copy(Texture::format_component_type(tex->get_component_type()))
-        ).str();
+    description += fmt::format(", {}, {}",
+        boost::to_upper_copy(Texture::format_format(tex->get_format())),
+        boost::to_upper_copy(Texture::format_component_type(tex->get_component_type())));
 
     Text desc_text(description, _content_node, 17.0f, 70.0f, 16, "left", LVecBase3(0.6f, 0.6f, 0.6f));
 
     size_t estimated_bytes = tex->estimate_texture_memory();
-    const std::string& size_desc = (boost::format("Estimated memory: %2.2f MB") %
-        (estimated_bytes / (1024.0f * 1024.0f))).str();
+    const std::string& size_desc = fmt::format("Estimated memory: {:2.2f} MB",
+        estimated_bytes / (1024.0f * 1024.0f));
 
     Text size_desc_text(size_desc, _content_node, width_-20.0f, 70.0f, 18, "right",
         LVecBase3(0.34f, 0.564f, 0.192f));
@@ -169,7 +169,7 @@ void TexturePreview::set_brightness()
 {
     float val = _bright_slider->get_value();
     float scale = std::pow(2.0f, val);
-    _bright_text->set_text((boost::format("Bright: %.3f") % scale).str());
+    _bright_text->set_text(fmt::format("Bright: {:.3f}", scale));
     _preview_image->set_shader_input(ShaderInput("brightness", LVecBase4(scale, 0, 0, 0)));
 }
 

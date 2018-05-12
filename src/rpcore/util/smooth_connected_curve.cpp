@@ -22,7 +22,7 @@
 
 #include "rpcore/util/smooth_connected_curve.hpp"
 
-#include <boost/format.hpp>
+#include <fmt/format.h>
 
 #include <curveFitter.h>
 
@@ -81,15 +81,13 @@ void SmoothConnectedCurve::build_curve()
 
 std::string SmoothConnectedCurve::serialize() const
 {
-    boost::format point_formats("[{%5.10f},{%5.10f}]");
-
     std::string result;
     result.reserve(_cv_points.size() * 40);
     result += "[";
 
     for (const auto& point: _cv_points)
     {
-        result += (point_formats % (point[0]) % (point[1])).str();
+        result += fmt::format("[{{{:5.10f}}},{{{:5.10f}}}]", point[0], point[1]);
         result += ",";
     }
 

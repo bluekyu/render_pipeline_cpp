@@ -24,7 +24,7 @@
 
 #include <texture.h>
 
-#include <boost/format.hpp>
+#include <fmt/format.h>
 
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rpcore/loader.hpp"
@@ -34,14 +34,14 @@ namespace rpcore {
 
 PT(Shader) DisplayShaderBuilder::build(Texture* texture, int view_width, int view_height)
 {
-    const std::string& cache_key = (boost::format("/$$rptemp/$$TEXDISPLAY-X%1%-Y%2%-Z%3%-TT%4%-CT%5%-VW%6%-VH%7%.frag.glsl") %
-        texture->get_x_size() %
-        texture->get_y_size() %
-        texture->get_z_size() %
-        texture->get_texture_type() %
-        texture->get_component_type() %
-        view_width %
-        view_height).str();
+    const std::string& cache_key = fmt::format("/$$rptemp/$$TEXDISPLAY-X{}-Y{}-Z{}-TT{}-CT{}-VW{}-VH{}.frag.glsl",
+        texture->get_x_size(),
+        texture->get_y_size(),
+        texture->get_z_size(),
+        texture->get_texture_type(),
+        texture->get_component_type(),
+        view_width,
+        view_height);
 
     // Only regenerate the file when there is no cache entry for it
     if (!rppanda::isfile(cache_key))
@@ -66,7 +66,7 @@ std::string DisplayShaderBuilder::build_fragment_shader(Texture* texture, int vi
     const auto& sampling_code_type = generate_sampling_code(texture, view_width, view_height);
 
     // Build actual shader
-    boost::format built_format(
+    const std::string& built = fmt::format(
         "#version 430\n"
         "#pragma include \"render_pipeline_base.inc.glsl\"\n"
         "in vec2 texcoord;\n"
@@ -75,24 +75,21 @@ std::string DisplayShaderBuilder::build_fragment_shader(Texture* texture, int vi
         "uniform int slice;\n"
         "uniform float brightness;\n"
         "uniform bool tonemap;\n"
-        "uniform %1% p3d_Texture0;\n"
-        "void main() {\n"
-        "    int view_width = %2%;\n"
-        "    int view_height = %3%;\n"
-        "    ivec2 display_coord = ivec2(texcoord * vec2(view_width, view_height));"
-        "    int int_index = display_coord.x + display_coord.y * view_width;"
-        "    %4%\n"
+        "uniform {} p3d_Texture0;\n"
+        "void main() {{\n"
+        "    int view_width = {};\n"
+        "    int view_height = {};\n"
+        "    ivec2 display_coord = ivec2(texcoord * vec2(view_width, view_height));\n"
+        "    int int_index = display_coord.x + display_coord.y * view_width;\n"
+        "    {}\n"
         "    result *= brightness;\n"
         "    if (tonemap)\n"
         "        result = result / (1 + result);\n"
-        "}\n"
-        );
-
-    const std::string& built = (built_format %
-        sampling_code_type.second %
-        std::to_string(view_width) %
-        std::to_string(view_height) %
-        sampling_code_type.first).str();
+        "}}\n",
+        sampling_code_type.second,
+        view_width,
+        view_height,
+        sampling_code_type.first);
 
     // Strip trailing spaces
 

@@ -22,14 +22,14 @@
 
 #include "render_pipeline/rpcore/util/movement_controller.hpp"
 
+#include <fmt/format.h>
+
 #include <parametricCurveCollection.h>
 #include <mouseWatcher.h>
 #include <buttonThrower.h>
 #include <asyncTaskManager.h>
 #include <graphicsWindow.h>
 #include <curveFitter.h>
-
-#include <boost/format.hpp>
 
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
 #include "render_pipeline/rppanda/task/task_manager.hpp"
@@ -160,8 +160,8 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
 
         // Print performance stats
         const double avg_ms = delta_time_sum_ / delta_time_count_;
-        std::cout << (boost::format("Average frame time (ms): %4.1f") % (avg_ms * 1000.0)) << std::endl;
-        std::cout << (boost::format("Average frame rate: %4.1f") % (1.0 / avg_ms)) << std::endl;
+        std::cout << fmt::format("Average frame time (ms): {:4.1f}", avg_ms * 1000.0) << std::endl;
+        std::cout << fmt::format("Average frame rate: {:4.1f}", 1.0 / avg_ms) << std::endl;
 
         update_task_ = showbase_->add_task([this, self](rppanda::FunctionalTask* task) {
             return update(self);
