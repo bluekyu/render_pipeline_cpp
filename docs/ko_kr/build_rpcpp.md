@@ -100,25 +100,24 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 ```
 
 ### 2. CMakeLists.txt 파일
-```
+```.cmake
 cmake_minimum_required(VERSION 3.9)
 project(render_pipeline_projects
     LANGUAGES NONE
 )
 
 # 개인 시스템에 맞는 경로 및 옵션을 사용
-set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)
-#set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)    # Use static library for boost
-set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
+set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "")
 set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
 
-# 커스텀 빌드를 사용한다면, 주석을 해제하고 경로 수정
-set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
-set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
-
 # 선택사항
-set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)
-set(OpenVR_ROOT "R:/usr/lib/openvr" CACHE PATH "" FORCE)
+set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "")
+
+# vcpkg 를 사용하지 않을 경우, 주석을 해제하고 경로 수정
+#set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "")
+#set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "")
+#set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "")
+#set(OpenVR_ROOT "R:/usr/lib/openvr" CACHE PATH "")
 
 add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")

@@ -107,18 +107,17 @@ project(render_pipeline_projects
 )
 
 # write paths and use options on your system
-set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "" FORCE)
-#set(Boost_USE_STATIC_LIBS true CACHE BOOL "" FORCE)    # Use static library for boost
-set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "" FORCE)
+set(panda3d_ROOT "R:/usr/lib/panda3d" CACHE PATH "")
 set(ENV{FREETYPE_DIR} "R:/usr/lib/panda3d-thirdparty/win-libs-vc14-x64/freetype")
 
-# if you use custom build, uncomment and write paths.
-#set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "" FORCE)
-#set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "" FORCE)
-
 # optional paths
-set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "" FORCE)
-set(OpenVR_ROOT "R:/usr/lib/openvr" CACHE PATH "" FORCE)
+set(NvFlex_ROOT "R:/usr/lib/flex" CACHE PATH "")
+
+# if vcpkg is not used, uncomment and write paths
+#set(BOOST_ROOT "R:/usr/lib/boost" CACHE PATH "")
+#set(spdlog_DIR "R:/usr/lib/spdlog/lib/cmake/spdlog" CACHE PATH "")
+#set(yaml-cpp_DIR "R:/usr/lib/yaml-cpp/CMake" CACHE PATH "")
+#set(OpenVR_ROOT "R:/usr/lib/openvr" CACHE PATH "")
 
 add_subdirectory("render_pipeline_cpp")
 add_subdirectory("rpcpp_plugins")
