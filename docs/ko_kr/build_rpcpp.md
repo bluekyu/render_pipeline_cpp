@@ -25,6 +25,16 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 윈도우에서, 외부 라이브러리 사용 시 [vcpkg](https://github.com/Microsoft/vcpkg) 사용을 권장한다.
 만일, `vcpkg` 를 사용하지 않는다면, 외부 라이브러리를 빌드 및 설치하고 CMake 캐시에 적절한 값을 설정하면 된다.
 
+- Windows
+```
+vcpkg install --triplet x64-windows yaml-cpp fmt spdlog boost-dll boost-any boost-multi-index
+```
+
+- Ubuntu
+```
+apt-get install libfmt-dev libspdlog-dev
+```
+
 
 #### Panda3D
 [Panda3d repository](https://github.com/bluekyu/panda3d) 에서 최신 빌드 파일을 받거나,
@@ -43,9 +53,12 @@ Panda3D 를 소스로부터 빌드하면 된다.
 따라서, 시스템 환경 변수를 사용하거나 CMake 에 해당 값을 설정하면 된다. (Integration with Plugin & Samples 참고)
 
 #### Boost
-- 윈도우: vcpkg 를 사용하거나, 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
-  (자세한 것은, CMake 에서 FindBoost 사용법 참조)
-- Ubuntu: apt를 사용해서 Boost 패키지 설치
+- 라이브러리: algorithm, filesystem, dll, any, optional, variant, multi-index
+- 윈도우
+  - `vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index`
+  - 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
+    (자세한 것은, CMake 에서 FindBoost 사용법 참조)
+- Ubuntu: `apt-get install libboost-filesystem-dev`
 
 #### yaml-cpp
 - 윈도우: `vcpkg install yaml-cpp:x64-windows`

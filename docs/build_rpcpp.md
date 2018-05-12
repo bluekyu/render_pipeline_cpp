@@ -25,6 +25,16 @@ To solve this problem, you can give hints for the path of the libraries in CMake
 In Windows, we recommend to use [vcpkg](https://github.com/Microsoft/vcpkg) for some third-party.
 If you does not use `vcpkg`, then build and install those and setup proper values for CMake cache.
 
+- Windows
+```
+vcpkg install --triplet x64-windows yaml-cpp fmt spdlog boost-dll boost-any boost-multi-index
+```
+
+- Ubuntu
+```
+apt-get install libfmt-dev libspdlog-dev
+```
+
 
 #### Panda3D
 You can get the latest built files from [my Panda3d repository](https://github.com/bluekyu/panda3d) OR
@@ -43,9 +53,12 @@ Instead, it uses `FREETYPE_DIR` in System Environment Variable as hint.
 Therefore, use system environment variable OR set it in CMake (see Integration with Plugin & Samples)
 
 #### Boost
-- Windows: use vcpkg OR install Boost library from official website and
-  set `BOOST_ROOT` to installed directory (For details, see FindBoost usage in CMake)
-- Ubuntu: install Boost packages using apt
+- Libraries: algorithm, filesystem, dll, any, optional, variant, multi-index
+- Windows:
+  - `vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index`
+  - Get Boost library from official website and set `BOOST_ROOT` to
+    installed directory (For details, see FindBoost usage in CMake)
+- Ubuntu: `apt-get install libboost-filesystem-dev`
 
 #### yaml-cpp
 - Windows: `vcpkg install yaml-cpp:x64-windows`
