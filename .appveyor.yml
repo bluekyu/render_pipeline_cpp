@@ -101,6 +101,7 @@ build_script:
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+    -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
 - cmake --build . --config %CONFIGURATION% --target install
