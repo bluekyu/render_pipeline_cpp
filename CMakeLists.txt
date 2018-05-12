@@ -27,11 +27,9 @@ else()
     set(${PROJECT_NAME}_GIT_COMMIT "")
 endif()
 
-# configure project package
-include(FindPackages)
-
 # === project specific packages ===
-_find_boost("filesystem")
+find_package(panda3d REQUIRED p3framework p3direct)
+find_package(Boost REQUIRED filesystem)
 
 find_package(fmt REQUIRED)
 if(TARGET fmt::fmt-header-only)
