@@ -190,8 +190,10 @@ function(_panda3d_add_library component_name)
         set(_panda3d_new_found_components ${_panda3d_new_found_components} panda3d::${component_name} PARENT_SCOPE)
 
         # Make variables changeable to the advanced user
-        mark_as_advanced(panda3d_${component_name}_LIBRARY_RELEASE)
-        mark_as_advanced(panda3d_${component_name}_LIBRARY_DEBUG)
+        mark_as_advanced(
+            panda3d_${component_name}_LIBRARY_DEBUG
+            panda3d_${component_name}_LIBRARY_RELEASE
+        )
     endif()
 endfunction()
 
@@ -204,6 +206,10 @@ endif()
 if(panda3d_ROOT AND NOT panda3d_ROOT_DEBUG)
     set(panda3d_ROOT_DEBUG "${panda3d_ROOT}")
 endif()
+
+set(panda3d_ROOT "${panda3d_ROOT}" CACHE PATH "Hint for finding panda3d root directory")
+set(panda3d_ROOT_DEBUG "${panda3d_ROOT_DEBUG}" CACHE PATH "Hint for finding panda3d-debug root directory")
+set(panda3d_ROOT_RELEASE "${panda3d_ROOT_RELEASE}" CACHE PATH "Hint for finding panda3d-release root directory")
 
 _panda3d_find_include()
 
@@ -235,7 +241,11 @@ if(panda3d_FOUND)
         )
     endif()
 
-    mark_as_advanced(panda3d_INCLUDE_DIR)
-    mark_as_advanced(panda3d_INCLUDE_DIR_DEBUG)
-    mark_as_advanced(panda3d_INCLUDE_DIR_RELEASE)
+    mark_as_advanced(
+        panda3d_INCLUDE_DIR
+        panda3d_INCLUDE_DIR_DEBUG
+        panda3d_INCLUDE_DIR_RELEASE
+        panda3d_ROOT_DEBUG
+        panda3d_ROOT_RELEASE
+    )
 endif()
