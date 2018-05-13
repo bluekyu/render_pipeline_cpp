@@ -40,7 +40,7 @@ init:
 # upgrade vcpkg
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
-- git checkout -qf 1c49195f789b7b8d7eaeb2542730a1f72cfbefcf
+- git checkout -qf 29d04b8b4005f5e2bfe61ccdc7a93d5c6c8a13d9
 - .\bootstrap-vcpkg.bat
 - ps: popd
 - git --version
@@ -67,7 +67,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
-- vcpkg install fmt spdlog yaml-cpp
+- vcpkg install fmt spdlog yaml-cpp eigen3
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: >-
     if ($env:CONFIGURATION -eq "Debug") {

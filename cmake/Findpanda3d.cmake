@@ -162,18 +162,20 @@ function(_panda3d_add_library component_name)
             )
         endif()
 
-        # check if Eigen is used
-        if((${component_name} STREQUAL "panda") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
-            file(STRINGS "${panda3d_INCLUDE_DIR}/dtool_config.h"
-                panda3d_dtool_HAVE_EIGEN
-                REGEX "#define HAVE_EIGEN 1"
-            )
-            if(panda3d_dtool_HAVE_EIGEN)
-                include(CMakeFindDependencyMacro)
-                find_dependency(Eigen3 REQUIRED)
-                set_property(TARGET panda3d::${component_name} APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
+        if(${component_name} STREQUAL "panda")
+            if((${CMAKE_SYSTEM_NAME} MATCHES "Windows") OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
+                # check if Eigen is used
+                file(STRINGS "${panda3d_INCLUDE_DIR}/dtool_config.h"
+                    panda3d_dtool_HAVE_EIGEN
+                    REGEX "#define HAVE_EIGEN 1"
                 )
+                if(panda3d_dtool_HAVE_EIGEN)
+                    include(CMakeFindDependencyMacro)
+                    find_dependency(Eigen3 REQUIRED)
+                    set_property(TARGET panda3d::${component_name} APPEND
+                        PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
+                    )
+                endif()
             endif()
         endif()
 
