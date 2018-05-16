@@ -59,6 +59,23 @@ public:
     void add_depth_attachment(int bits=32);
     void add_aux_attachment(int bits=8);
     void add_aux_attachments(int bits=8, int count=1);
+
+    /**
+     * Set texture type for targets.
+     */
+    void set_texture_type(Texture::TextureType tex_type);
+
+    /**
+     * Set layers for textures.
+     *
+     * Default number of layers is 1.
+     *
+     * If texture is 2D texture and layers are setup to 2 and more,
+     * then 2D texture array will be used.
+     *
+     * If you want to use 3D texture, then you need to call
+     * RenderTarget::set_texture_type.
+     */
     void set_layers(int layers);
 
     /**

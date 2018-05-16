@@ -86,6 +86,7 @@ public:
     int aux_count_ = 0;
     int depth_bits_ = 0;
     int layers_ = 1;
+    Texture::TextureType texture_type_ = Texture::TextureType::TT_2d_texture;
     LVecBase2i size_ = LVecBase2i(-1);
     LVecBase2i size_constraint_ = LVecBase2i(-1);
 };
@@ -244,8 +245,44 @@ void RenderTarget::Impl::setup_textures()
 
     for (const auto& tex: targets_)
     {
-        if (layers_ > 1)
-            tex.second->setup_2d_texture_array(layers_);
+        switch (texture_type_)
+        {
+            case Texture::TextureType::TT_2d_texture:
+            {
+                if (layers_ == 1)
+                {
+                    break;
+                }
+                else
+                {
+                    texture_type_ = Texture::TextureType::TT_2d_texture_array;
+                #if (__cplusplus >= 201703L) || (_MSVC_LANG >= 201703L)
+                    [[fallthrough]];
+                #endif
+                }
+            }
+
+            case Texture::TextureType::TT_2d_texture_array:
+            {
+                tex.second->setup_2d_texture_array(layers_);
+                break;
+            }
+
+            case Texture::TextureType::TT_3d_texture:
+            {
+                tex.second->setup_3d_texture(layers_);
+                break;
+            }
+
+            case Texture::TextureType::TT_cube_map:
+            {
+                tex.second->setup_cube_map();
+                break;
+            }
+
+            default:
+                self_.error("Unsupported texture type. The type will be fallback to 2D texture.");
+        }
 
         tex.second->set_wrap_u(SamplerState::WM_clamp);
         tex.second->set_wrap_v(SamplerState::WM_clamp);
@@ -340,8 +377,17 @@ bool RenderTarget::Impl::create()
     }
 
     GraphicsOutput::RenderTextureMode rtmode = GraphicsOutput::RTM_bind_or_copy;
-    if (layers_ > 1)
+    switch (texture_type_)
+    {
+    case Texture::TextureType::TT_2d_texture_array:
+    case Texture::TextureType::TT_3d_texture:
+    case Texture::TextureType::TT_cube_map:
         rtmode = GraphicsOutput::RTM_bind_layered;
+        break;
+
+    default:
+        break;
+    }
 
     if (depth_bits_)
     {
@@ -443,6 +489,11 @@ void RenderTarget::add_aux_attachments(int bits, int count)
 void RenderTarget::set_layers(int layers)
 {
     impl_->layers_ = layers;
+}
+
+void RenderTarget::set_texture_type(Texture::TextureType tex_type)
+{
+    impl_->texture_type_= tex_type;
 }
 
 void RenderTarget::set_size(int width, int height) NOEXCEPT
