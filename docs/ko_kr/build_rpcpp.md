@@ -4,13 +4,17 @@
 ## 요구사항
 명시된 **버전** 은 빌드 시스템에서 사용되는 것이며, 일치할 필요는 없다.
 
-- CMake (빌드 도구)
+- 도구
+  - CMake (빌드 도구)
+  - Windows
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항 및 권장): 0.0.111
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
-- Boost: 1.66.0
+- Boost: 1.65.0 이상
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
+- Eigen3 (선택사항): Panda3D 가 Eigen3 를 사용하지만 없을 경우
 
 
 
@@ -26,14 +30,17 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 만일, `vcpkg` 를 사용하지 않는다면, 외부 라이브러리를 빌드 및 설치하고 CMake 캐시에 적절한 값을 설정하면 된다.
 
 - Windows
-```
-vcpkg install --triplet x64-windows yaml-cpp fmt spdlog boost-dll boost-any boost-multi-index
-```
+  ```
+  vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index spdlog yaml-cpp
+
+  # optional
+  vcpkg install --triplet x64-windows eigen3
+  ```
 
 - Ubuntu
-```
-apt-get install libfmt-dev libspdlog-dev
-```
+  ```
+  apt-get install libfmt-dev libspdlog-dev
+  ```
 
 
 #### Panda3D
@@ -41,6 +48,15 @@ apt-get install libfmt-dev libspdlog-dev
 Panda3D 를 소스로부터 빌드하면 된다.
 
 그런 다음, CMake 캐시에 `panda3d_ROOT` 를 설치 폴더로 설정한다.
+
+#### Eigen3
+Panda3D 에서 Eigen3 을 사용할 수 있고, 원래 Panda3D 에서는 Eigen3 을 사용할 경우 Panda3D 패키지에 기본적으로 설치한다.
+
+그러나 [패치된 Panda3D](https://github.com/bluekyu/panda3d) 에서는 Eigen3 를 설치하지 않는다.
+만일, Panda3D 에서 Eigen3 를 사용하고 이를 가지고 있지 않다면, Eigen3 를 설치해야 한다.
+
+- Windows: `vcpkg install eigen3:x64-windows`
+- Ubuntu: `apt-get install libeigen3-dev`
 
 #### FreeType2
 [Panda3d-Thirdparty repository](https://github.com/bluekyu/panda3d-thirdparty) 에서
@@ -54,22 +70,22 @@ Panda3D 를 소스로부터 빌드하면 된다.
 
 #### Boost
 - 라이브러리: algorithm, filesystem, dll, any, optional, variant, multi-index
-- 윈도우
+- Windows
   - `vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index`
   - 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
     (자세한 것은, CMake 에서 FindBoost 사용법 참조)
 - Ubuntu: `apt-get install libboost-filesystem-dev`
 
 #### yaml-cpp
-- 윈도우: `vcpkg install yaml-cpp:x64-windows`
+- Windows: `vcpkg install yaml-cpp:x64-windows`
 - Ubuntu: github 저장소로부터 빌드
 
 #### fmt
-- 윈도우: `vcpkg install fmt:x64-windows`
+- Windows: `vcpkg install fmt:x64-windows`
 - Ubuntu: `apt-get install libfmt-dev`
 
 #### spdlog
-- 윈도우: `vcpkg install spdlog:x64-windows`
+- Windows: `vcpkg install spdlog:x64-windows`
 - Ubuntu: `apt-get install libspdlog-dev`
 
 

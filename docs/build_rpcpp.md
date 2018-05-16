@@ -4,13 +4,17 @@
 ## Requirements
 The **Versions** are used by a build system and does **NOT** need to match. You can use another versions.
 
-- CMake (build tool)
+- Tools
+  - CMake (build tool)
+  - Windows
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional and recommended): 0.0.111
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
-- Boost: 1.66.0
+- Boost: above 1.65.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
+- Eigen3 (optional): if Panda3D uses Eigen and does not include it
 
 
 
@@ -26,14 +30,17 @@ In Windows, we recommend to use [vcpkg](https://github.com/Microsoft/vcpkg) for 
 If you does not use `vcpkg`, then build and install those and setup proper values for CMake cache.
 
 - Windows
-```
-vcpkg install --triplet x64-windows yaml-cpp fmt spdlog boost-dll boost-any boost-multi-index
-```
+  ```
+  vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index spdlog yaml-cpp
+
+  # optional
+  vcpkg install --triplet x64-windows eigen3
+  ```
 
 - Ubuntu
-```
-apt-get install libfmt-dev libspdlog-dev
-```
+  ```
+  apt-get install libfmt-dev libspdlog-dev
+  ```
 
 
 #### Panda3D
@@ -41,6 +48,15 @@ You can get the latest built files from [my Panda3d repository](https://github.c
 build Panda3D from source.
 
 And then set `panda3d_ROOT` to installed directory for CMake cache.
+
+#### Eigen3
+Panda3D may use Eigen3 and original Panda3D installs it into Panda3D package as default if it is used.
+
+However, [Patched Panda3D](https://github.com/bluekyu/panda3d) does not install Eigen3.
+If your Panda3D uses Eigen3 and does not include it, then you need to install Eigen3.
+
+- Windows: `vcpkg install eigen3:x64-windows`
+- Ubuntu: `apt-get install libeigen3-dev`
 
 #### FreeType2
 You can get the latest built files from
