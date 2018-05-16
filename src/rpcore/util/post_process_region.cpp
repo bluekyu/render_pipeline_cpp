@@ -24,38 +24,45 @@
 
 #include <geomVertexWriter.h>
 #include <geomTriangles.h>
+#include <geomPoints.h>
 #include <omniBoundingVolume.h>
 #include <orthographicLens.h>
 #include <graphicsOutput.h>
 
 namespace rpcore {
 
-std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer)
+std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, bool use_point)
 {
-    return std::make_unique<PostProcessRegion>(internal_buffer);
+    return std::make_unique<PostProcessRegion>(internal_buffer, use_point);
 }
 
-std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions)
+std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point)
 {
-    return std::make_unique<PostProcessRegion>(internal_buffer, dimensions);
+    return std::make_unique<PostProcessRegion>(internal_buffer, dimensions, use_point);
 }
 
-PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer)
+PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, bool use_point)
 {
     region_ = internal_buffer->make_display_region();
     node = NodePath("RTRoot");
 
-    make_fullscreen_tri();
+    if (use_point)
+        make_single_point();
+    else
+        make_fullscreen_tri();
     make_fullscreen_cam();
     init_function_pointers();
 }
 
-PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions)
+PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point)
 {
     region_ = internal_buffer->make_display_region(dimensions);
     node = NodePath("RTRoot");
 
-    make_fullscreen_tri();
+    if (use_point)
+        make_single_point();
+    else
+        make_fullscreen_tri();
     make_fullscreen_cam();
     init_function_pointers();
 }
@@ -74,9 +81,9 @@ void PostProcessRegion::init_function_pointers()
     set_clear_color = std::bind(&DisplayRegion::set_clear_color, region_, _1);
     set_draw_callback = std::bind(&DisplayRegion::set_draw_callback, region_, _1);
 
-    set_instance_count = std::bind(&NodePath::set_instance_count, tri, _1);
-    set_shader = std::bind(&NodePath::set_shader, tri, _1, _2);
-    set_attrib = std::bind(&NodePath::set_attrib, tri, _1, _2);
+    set_instance_count = std::bind(&NodePath::set_instance_count, geom_np_, _1);
+    set_shader = std::bind(&NodePath::set_shader, geom_np_, _1, _2);
+    set_attrib = std::bind(&NodePath::set_attrib, geom_np_, _1, _2);
 }
 
 void PostProcessRegion::make_fullscreen_tri()
@@ -92,19 +99,37 @@ void PostProcessRegion::make_fullscreen_tri()
     gtris->add_next_vertices(3);
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(gtris);
+    make_geom_node(geom);
+}
+
+void PostProcessRegion::make_single_point()
+{
+    const GeomVertexFormat* vformat = GeomVertexFormat::get_v3();
+    PT(GeomVertexData) vdata = new GeomVertexData("vertices", vformat, Geom::UH_static);
+    vdata->set_num_rows(1);
+    GeomVertexWriter vwriter(vdata, "vertex");
+    vwriter.add_data3f(0, 0, 0);
+    PT(GeomPoints) gpoint = new GeomPoints(Geom::UH_static);
+    gpoint->add_next_vertices(1);
+    PT(Geom) geom = new Geom(vdata);
+    geom->add_primitive(gpoint);
+    make_geom_node(geom);
+}
+
+void PostProcessRegion::make_geom_node(Geom* geom)
+{
     PT(GeomNode) geom_node = new GeomNode("gn");
     geom_node->add_geom(geom);
     geom_node->set_final(true);
     PT(OmniBoundingVolume) obv = new OmniBoundingVolume();
     geom_node->set_bounds(obv);
-    NodePath tri = NodePath(geom_node);
-    tri.set_depth_test(false);
-    tri.set_depth_write(false);
-    tri.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 10000);
-    tri.set_color(LColor(1));
-    tri.set_bin("unsorted", 10);
-    tri.reparent_to(node);
-    this->tri = tri;
+    geom_np_ = NodePath(geom_node);
+    geom_np_.set_depth_test(false);
+    geom_np_.set_depth_write(false);
+    geom_np_.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 10000);
+    geom_np_.set_color(LColor(1));
+    geom_np_.set_bin("unsorted", 10);
+    geom_np_.reparent_to(node);
 }
 
 void PostProcessRegion::make_fullscreen_cam()

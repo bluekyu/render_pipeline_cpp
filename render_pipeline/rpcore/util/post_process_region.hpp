@@ -31,18 +31,19 @@
 
 class GraphicsOutput;
 class CallbackObject;
+class Geom;
 
 namespace rpcore {
 
 class RENDER_PIPELINE_DECL PostProcessRegion
 {
 public:
-    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer);
-    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions);
+    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, bool use_point = false);
+    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point = false);
 
 public:
-    PostProcessRegion(GraphicsOutput* internal_buffer);
-    PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions);
+    PostProcessRegion(GraphicsOutput* internal_buffer, bool use_point);
+    PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point);
 
     void set_shader_input(const ShaderInput& inp, bool override_input=false);
 
@@ -73,11 +74,13 @@ public:
 private:
     void init_function_pointers();
     void make_fullscreen_tri();
+    void make_single_point();
+    void make_geom_node(Geom* geom);
     void make_fullscreen_cam();
 
     PT(DisplayRegion) region_;
     NodePath node;
-    NodePath tri;
+    NodePath geom_np_;
     NodePath camera;
 };
 
@@ -86,7 +89,7 @@ inline void PostProcessRegion::set_shader_input(const ShaderInput& inp, bool ove
     if (override_input)
         node.set_shader_input(inp);
     else
-        tri.set_shader_input(inp);
+        geom_np_.set_shader_input(inp);
 }
 
 inline DisplayRegion* PostProcessRegion::get_region() const

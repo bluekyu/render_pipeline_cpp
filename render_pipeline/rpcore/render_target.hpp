@@ -128,8 +128,12 @@ public:
     /** Prepares to render a scene. */
     void prepare_render(const NodePath& camera);
 
-    /** Prepares the target to render to an offscreen buffer. */
-    void prepare_buffer();
+    /**
+     * Prepares the target to render to an offscreen buffer using fullscreen or single point.
+     *
+     * @param[in]   use_point   Use single point instead of a fullscreen triangle.
+     */
+    void prepare_buffer(bool use_point = false);
 
     /** Prepares the target to render on the main window, to present the final rendered image. */
     void present_on_screen();

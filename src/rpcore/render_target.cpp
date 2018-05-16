@@ -58,7 +58,7 @@ public:
 
     int percent_to_number(const std::string& v) const NOEXCEPT;
 
-    void create_buffer();
+    void create_buffer(bool point_buffer=false);
     void compute_size_from_constraint();
     void setup_textures();
     void make_properties(WindowProperties& window_props, FrameBufferProperties& buffer_props);
@@ -203,7 +203,7 @@ int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
     }
 }
 
-void RenderTarget::Impl::create_buffer()
+void RenderTarget::Impl::create_buffer(bool point_buffer)
 {
     compute_size_from_constraint();
     if (!create())
@@ -214,7 +214,7 @@ void RenderTarget::Impl::create_buffer()
 
     if (create_default_region_)
     {
-        source_postprocess_region_ = PostProcessRegion::make(internal_buffer_);
+        source_postprocess_region_ = PostProcessRegion::make(internal_buffer_, point_buffer);
         source_display_region_.clear();
 
         if (max_color_bits(color_bits_) == 0)
@@ -546,9 +546,9 @@ void RenderTarget::set_size(const std::string& width, const std::string& height)
     impl_->size_constraint_ = LVecBase2i(impl_->percent_to_number(width), impl_->percent_to_number(height));
 }
 
-void RenderTarget::prepare_buffer()
+void RenderTarget::prepare_buffer(bool use_point)
 {
-    impl_->create_buffer();
+    impl_->create_buffer(use_point);
     impl_->active_ = true;
 }
 
