@@ -68,7 +68,19 @@ auto Messenger::accept(const EventName& event_name, const EventFunction& method,
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     return hooks_[event_name].object_callbacks.insert_or_assign(object, AcceptorType{ method, persistent }).first;
 #else
-    return hooks_[event_name].object_callbacks.insert({ object, AcceptorType{ method, persistent } }).first;
+    {
+        auto& object_callbacks = hooks_[event_name].object_callbacks;
+        auto found = object_callbacks.find(object);
+        if (found == object_callbacks.end())
+        {
+            return object_callbacks.insert({ object, AcceptorType{ method, persistent } }).first;
+        }
+        else
+        {
+            found->second = std::forward<AcceptorType>(AcceptorType{ method, persistent });
+            return found;
+        }
+    }
 #endif
 }
 
