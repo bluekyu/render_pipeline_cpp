@@ -37,11 +37,11 @@ init:
     } else {
         $env:CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
     }
-# upgrade vcpkg
+# checkout vcpkg v0.0.111
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
 - git checkout -qf 29d04b8b4005f5e2bfe61ccdc7a93d5c6c8a13d9
-- .\bootstrap-vcpkg.bat
+- .\bootstrap-vcpkg.bat | Out-Null
 - ps: popd
 - git --version
 - cmake --version
@@ -50,7 +50,7 @@ init:
 # environment variables
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
-    BOOST_ROOT: C:\Libraries\boost_1_66_0
+    BOOST_ROOT: C:\Libraries\boost_1_67_0
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
     VCPKG_DEFAULT_TRIPLET: x64-windows
 
@@ -63,7 +63,7 @@ matrix:
 
 # build cache to preserve files/folders between builds
 cache:
-    - c:\tools\vcpkg\installed\
+    - c:\tools\vcpkg\installed\ -> .appveyor.yml
 
 # scripts that run after cloning repository
 install:
@@ -100,7 +100,7 @@ build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
-    -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+    -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
