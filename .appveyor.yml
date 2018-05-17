@@ -41,7 +41,7 @@ init:
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
 - git checkout -qf 29d04b8b4005f5e2bfe61ccdc7a93d5c6c8a13d9
-- .\bootstrap-vcpkg.bat | Out-Null
+- .\bootstrap-vcpkg.bat > nul
 - ps: popd
 - git --version
 - cmake --version
