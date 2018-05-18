@@ -130,6 +130,7 @@ void Debugger::update()
 
 AsyncTask::DoneStatus Debugger::collect_scene_data(rppanda::FunctionalTask* task)
 {
+    debug("Collecting scene data ...");
     analyzer_->clear();
     const auto& npc = Globals::base->get_render().find_all_matches("**/+GeomNode");
     for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
@@ -256,13 +257,16 @@ void Debugger::init_keybindings()
 
 void Debugger::toggle_gui_visible()
 {
-    if (Globals::base->get_render_2d().is_hidden())
+    auto render_2d = Globals::base->get_render_2d();
+    if (render_2d.is_hidden())
     {
-        Globals::base->get_render_2d().show();
+        if (use_advanced_info())
+            collect_scene_data(nullptr);
+        render_2d.show();
     }
     else
     {
-        Globals::base->get_render_2d().hide();
+        render_2d.hide();
     }
 }
 
