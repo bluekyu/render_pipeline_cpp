@@ -38,7 +38,7 @@
 #pragma once
 
 #include <nodePath.h>
-#include <partBundleHandle.h>
+#include <partBundle.h>
 
 #include <unordered_map>
 
@@ -48,6 +48,7 @@
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 
 class Loader;
+class PartBundleHandle;
 
 namespace rppanda {
 
@@ -75,7 +76,7 @@ public:
      * multiple different LOD's, as well as the multiple different
      * pieces of a multipart Actor.
      */
-    class PartDef
+    class RENDER_PIPELINE_DECL PartDef
     {
     public:
         PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model);
@@ -153,7 +154,7 @@ public:
     Actor(Actor&&) = default;
 #endif
 
-    ~Actor() = default;
+    virtual ~Actor();
 
     Actor& operator=(const Actor&) = delete;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -705,11 +706,6 @@ private:
 inline Actor::PartDef::PartDef(NodePath part_bundle_np, PartBundleHandle* part_bundle_handle, PandaNode* part_model) :
     part_bundle_np(part_bundle_np), part_bundle_handle(part_bundle_handle), part_model(part_model)
 {
-}
-
-inline PartBundle* Actor::PartDef::get_bundle() const
-{
-    return part_bundle_handle->get_bundle();
 }
 
 inline Actor::PartBundleDictType& Actor::get_part_bundle_dict()

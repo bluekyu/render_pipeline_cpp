@@ -43,6 +43,7 @@
 #include <animControlCollection.h>
 #include <auto_bind.h>
 #include <animBundleNode.h>
+#include <partBundleHandle.h>
 
 #include <cctype>
 #include <unordered_set>
@@ -80,6 +81,13 @@ static void build_control_joint_tree(PartGroup* joint, NodePath parent)
 
     for (int k = 0, k_end = joint->get_num_children(); k < k_end; ++k)
         build_control_joint_tree(joint->get_child(k), parent);
+}
+
+// ************************************************************************************************
+
+PartBundle* Actor::PartDef::get_bundle() const
+{
+    return part_bundle_handle->get_bundle();
 }
 
 // ************************************************************************************************
@@ -258,6 +266,8 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 Actor& Actor::operator=(Actor&&) = default;
 #endif
+
+Actor::~Actor() = default;
 
 void Actor::list_joints(const std::string& part_name, const std::string& lod_name) const
 {
