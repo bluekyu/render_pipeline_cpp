@@ -49,7 +49,6 @@ class PSSMHelper
             const LVector4f &far_ur,
             const LVector4f &far_ll,
             const LVector4f &far_lr);
-
 };
 
 #endif // RP_REQ_PSSM_HELPER

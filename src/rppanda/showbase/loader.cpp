@@ -79,7 +79,7 @@ public:
     ::Loader* loader_;
 
     std::string hook_;
-    std::unordered_map<AsyncTask*, std::pair<std::shared_ptr<Callback>, size_t>> requests_; 
+    std::unordered_map<AsyncTask*, std::pair<std::shared_ptr<Callback>, size_t>> requests_;
 };
 
 size_t Loader::Impl::loader_index_ = 0;

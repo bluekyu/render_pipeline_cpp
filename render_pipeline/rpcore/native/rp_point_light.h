@@ -59,7 +59,6 @@ class RENDER_PIPELINE_DECL RPPointLight  : public RPLight
     protected:
         float _radius;
         float _inner_radius;
-
 };
 
 }

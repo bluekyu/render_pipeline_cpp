@@ -327,8 +327,8 @@ void InternalLightManager::update_lights() {
  *
  * @return true if a is more important than b, else false
  */
-bool InternalLightManager::compare_shadow_sources(const ShadowSource* a, const ShadowSource* b) const {
-
+bool InternalLightManager::compare_shadow_sources(const ShadowSource* a, const ShadowSource* b) const
+{
     // Make sure that sources which already have a region (but maybe outdated)
     // come after sources which have no region at all.
     if (a->has_region() != b->has_region()) {

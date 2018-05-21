@@ -61,7 +61,7 @@ public:
     using EventName = std::string;
     using EventFunction = std::function<void(const Event*)>;
 
-    using AcceptorType = std::pair<EventFunction, bool>;
+    using AcceptorType = std::pair<EventFunction, bool>;    //  { function, persistent }
     using AcceptorList = std::list<AcceptorType>;
     using AcceptorMap = std::unordered_map<DirectObject*, AcceptorType>;
 
@@ -128,7 +128,14 @@ public:
 private:
     static void process_event(const Event* ev, void* user_data);
 
+    /**
+     * Add hook with @p event_name for Messenger::process_event
+     *
+     * If the hook already exists, then this does not add.
+     */
     void add_hook(const EventName& event_name);
+
+    /** Remove hook with @p event_name for Messenger::process_event */
     void remove_hook(const EventName& event_name);
 
     EventHandler* handler_;

@@ -162,7 +162,7 @@ public:
 
         // Update maximum index
         if (slot == _max_index) {
-            while (_max_index >= 0 && !_data[_max_index--]);
+            while (_max_index >= 0 && !_data[_max_index--]) {}
         }
     }
 
