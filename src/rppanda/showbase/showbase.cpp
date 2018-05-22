@@ -81,6 +81,9 @@ public:
 public:
     static ShowBase* global_ptr;
 
+    int argc_ = 0;
+    char** argv_ = nullptr;
+
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
@@ -198,6 +201,12 @@ void ShowBase::Impl::initailize(ShowBase* self)
     }
 
     Impl::global_ptr = self;
+
+    if (!panda_framework_)
+    {
+        panda_framework_ = std::make_shared<PandaFramework>();
+        panda_framework_->open_framework(argc_, argv_);
+    }
 
     rppanda_showbase_cat.debug() << "Creating ShowBase ..." << std::endl;
 
@@ -534,21 +543,25 @@ ShowBase* ShowBase::get_global_ptr()
     return Impl::global_ptr;
 }
 
-ShowBase::ShowBase(int& argc, char**& argv): impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(int& argc, char**& argv, bool manual_init): impl_(std::make_unique<Impl>())
 {
-    impl_->panda_framework_ = std::make_shared<PandaFramework>();
-    impl_->panda_framework_->open_framework(argc, argv);
-    impl_->initailize(this);
+    impl_->argc_ = argc;
+    impl_->argv_ = argv;
+
+    if (!manual_init)
+        initialize();
 }
 
-ShowBase::ShowBase(PandaFramework* framework): impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(PandaFramework* framework, bool manual_init): impl_(std::make_unique<Impl>())
 {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
 #else
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
 #endif
-    impl_->initailize(this);
+
+    if (!manual_init)
+        initialize();
 }
 
 ShowBase::~ShowBase()
@@ -588,6 +601,7 @@ ShowBase::~ShowBase()
     // PandaFramework::~PandaFramework() calls PandaFramework::close_framework()
 }
 
+void ShowBase::initialize() { impl_->initailize(this); }
 void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
 void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
 void ShowBase::setup_mouse() { impl_->setup_mouse(this); }

@@ -113,7 +113,18 @@ public:
      */
     bool pre_showbase_init();
 
-    bool create();
+    /**
+     * This creates the pipeline, and setups all buffers. It also
+     * constructs the showbase. The settings should have been loaded before
+     * calling this, and also the base and write path should have been
+     * initialized properly (see MountManager).
+     *
+     * If base is None, the showbase used in the RenderPipeline constructor
+     * will be used and initialized. Otherwise it is assumed that base is an
+     * initialized ShowBase object. In this case, you should call
+     * pre_showbase_init() before initializing the ShowBase
+     */
+    bool create(rppanda::ShowBase* base);
 
     /**
      * Tells the pipeline to use the default loading screen, which consists

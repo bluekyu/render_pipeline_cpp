@@ -124,7 +124,7 @@ public:
 
     void reload_shaders();
 
-    bool create();
+    bool create(rppanda::ShowBase* base);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -198,7 +198,7 @@ public:
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    bool init_showbase();
+    bool init_showbase(rppanda::ShowBase* base);
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
@@ -482,10 +482,10 @@ void RenderPipeline::Impl::reload_shaders()
     apply_custom_shaders();
 }
 
-bool RenderPipeline::Impl::create()
+bool RenderPipeline::Impl::create(rppanda::ShowBase* base)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    if (!init_showbase())
+    if (!init_showbase(base))
         return false;
 
     if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
@@ -682,26 +682,34 @@ void RenderPipeline::Impl::compute_render_resolution()
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-bool RenderPipeline::Impl::init_showbase()
+bool RenderPipeline::Impl::init_showbase(rppanda::ShowBase* base)
 {
     // C++ Panda3D has no ShowBase.
-    //if (!base)
-    //{
-    if (!self_.pre_showbase_init())
-        return false;
-    showbase_ = new rppanda::ShowBase(panda_framework_.get());
-    //}
-    //else
-    //{
-    //    if (!pre_showbase_initialized)
-    //    {
-    //        fatal(    "You constructed your own ShowBase object but you\n"
-    //                "did not call pre_show_base_init() on the render\n"
-    //                "pipeline object before! Checkout the 00-Loading the\n"
-    //                "pipeline sample to see how to initialize the RP.");
-    //    }
-    //    showbase = base;
-    //}
+    if (!base)
+    {
+        if (!self_.pre_showbase_init())
+            return false;
+        showbase_ = new rppanda::ShowBase(panda_framework_.get());
+    }
+    else
+    {
+        if (!base->get_global_ptr())
+        {
+            self_.pre_showbase_init();
+            base->initialize();
+        }
+        else
+        {
+            if(!pre_showbase_initialized)
+            {
+                self_.fatal("You constructed your own ShowBase object but you\n"
+                            "did not call pre_show_base_init() on the render\n"
+                            "pipeline object before! Checkout the 00-Loading the\n"
+                            "pipeline sample to see how to initialize the RP.");
+            }
+        }
+        showbase_ = base;
+    }
 
     // Now that we have a showbase and a window, we can print out driver info
     auto gsg = showbase_->get_win()->get_gsg();
@@ -1006,9 +1014,9 @@ bool RenderPipeline::pre_showbase_init()
     return true;
 }
 
-bool RenderPipeline::create()
+bool RenderPipeline::create(rppanda::ShowBase* base)
 {
-    return impl_->create();
+    return impl_->create(base);
 }
 
 void RenderPipeline::set_loading_screen_image(const Filename& image_source)

@@ -69,21 +69,29 @@ class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 public:
     static ShowBase* get_global_ptr();
 
-    /** Create PandaFramework and open main window, and then initialize ShowBase. */
-    ShowBase(int& argc, char**& argv);
+    /**
+     * Create PandaFramework and open main window, and then initialize ShowBase.
+     *
+     * If manual_init is true, then you should call ShowBase::initialize.
+     */
+    ShowBase(int& argc, char**& argv, bool manual_init = false);
 
-    /** Initialize ShowBase with given PandaFramework. */
-    ShowBase(PandaFramework* framework);
+    /**
+     * Initialize ShowBase with given PandaFramework.
+     *
+     * If manual_init is true, then you should call ShowBase::initialize.
+     */
+    ShowBase(PandaFramework* framework, bool manual_init = false);
 
     ShowBase(const ShowBase&) = delete;
-    ShowBase(ShowBase&&) = delete;
 
     virtual ~ShowBase();
 
     ALLOC_DELETED_CHAIN(ShowBase);
 
     ShowBase& operator=(const ShowBase&) = delete;
-    ShowBase& operator=(ShowBase&&) = delete;
+
+    void initialize();
 
     PandaFramework* get_panda_framework() const;
     WindowFramework* get_window_framework() const;
