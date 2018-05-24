@@ -124,7 +124,8 @@ public:
 
     void reload_shaders();
 
-    bool create(rppanda::ShowBase* base);
+    bool create(int argc, char* argv[], rppanda::ShowBase* base);
+    bool create(PandaFramework* framework, rppanda::ShowBase* base);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -198,7 +199,8 @@ public:
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    bool init_showbase(rppanda::ShowBase* base);
+    bool init_showbase(int argc, char* argv[], rppanda::ShowBase* base);
+    bool init_showbase(PandaFramework* framework, rppanda::ShowBase* base);
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
@@ -238,8 +240,6 @@ public:
 public:
     RenderPipeline& self_;
 
-    std::shared_ptr<PandaFramework> panda_framework_;
-
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
     std::unique_ptr<std::chrono::system_clock::time_point> first_frame_;
@@ -263,6 +263,10 @@ public:
     std::unique_ptr<LightManager> light_mgr_;
     std::unique_ptr<DayTimeManager> daytime_mgr_;
     std::unique_ptr<IESProfileLoader> ies_loader_;
+
+private:
+    bool post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time);
+    void print_driver_status();
 };
 
 const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
@@ -482,49 +486,16 @@ void RenderPipeline::Impl::reload_shaders()
     apply_custom_shaders();
 }
 
-bool RenderPipeline::Impl::create(rppanda::ShowBase* base)
+bool RenderPipeline::Impl::create(int argc, char* argv[], rppanda::ShowBase* base)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    if (!init_showbase(base))
-        return false;
+    return init_showbase(argc, argv, base) && post_create(start_time);
+}
 
-    if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
-    {
-        self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
-            "you have the latest drivers. If you already have, your gpu might\n"
-            "be too old, or you might be using the open source drivers on linux.");
-        return false;
-    }
-
-    init_globals();
-    loading_screen_->create();
-    adjust_camera_settings();
-    create_managers();
-    plugin_mgr_->load();
-    plugin_mgr_->on_load();
-    daytime_mgr_->load_settings();
-    common_resources_->write_config();
-    init_debugger();
-
-    plugin_mgr_->on_stage_setup();
-    plugin_mgr_->on_post_stage_setup();
-
-    create_common_defines();
-    initialize_managers();
-    create_default_skybox();
-
-    plugin_mgr_->on_pipeline_created();
-
-    set_default_effect();
-
-    // Measure how long it took to initialize everything, and also store
-    // when we finished, so we can measure how long it took to render the
-    // first frame (where the shaders are actually compiled)
-    const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
-    first_frame_ = std::make_unique<decltype(first_frame_)::element_type>(std::chrono::system_clock::now());
-    self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
-
-    return true;
+bool RenderPipeline::Impl::create(PandaFramework* framework, rppanda::ShowBase* base)
+{
+    const auto& start_time = std::chrono::system_clock::now();
+    return init_showbase(framework, base) && post_create(start_time);
 }
 
 void RenderPipeline::Impl::apply_custom_shaders()
@@ -682,40 +653,71 @@ void RenderPipeline::Impl::compute_render_resolution()
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-bool RenderPipeline::Impl::init_showbase(rppanda::ShowBase* base)
+bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBase* base)
 {
-    // C++ Panda3D has no ShowBase.
     if (!base)
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = new rppanda::ShowBase(panda_framework_.get());
+        showbase_ = new rppanda::ShowBase(argc, argv);
     }
     else
     {
         if (!base->get_global_ptr())
         {
-            self_.pre_showbase_init();
-            base->initialize();
+            if (!self_.pre_showbase_init())
+                return false;
+            base->initialize(argc, argv);
         }
         else
         {
-            if(!pre_showbase_initialized)
+            if (!pre_showbase_initialized)
             {
                 self_.fatal("You constructed your own ShowBase object but you\n"
-                            "did not call pre_show_base_init() on the render\n"
-                            "pipeline object before! Checkout the 00-Loading the\n"
-                            "pipeline sample to see how to initialize the RP.");
+                    "did not call pre_show_base_init() on the render\n"
+                    "pipeline object before! Checkout the 00-Loading the\n"
+                    "pipeline sample to see how to initialize the RP.");
             }
         }
-        showbase_ = base;
     }
 
-    // Now that we have a showbase and a window, we can print out driver info
-    auto gsg = showbase_->get_win()->get_gsg();
-    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
-    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
-    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
+    print_driver_status();
+
+    return true;
+}
+
+bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::ShowBase* base)
+{
+    if (!framework)
+        self_.fatal("PandaFramework is nullptr!");
+
+    if (!base)
+    {
+        if (!self_.pre_showbase_init())
+            return false;
+        showbase_ = new rppanda::ShowBase(framework);
+    }
+    else
+    {
+        if (!base->get_global_ptr())
+        {
+            if (!self_.pre_showbase_init())
+                return false;
+            base->initialize(framework);
+        }
+        else
+        {
+            if (!pre_showbase_initialized)
+            {
+                self_.fatal("You constructed your own ShowBase object but you\n"
+                    "did not call pre_show_base_init() on the render\n"
+                    "pipeline object before! Checkout the 00-Loading the\n"
+                    "pipeline sample to see how to initialize the RP.");
+            }
+        }
+    }
+
+    print_driver_status();
 
     return true;
 }
@@ -845,6 +847,56 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
         return settings.at(setting_path).as<T>(fallback);
 }
 
+bool RenderPipeline::Impl::post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time)
+{
+    if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
+    {
+        self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
+            "you have the latest drivers. If you already have, your gpu might\n"
+            "be too old, or you might be using the open source drivers on linux.");
+        return false;
+    }
+
+    init_globals();
+    loading_screen_->create();
+    adjust_camera_settings();
+    create_managers();
+    plugin_mgr_->load();
+    plugin_mgr_->on_load();
+    daytime_mgr_->load_settings();
+    common_resources_->write_config();
+    init_debugger();
+
+    plugin_mgr_->on_stage_setup();
+    plugin_mgr_->on_post_stage_setup();
+
+    create_common_defines();
+    initialize_managers();
+    create_default_skybox();
+
+    plugin_mgr_->on_pipeline_created();
+
+    set_default_effect();
+
+    // Measure how long it took to initialize everything, and also store
+    // when we finished, so we can measure how long it took to render the
+    // first frame (where the shaders are actually compiled)
+    const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
+    first_frame_ = std::make_unique<decltype(first_frame_)::element_type>(std::chrono::system_clock::now());
+    self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
+
+    return true;
+}
+
+void RenderPipeline::Impl::print_driver_status()
+{
+    // Now that we have a showbase and a window, we can print out driver info
+    auto gsg = showbase_->get_win()->get_gsg();
+    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
+    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
+    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
+}
+
 // ************************************************************************************************
 
 const std::string& RenderPipeline::get_version(void)
@@ -886,41 +938,10 @@ RenderPipeline* RenderPipeline::get_global_ptr()
     return global_ptr_;
 }
 
-RenderPipeline::RenderPipeline(int& argc, char**& argv): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
+RenderPipeline::RenderPipeline(): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
     if (!LoggerManager::get_instance().is_created())
         LoggerManager::get_instance().create("render_pipeline.log");
-
-    global_ptr_ = this;
-
-    debug("Constructing render pipeline ...");
-
-    impl_->panda_framework_ = std::make_shared<PandaFramework>();
-    impl_->panda_framework_->open_framework(argc, argv);
-
-    impl_->analyze_system();
-
-    impl_->mount_mgr_ = std::make_unique<MountManager>();
-    impl_->pre_showbase_initialized = false;
-    set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
-}
-
-RenderPipeline::RenderPipeline(PandaFramework* framework): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
-{
-    if (!LoggerManager::get_instance().is_created())
-        LoggerManager::get_instance().create("render_pipeline.log");
-
-    if (!framework)
-    {
-        error("PandaFramework is nullptr!");
-        return;
-    }
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
-#else
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
-#endif
 
     global_ptr_ = this;
 
@@ -1014,9 +1035,14 @@ bool RenderPipeline::pre_showbase_init()
     return true;
 }
 
-bool RenderPipeline::create(rppanda::ShowBase* base)
+bool RenderPipeline::create(int argc, char* argv[], rppanda::ShowBase* base)
 {
-    return impl_->create(base);
+    return impl_->create(argc, argv, base);
+}
+
+bool RenderPipeline::create(PandaFramework* framework, rppanda::ShowBase* base)
+{
+    return impl_->create(framework, base);
 }
 
 void RenderPipeline::set_loading_screen_image(const Filename& image_source)
@@ -1285,11 +1311,6 @@ template <>
 std::string RenderPipeline::get_setting(const std::string& setting_path, const std::string& fallback) const
 {
     return impl_->get_setting<std::string>(setting_path, fallback);
-}
-
-PandaFramework* RenderPipeline::get_panda_framework() const
-{
-    return impl_->panda_framework_.get();
 }
 
 rppanda::ShowBase* RenderPipeline::get_showbase() const

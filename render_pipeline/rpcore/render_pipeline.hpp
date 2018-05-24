@@ -71,11 +71,8 @@ public:
 
     static RenderPipeline* get_global_ptr();
 
-    /** Create PandaFramework and initialize RenderPipeline. */
-    RenderPipeline(int& argc, char**& argv);
-
-    /** Initialize RenderPipeline with given PandaFramework. */
-    RenderPipeline(PandaFramework* framework);
+    /** Initialize RenderPipeline. */
+    RenderPipeline();
 
     RenderPipeline(const RenderPipeline&) = delete;
 
@@ -124,7 +121,8 @@ public:
      * initialized ShowBase object. In this case, you should call
      * pre_showbase_init() before initializing the ShowBase
      */
-    bool create(rppanda::ShowBase* base);
+    bool create(int argc, char* argv[], rppanda::ShowBase* base = nullptr);
+    bool create(PandaFramework* framework, rppanda::ShowBase* base = nullptr);
 
     /**
      * Tells the pipeline to use the default loading screen, which consists
@@ -197,7 +195,6 @@ public:
     template <class Type> Type get_setting(const std::string& setting_path, const Type& fallback) const;
     ///@}
 
-    PandaFramework* get_panda_framework() const;
     rppanda::ShowBase* get_showbase() const;
     MountManager* get_mount_mgr() const;
     StageManager* get_stage_mgr() const;

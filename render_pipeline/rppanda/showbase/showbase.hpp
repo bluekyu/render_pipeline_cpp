@@ -70,18 +70,21 @@ public:
     static ShowBase* get_global_ptr();
 
     /**
-     * Create PandaFramework and open main window, and then initialize ShowBase.
+     * Create just ShowBase and not initialize ShowBase.
      *
-     * If manual_init is true, then you should call ShowBase::initialize.
+     * This just consturct ShowBase instance, so you should call ShowBase::initialize.
      */
-    ShowBase(int& argc, char**& argv, bool manual_init = false);
+    ShowBase();
+
+    /**
+     * Create PandaFramework and open main window, and then initialize ShowBase.
+     */
+    ShowBase(int argc, char* argv[]);
 
     /**
      * Initialize ShowBase with given PandaFramework.
-     *
-     * If manual_init is true, then you should call ShowBase::initialize.
      */
-    ShowBase(PandaFramework* framework, bool manual_init = false);
+    ShowBase(PandaFramework* framework);
 
     ShowBase(const ShowBase&) = delete;
 
@@ -91,7 +94,8 @@ public:
 
     ShowBase& operator=(const ShowBase&) = delete;
 
-    void initialize();
+    void initialize(int argc, char* argv[]);
+    void initialize(PandaFramework* framework);
 
     PandaFramework* get_panda_framework() const;
     WindowFramework* get_window_framework() const;

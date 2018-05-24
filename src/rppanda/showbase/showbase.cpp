@@ -81,9 +81,6 @@ public:
 public:
     static ShowBase* global_ptr;
 
-    int argc_ = 0;
-    char** argv_ = nullptr;
-
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
@@ -201,12 +198,6 @@ void ShowBase::Impl::initailize(ShowBase* self)
     }
 
     Impl::global_ptr = self;
-
-    if (!panda_framework_)
-    {
-        panda_framework_ = std::make_shared<PandaFramework>();
-        panda_framework_->open_framework(argc_, argv_);
-    }
 
     rppanda_showbase_cat.debug() << "Creating ShowBase ..." << std::endl;
 
@@ -543,25 +534,18 @@ ShowBase* ShowBase::get_global_ptr()
     return Impl::global_ptr;
 }
 
-ShowBase::ShowBase(int& argc, char**& argv, bool manual_init): impl_(std::make_unique<Impl>())
+ShowBase::ShowBase() : impl_(std::make_unique<Impl>())
 {
-    impl_->argc_ = argc;
-    impl_->argv_ = argv;
-
-    if (!manual_init)
-        initialize();
 }
 
-ShowBase::ShowBase(PandaFramework* framework, bool manual_init): impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(int argc, char* argv[]): ShowBase()
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto){});
-#else
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*){});
-#endif
+    initialize(argc, argv);
+}
 
-    if (!manual_init)
-        initialize();
+ShowBase::ShowBase(PandaFramework* framework): ShowBase()
+{
+    initialize(framework);
 }
 
 ShowBase::~ShowBase()
@@ -601,13 +585,31 @@ ShowBase::~ShowBase()
     // PandaFramework::~PandaFramework() calls PandaFramework::close_framework()
 }
 
-void ShowBase::initialize() { impl_->initailize(this); }
 void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
 void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
 void ShowBase::setup_mouse() { impl_->setup_mouse(this); }
 void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
+
+void ShowBase::initialize(int argc, char* argv[])
+{
+    impl_->panda_framework_ = std::make_shared<PandaFramework>();
+    impl_->panda_framework_->open_framework(argc, argv);
+
+    impl_->initailize(this);
+}
+
+void ShowBase::initialize(PandaFramework* framework)
+{
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto) {});
+#else
+    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*) {});
+#endif
+
+    impl_->initailize(this);
+}
 
 PandaFramework* ShowBase::get_panda_framework() const
 {
