@@ -44,7 +44,17 @@ namespace rppanda {
 
 DirectObject::TaskContainer::TaskContainer(DirectObject* owner, AsyncTask* task) : owner_(owner), task_(task), task_id_(task->get_task_id())
 {
-    task_.set_callback(this);
+    task_.add_callback(this);
+}
+
+DirectObject::TaskContainer::~TaskContainer()
+{
+    task_.remove_callback(this);
+}
+
+void DirectObject::TaskContainer::wp_callback(void*)
+{
+    owner_->task_list_.erase(task_id_);
 }
 
 // ************************************************************************************************

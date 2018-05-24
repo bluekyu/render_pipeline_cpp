@@ -28,3 +28,7 @@
 #else
 #   define RENDER_PIPELINE_DECL BOOST_SYMBOL_IMPORT
 #endif
+
+#ifndef NOEXCEPT
+#   define NOEXCEPT noexcept
+#endif

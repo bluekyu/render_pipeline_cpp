@@ -26,7 +26,7 @@
 #include <filename.h>
 #include <virtualFileMountRamdisk.h>
 #include <virtualFileMountSystem.h>
-#include <config_util.h>
+#include <config_putil.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
