@@ -91,6 +91,8 @@ public:
     void on_unload();
 
 public:
+    static std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
+
     PluginManager& self_;
     RenderPipeline& pipeline_;
     boost::filesystem::path plugin_dir_;
@@ -100,7 +102,6 @@ public:
     std::unordered_map<std::string, std::unique_ptr<BasePlugin>> instances_;
 
     std::unordered_set<std::string> enabled_plugins_;
-    std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
 
     std::unordered_map<std::string, BasePlugin::PluginInfo> plugin_info_map_;
 
@@ -110,6 +111,8 @@ public:
     ///< { plugin-id, DaySettingsType }
     std::unordered_map<std::string, DaySettingsDataType> day_settings_;
 };
+
+std::unordered_map<std::string, std::function<PluginManager::PluginCreatorType>> PluginManager::Impl::plugin_creators_;
 
 PluginManager::Impl::Impl(PluginManager& self, RenderPipeline& pipeline): self_(self), pipeline_(pipeline)
 {
@@ -151,7 +154,7 @@ std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
 
     try
     {
-        auto result = plugin_creators_.insert({plugin_id, boost::dll::import_alias<PluginCreatorType>(
+        auto result = Impl::plugin_creators_.insert({plugin_id, boost::dll::import_alias<PluginCreatorType>(
             plugin_path,
             "create_plugin",
             boost::dll::load_mode::rtld_global | boost::dll::load_mode::append_decorations)});
@@ -420,6 +423,11 @@ void PluginManager::Impl::on_unload()
 
 // ************************************************************************************************
 
+void PluginManager::release_all_dll()
+{
+    Impl::plugin_creators_.clear();
+}
+
 PluginManager::PluginManager(RenderPipeline& pipeline): RPObject("PluginManager"), impl_(std::make_unique<Impl>(*this, pipeline))
 {
 }
@@ -430,7 +438,7 @@ PluginManager::~PluginManager()
 
     unload();
 
-    // unload DLL of plugins.
+    // NOTE: DLLs are not unloaded.
 }
 
 void PluginManager::load()

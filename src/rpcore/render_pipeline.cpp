@@ -254,7 +254,8 @@ public:
 
     std::vector<std::unique_ptr<RenderStage>> internal_stages_;
 
-    PT(rppanda::ShowBase) showbase_;
+    PT(rppanda::ShowBase) showbase_holder_;
+    rppanda::ShowBase* showbase_;
     std::unique_ptr<TaskScheduler> task_scheduler_;
     std::unique_ptr<TagStateManager> tag_mgr_;
     std::unique_ptr<PluginManager> plugin_mgr_;
@@ -295,7 +296,8 @@ RenderPipeline::Impl::~Impl()
 
     Globals::unload();
 
-    showbase_.clear();
+    showbase_ = nullptr;
+    showbase_holder_.clear();
 
     // should delete at last to delete resources in DLL module.
     plugin_mgr_.reset();
@@ -659,7 +661,7 @@ bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBa
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = new rppanda::ShowBase(argc, argv);
+        showbase_ = showbase_holder_ = new rppanda::ShowBase(argc, argv);
     }
     else
     {
@@ -679,6 +681,7 @@ bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBa
                     "pipeline sample to see how to initialize the RP.");
             }
         }
+        showbase_ = base;
     }
 
     print_driver_status();
@@ -695,7 +698,7 @@ bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::Sho
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = new rppanda::ShowBase(framework);
+        showbase_ = showbase_holder_ = new rppanda::ShowBase(framework);
     }
     else
     {
@@ -715,6 +718,7 @@ bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::Sho
                     "pipeline sample to see how to initialize the RP.");
             }
         }
+        showbase_ = base;
     }
 
     print_driver_status();

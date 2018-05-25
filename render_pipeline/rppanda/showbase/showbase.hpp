@@ -97,6 +97,17 @@ public:
     void initialize(int argc, char* argv[]);
     void initialize(PandaFramework* framework);
 
+    /**
+     * Call this function to destroy the ShowBase and stop all
+     * its tasks, freeing all of the Panda resources.  Normally, you
+     * should not need to call it explicitly, as it is bound to the
+     * exitfunc and will be called at application exit time
+     * automatically.
+     *
+     * This function is designed to be safe to call multiple times.
+     */
+    void destroy();
+
     PandaFramework* get_panda_framework() const;
     WindowFramework* get_window_framework() const;
 
