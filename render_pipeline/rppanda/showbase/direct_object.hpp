@@ -121,7 +121,9 @@ private:
     {
     public:
         TaskContainer(DirectObject* owner, AsyncTask* task);
-        void wp_callback(void*) final { owner_->task_list_.erase(task_id_); }
+        virtual ~TaskContainer();
+
+        void wp_callback(void*) final;
 
         WPT(AsyncTask) task_;
 
