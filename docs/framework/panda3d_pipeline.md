@@ -1,12 +1,11 @@
-# 파이프라인
-**Translation**: [English](../../framework/pipeline.md)
+# Panda3D Pipeline
+**Languages**: [Korean](../ko_kr/framework/panda3d_pipeline.md)
 
-## Panda3D 파이프라인
-참고 사항:
-- [Data Loop 및 Node](data_loop_and_node.md).
+See also:
+- [Data Loop and Node](data_loop_and_node.md).
 
-### Call Tree
-#### main_loop
+## Call Stack
+### main_loop
 ```cpp
 PandaFramework::main_loop()
 {
@@ -28,7 +27,7 @@ PandaFramework::do_frame()
 }
 ```
 
-#### for_each(AsyncTask)
+### for_each(AsyncTask)
 ```cpp
 // Task "data_loop" has -50 sorts.
 PandaFramework::task_data_loop()
@@ -40,7 +39,7 @@ PandaFramework::task_event()
 PandaFramework::task_igloop()
 ```
 
-#### task_data_loop
+### task_data_loop
 ```cpp
 PandaFramework::task_data_loop()
 {
@@ -62,7 +61,7 @@ PandaFramework::task_data_loop()
 }
 ```
 
-#### task_event
+### task_event
 ```cpp
 // Task "event"
 PandaFramework::task_event()
@@ -70,41 +69,37 @@ PandaFramework::task_event()
 }
 ```
 
-#### task_igloop
+### task_igloop
 ```cpp
 PandaFramework::task_igloop()
 {
     GraphicsEngine::render_frame()
     {
-        GraphicsEngine::do_flip_frame()
-        {
-            GraphicsEngine::WindowRenderer::do_flip()
-            {
-                GraphicsEngine::flip_windows()
-                {
-                    for_each(WINDOWS)
-                    {
-                        GraphicsOutput::begin_flip()
-                        {
-                        }
-                    }
-
-                    for_each(WINDOWS)
-                    {
-                        GraphicsOutput::end_flip()
-                        {
-                            // swap buffer
-                        }
-                    }
-                }
-            }
-        }
-
         GraphicsEngine::WindowRenderer::do_frame()
         {
             GraphicsEngine::cull_to_bins();
             GraphicsEngine::cull_and_draw_together();
-            GraphicsEngine::draw_bins();
+            GraphicsEngine::draw_bins()
+            {
+                for_each(WINDOWS)
+                {
+                    GraphicsOutput::begin_flip();
+                    GraphicsOutput::end_flip();         // swap buffers
+
+                    if (GraphicsOutput::begin_frame())
+                    {
+                        for_each(DisplayRegion)
+                        {
+                            GraphicsEngine::do_draw()
+                            {
+                                CullResult::draw();
+                            }
+                        }
+                    }
+                    GraphicsOutput::end_frame();
+                }
+            }
+
             GraphicsEngine::process_events()
             {
                 for_each(WINDOWS)
@@ -113,6 +108,8 @@ PandaFramework::task_igloop()
                 }
             }
         }
+
+        ClockObject::tick();                            // frame number increment
     }
 }
 ```

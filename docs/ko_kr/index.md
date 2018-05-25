@@ -1,5 +1,5 @@
 # Render Pipeline 문서
-**Translation**: [English](../index.md)
+**Languages**: [English](../index.md)
 
 ## 시작하기
 - [Render Pipeline C++ 사용하기](using_rpcpp.md)
@@ -19,12 +19,14 @@
 - [스테레오 및 가상현실](rendering/stereo-and-vr.md)
 
 ## 프레임워크
-- [파이프라인](framework/pipeline.md)
+- [Panda3D 파이프라인](framework/panda3d_pipeline.md)
   - [Data Loop 및 Node](framework/data_loop_and_node.md)
+- [Render Pipeline 의 파이프라인](framework/rp_pipeline.md)
 - [Tasks](framework/tasks.md)
 
 ## 기타
 - [문제점 및 해결방법](issues_and_solutions.md)
+- [Tips and Common Mistakes](https://github.com/bluekyu/render_pipeline_cpp/wiki/Tips-and-Common-Mistakes)
 - [Cheet Sheets](http://www.panda3d.org/manual/index.php/Cheat_Sheets)
 
 ## 코드 스니펫

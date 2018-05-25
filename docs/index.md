@@ -1,5 +1,5 @@
 # Render Pipeline Docs
-**Translation**: [한국어](ko_kr/index.md)
+**Languages**: [한국어](ko_kr/index.md)
 
 ## Getting Started
 - [Using Render Pipeline C++](using_rpcpp.md)
@@ -19,12 +19,14 @@
 - [Stereo and Virtual Reality](rendering/stereo-and-vr.md)
 
 ## Framework
-- [Pipeline](framework/pipeline.md)
+- [Panda3D Pipeline](framework/panda3d_pipeline.md)
   - [Data Loop and Node](framework/data_loop_and_node.md)
+- [Pipeline of Render Pipeline](framework/rp_pipeline.md)
 - [Tasks](framework/tasks.md)
 
 ## Others
 - [Issues and Solutions](issues_and_solutions.md)
+- [Tips and Common Mistakes](https://github.com/bluekyu/render_pipeline_cpp/wiki/Tips-and-Common-Mistakes)
 - [Cheet Sheets](http://www.panda3d.org/manual/index.php/Cheat_Sheets)
 
 ## Code Snippets
