@@ -7,14 +7,14 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - Tools
   - CMake (build tool)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional and recommended): 0.0.111
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 0.0.111
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: above 1.65.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
-- Eigen3 (optional): if Panda3D uses Eigen and does not include it
+- Eigen3 (conditional): Panda3D does not have Eigen3 although Panda3D uses it
 
 
 
@@ -25,6 +25,8 @@ CMake will find required libraries and generate build tools (ex, Unix Makefiles 
 While configuring CMake, the first configuration may be failed because it cannot find some libraries.
 To solve this problem, you can give hints for the path of the libraries in CMake configuration (or advanced tab).
 
+If you use `vcpkg`, then this issue may be almost gone.
+
 ### Third-party Guide
 In Windows, we recommend to use [vcpkg](https://github.com/Microsoft/vcpkg) for some third-party.
 If you does not use `vcpkg`, then build and install those and setup proper values for CMake cache.
@@ -33,7 +35,7 @@ If you does not use `vcpkg`, then build and install those and setup proper value
   ```
   vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index spdlog yaml-cpp
 
-  # optional
+  # conditional
   vcpkg install --triplet x64-windows eigen3
   ```
 
@@ -69,10 +71,10 @@ Instead, it uses `FREETYPE_DIR` in System Environment Variable as hint.
 Therefore, use system environment variable OR set it in CMake (see Integration with Plugin & Samples)
 
 #### Boost
-- Libraries: algorithm, filesystem, dll, any, optional, variant, multi-index
+- Required libraries: algorithm, filesystem, dll, any, optional, variant, multi-index
 - Windows:
   - `vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index`
-  - Get Boost library from official website and set `BOOST_ROOT` to
+  - OR, get Boost library from official website and set `BOOST_ROOT` to
     installed directory (For details, see FindBoost usage in CMake)
 - Ubuntu: `apt-get install libboost-filesystem-dev`
 

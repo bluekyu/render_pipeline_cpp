@@ -7,14 +7,14 @@
 - 도구
   - CMake (빌드 도구)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항 및 권장): 0.0.111
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 0.0.111
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.0 이상
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
-- Eigen3 (선택사항): Panda3D 가 Eigen3 를 사용하지만 없을 경우
+- Eigen3 (조건부): Panda3D 가 Eigen3 를 사용하지만 없을 경우
 
 
 
@@ -25,6 +25,8 @@ CMake 를 사용하여 필요한 라이브러리들을 찾고, 빌드 도구(Uni
 CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는데, 일부 라이브러리 혹은 설치 경로가 다른 라이브러리의 경우
 찾지 못할 수 있다. 이를 해결하려면, CMake configuration 창 혹은 Advanced 탭에서 라이브러리가 설치된 경로를 힌트로 주면 된다.
 
+만일, `vcpkg` 를 사용한다면, 이 문제는 거의 없어진다.
+
 ### 외부 라이브러리 가이드
 윈도우에서, 외부 라이브러리 사용 시 [vcpkg](https://github.com/Microsoft/vcpkg) 사용을 권장한다.
 만일, `vcpkg` 를 사용하지 않는다면, 외부 라이브러리를 빌드 및 설치하고 CMake 캐시에 적절한 값을 설정하면 된다.
@@ -33,7 +35,7 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
   ```
   vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index spdlog yaml-cpp
 
-  # optional
+  # conditional
   vcpkg install --triplet x64-windows eigen3
   ```
 
@@ -69,10 +71,10 @@ Panda3D 에서 Eigen3 을 사용할 수 있고, 원래 Panda3D 에서는 Eigen3 
 따라서, 시스템 환경 변수를 사용하거나 CMake 에 해당 값을 설정하면 된다. (Integration with Plugin & Samples 참고)
 
 #### Boost
-- 라이브러리: algorithm, filesystem, dll, any, optional, variant, multi-index
+- 필요한 라이브러리: algorithm, filesystem, dll, any, optional, variant, multi-index
 - Windows
   - `vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index`
-  - 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
+  - 또는, 공식 웹사이트로부터 Boost 라이브러리를 설치하고 `BOOST_ROOT` 를 설치 폴더로 설정한다.
     (자세한 것은, CMake 에서 FindBoost 사용법 참조)
 - Ubuntu: `apt-get install libboost-filesystem-dev`
 
