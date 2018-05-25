@@ -76,7 +76,7 @@ install:
         Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
     }
 - 7z x -y panda3d-thirdparty.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y panda3d.7z > nul
 - ps: popd
 
