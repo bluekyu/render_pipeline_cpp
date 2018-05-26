@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "probe_manager.hpp"
+#include "rpplugins/env_probes/probe_manager.hpp"
 
 #include <lens.h>
 
@@ -28,7 +28,7 @@
 #include <render_pipeline/rpcore/image.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 
-#include "environment_probe.hpp"
+#include "rpplugins/env_probes/environment_probe.hpp"
 
 namespace rpplugins {
 

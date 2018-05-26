@@ -21,7 +21,7 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # ==================================================================================================
 
 # === target =======================================================================================
-set(plugin_sources
+set(${PROJECT_NAME}_sources
     "${PROJECT_SOURCE_DIR}/include/volumetrics_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/include/volumetrics_stage.hpp"
     "${PROJECT_SOURCE_DIR}/src/volumetrics_plugin.cpp"

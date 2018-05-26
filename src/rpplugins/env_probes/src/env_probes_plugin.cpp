@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "../include/env_probes_plugin.hpp"
+#include "rpplugins/env_probes/env_probes_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
 #include <boost/any.hpp>
@@ -36,11 +36,11 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/stages/cull_lights_stage.hpp>
 
-#include "probe_manager.hpp"
+#include "rpplugins/env_probes/probe_manager.hpp"
+#include "rpplugins/env_probes/environment_probe.hpp"
 #include "environment_capture_stage.hpp"
 #include "cull_probes_stage.hpp"
 #include "apply_envprobes_stage.hpp"
-#include "environment_probe.hpp"
 #include "pssm_plugin.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)

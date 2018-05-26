@@ -29,7 +29,8 @@
 
 #include "ao_stage.hpp"
 #include "capture_stage.hpp"
-#include "env_probes_plugin.hpp"
+
+#include "rpplugins/env_probes/env_probes_plugin.hpp"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkyAOPlugin)
 

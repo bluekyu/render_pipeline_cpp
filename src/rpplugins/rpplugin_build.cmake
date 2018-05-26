@@ -1,5 +1,5 @@
 # === target =======================================================================================
-add_library(${PROJECT_NAME} MODULE ${plugin_sources})
+add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}_sources} ${${PROJECT_NAME}_headers})
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251

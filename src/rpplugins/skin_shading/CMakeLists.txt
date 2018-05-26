@@ -21,7 +21,7 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # ==================================================================================================
 
 # === target =======================================================================================
-set(plugin_sources
+set(${PROJECT_NAME}_sources
     "${PROJECT_SOURCE_DIR}/src/skin_shading_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/skin_shading_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/skin_shading_stage.hpp"

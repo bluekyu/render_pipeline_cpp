@@ -21,7 +21,7 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # ==================================================================================================
 
 # === target =======================================================================================
-set(plugin_sources
+set(${PROJECT_NAME}_sources
     "${PROJECT_SOURCE_DIR}/include/pssm_plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/pssm_dist_shadow_stage.hpp"

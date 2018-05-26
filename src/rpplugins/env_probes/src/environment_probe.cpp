@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "environment_probe.hpp"
+#include "rpplugins/env_probes/environment_probe.hpp"
 
 namespace rpplugins {
 

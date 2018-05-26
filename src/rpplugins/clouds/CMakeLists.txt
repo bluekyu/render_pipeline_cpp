@@ -21,7 +21,7 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # ==================================================================================================
 
 # === target =======================================================================================
-set(plugin_sources
+set(${PROJECT_NAME}_sources
     "${PROJECT_SOURCE_DIR}/src/plugin.hpp"
     "${PROJECT_SOURCE_DIR}/src/plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/apply_clouds_stage.hpp"

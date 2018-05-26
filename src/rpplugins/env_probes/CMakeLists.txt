@@ -21,20 +21,7 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # ==================================================================================================
 
 # === target =======================================================================================
-set(plugin_sources
-    "${PROJECT_SOURCE_DIR}/include/env_probes_plugin.hpp"
-    "${PROJECT_SOURCE_DIR}/src/apply_envprobes_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/apply_envprobes_stage.hpp"
-    "${PROJECT_SOURCE_DIR}/src/cull_probes_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/cull_probes_stage.hpp"
-    "${PROJECT_SOURCE_DIR}/src/env_probes_plugin.cpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_capture_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_capture_stage.hpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_probe.cpp"
-    "${PROJECT_SOURCE_DIR}/src/environment_probe.hpp"
-    "${PROJECT_SOURCE_DIR}/src/probe_manager.cpp"
-    "${PROJECT_SOURCE_DIR}/src/probe_manager.hpp"
-)
+include("${PROJECT_SOURCE_DIR}/files.cmake")
 include("../rpplugin_build.cmake")
 target_link_libraries(${PROJECT_NAME} PRIVATE rpplugins::pssm)
 # ==================================================================================================

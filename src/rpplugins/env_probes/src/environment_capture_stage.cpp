@@ -31,7 +31,7 @@
 #include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rpcore/util/task_scheduler.hpp>
 
-#include "environment_probe.hpp"
+#include "rpplugins/env_probes/environment_probe.hpp"
 
 namespace rpplugins {
 
