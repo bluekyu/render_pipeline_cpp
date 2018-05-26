@@ -39,6 +39,10 @@ namespace rppanda {
 class ShowBase;
 }
 
+namespace rpplugins {
+class EnvironmentProbe;
+}
+
 namespace rpcore {
 
 class StageManager;
@@ -160,6 +164,13 @@ public:
      * Clear applied effect on the node path.
      */
     void clear_effect(NodePath& nodepath);
+
+    /**
+     * Constructs a new environment probe and returns the handle, so that
+     * the probe can be modified. In case the env_probes plugin is not activated,
+     * this returns a dummy object which can be modified but has no impact.
+     */
+    rpplugins::EnvironmentProbe* add_environment_probe();
 
     /**
      * Prepares a given scene, by converting panda lights to render pipeline

@@ -1081,6 +1081,14 @@ void RenderPipeline::clear_effect(NodePath& nodepath)
     impl_->clear_effect(nodepath);
 }
 
+rpplugins::EnvironmentProbe* RenderPipeline::add_environment_probe()
+{
+    if (!impl_->plugin_mgr_->is_plugin_enabled("env_probes"))
+        return nullptr;
+
+    return nullptr;
+}
+
 void RenderPipeline::prepare_scene(const NodePath& scene)
 {
     std::vector<RPLight*> lights;
