@@ -26,6 +26,8 @@
 
 namespace rpplugins {
 
+class EnvironmentProbe;
+
 class EnvProbesPlugin : public rpcore::BasePlugin
 {
 public:
@@ -39,6 +41,7 @@ public:
     void on_pre_render_update() final;
 
     virtual rpcore::RenderStage* get_capture_stage();
+    virtual EnvironmentProbe* create_probe();
 
 private:
     class Impl;

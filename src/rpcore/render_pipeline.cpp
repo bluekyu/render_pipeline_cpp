@@ -64,6 +64,8 @@
 #include "render_pipeline/rpcore/native/rp_point_light.h"
 #include "render_pipeline/rpcore/native/rp_spot_light.h"
 
+#include "rpplugins/env_probes/include/rpplugins/env_probes/env_probes_plugin.hpp"
+
 #include "rpcore/common_resources.hpp"
 #include "rpcore/gui/debugger.hpp"
 #include "rpcore/gui/error_message_display.hpp"
@@ -1086,7 +1088,7 @@ rpplugins::EnvironmentProbe* RenderPipeline::add_environment_probe()
     if (!impl_->plugin_mgr_->is_plugin_enabled("env_probes"))
         return nullptr;
 
-    return nullptr;
+    return static_cast<rpplugins::EnvProbesPlugin*>(impl_->plugin_mgr_->get_instance("env_probes")->downcast())->create_probe();
 }
 
 void RenderPipeline::prepare_scene(const NodePath& scene)

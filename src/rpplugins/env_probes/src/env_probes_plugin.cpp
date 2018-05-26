@@ -203,4 +203,14 @@ rpcore::RenderStage* EnvProbesPlugin::get_capture_stage()
     return impl_->capture_stage_;
 }
 
+EnvironmentProbe* EnvProbesPlugin::create_probe()
+{
+    auto probe = std::make_unique<EnvironmentProbe>();
+    auto probe_raw = probe.get();
+    if (impl_->probe_mgr_->add_probe(std::move(probe)))
+        return probe_raw;
+    else
+        return nullptr;
+}
+
 }
