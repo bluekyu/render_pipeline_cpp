@@ -30,16 +30,6 @@ EnvironmentProbe::EnvironmentProbe(): RPObject("EnvironmentProbe")
     _bounds = new BoundingSphere(LPoint3f(0), 1.0f);
 }
 
-void EnvironmentProbe::update_bounds()
-{
-    const auto& mat = _transform->get_mat();
-    const LVecBase3f& mid_point = mat.xform_point(LVecBase3f(0, 0, 0));
-    const LVecBase3f& max_point = mat.xform_point(LVecBase3f(1, 1, 1));
-    float radius = (mid_point - max_point).length();
-    _bounds = new BoundingSphere(mid_point, radius);
-    _modified = true;
-}
-
 void EnvironmentProbe::write_to_buffer(PTA_uchar& buffer_ptr)
 {
     // 4 = sizeof float, 20 = floats per cubemap
