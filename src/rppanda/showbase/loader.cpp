@@ -37,6 +37,7 @@
 
 #include "render_pipeline/rppanda/showbase/loader.hpp"
 
+#include <nodePathCollection.h>
 #include <audioManager.h>
 #include <loader.h>
 #include <audioLoadRequest.h>
@@ -46,6 +47,7 @@
 #include <dynamicTextFont.h>
 #include <texturePool.h>
 #include <shaderPool.h>
+#include <modelFlattenRequest.h>
 
 #include <fmt/ostream.h>
 
@@ -63,6 +65,12 @@ public:
 
     void pre_load_model(LoaderOptions& this_options, bool& this_ok_missing,
         boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing);
+
+    /**
+     * The asynchronous flatten operation has completed; quietly
+     * drop in the new models.
+     */
+    void async_flatten_done(const std::vector<NodePath>& models, const CallbackType& callback, std::vector<NodePath>& orig_model_list);
 
     /**
      * A model or sound file or some such thing has just been
@@ -116,6 +124,26 @@ void Loader::Impl::pre_load_model(LoaderOptions& this_options, bool& this_ok_mis
         this_options.set_flags(this_options.get_flags() | LoaderOptions::LF_allow_instance);
 }
 
+void Loader::Impl::async_flatten_done(const std::vector<NodePath>& models, const CallbackType& callback, std::vector<NodePath>& orig_model_list)
+{
+    rppanda_showbase_cat.debug() << "async_flatten_done" << std::endl;
+
+    if (models.size() != orig_model_list.size())
+        rppanda_showbase_cat.error() << "async_flatten_done: Size is not same." << std::endl;
+
+    for (size_t k = 0, k_end = models.size(); k < k_end; ++k)
+    {
+        orig_model_list[k].get_children().detach();
+        auto orig = orig_model_list[k].node();
+        auto flat = models[k].node();
+        orig->copy_all_properties(flat);
+        flat->replace_node(orig);
+    }
+
+    if (callback)
+        callback(orig_model_list);
+}
+
 void Loader::Impl::got_async_object(const Event* ev)
 {
     if (ev->get_num_parameters() != 1)
@@ -152,8 +180,7 @@ void Loader::Impl::got_async_object(const Event* ev)
 
 // ************************************************************************************************
 
-Loader::Callback::Callback(Loader* loader, int num_objects,
-    const std::function<void(std::vector<NodePath>&)>& callback) : loader_(loader), callback_(callback)
+Loader::Callback::Callback(Loader* loader, int num_objects, const CallbackType& callback) : loader_(loader), callback_(callback)
 {
     objects_.resize(num_objects);
 }
@@ -265,8 +292,7 @@ std::vector<NodePath> Loader::load_model(const std::vector<Filename>& model_list
 
 std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model_path, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
-    const std::function<void(std::vector<NodePath>&)>& callback,
-    boost::optional<int> priority)
+    const CallbackType& callback, boost::optional<int> priority)
 {
     return load_model_async(std::vector<Filename>{model_path}, loader_options, no_cache,
         allow_instance, ok_missing, callback, priority);
@@ -274,8 +300,7 @@ std::shared_ptr<Loader::Callback> Loader::load_model_async(const Filename& model
 
 std::shared_ptr<Loader::Callback> Loader::load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options,
     boost::optional<bool> no_cache, bool allow_instance, boost::optional<bool> ok_missing,
-    const std::function<void(std::vector<NodePath>&)>& callback,
-    boost::optional<int> priority)
+    const CallbackType& callback, boost::optional<int> priority)
 {
     rppanda_showbase_cat.debug() << "Loading model: " << join_to_string(model_list) << std::endl;
 
@@ -652,6 +677,37 @@ CPT(Shader) Loader::load_shader(const Filename& shader_path, bool ok_missing)
 void Loader::unload_shader(const Filename& shader_path)
 {
     ShaderPool::release_shader(shader_path);
+}
+
+auto Loader::async_flatten_strong(NodePath model, const CallbackType& callback) -> std::shared_ptr<Callback>
+{
+    return async_flatten_strong(std::vector<NodePath>{model}, callback);
+}
+
+auto Loader::async_flatten_strong(const std::vector<NodePath>& model_list, const CallbackType& callback) -> std::shared_ptr<Callback>
+{
+    auto cb = std::make_shared<Callback>(this, model_list.size(), callback);
+
+    size_t i = 0;
+    for (const auto& model_path : model_list)
+    {
+        PT(ModelFlattenRequest) request = new ModelFlattenRequest(model_path.node());
+        request->set_done_event(impl_->hook_);
+        impl_->loader_->load_async(request);
+        cb->requests_.insert(request);
+        cb->request_list_.push_back(request);
+        impl_->requests_.insert({ request.p(),{ cb, i } });
+        i += 1;
+    }
+
+    return cb;
+}
+
+auto Loader::async_flatten_strong_in_place(std::vector<NodePath>& model_list, const CallbackType& callback) -> std::shared_ptr<Callback>
+{
+    const auto& const_model_list = model_list;
+    CallbackType new_callback = std::bind(&Impl::async_flatten_done, impl_.get(), std::placeholders::_1, callback, model_list);
+    return async_flatten_strong(const_model_list, new_callback);
 }
 
 }

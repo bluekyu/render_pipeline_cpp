@@ -58,6 +58,8 @@ class ShowBase;
 class RENDER_PIPELINE_DECL Loader : public DirectObject
 {
 public:
+    using CallbackType = std::function<void(std::vector<NodePath>&)>;
+
     /**
      * Returned by loadModel when used asynchronously. This class is
      * modelled after Future, and can be awaited.
@@ -65,8 +67,7 @@ public:
     class RENDER_PIPELINE_DECL Callback
     {
     public:
-        Callback(Loader* loader, int num_objects,
-            const std::function<void(std::vector<NodePath>&)>& callback);
+        Callback(Loader* loader, int num_objects, const CallbackType& callback);
 
         void got_object(size_t index, NodePath object);
 
@@ -87,7 +88,7 @@ public:
 
         Loader* loader_;
         std::vector<NodePath> objects_;
-        std::function<void(std::vector<NodePath>&)> callback_;
+        CallbackType callback_;
         std::unordered_set<AsyncTask*> requests_;
         std::vector<AsyncTask*> request_list_;
     };
@@ -116,13 +117,11 @@ public:
 
     std::shared_ptr<Callback> load_model_async(const Filename& model_path, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
-        const std::function<void(std::vector<NodePath>&)>& callback={},
-        boost::optional<int> priority=boost::none);
+        const CallbackType& callback={}, boost::optional<int> priority=boost::none);
 
     std::shared_ptr<Callback> load_model_async(const std::vector<Filename>& model_list, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none,
-        const std::function<void(std::vector<NodePath>&)>& callback={},
-        boost::optional<int> priority = boost::none);
+        const CallbackType& callback={}, boost::optional<int> priority = boost::none);
 
     void unload_model(NodePath model);
     void unload_model(ModelRoot* model);
@@ -229,6 +228,25 @@ public:
     CPT(Shader) load_shader(const Filename& shader_path, bool ok_missing = false);
 
     void unload_shader(const Filename& shader_path);
+
+    /**
+     * Performs a model.flattenStrong() operation in a sub-thread
+     * (if threading is compiled into Panda).  The model may be a
+     * single NodePath, or it may be a list of NodePaths.
+     *
+     * Each model is duplicated and flattened in the sub-thread.
+     *
+     * If inPlace is True, then when the flatten operation completes,
+     * the newly flattened copies are automatically dropped into the
+     * scene graph, in place the original models.
+     *
+     * If a callback is specified, then it is called after the
+     * operation is finished, receiving the flattened model (or a
+     * list of flattened models).
+     */
+    std::shared_ptr<Callback> async_flatten_strong(NodePath model, const CallbackType& callback = {});
+    std::shared_ptr<Callback> async_flatten_strong(const std::vector<NodePath>& model_list, const CallbackType& callback = {});
+    std::shared_ptr<Callback> async_flatten_strong_in_place(std::vector<NodePath>& model_list, const CallbackType& callback = {});
 
 private:
     class Impl;
