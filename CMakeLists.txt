@@ -31,15 +31,15 @@ endif()
 find_package(panda3d REQUIRED p3framework p3direct)
 find_package(Boost REQUIRED filesystem)
 
-find_package(fmt REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 if(TARGET fmt::fmt-header-only)
     set(FMT_TARGET fmt::fmt-header-only)
 else()                                      # for ubuntu libfmt-dev package
     set(FMT_TARGET fmt::fmt)
 endif()
 
-find_package(spdlog REQUIRED)
-find_package(yaml-cpp REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 # find freetype
 find_package(Freetype REQUIRED)

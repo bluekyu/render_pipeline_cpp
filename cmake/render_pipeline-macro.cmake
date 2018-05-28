@@ -30,7 +30,7 @@ function(render_pipeline_find_plugins plugin_id_list)
         endif()
 
         foreach(plugin_id ${missed_plugin_id_list})
-            find_package(rpplugin_${plugin_id} REQUIRED HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
+            find_package(rpplugin_${plugin_id} CONFIG REQUIRED HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
         endforeach()
     endif()
 
