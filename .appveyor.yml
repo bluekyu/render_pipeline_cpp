@@ -22,20 +22,11 @@ image:
 # set clone depth
 clone_depth: 1
 
-# clone directory
-clone_folder: c:\projects\render_pipeline_cpp
-
 # scripts that are called at very beginning, before repo cloning
 init:
 - ps: >-
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
-    }
-- ps: >-
-    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
-        $env:CMAKE_GENERATOR="Visual Studio 14 2015 Win64"
-    } else {
-        $env:CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
     }
 # checkout vcpkg v0.0.111
 - ps: pushd C:\tools\vcpkg
@@ -143,3 +134,24 @@ on_success:
             TRIGGER_BUILD_VERSION = $env:APPVEYOR_BUILD_VERSION
         }
     }
+
+#---------------------------------#
+#       specializing matrix       #
+#---------------------------------#
+
+for:
+-
+    matrix:
+        only:
+            - image: Visual Studio 2015
+
+    environment:
+        CMAKE_GENERATOR: Visual Studio 14 2015 Win64
+
+-
+    matrix:
+        only:
+            - image: Visual Studio 2017
+
+    environment:
+        CMAKE_GENERATOR: Visual Studio 15 2017 Win64
