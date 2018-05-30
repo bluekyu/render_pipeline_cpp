@@ -1,5 +1,4 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-07-28
 
 # render pipeline variable
 set(render_pipeline_DATA_DIR "share/render_pipeline" CACHE INTERNAL
@@ -16,8 +15,15 @@ set(render_pipeline_RELWITHDEBINFO_POSTFIX "-reldeb" CACHE INTERNAL
 )
 
 # help function to find rpplugin
-function(render_pipeline_find_plugins plugin_id_list)
+function(render_pipeline_find_plugins)
+    cmake_parse_arguments(ARG "REQUIRED" "" "" ${ARGN})
+    set(plugin_id_list ${ARG_UNPARSED_ARGUMENTS})
+    if(${ARG_REQUIRED})
+        set(plugin_required REQUIRED)
+    endif()
+
     set(missed_plugin_id_list "")
+    set(found_plugin_id_list "")
     foreach(plugin_id ${plugin_id_list})
         if(NOT TARGET rpplugins::${plugin_id})
             list(APPEND missed_plugin_id_list ${plugin_id})
@@ -30,12 +36,19 @@ function(render_pipeline_find_plugins plugin_id_list)
         endif()
 
         foreach(plugin_id ${missed_plugin_id_list})
-            find_package(rpplugin_${plugin_id} CONFIG REQUIRED HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
+            find_package(rpplugin_${plugin_id} CONFIG ${plugin_required} HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
+            if(TARGET rpplugins::${plugin_id})
+                list(APPEND found_plugin_id_list ${plugin_id})
+            else()
+                message(STATUS "  Failed to find '${plugin_id}' plugin.\n")
+            endif()
         endforeach()
     endif()
 
-    message(STATUS "Found the following Render Pipeline plugins:")
-    foreach(plugin_id ${plugin_id_list})
-        message(STATUS "  ${plugin_id}")
-    endforeach()
+    if(${found_plugin_id_list})
+        message(STATUS "Found the following Render Pipeline plugins:")
+        foreach(plugin_id ${found_plugin_id_list})
+            message(STATUS "  ${plugin_id}")
+        endforeach()
+    endif()
 endfunction()
