@@ -45,7 +45,7 @@ function(render_pipeline_find_plugins)
         endforeach()
     endif()
 
-    if(${found_plugin_id_list})
+    if(found_plugin_id_list)
         message(STATUS "Found the following Render Pipeline plugins:")
         foreach(plugin_id ${found_plugin_id_list})
             message(STATUS "  ${plugin_id}")
