@@ -35,10 +35,13 @@ public:
     using TaskFunc = std::function<DoneStatus(FunctionalTask*)>;
     using BirthFunc = std::function<void(FunctionalTask*)>;
     using DeathFunc = std::function<void(FunctionalTask*, bool)>;
+    using UserDataType = std::shared_ptr<void>;
 
 public:
     FunctionalTask(const TaskFunc& func = nullptr, const std::string& name = {});
+    FunctionalTask(const TaskFunc& func, const UserDataType& data, const std::string& name = {});
     FunctionalTask(TaskFunc&& func, const std::string& name = {});
+    FunctionalTask(TaskFunc&& func, const UserDataType& data, const std::string& name = {});
 
     ALLOC_DELETED_CHAIN(FunctionalTask);
 
@@ -56,6 +59,9 @@ public:
     void set_upon_death(DeathFunc&& func);
     const DeathFunc& get_upon_death() const;
 
+    void set_user_data(const UserDataType& data);
+    UserDataType get_user_data() const;
+
 protected:
     bool is_runnable() override;
     DoneStatus do_task() override;
@@ -66,6 +72,7 @@ private:
     TaskFunc function_;
     BirthFunc upon_birth_;
     DeathFunc upon_death_;
+    UserDataType user_data_;
 
 public:
     static TypeHandle get_class_type();
@@ -122,6 +129,16 @@ inline void FunctionalTask::set_upon_death(DeathFunc&& func)
 inline const FunctionalTask::DeathFunc& FunctionalTask::get_upon_death() const
 {
     return upon_death_;
+}
+
+inline void FunctionalTask::set_user_data(const UserDataType& data)
+{
+    user_data_ = data;
+}
+
+inline FunctionalTask::UserDataType FunctionalTask::get_user_data() const
+{
+    return user_data_;
 }
 
 inline bool FunctionalTask::is_runnable()

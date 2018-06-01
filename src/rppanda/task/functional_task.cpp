@@ -25,12 +25,25 @@ namespace rppanda {
 
 TypeHandle FunctionalTask::type_handle_;
 
-FunctionalTask::FunctionalTask(const TaskFunc& func, const std::string& name) : AsyncTask(name), function_(func)
+FunctionalTask::FunctionalTask(const TaskFunc& func, const std::string& name) :
+    FunctionalTask(func, {}, name)
 {
 }
 
-FunctionalTask::FunctionalTask(TaskFunc&& func, const std::string& name) : AsyncTask(name), function_(func)
+FunctionalTask::FunctionalTask(const TaskFunc& func, const UserDataType& data, const std::string& name) :
+    AsyncTask(name), function_(func), user_data_(data)
 {
+}
+
+FunctionalTask::FunctionalTask(TaskFunc&& func, const std::string& name) :
+    FunctionalTask(std::move(func), {}, name)
+{
+}
+
+FunctionalTask::FunctionalTask(TaskFunc&& func, const UserDataType& data, const std::string& name) :
+    AsyncTask(name), function_(func), user_data_(data)
+{
+
 }
 
 FunctionalTask::~FunctionalTask() = default;
