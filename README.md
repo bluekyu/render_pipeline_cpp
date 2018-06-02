@@ -5,12 +5,12 @@ This project is C++ ported version of [Render Pipeline](https://github.com/tobsp
 And I am developing the project and new features for CR Software Framework (...).
 
 #### Build Status
-| OS       | Build Status             | Latest Build                                                                    |
-| :------: | :----------------------: | :-----------------------------------------------------------------------------: |
-| Windows  | [![win-badge]][win-link] | vc140 ([Release][vc140-release])<br/>vc141 ([Debug][vc141-debug], [Release][vc141-release]) |
+| OS       | Build Status           | Latest Build                                                                                |
+| :------: | :--------------------: | :-----------------------------------------------------------------------------------------: |
+| Windows  | [![ci-badge]][ci-link] | vc140 ([Release][vc140-release])<br/>vc141 ([Debug][vc141-debug], [Release][vc141-release]) |
 
-[win-badge]: https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true "AppVeyor build status"
-[win-link]: https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master "AppVeyor build link"
+[ci-badge]: https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true "AppVeyor build status"
+[ci-link]: https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master "AppVeyor build link"
 [vc140-release]: https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2015%3B+Configuration%3A+Release "Download latest vc140 build (Release)"
 [vc141-debug]: https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+Debug "Download latest vc141 build (Debug)"
 [vc141-release]: https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+Release "Download latest vc141 build (Release)"
