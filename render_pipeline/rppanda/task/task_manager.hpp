@@ -138,7 +138,8 @@ public:
      */
     FunctionalTask* do_method_later(float delay_time,
         const FunctionalTask::TaskFunc& func, const std::string& name,
-        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        boost::optional<int> sort = boost::none, const FunctionalTask::UserDataType& data = {},
+        boost::optional<int> priority = boost::none,
         const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death=nullptr);
 
@@ -181,7 +182,8 @@ public:
      * @return  pointer of a new task object
      */
     FunctionalTask* add(const FunctionalTask::TaskFunc& func, const std::string& name,
-        boost::optional<int> sort = boost::none, boost::optional<int> priority = boost::none,
+        boost::optional<int> sort = boost::none, const FunctionalTask::UserDataType& data = {},
+        boost::optional<int> priority = boost::none,
         const boost::optional<std::string>& task_chain = boost::none,
         const FunctionalTask::DeathFunc& upon_death = nullptr);
 

@@ -136,11 +136,12 @@ AsyncTask* TaskManager::do_method_later(float delay_time, AsyncTask* task,
 
 FunctionalTask* TaskManager::do_method_later(float delay_time,
     const FunctionalTask::TaskFunc& func, const std::string& name,
-    boost::optional<int> sort, boost::optional<int> priority,
+    boost::optional<int> sort, const FunctionalTask::UserDataType& data,
+    boost::optional<int> priority,
     const boost::optional<std::string>& task_chain,
     const FunctionalTask::DeathFunc& upon_death)
 {
-    PT(FunctionalTask) task = new FunctionalTask(func, name);
+    PT(FunctionalTask) task = new FunctionalTask(func, data, name);
     if (upon_death)
         task->set_upon_death(upon_death);
 
@@ -163,11 +164,12 @@ AsyncTask* TaskManager::add(AsyncTask* task, const std::string& name,
 }
 
 FunctionalTask* TaskManager::add(const FunctionalTask::TaskFunc& func, const std::string& name,
-    boost::optional<int> sort, boost::optional<int> priority,
+    boost::optional<int> sort, const FunctionalTask::UserDataType& data,
+    boost::optional<int> priority,
     const boost::optional<std::string>& task_chain,
     const FunctionalTask::DeathFunc& upon_death)
 {
-    PT(FunctionalTask) task = new FunctionalTask(func, name);
+    PT(FunctionalTask) task = new FunctionalTask(func, data, name);
     if (upon_death)
         task->set_upon_death(upon_death);
 
