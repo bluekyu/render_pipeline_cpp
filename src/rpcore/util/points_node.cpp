@@ -22,13 +22,14 @@
 #include "render_pipeline/rpcore/util/points_node.hpp"
 
 #include <shaderAttrib.h>
+#include <materialAttrib.h>
 #include <geomNode.h>
 #include <geomPoints.h>
 
 #include <fmt/ostream.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
-#include "render_pipeline/rpcore/util/rpgeomnode.hpp"
+#include "render_pipeline/rpcore/util/rpmaterial.hpp"
 
 namespace rpcore {
 
@@ -80,15 +81,15 @@ void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPo
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
-    CPT(RenderState) state = RenderState::make(DCAST(ShaderAttrib, ShaderAttrib::make_default())->set_flag(ShaderAttrib::F_shader_point_size, true));
+    CPT(RenderState) state = RenderState::make(
+        DCAST(ShaderAttrib, ShaderAttrib::make_default())->set_flag(ShaderAttrib::F_shader_point_size, true),
+        MaterialAttrib::make(RPMaterial().get_material())
+    );
 
     PT(GeomNode) geom_node = new GeomNode(name);
     geom_node->add_geom(geom, state);
 
-    // default material
     points_np_ = NodePath(geom_node);
-    RPGeomNode gn(geom_node);
-    gn.set_material(0, RPMaterial());
 
     set_radius(radius);
 }

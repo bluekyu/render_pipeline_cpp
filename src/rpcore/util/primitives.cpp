@@ -30,22 +30,20 @@
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
-#include "render_pipeline/rpcore/util/rpgeomnode.hpp"
 #include "render_pipeline/rpcore/logger_manager.hpp"
 
 namespace rpcore {
 
 static NodePath create_geom_node(const std::string& name, PT(Geom) geom)
 {
+    CPT(RenderState) state = RenderState::make(
+        MaterialAttrib::make(RPMaterial().get_material())
+    );
+
     PT(GeomNode) geom_node = new GeomNode(name);
-    geom_node->add_geom(geom);
+    geom_node->add_geom(geom, state);
 
-    // default material
-    NodePath np(geom_node);
-    RPGeomNode gn(np);
-    gn.set_material(0, RPMaterial());
-
-    return np;
+    return NodePath(geom_node);
 }
 
 // ************************************************************************************************
@@ -77,18 +75,15 @@ NodePath create_line(const std::string& name, const std::vector<LVecBase3>& vert
     PT(Geom) geom = new Geom(vdata);
     geom->add_primitive(prim);
 
-    CPT(RenderAttrib) thick = RenderModeAttrib::make(RenderModeAttrib::M_unchanged, thickness);
-    CPT(RenderState) state = RenderState::make(thick);
+    CPT(RenderState) state = RenderState::make(
+        RenderModeAttrib::make(RenderModeAttrib::M_unchanged, thickness),
+        MaterialAttrib::make(RPMaterial().get_material())
+    );
 
     PT(GeomNode) geom_node = new GeomNode(name);
     geom_node->add_geom(geom, state);
 
-    // default material
-    NodePath np = NodePath(geom_node);
-    RPGeomNode gn(geom_node);
-    gn.set_material(0, RPMaterial());
-
-    return np;
+    return NodePath(geom_node);
 }
 
 NodePath create_triangle_mesh(
