@@ -101,9 +101,9 @@ class RENDER_PIPELINE_DECL PSSMCameraRig
         inline LPoint3f get_interpolated_point(CoordinateOrigin origin, float depth);
         LVecBase3f get_snap_offset(const LMatrix4f& mat, size_t resolution);
 
-        vector<NodePath> _cam_nodes;
-        vector<Camera*> _cameras;
-        vector<LVecBase2f> _max_film_sizes;
+        std::vector<NodePath> _cam_nodes;
+        std::vector<Camera*> _cameras;
+        std::vector<LVecBase2f> _max_film_sizes;
 
         // Current near and far points
         // Order: UL, UR, LL, LR (See CoordinateOrigin)

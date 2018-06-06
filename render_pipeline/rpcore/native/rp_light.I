@@ -48,7 +48,7 @@ inline size_t RPLight::get_num_shadow_sources() const {
  * @return Handle to the shadow source
  */
 inline ShadowSource* RPLight::get_shadow_source(size_t index) const {
-    nassertr(index < _shadow_sources.size(), NULL); // Invalid shadow source index
+    nassertr(index < _shadow_sources.size(), nullptr); // Invalid shadow source index
     return _shadow_sources[index];
 }
 

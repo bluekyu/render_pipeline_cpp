@@ -42,8 +42,8 @@ namespace rpcore {
  */
 InternalLightManager::InternalLightManager() {
     _shadow_update_distance = 100.0f;
-    _cmd_list = NULL;
-    _shadow_manager = NULL;
+    _cmd_list = nullptr;
+    _shadow_manager = nullptr;
 }
 
 /**
@@ -67,7 +67,7 @@ InternalLightManager::InternalLightManager() {
  * @param light The light to add.
  */
 void InternalLightManager::add_light(PT(RPLight) light) {
-    nassertv(_shadow_manager != NULL); // Shadow manager not set yet!
+    nassertv(_shadow_manager != nullptr); // Shadow manager not set yet!
 
     // Don't attach the light in case its already attached
     if (light->has_slot()) {
@@ -169,7 +169,7 @@ void InternalLightManager::setup_shadows(RPLight* light) {
  * @param light [description]
  */
 void InternalLightManager::remove_light(PT(RPLight) light) {
-    nassertv(_shadow_manager != NULL);
+    nassertv(_shadow_manager != nullptr);
 
     if (!light->has_slot()) {
         lightmgr_cat.error() << "Could not detach light, light was not attached!" << endl;
@@ -233,7 +233,7 @@ void InternalLightManager::remove_light(PT(RPLight) light) {
  */
 void InternalLightManager::gpu_remove_consecutive_sources(ShadowSource *first_source,
                                                           size_t num_sources) {
-    nassertv(_cmd_list != NULL);        // No command list set yet
+    nassertv(_cmd_list != nullptr);        // No command list set yet
     nassertv(first_source->has_slot()); // Source has no slot!
     GPUCommand cmd_remove(GPUCommand::CMD_remove_sources);
     cmd_remove.push_int(first_source->get_slot());
@@ -252,7 +252,7 @@ void InternalLightManager::gpu_remove_consecutive_sources(ShadowSource *first_so
  * @param light The light to remove, must be attached.
  */
 void InternalLightManager::gpu_remove_light(RPLight* light) {
-    nassertv(_cmd_list != NULL);  // No command list set yet
+    nassertv(_cmd_list != nullptr);  // No command list set yet
     nassertv(light->has_slot());  // Light has no slot!
     GPUCommand cmd_remove(GPUCommand::CMD_remove_light);
     cmd_remove.push_int(light->get_slot());
@@ -271,7 +271,7 @@ void InternalLightManager::gpu_remove_light(RPLight* light) {
  * @param light The light to update
  */
 void InternalLightManager::gpu_update_light(RPLight* light) {
-    nassertv(_cmd_list != NULL);  // No command list set yet
+    nassertv(_cmd_list != nullptr);  // No command list set yet
     nassertv(light->has_slot());  // Light has no slot!
     GPUCommand cmd_update(GPUCommand::CMD_store_light);
     cmd_update.push_int(light->get_slot());
@@ -291,7 +291,7 @@ void InternalLightManager::gpu_update_light(RPLight* light) {
  * @param source The source to update
  */
 void InternalLightManager::gpu_update_source(ShadowSource* source) {
-    nassertv(_cmd_list != NULL);  // No command list set yet
+    nassertv(_cmd_list != nullptr);  // No command list set yet
     nassertv(source->has_slot()); // Source has no slot!
     GPUCommand cmd_update(GPUCommand::CMD_store_source);
     cmd_update.push_int(source->get_slot());
@@ -391,7 +391,7 @@ void InternalLightManager::update_shadow_sources() {
 
     // Free the regions of all sources which will get updated. We have to take into
     // account that only a limited amount of sources can get updated per frame.
-    size_t update_slots = min(sources_to_update.size(),
+    size_t update_slots = (std::min)(sources_to_update.size(),
                               _shadow_manager->get_num_update_slots_left());
     for(size_t i = 0; i < update_slots; ++i) {
         if (sources_to_update[i]->has_region()) {
@@ -431,8 +431,8 @@ void InternalLightManager::update_shadow_sources() {
  *   If the InternalLightManager was not initialized yet, an assertion is thrown.
  */
 void InternalLightManager::update() {
-    nassertv(_shadow_manager != NULL); // Not initialized yet!
-    nassertv(_cmd_list != NULL);       // Not initialized yet!
+    nassertv(_shadow_manager != nullptr); // Not initialized yet!
+    nassertv(_cmd_list != nullptr);       // Not initialized yet!
 
     update_lights();
     update_shadow_sources();

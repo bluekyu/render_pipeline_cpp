@@ -51,7 +51,7 @@
  */
 inline void ShadowManager::set_max_updates(size_t max_updates) {
     nassertv(max_updates >= 0);
-    nassertv(_atlas == NULL);  // ShadowManager was already initialized
+    nassertv(_atlas == nullptr);  // ShadowManager was already initialized
     if (max_updates == 0) {
         shadowmanager_cat.warning() << "max_updates set to 0, no shadows will be updated." << endl;
     }
@@ -71,7 +71,7 @@ inline void ShadowManager::set_max_updates(size_t max_updates) {
  */
 inline void ShadowManager::set_atlas_size(size_t atlas_size) {
     nassertv(atlas_size >= 16 && atlas_size <= 16384);
-    nassertv(_atlas == NULL);  // ShadowManager was already initialized
+    nassertv(_atlas == nullptr);  // ShadowManager was already initialized
     _atlas_size = atlas_size;
 }
 
@@ -94,7 +94,7 @@ inline size_t ShadowManager::get_atlas_size() const {
  * @return The internal ShadowAtlas instance
  */
 inline ShadowAtlas* ShadowManager::get_atlas() const {
-    nassertr(_atlas != NULL, NULL); // Can't hurt to check
+    nassertr(_atlas != nullptr, nullptr); // Can't hurt to check
     return _atlas;
 }
 
@@ -113,7 +113,7 @@ inline ShadowAtlas* ShadowManager::get_atlas() const {
  */
 inline void ShadowManager::set_scene(NodePath scene_parent) {
     nassertv(!scene_parent.is_empty());
-    nassertv(_atlas == NULL);  // ShadowManager was already initialized
+    nassertv(_atlas == nullptr);  // ShadowManager was already initialized
     _scene_parent = scene_parent;
 }
 
@@ -128,8 +128,8 @@ inline void ShadowManager::set_scene(NodePath scene_parent) {
  * @param tag_mgr [description]
  */
 inline void ShadowManager::set_tag_state_manager(TagStateManager* tag_mgr) {
-    nassertv(tag_mgr != NULL);
-    nassertv(_atlas == NULL);  // ShadowManager was already initialized
+    nassertv(tag_mgr != nullptr);
+    nassertv(_atlas == nullptr);  // ShadowManager was already initialized
     _tag_state_mgr = tag_mgr;
 }
 
@@ -148,8 +148,8 @@ inline void ShadowManager::set_tag_state_manager(TagStateManager* tag_mgr) {
  * @param graphics_output [description]
  */
 inline void ShadowManager::set_atlas_graphics_output(GraphicsOutput* graphics_output) {
-    nassertv(graphics_output != NULL);
-    nassertv(_atlas == NULL);  // ShadowManager was already initialized
+    nassertv(graphics_output != nullptr);
+    nassertv(_atlas == nullptr);  // ShadowManager was already initialized
     _atlas_graphics_output = graphics_output;
 }
 
@@ -166,8 +166,8 @@ inline void ShadowManager::set_atlas_graphics_output(GraphicsOutput* graphics_ou
  * @return Whether the shadow source udpate was sucessfully queued.
  */
 inline bool ShadowManager::add_update(const ShadowSource* source) {
-    nassertr(_atlas != NULL, false); // ShadowManager::init not called yet.
-    nassertr(source != NULL, false); // NULL-Pointer passed
+    nassertr(_atlas != nullptr, false); // ShadowManager::init not called yet.
+    nassertr(source != nullptr, false); // NULL-Pointer passed
 
     if (_queued_updates.size() >= _max_updates) {
         if (shadowmanager_cat.is_debug()) {

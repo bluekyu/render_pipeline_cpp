@@ -61,7 +61,7 @@ public:
      *   initialized to a nullptr.
      */
     PointerSlotStorage() {
-        _data.fill(NULL);
+        _data.fill(nullptr);
         _max_index = 0;
         _num_entries = 0;
     }
@@ -102,7 +102,7 @@ public:
      */
     bool find_slot(int &slot) const {
         for (int i = 0; i < SIZE; ++i) {
-            if (_data[i] == NULL) {
+            if (_data[i] == nullptr) {
                 slot = i;
                 return true;
             }
@@ -137,7 +137,7 @@ public:
         for (int i = 0; i < SIZE; ++i) {
             bool any_taken = false;
             for (size_t k = 0; !any_taken && k < num_consecutive; ++k) {
-                any_taken = _data[i + k] != NULL;
+                any_taken = _data[i + k] != nullptr;
             }
             if (!any_taken) {
                 slot = i;
@@ -156,8 +156,8 @@ public:
      */
     void free_slot(int slot) {
         nassertv(slot >= 0 && slot < SIZE);
-        nassertv(_data[slot] != NULL); // Slot was already empty!
-        _data[slot] = NULL;
+        nassertv(_data[slot] != nullptr); // Slot was already empty!
+        _data[slot] = nullptr;
         _num_entries--;
 
         // Update maximum index
@@ -192,8 +192,8 @@ public:
      */
     void reserve_slot(int slot, T ptr) {
         nassertv(slot >= 0 && slot < SIZE);
-        nassertv(_data[slot] == NULL); // Slot already taken!
-        nassertv(ptr != NULL); // nullptr passed as argument!
+        nassertv(_data[slot] == nullptr); // Slot already taken!
+        nassertv(ptr != nullptr); // nullptr passed as argument!
         _max_index = (std::max)(_max_index, slot);
         _data[slot] = ptr;
         _num_entries++;

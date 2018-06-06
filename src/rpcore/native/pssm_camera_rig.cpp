@@ -370,7 +370,7 @@ void PSSMCameraRig::update(NodePath cam_node, const LVecBase3f &light_vector) {
 
     // Get Camera and Lens pointers
     Camera* cam = DCAST(Camera, cam_node.node());
-    nassertv_always(cam != NULL);
+    nassertv_always(cam != nullptr);
     Lens* lens = cam->get_lens();
 
     // Extract near and far points:

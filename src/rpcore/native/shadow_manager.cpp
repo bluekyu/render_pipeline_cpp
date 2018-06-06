@@ -40,10 +40,10 @@ namespace rpcore {
  */
 ShadowManager::ShadowManager() {
     _max_updates = 10;
-    _atlas = NULL;
+    _atlas = nullptr;
     _atlas_size = 4096;
-    _tag_state_mgr = NULL;
-    _atlas_graphics_output = NULL;
+    _tag_state_mgr = nullptr;
+    _atlas_graphics_output = nullptr;
 }
 
 /**
@@ -70,8 +70,8 @@ ShadowManager::~ShadowManager() {
  */
 void ShadowManager::init() {
     nassertv(!_scene_parent.is_empty());      // Scene parent not set, call set_scene_parent before init!
-    nassertv(_tag_state_mgr != NULL);         // TagStateManager not set, call set_tag_state_mgr before init!
-    nassertv(_atlas_graphics_output != NULL); // AtlasGraphicsOutput not set, call set_atlas_graphics_output before init!
+    nassertv(_tag_state_mgr != nullptr);         // TagStateManager not set, call set_tag_state_mgr before init!
+    nassertv(_atlas_graphics_output != nullptr); // AtlasGraphicsOutput not set, call set_atlas_graphics_output before init!
 
     _cameras.resize(_max_updates);
     _display_regions.resize(_max_updates);
@@ -119,7 +119,7 @@ void ShadowManager::init() {
  *   thrown.
  */
 void ShadowManager::update() {
-    nassertv(_atlas != NULL);                         // ShadowManager::init not called yet
+    nassertv(_atlas != nullptr);                         // ShadowManager::init not called yet
     nassertv(_queued_updates.size() <= _max_updates); // Internal error, should not happen
 
     // Disable all cameras and regions which will not be used

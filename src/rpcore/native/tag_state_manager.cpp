@@ -42,7 +42,7 @@ namespace rpcore {
  */
 TagStateManager::TagStateManager(NodePath main_cam_node) {
     nassertv(!main_cam_node.is_empty());
-    nassertv(DCAST(Camera, main_cam_node.node()) != NULL);
+    nassertv(DCAST(Camera, main_cam_node.node()) != nullptr);
     _main_cam_node = main_cam_node;
 
     // Set default camera mask
@@ -75,7 +75,7 @@ TagStateManager::~TagStateManager() {
  * @param sort Changes the sort with which the shader will be applied.
  */
 void TagStateManager::apply_state(StateContainer& container, NodePath np, Shader* shader,
-                                  const string &name, int sort) {
+                                  const std::string &name, int sort) {
     if (tagstatemgr_cat.is_spam()) {
         tagstatemgr_cat.spam() << "Constructing new state " << name
                                << " with shader " << shader << endl;
@@ -113,7 +113,7 @@ void TagStateManager::apply_state(StateContainer& container, NodePath np, Shader
  * @param container The container which is used to store the state
  * @param np The nodepath to apply the shader to
  */
-void TagStateManager::cleanup_state(const string& state, NodePath np)
+void TagStateManager::cleanup_state(const std::string& state, NodePath np)
 {
     ContainerList::iterator entry = _containers.find(state);
     nassertv(entry != _containers.end());

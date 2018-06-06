@@ -79,7 +79,7 @@ class GPUCommand
         inline static bool get_uses_integer_packing();
 
         void write_to(const PTA_uchar &dest, size_t command_index);
-        void write(ostream &out) const;
+        void write(std::ostream &out) const;
 
     private:
         inline float convert_int_to_float(int v) const;
