@@ -51,7 +51,7 @@ class GPUCommandList
         MAKE_PROPERTY(num_commands, get_num_commands);
 
     protected:
-        queue<GPUCommand> _commands;
+        std::queue<GPUCommand> _commands;
 };
 
 }

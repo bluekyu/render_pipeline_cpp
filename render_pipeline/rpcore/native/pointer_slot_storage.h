@@ -199,7 +199,7 @@ public:
         _num_entries++;
     }
 
-    typedef array<T, SIZE> InternalContainer;
+    typedef std::array<T, SIZE> InternalContainer;
 
     /**
      * @brief Returns an iterator to the begin of the container

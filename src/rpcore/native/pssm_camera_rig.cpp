@@ -86,7 +86,7 @@ void PSSMCameraRig::init_cam_nodes() {
         lens->set_near_far(1, 1000);
 
         // Construct a new camera
-        _cameras[i] = new Camera("pssm-cam-" + to_string(static_cast<long long>(i)), lens);
+        _cameras[i] = new Camera("pssm-cam-" + std::to_string(static_cast<long long>(i)), lens);
         _cam_nodes.push_back(NodePath(_cameras[i]));
         _max_film_sizes[i].fill(0);
     }
