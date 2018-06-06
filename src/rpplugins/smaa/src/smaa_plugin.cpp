@@ -80,15 +80,14 @@ void SMAAPlugin::Impl::on_pre_render_update()
     if (smaa_stage_->use_reprojection())
     {
         float jitter_scale = boost::any_cast<float>(self_.get_setting("jitter_amount"));
-        LVecBase2 jitter = jitters_[jitter_index_];
-        jitter = jitter * jitter_scale;
+        const LVecBase2 jitter = jitters_[jitter_index_] * jitter_scale;
 
         rpcore::Globals::base->get_cam_lens()->set_film_offset(jitter);
         smaa_stage_->set_jitter_index(jitter_index_);
 
         // Increase jitter index
         jitter_index_ += 1;
-        if (jitter_index_ >= jitters_.size())
+        if (jitter_index_ >= static_cast<int>(jitters_.size()))
             jitter_index_ = 0;
     }
 }
@@ -99,11 +98,11 @@ void SMAAPlugin::Impl::compute_jitters()
     float scale = 1.0f / float(rpcore::Globals::native_resolution.get_x());
 
     // Reduce jittering to 35% to avoid flickering
-    scale *= 0.35;
+    scale *= 0.35f;
 
     for (const LVecBase2& xy: JITTERS.at(boost::any_cast<std::string>(self_.get_setting("jitter_pattern"))))
     {
-        jitters_.push_back((xy * 2 - 1) * scale * 0.5);
+        jitters_.push_back((xy * 2 - 1) * scale * 0.5f);
     }
 }
 

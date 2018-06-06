@@ -136,7 +136,7 @@ public:
         // Try to find consecutive slots otherwise
         for (int i = 0; i < SIZE; ++i) {
             bool any_taken = false;
-            for (size_t k = 0; !any_taken && k < num_consecutive; ++k) {
+            for (int k = 0; !any_taken && k < num_consecutive; ++k) {
                 any_taken = _data[i + k] != nullptr;
             }
             if (!any_taken) {

@@ -125,9 +125,9 @@ void InternalLightManager::setup_shadows(RPLight* light) {
     // store the first index of the source, and get the other slots by doing
     // first_index + 1, +2 and so on.
     int base_slot;
-    int num_sources = static_cast<int>(light->get_num_shadow_sources());
-    nassertv(light->get_num_shadow_sources() <= (std::numeric_limits<int>::max)())
-    if (!_shadow_sources.find_consecutive_slots(base_slot, num_sources)) {
+    size_t num_sources = light->get_num_shadow_sources();
+    nassertv(num_sources <= (std::numeric_limits<int>::max)())
+    if (!_shadow_sources.find_consecutive_slots(base_slot, static_cast<int>(num_sources))) {
         lightmgr_cat.error() << "Failed to find slot for shadow sources! "
                              << "Shadow-Source limit of " << MAX_SHADOW_SOURCES
                              << " reached!" << endl;
