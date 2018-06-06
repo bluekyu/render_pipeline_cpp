@@ -71,9 +71,11 @@ DirectCheckBox::DirectCheckBox(PGItem* gui_item, NodePath parent, const std::sha
     }
 }
 
+DirectCheckBox::~DirectCheckBox() = default;
+
 void DirectCheckBox::command_func(const Event* ev)
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
 
     options->is_checked = !options->is_checked;
 

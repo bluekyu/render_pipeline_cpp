@@ -71,7 +71,7 @@ class RENDER_PIPELINE_DECL DirectGuiBase : public DirectObject
 {
 public:
     DirectGuiBase() = default;
-    ~DirectGuiBase();
+    virtual ~DirectGuiBase();
 
     ALLOC_DELETED_CHAIN(DirectGuiBase);
 
@@ -152,11 +152,11 @@ public:
      *
      * DirectGuiWidget use and **hold** these options, so those are NOT just parameters.
      * Options class should be created using shared pointer (std::shared_ptr)
+     * which will delete Options memory correctly although this does not have virtual dtor.
      */
     struct RENDER_PIPELINE_DECL Options
     {
         Options();
-        virtual ~Options() = default;
 
         int num_states = 1;
         std::vector<int> inverted_frames;
@@ -246,7 +246,7 @@ protected:
 
     PGItem* const _gui_item;    ///< This is just for access and stored in NodePath
     std::vector<NodePath> _state_node_path;
-    std::shared_ptr<Options> _options;
+    std::shared_ptr<Options> options_;
 
     LVecBase4 bounds_;
     LPoint3 ll_;
@@ -272,37 +272,37 @@ private:
 
 inline const boost::optional<LVecBase4f>& DirectGuiWidget::get_frame_size() const
 {
-    return _options->frame_size;
+    return options_->frame_size;
 }
 
 inline PGFrameStyle::Type DirectGuiWidget::get_relief() const
 {
-    return _options->relief;
+    return options_->relief;
 }
 
 inline const LColor& DirectGuiWidget::get_frame_color() const
 {
-    return _options->frame_color;
+    return options_->frame_color;
 }
 
 inline const std::vector<PT(Texture)>& DirectGuiWidget::get_frame_texture() const
 {
-    return _options->frame_texture;
+    return options_->frame_texture;
 }
 
 inline const LVecBase2& DirectGuiWidget::get_frame_visible_scale() const
 {
-    return _options->frame_visible_scale.value();
+    return options_->frame_visible_scale.value();
 }
 
 inline const LVecBase2& DirectGuiWidget::get_border_uv_width() const
 {
-    return _options->border_uv_width;
+    return options_->border_uv_width;
 }
 
 inline const LVecBase2& DirectGuiWidget::get_border_width() const
 {
-    return _options->border_width;
+    return options_->border_width;
 }
 
 inline float DirectGuiWidget::get_width() const
@@ -324,7 +324,7 @@ inline LVecBase2 DirectGuiWidget::get_center() const
 
 inline void DirectGuiWidget::set_pad(const LVecBase2& pad)
 {
-    _options->pad = pad;
+    options_->pad = pad;
     reset_frame_size();
 }
 

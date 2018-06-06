@@ -72,25 +72,27 @@ DirectFrame::~DirectFrame() = default;
 
 const std::vector<std::string>& DirectFrame::get_text() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->text;
+    return static_cast<Options*>(options_.get())->text;
 }
 
 void DirectFrame::prepare_text(const std::string& text)
 {
-    std::dynamic_pointer_cast<Options>(_options)->text = std::vector<std::string>({ text });
+    static_cast<Options*>(options_.get())->text = std::vector<std::string>({ text });
 }
 
 void DirectFrame::prepare_text(const std::vector<std::string>& text_list)
 {
-    std::dynamic_pointer_cast<Options>(_options)->text = text_list;
+    static_cast<Options*>(options_.get())->text = text_list;
 }
 
 void DirectFrame::update_text()
 {
-    const auto& text_list = std::dynamic_pointer_cast<Options>(_options)->text;
+    auto options = static_cast<Options*>(options_.get());
+
+    const auto& text_list = options->text;
 
     // Create/destroy components
-    for (int i = 0; i < _options->num_states; ++i)
+    for (int i = 0; i < options_->num_states; ++i)
     {
         const std::string& component_name = "text" + std::to_string(i);
 
@@ -126,13 +128,13 @@ void DirectFrame::update_text()
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
                     {}, {}, {}, OnscreenText::Default::shadow_offset, {},
                     {}, {}, {}, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
-                    std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
+                    options->text_may_change)));
 #else
                 create_component(component_name, boost::any(OnscreenText(
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
                     boost::none, boost::none, boost::none, OnscreenText::Default::shadow_offset, boost::none,
                     boost::none, boost::none, boost::none, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
-                    std::dynamic_pointer_cast<Options>(_options)->text_may_change)));
+                    static_cast<Options*>(options_.get())->text_may_change)));
 #endif
             }
         }
@@ -141,35 +143,35 @@ void DirectFrame::update_text()
 
 const std::vector<std::shared_ptr<ImageInput>>& DirectFrame::get_image() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->image;
+    return static_cast<Options*>(options_.get())->image;
 }
 
 void DirectFrame::prepare_image(const std::shared_ptr<ImageInput>& image)
 {
-    std::dynamic_pointer_cast<Options>(_options)->image = std::vector<std::shared_ptr<ImageInput>>({ image });
+    static_cast<Options*>(options_.get())->image = std::vector<std::shared_ptr<ImageInput>>({ image });
 }
 
 void DirectFrame::prepare_image(const std::vector<std::shared_ptr<ImageInput>>& images)
 {
-    std::dynamic_pointer_cast<Options>(_options)->image = images;
+    static_cast<Options*>(options_.get())->image = images;
 }
 
 void DirectFrame::update_image()
 {
-    const auto& images = std::dynamic_pointer_cast<Options>(_options)->image;
+    const auto& images = static_cast<Options*>(options_.get())->image;
 
     std::vector<std::shared_ptr<ImageInput>> image_list;
 
     // Passed in None
     if (images.empty())
     {
-        for (int k = 0; k < _options->num_states; ++k)
+        for (int k = 0; k < options_->num_states; ++k)
             image_list.push_back(nullptr);
     }
     // Passed in a single node path, make a tuple out of it
     else if (images.size() == 1)
     {
-        for (int k = 0; k < _options->num_states; ++k)
+        for (int k = 0; k < options_->num_states; ++k)
             image_list.push_back(images[0]);
     }
     // Assume its a list of node paths
@@ -179,7 +181,7 @@ void DirectFrame::update_image()
     }
 
     // Create/destroy components
-    for (int i = 0; i < _options->num_states; ++i)
+    for (int i = 0; i < options_->num_states; ++i)
     {
         const std::string& component_name = "image" + std::to_string(i);
 

@@ -133,7 +133,7 @@ DirectGuiWidget::DirectGuiWidget(NodePath parent, const std::shared_ptr<Options>
 }
 
 DirectGuiWidget::DirectGuiWidget(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
-    _gui_item(gui_item), _options(define_options(options))
+    _gui_item(gui_item), options_(define_options(options))
 {
     // Attach button to parent and make that self
     if (parent.is_empty())
@@ -235,7 +235,7 @@ void DirectGuiWidget::edit_stop()
 
 void DirectGuiWidget::set_state(const std::string& state)
 {
-    _options->state = state;
+    options_->state = state;
     if (state == DGG_NORMAL)
         _gui_item->set_active(true);
     else
@@ -244,7 +244,7 @@ void DirectGuiWidget::set_state(const std::string& state)
 
 void DirectGuiWidget::set_state(bool state)
 {
-    _options->state = state ? DGG_NORMAL : DGG_DISABLED;
+    options_->state = state ? DGG_NORMAL : DGG_DISABLED;
     _gui_item->set_active(state);
 }
 
@@ -259,10 +259,10 @@ void DirectGuiWidget::set_frame_size(bool clear_frame)
     // Use ready state to determine frame Type
     PGFrameStyle::Type frame_type = get_frame_type();
     LVecBase2 bw(0, 0);
-    if (_options->frame_size)
+    if (options_->frame_size)
     {
         //  Use user specified bounds
-        bounds_ = _options->frame_size.value();
+        bounds_ = options_->frame_size.value();
     }
     else
     {
@@ -298,7 +298,7 @@ void DirectGuiWidget::set_frame_size(bool clear_frame)
 
 void DirectGuiWidget::set_frame_size(const LVecBase4& frame_size)
 {
-    _options->frame_size = frame_size;
+    options_->frame_size = frame_size;
     set_frame_size();
 }
 
@@ -315,10 +315,10 @@ LVecBase4 DirectGuiWidget::get_bounds(int state)
     ll_ = LPoint3(left, 0.0f, bottom);
     ur_ = LPoint3(right, 0.0f, top);
     bounds_ = LVecBase4(
-        ll_[0] - _options->pad[0],
-        ur_[0] + _options->pad[0],
-        ll_[2] - _options->pad[1],
-        ur_[2] + _options->pad[1]);
+        ll_[0] - options_->pad[0],
+        ur_[0] + options_->pad[0],
+        ll_[2] - options_->pad[1],
+        ur_[2] + options_->pad[1]);
     return bounds_;
 }
 
@@ -331,7 +331,7 @@ void DirectGuiWidget::update_frame_style()
 {
     if (!f_init_)
     {
-        for (int k=0; k < _options->num_states; ++k)
+        for (int k=0; k < options_->num_states; ++k)
         {
             _gui_item->set_frame_style(k, _frame_style[k]);
         }
@@ -346,14 +346,14 @@ void DirectGuiWidget::set_relief(const std::string& relief_name)
 
 void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
 {
-    _options->relief = relief;
+    options_->relief = relief;
 
     // Set style
     if (relief == DGG_RAISED)
     {
-        for (int i=0; i < _options->num_states; ++i)
+        for (int i=0; i < options_->num_states; ++i)
         {
-            if (std::find(_options->inverted_frames.begin(), _options->inverted_frames.end(), i) != std::end(_options->inverted_frames))
+            if (std::find(options_->inverted_frames.begin(), options_->inverted_frames.end(), i) != std::end(options_->inverted_frames))
                 _frame_style[1].set_type(DGG_SUNKEN);
             else
                 _frame_style[i].set_type(DGG_RAISED);
@@ -361,9 +361,9 @@ void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
     }
     else if (relief == DGG_SUNKEN)
     {
-        for (int i=0; i < _options->num_states; ++i)
+        for (int i=0; i < options_->num_states; ++i)
         {
-            if (std::find(_options->inverted_frames.begin(), _options->inverted_frames.end(), i) != std::end(_options->inverted_frames))
+            if (std::find(options_->inverted_frames.begin(), options_->inverted_frames.end(), i) != std::end(options_->inverted_frames))
                 _frame_style[1].set_type(DGG_RAISED);
             else
                 _frame_style[i].set_type(DGG_SUNKEN);
@@ -371,7 +371,7 @@ void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
     }
     else
     {
-        for (int i=0; i < _options->num_states; ++i)
+        for (int i=0; i < options_->num_states; ++i)
             _frame_style[i].set_type(relief);
     }
     // Apply styles
@@ -380,8 +380,8 @@ void DirectGuiWidget::set_relief(PGFrameStyle::Type relief)
 
 void DirectGuiWidget::set_frame_color(const LColor& frame_color)
 {
-    _options->frame_color = frame_color;
-    for (int k=0; k < _options->num_states; ++k)
+    options_->frame_color = frame_color;
+    for (int k=0; k < options_->num_states; ++k)
         _frame_style[k].set_color(frame_color);
     update_frame_style();
 }
@@ -406,10 +406,10 @@ void DirectGuiWidget::set_frame_texture(const std::vector<std::string>& texture_
 
 void DirectGuiWidget::set_frame_texture(const std::vector<PT(Texture)>& textures)
 {
-    _options->frame_texture = textures;
+    options_->frame_texture = textures;
 
     PT(Texture) texture;
-    for (int i=0; i < _options->num_states; ++i)
+    for (int i=0; i < options_->num_states; ++i)
     {
         if (i >= static_cast<int>(textures.size()))
             texture = textures.empty() ? nullptr : textures.back();
@@ -426,24 +426,24 @@ void DirectGuiWidget::set_frame_texture(const std::vector<PT(Texture)>& textures
 
 void DirectGuiWidget::set_frame_visible_scale(const LVecBase2& scale)
 {
-    _options->frame_visible_scale = scale;
-    for (int i = 0; i < _options->num_states; ++i)
+    options_->frame_visible_scale = scale;
+    for (int i = 0; i < options_->num_states; ++i)
         _frame_style[i].set_visible_scale(scale);
     update_frame_style();
 }
 
 void DirectGuiWidget::set_border_width(const LVecBase2& border_width)
 {
-    _options->border_width = border_width;
-    for (int i = 0; i < _options->num_states; ++i)
+    options_->border_width = border_width;
+    for (int i = 0; i < options_->num_states; ++i)
         _frame_style[i].set_width(border_width);
     update_frame_style();
 }
 
 void DirectGuiWidget::set_border_uv_width(const LVecBase2& border_uv_width)
 {
-    _options->border_uv_width = border_uv_width;
-    for (int i=0; i < _options->num_states; ++i)
+    options_->border_uv_width = border_uv_width;
+    for (int i=0; i < options_->num_states; ++i)
         _frame_style[i].set_uv_width(border_uv_width);
     update_frame_style();
 }
@@ -489,7 +489,7 @@ void DirectGuiWidget::frame_initialise_func()
 {
     // Now allow changes to take effect
     update_frame_style();
-    if (!_options->frame_size)
+    if (!options_->frame_size)
         reset_frame_size();
 }
 

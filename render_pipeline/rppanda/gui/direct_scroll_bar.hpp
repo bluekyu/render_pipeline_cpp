@@ -67,7 +67,7 @@ public:
 
 public:
     DirectScrollBar(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    ~DirectScrollBar();
+    virtual ~DirectScrollBar();
 
     ALLOC_DELETED_CHAIN(DirectScrollBar);
 
@@ -111,7 +111,7 @@ private:
 
 inline float DirectScrollBar::get_value() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->value;
+    return static_cast<Options*>(options_.get())->value;
 }
 
 inline TypeHandle DirectScrollBar::get_class_type()

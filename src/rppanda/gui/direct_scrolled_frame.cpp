@@ -98,17 +98,17 @@ PGScrollFrame* DirectScrolledFrame::get_gui_item() const
 
 void DirectScrolledFrame::set_canvas_size(const LVecBase4f& canvas_size)
 {
-    get_gui_item()->set_virtual_frame(std::dynamic_pointer_cast<Options>(_options)->canvas_size=canvas_size);
+    get_gui_item()->set_virtual_frame(static_cast<Options*>(options_.get())->canvas_size=canvas_size);
 }
 
 void DirectScrolledFrame::set_manage_scroll_bars(bool manage_scroll_bars)
 {
-    get_gui_item()->set_manage_pieces(std::dynamic_pointer_cast<Options>(_options)->manage_scroll_bars=manage_scroll_bars);
+    get_gui_item()->set_manage_pieces(static_cast<Options*>(options_.get())->manage_scroll_bars=manage_scroll_bars);
 }
 
 void DirectScrolledFrame::set_auto_hide_scroll_bars(bool auto_hide_scroll_bars)
 {
-    get_gui_item()->set_auto_hide(std::dynamic_pointer_cast<Options>(_options)->auto_hide_scroll_bars=auto_hide_scroll_bars);
+    get_gui_item()->set_auto_hide(static_cast<Options*>(options_.get())->auto_hide_scroll_bars=auto_hide_scroll_bars);
 }
 
 const std::shared_ptr<DirectScrolledFrame::Options>& DirectScrolledFrame::define_options(const std::shared_ptr<Options>& options)

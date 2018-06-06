@@ -97,19 +97,20 @@ PGSliderBar* DirectSlider::get_gui_item() const
 
 void DirectSlider::set_range(LVecBase2 range)
 {
+    auto options = static_cast<Options*>(options_.get());
+
     // Try to preserve the value across a setRange call.
-    const auto& opt = std::dynamic_pointer_cast<Options>(_options);
-    opt->range = range;
+    options->range = range;
 
     PGSliderBar* item = get_gui_item();
-    float v = opt->value;
+    float v = options->value;
     item->set_range(range[0], range[1]);
     item->set_value(v);
 }
 
 void DirectSlider::set_value(float value)
 {
-    get_gui_item()->set_value(std::dynamic_pointer_cast<Options>(_options)->value=value);
+    get_gui_item()->set_value(static_cast<Options*>(options_.get())->value=value);
 }
 
 float DirectSlider::get_value() const
@@ -124,17 +125,17 @@ float DirectSlider::get_ratio() const
 
 void DirectSlider::set_scroll_size(float scroll_size)
 {
-    get_gui_item()->set_scroll_size(std::dynamic_pointer_cast<Options>(_options)->scroll_size=scroll_size);
+    get_gui_item()->set_scroll_size(static_cast<Options*>(options_.get())->scroll_size=scroll_size);
 }
 
 void DirectSlider::set_page_size(float page_size)
 {
-    get_gui_item()->set_page_size(std::dynamic_pointer_cast<Options>(_options)->page_size=page_size);
+    get_gui_item()->set_page_size(static_cast<Options*>(options_.get())->page_size=page_size);
 }
 
 void DirectSlider::set_orientation(const std::string& orientation)
 {
-    std::dynamic_pointer_cast<Options>(_options)->orientation = orientation;
+    static_cast<Options*>(options_.get())->orientation = orientation;
     if (orientation == DGG_HORIZONTAL)
         get_gui_item()->set_axis(LVector3(1, 0, 0));
     else if (orientation == DGG_VERTICAL)
@@ -167,7 +168,7 @@ const std::shared_ptr<DirectSlider::Options>& DirectSlider::define_options(const
 
 void DirectSlider::command_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
 
     // Store the updated value in self['value']
     options->value = get_gui_item()->get_value();

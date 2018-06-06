@@ -118,33 +118,34 @@ PGSliderBar* DirectScrollBar::get_gui_item() const
 
 void DirectScrollBar::set_range(const LVecBase2& range)
 {
-    const auto& opt = std::dynamic_pointer_cast<Options>(_options);
-    opt->range = range;
+    auto options = static_cast<Options*>(options_.get());
+
+    options->range = range;
 
     PGSliderBar* item = get_gui_item();
-    float v = opt->value;
+    float v = options->value;
     item->set_range(range[0], range[1]);
     item->set_value(v);
 }
 
 void DirectScrollBar::set_value(PN_stdfloat value)
 {
-    get_gui_item()->set_value(std::dynamic_pointer_cast<Options>(_options)->value=value);
+    get_gui_item()->set_value(static_cast<Options*>(options_.get())->value=value);
 }
 
 void DirectScrollBar::set_scroll_size(PN_stdfloat scroll_size)
 {
-    get_gui_item()->set_scroll_size(std::dynamic_pointer_cast<Options>(_options)->scroll_size=scroll_size);
+    get_gui_item()->set_scroll_size(static_cast<Options*>(options_.get())->scroll_size=scroll_size);
 }
 
 void DirectScrollBar::set_page_size(PN_stdfloat page_size)
 {
-    get_gui_item()->set_page_size(std::dynamic_pointer_cast<Options>(_options)->page_size=page_size);
+    get_gui_item()->set_page_size(static_cast<Options*>(options_.get())->page_size=page_size);
 }
 
 void DirectScrollBar::set_orientation(const std::string& orientation)
 {
-    std::dynamic_pointer_cast<Options>(_options)->orientation = orientation;
+    static_cast<Options*>(options_.get())->orientation = orientation;
     if (orientation == DGG_HORIZONTAL)
         get_gui_item()->set_axis(LVector3(1, 0, 0));
     else if (orientation == DGG_VERTICAL)
@@ -157,18 +158,18 @@ void DirectScrollBar::set_orientation(const std::string& orientation)
 
 void DirectScrollBar::set_manage_buttons(bool manage_buttons)
 {
-    get_gui_item()->set_manage_pieces(std::dynamic_pointer_cast<Options>(_options)->manage_buttons=manage_buttons);
+    get_gui_item()->set_manage_pieces(static_cast<Options*>(options_.get())->manage_buttons=manage_buttons);
 }
 
 void DirectScrollBar::set_resize_thumb(bool resize_thumb)
 {
-    get_gui_item()->set_resize_thumb(std::dynamic_pointer_cast<Options>(_options)->resize_thumb=resize_thumb);
+    get_gui_item()->set_resize_thumb(static_cast<Options*>(options_.get())->resize_thumb=resize_thumb);
 }
 
 void DirectScrollBar::command_func()
 {
     // Store the updated value in self['value']
-    std::dynamic_pointer_cast<Options>(_options)->value = get_gui_item()->get_value();
+    static_cast<Options*>(options_.get())->value = get_gui_item()->get_value();
 
     // TODO: implements
 }

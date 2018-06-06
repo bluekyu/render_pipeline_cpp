@@ -64,6 +64,7 @@ public:
 
 public:
     DirectCheckBox(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
+    virtual ~DirectCheckBox();
 
     ALLOC_DELETED_CHAIN(DirectCheckBox);
 
@@ -96,22 +97,22 @@ private:
 // ************************************************************************************************
 inline bool DirectCheckBox::is_checked() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->is_checked;
+    return static_cast<Options*>(options_.get())->is_checked;
 }
 
 inline void DirectCheckBox::set_checked(bool check)
 {
-    std::dynamic_pointer_cast<Options>(_options)->is_checked = check;
+    static_cast<Options*>(options_.get())->is_checked = check;
 }
 
 inline std::shared_ptr<ImageInput> DirectCheckBox::get_checked_image() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->checked_image;
+    return static_cast<Options*>(options_.get())->checked_image;
 }
 
 inline std::shared_ptr<ImageInput> DirectCheckBox::get_unchecked_image() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->unchecked_image;
+    return static_cast<Options*>(options_.get())->unchecked_image;
 }
 
 inline TypeHandle DirectCheckBox::get_class_type()

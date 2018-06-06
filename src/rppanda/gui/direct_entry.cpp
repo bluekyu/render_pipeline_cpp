@@ -144,84 +144,82 @@ PGEntry* DirectEntry::get_gui_item() const
 
 void DirectEntry::setup()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
-    get_gui_item()->setup_minimal(options->width, options->num_lines);
+    get_gui_item()->setup_minimal(static_cast<Options*>(options_.get())->width, static_cast<Options*>(options_.get())->num_lines);
 }
 
 void DirectEntry::prepare_width(float width)
 {
-    std::dynamic_pointer_cast<Options>(_options)->width = width;
+    static_cast<Options*>(options_.get())->width = width;
 }
 
 void DirectEntry::update_width()
 {
-    get_gui_item()->set_max_width(std::dynamic_pointer_cast<Options>(_options)->width);
+    get_gui_item()->set_max_width(static_cast<Options*>(options_.get())->width);
 }
 
 void DirectEntry::prepare_num_lines(int num_lines)
 {
-    std::dynamic_pointer_cast<Options>(_options)->num_lines = num_lines;
+    static_cast<Options*>(options_.get())->num_lines = num_lines;
 }
 
 void DirectEntry::update_num_lines()
 {
-    get_gui_item()->set_num_lines(std::dynamic_pointer_cast<Options>(_options)->num_lines);
+    get_gui_item()->set_num_lines(static_cast<Options*>(options_.get())->num_lines);
 }
 
 void DirectEntry::prepare_focus(bool focus)
 {
-    std::dynamic_pointer_cast<Options>(_options)->focus = focus;
+    static_cast<Options*>(options_.get())->focus = focus;
 }
 
 void DirectEntry::update_focus()
 {
-    get_gui_item()->set_focus(std::dynamic_pointer_cast<Options>(_options)->focus);
+    get_gui_item()->set_focus(static_cast<Options*>(options_.get())->focus);
 }
 
 void DirectEntry::prepare_cursor_keys_active(bool cursor_keys)
 {
-    std::dynamic_pointer_cast<Options>(_options)->cursor_keys = cursor_keys;
+    static_cast<Options*>(options_.get())->cursor_keys = cursor_keys;
 }
 
 void DirectEntry::update_cursor_keys_active()
 {
-    get_gui_item()->set_cursor_keys_active(std::dynamic_pointer_cast<Options>(_options)->cursor_keys);
+    get_gui_item()->set_cursor_keys_active(static_cast<Options*>(options_.get())->cursor_keys);
 }
 
 void DirectEntry::update_obscure_mode()
 {
-    get_gui_item()->set_obscure_mode(std::dynamic_pointer_cast<Options>(_options)->obscured);
+    get_gui_item()->set_obscure_mode(static_cast<Options*>(options_.get())->obscured);
 }
 
 void DirectEntry::update_background_focus()
 {
-    get_gui_item()->set_background_focus(std::dynamic_pointer_cast<Options>(_options)->background_focus);
+    get_gui_item()->set_background_focus(static_cast<Options*>(options_.get())->background_focus);
 }
 
 void DirectEntry::command_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     if (options->command)
         options->command(get());
 }
 
 void DirectEntry::failed_command_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     if (options->failed_command)
         options->failed_command(get());
 }
 
 void DirectEntry::prepare_auto_capitalize_func(bool flag)
 {
-    std::dynamic_pointer_cast<Options>(_options)->auto_capitalize = flag;
+    static_cast<Options*>(options_.get())->auto_capitalize = flag;
 }
 
 void DirectEntry::update_auto_capitalize_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
     const auto& gui_item = get_gui_item();
-    if (options->auto_capitalize)
+    if (static_cast<Options*>(options_.get())->auto_capitalize)
     {
         auto_cap_listener_->accept(gui_item->get_type_event(), [this](const Event*) { handle_typing(); });
         auto_cap_listener_->accept(gui_item->get_erase_event(), [this](const Event*) { handle_erasing(); });
@@ -235,7 +233,7 @@ void DirectEntry::update_auto_capitalize_func()
 
 void DirectEntry::focus_in_command_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     if (options->focus_in_command)
         options->focus_in_command();
     if (options->auto_capitalize)
@@ -248,7 +246,7 @@ void DirectEntry::focus_in_command_func()
 
 void DirectEntry::focus_out_command_func()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     if (options->focus_out_command)
         options->focus_out_command();
     if (options->auto_capitalize)
@@ -299,7 +297,7 @@ void DirectEntry::enter_text(const std::string& text)
 
 LVecBase4 DirectEntry::get_bounds(int state)
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
 
     // Compute the width and height for the entry itself, ignoring
     // geometry etc.
@@ -397,7 +395,7 @@ void DirectEntry::handle_erasing()
 
 void DirectEntry::auto_capitalize()
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     const auto& auto_capitalize_allow_prefixes = options->auto_capitalize_allow_prefixes;
     const auto& auto_capitalize_force_prefixes = options->auto_capitalize_force_prefixes;
 

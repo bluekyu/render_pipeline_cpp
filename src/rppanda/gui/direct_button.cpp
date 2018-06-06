@@ -102,7 +102,7 @@ PGButton* DirectButton::get_gui_item() const
 void DirectButton::set_command_buttons()
 {
     // Attach command function to specified buttons
-    const auto& command_buttons = std::dynamic_pointer_cast<Options>(_options)->command_buttons;
+    const auto& command_buttons = static_cast<Options*>(options_.get())->command_buttons;
 
     // Left mouse button
     if (std::find(command_buttons.begin(), command_buttons.end(), DGG_LMB) != command_buttons.end())
@@ -143,7 +143,7 @@ void DirectButton::set_command_buttons()
 
 void DirectButton::command_func(const Event*)
 {
-    const auto& options = std::dynamic_pointer_cast<Options>(_options);
+    auto options = static_cast<Options*>(options_.get());
     if (options->command)
         options->command();
 }

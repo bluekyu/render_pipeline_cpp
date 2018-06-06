@@ -63,7 +63,7 @@ public:
 
 public:
     DirectScrolledFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    ~DirectScrolledFrame();
+    virtual ~DirectScrolledFrame();
 
     ALLOC_DELETED_CHAIN(DirectScrolledFrame);
 
@@ -123,17 +123,17 @@ inline DirectScrollBar* DirectScrolledFrame::get_horizontal_scroll() const
 
 inline const LVecBase4f& DirectScrolledFrame::get_canvas_size() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->canvas_size;
+    return static_cast<Options*>(options_.get())->canvas_size;
 }
 
 inline bool DirectScrolledFrame::get_manage_scroll_bars() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->manage_scroll_bars;
+    return static_cast<Options*>(options_.get())->manage_scroll_bars;
 }
 
 inline bool DirectScrolledFrame::get_auto_hide_scroll_bars() const
 {
-    return std::dynamic_pointer_cast<Options>(_options)->auto_hide_scroll_bars;
+    return static_cast<Options*>(options_.get())->auto_hide_scroll_bars;
 }
 
 inline TypeHandle DirectScrolledFrame::get_class_type()

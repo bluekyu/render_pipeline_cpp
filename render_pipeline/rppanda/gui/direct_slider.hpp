@@ -71,7 +71,7 @@ public:
 
 public:
     DirectSlider(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    ~DirectSlider();
+    virtual ~DirectSlider();
 
     ALLOC_DELETED_CHAIN(DirectSlider);
 
