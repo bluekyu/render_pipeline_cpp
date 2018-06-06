@@ -77,7 +77,7 @@ void InternalLightManager::add_light(PT(RPLight) light) {
     }
 
     // Find a free slot
-    size_t slot;
+    int slot;
     if (!_lights.find_slot(slot)) {
         lightmgr_cat.error() << "Light limit of " << MAX_LIGHT_COUNT << " reached, "
                              << "all light slots used!" << endl;
@@ -124,8 +124,9 @@ void InternalLightManager::setup_shadows(RPLight* light) {
     // Find consecutive slots, this is important for PointLights so we can just
     // store the first index of the source, and get the other slots by doing
     // first_index + 1, +2 and so on.
-    size_t base_slot;
-    size_t num_sources = light->get_num_shadow_sources();
+    int base_slot;
+    int num_sources = static_cast<int>(light->get_num_shadow_sources());
+    nassertv(light->get_num_shadow_sources() <= (std::numeric_limits<int>::max)())
     if (!_shadow_sources.find_consecutive_slots(base_slot, num_sources)) {
         lightmgr_cat.error() << "Failed to find slot for shadow sources! "
                              << "Shadow-Source limit of " << MAX_SHADOW_SOURCES
@@ -134,7 +135,7 @@ void InternalLightManager::setup_shadows(RPLight* light) {
     }
 
     // Init all sources
-    for (int i = 0; i < num_sources; ++i) {
+    for (size_t i = 0; i < num_sources; ++i) {
         ShadowSource* source = light->get_shadow_source(i);
 
         // Set the source as dirty, so it gets updated in the beginning
@@ -142,7 +143,7 @@ void InternalLightManager::setup_shadows(RPLight* light) {
 
         // Assign the slot to the source. Since we got consecutive slots, we can
         // just do base_slot + N.
-        size_t slot = base_slot + i;
+        int slot = base_slot + i;
         _shadow_sources.reserve_slot(slot, source);
         source->set_slot(slot);
     }

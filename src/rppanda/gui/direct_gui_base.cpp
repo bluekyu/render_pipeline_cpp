@@ -411,7 +411,7 @@ void DirectGuiWidget::set_frame_texture(const std::vector<PT(Texture)>& textures
     PT(Texture) texture;
     for (int i=0; i < _options->num_states; ++i)
     {
-        if (i >= textures.size())
+        if (i >= static_cast<int>(textures.size()))
             texture = textures.empty() ? nullptr : textures.back();
         else
             texture = textures[i];

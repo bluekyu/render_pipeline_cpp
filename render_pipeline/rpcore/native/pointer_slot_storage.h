@@ -100,8 +100,8 @@ public:
      * @param slot Output-Variable, slot will be stored there
      * @return true if a slot was found, otherwise false
      */
-    bool find_slot(size_t &slot) const {
-        for (size_t i = 0; i < SIZE; ++i) {
+    bool find_slot(int &slot) const {
+        for (int i = 0; i < SIZE; ++i) {
             if (_data[i] == NULL) {
                 slot = i;
                 return true;
@@ -125,7 +125,7 @@ public:
      *
      * @return true if consecutive slots were found, otherwise false.
      */
-    bool find_consecutive_slots(size_t &slot, size_t num_consecutive) const {
+    bool find_consecutive_slots(int &slot, int num_consecutive) const {
         nassertr(num_consecutive > 0, false);
 
         // Fall back to default search algorithm in case the parameters are equal
@@ -134,7 +134,7 @@ public:
         }
 
         // Try to find consecutive slots otherwise
-        for (size_t i = 0; i < SIZE; ++i) {
+        for (int i = 0; i < SIZE; ++i) {
             bool any_taken = false;
             for (size_t k = 0; !any_taken && k < num_consecutive; ++k) {
                 any_taken = _data[i + k] != NULL;
@@ -154,7 +154,7 @@ public:
      *
      * @param slot Slot to free
      */
-    void free_slot(size_t slot) {
+    void free_slot(int slot) {
         nassertv(slot >= 0 && slot < SIZE);
         nassertv(_data[slot] != NULL); // Slot was already empty!
         _data[slot] = NULL;
@@ -174,8 +174,8 @@ public:
      * @param slot Start of the consecutive slots to free
      * @param num_consecutive Number of consecutive slots
      */
-    void free_consecutive_slots(size_t slot, size_t num_consecutive) {
-        for (size_t i = slot; i < slot + num_consecutive; ++i) {
+    void free_consecutive_slots(int slot, int num_consecutive) {
+        for (int i = slot; i < slot + num_consecutive; ++i) {
             free_slot(i);
         }
     }
@@ -190,11 +190,11 @@ public:
      * @param slot Slot to reserve
      * @param ptr Pointer to store
      */
-    void reserve_slot(size_t slot, T ptr) {
+    void reserve_slot(int slot, T ptr) {
         nassertv(slot >= 0 && slot < SIZE);
         nassertv(_data[slot] == NULL); // Slot already taken!
         nassertv(ptr != NULL); // nullptr passed as argument!
-        _max_index = (std::max)(_max_index, static_cast<int>(slot));
+        _max_index = (std::max)(_max_index, slot);
         _data[slot] = ptr;
         _num_entries++;
     }

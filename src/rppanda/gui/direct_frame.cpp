@@ -97,7 +97,7 @@ void DirectFrame::update_text()
         // If fewer items specified than numStates,
         // just repeat last item
         std::string text;
-        if (i >= text.size())
+        if (i >= static_cast<int>(text.size()))
             text = text_list.empty() ? std::string("") : text_list.back();
         else
             text = text_list[i];
@@ -186,7 +186,7 @@ void DirectFrame::update_image()
         // If fewer items specified than numStates,
         // just repeat last item
         std::shared_ptr<ImageInput> image;
-        if (i >= image_list.size())
+        if (i >= static_cast<int>(image_list.size()))
             image = image_list.back();
         else
             image = image_list[i];
