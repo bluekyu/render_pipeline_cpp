@@ -99,8 +99,8 @@ TypeHandle Actor::type_handle_;
 
 std::string Actor::part_prefix_("__Actor_");
 
-LoaderOptions Actor::model_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_skeleton);
-LoaderOptions Actor::anim_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors || LoaderOptions::LF_convert_anim);
+LoaderOptions Actor::model_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors | LoaderOptions::LF_convert_skeleton);
+LoaderOptions Actor::anim_loader_options_(LoaderOptions::LF_search | LoaderOptions::LF_report_errors | LoaderOptions::LF_convert_anim);
 
 ConfigVariableBool Actor::validate_subparts_("validate-subparts", true);
 ConfigVariableBool Actor::merge_LOD_bundles_("merge-lod-bundles", true);
