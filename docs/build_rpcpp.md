@@ -7,7 +7,7 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - Tools
   - CMake (build tool)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 0.0.111
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 0.0.113
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: above 1.65.0

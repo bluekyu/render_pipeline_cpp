@@ -7,7 +7,7 @@
 - 도구
   - CMake (빌드 도구)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 0.0.111
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 0.0.113
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.0 이상
