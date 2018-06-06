@@ -40,7 +40,6 @@ namespace rpcore {
  */
 ShadowManager::ShadowManager() {
     _max_updates = 10;
-    _atlas = nullptr;
     _atlas_size = 4096;
     _tag_state_mgr = nullptr;
     _atlas_graphics_output = nullptr;
@@ -51,8 +50,6 @@ ShadowManager::ShadowManager() {
  * @details This destructs the shadow manager, clearing all resources used
  */
 ShadowManager::~ShadowManager() {
-    delete _atlas;
-
     // Todo: Could eventually unregister all shadow cameras. Since the tag state
     // manager does this on cleanup already, and we get destructed at the same
     // time (if at all), this is not really necessary
@@ -100,7 +97,7 @@ void ShadowManager::init() {
     }
 
     // Create the atlas
-    _atlas = new ShadowAtlas(_atlas_size);
+    _atlas = std::make_unique<ShadowAtlas>(_atlas_size);
 
     // Reserve enough space for the updates
     _queued_updates.reserve(_max_updates);

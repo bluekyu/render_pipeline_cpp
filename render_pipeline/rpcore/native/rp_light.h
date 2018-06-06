@@ -58,7 +58,13 @@ class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount
 
     public:
         RPLight(LightType light_type);
+        RPLight(const RPLight&) = delete;
+        RPLight(RPLight&&) = default;
+
         virtual ~RPLight();
+
+        RPLight& operator=(const RPLight&) = delete;
+        RPLight& operator=(RPLight&&) = default;
 
         virtual void init_shadow_sources() = 0;
         virtual void update_shadow_sources() = 0;
@@ -131,7 +137,7 @@ class RENDER_PIPELINE_DECL RPLight  : public ReferenceCount
         LightType _light_type;
         float _near_plane;
 
-        std::vector<ShadowSource*> _shadow_sources;
+        std::vector<std::unique_ptr<ShadowSource>> _shadow_sources;
 };
 
 }

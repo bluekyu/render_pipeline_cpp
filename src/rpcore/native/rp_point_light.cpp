@@ -62,7 +62,7 @@ void RPPointLight::init_shadow_sources() {
     nassertv(_shadow_sources.size() == 0);
     // Create 6 shadow sources, one for each direction
     for(size_t i = 0; i < 6; ++i) {
-        _shadow_sources.push_back(new ShadowSource);
+        _shadow_sources.push_back(std::make_unique<ShadowSource>());
     }
 }
 
@@ -83,7 +83,7 @@ void RPPointLight::update_shadow_sources() {
 
     // Increase fov to prevent artifacts at the shadow map transitions
     const float fov = 90.0f + 3.0f;
-    for (size_t i = 0; i < _shadow_sources.size(); ++i) {
+    for (size_t i = 0, i_end = _shadow_sources.size(); i < i_end; ++i) {
         _shadow_sources[i]->set_resolution(get_shadow_map_resolution());
         _shadow_sources[i]->set_perspective_lens(fov, _near_plane, _radius,
                                                 _position, directions[i]);

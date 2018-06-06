@@ -95,7 +95,7 @@ inline size_t ShadowManager::get_atlas_size() const {
  */
 inline ShadowAtlas* ShadowManager::get_atlas() const {
     nassertr(_atlas != nullptr, nullptr); // Can't hurt to check
-    return _atlas;
+    return _atlas.get();
 }
 
 /**

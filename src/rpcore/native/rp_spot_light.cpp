@@ -66,7 +66,7 @@ void RPSpotLight::write_to_command(GPUCommand &cmd) {
  */
 void RPSpotLight::init_shadow_sources() {
     nassertv(_shadow_sources.size() == 0);
-    _shadow_sources.push_back(new ShadowSource);
+    _shadow_sources.push_back(std::make_unique<ShadowSource>());
 }
 
 /**

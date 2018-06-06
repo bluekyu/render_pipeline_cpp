@@ -80,7 +80,7 @@ class ShadowManager  : public ReferenceCount
         pvector<NodePath> _camera_nps;
         pvector<PT(DisplayRegion)> _display_regions;
 
-        ShadowAtlas* _atlas;
+        std::unique_ptr<ShadowAtlas> _atlas;
         TagStateManager* _tag_state_mgr;
         GraphicsOutput* _atlas_graphics_output;
 

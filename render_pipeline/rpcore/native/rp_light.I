@@ -49,7 +49,7 @@ inline size_t RPLight::get_num_shadow_sources() const {
  */
 inline ShadowSource* RPLight::get_shadow_source(size_t index) const {
     nassertr(index < _shadow_sources.size(), nullptr); // Invalid shadow source index
-    return _shadow_sources[index];
+    return _shadow_sources[index].get();
 }
 
 /**
@@ -59,9 +59,6 @@ inline ShadowSource* RPLight::get_shadow_source(size_t index) const {
  *   All shadows sources are freed, and then removed from the shadow source list.
  */
 inline void RPLight::clear_shadow_sources() {
-    for (size_t i = 0; i < _shadow_sources.size(); ++i) {
-        delete _shadow_sources[i];
-    }
     _shadow_sources.clear();
 }
 

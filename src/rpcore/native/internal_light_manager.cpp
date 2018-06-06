@@ -355,7 +355,7 @@ bool InternalLightManager::compare_shadow_sources(const ShadowSource* a, const S
  */
 void InternalLightManager::update_shadow_sources() {
     // Find all dirty shadow sources and make a list of them
-    vector<ShadowSource*> sources_to_update;
+    std::vector<ShadowSource*> sources_to_update;
      for (auto iter = _shadow_sources.begin(); iter != _shadow_sources.end(); ++iter) {
         ShadowSource* source = *iter;
         if (source) {
