@@ -64,6 +64,9 @@ public:
     /** Returns the scaled value from a given normalized value. */
     virtual ValueType get_scaled_value(const ValueType& values) const = 0;
 
+    /** Returns the appropriate value for shader input. */
+    virtual ValueType get_shader_input_value(float offset) const = 0;
+
     /** Sets the control points on the curves. */
     void set_control_points(const std::vector<std::vector<LVecBase2f>>& control_points);
 
@@ -89,6 +92,8 @@ public:
     /** Scales a linear value. */
     ValueType get_scaled_value(const ValueType& values) const final;
 
+    ValueType get_shader_input_value(float offset) const final;
+
     /** Linearizes a scaled value. */
     float get_linear_value(float scaled_value);
 
@@ -102,6 +107,11 @@ private:
     float _default;
 };
 
+inline DayBaseType::ValueType ScalarType::get_shader_input_value(float offset) const
+{
+    return get_scaled_value_at(offset);
+}
+
 /** Setting type storing a RGB color triple. */
 class ColorType : public DayBaseType
 {
@@ -112,6 +122,8 @@ public:
 
     ValueType get_scaled_value(const ValueType& values) const final;
 
+    ValueType get_shader_input_value(float offset) const final;
+
     std::vector<float> get_linear_value(const std::vector<float>& scaled_value);
 
 private:
@@ -119,6 +131,11 @@ private:
 
     std::vector<float> _default;
 };
+
+inline DayBaseType::ValueType ColorType::get_shader_input_value(float offset) const
+{
+    return get_value_at(offset);
+}
 
 /**
  * Constructs a new setting from a given dataset. This method will automatically

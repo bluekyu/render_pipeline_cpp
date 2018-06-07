@@ -46,11 +46,11 @@
 #define RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(PLUGIN_TYPE) \
     void* PLUGIN_TYPE::downcast() \
     { \
-        return dynamic_cast<PLUGIN_TYPE*>(this); \
+        return this; \
     } \
     const void* PLUGIN_TYPE::downcast() const \
     { \
-        return dynamic_cast<const PLUGIN_TYPE*>(this); \
+        return this; \
     }
 
 // ************************************************************************************************

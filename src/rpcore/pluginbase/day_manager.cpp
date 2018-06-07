@@ -126,15 +126,9 @@ void DayTimeManager::update()
 {
     for (const auto& id_handle: impl_->setting_handles_)
     {
-        // XXX: Find a better interface for this.Without this fix, colors
+        // XXX: Find a better interface for this. Without this fix, colors
         // are in the range 0 .. 255 in the shader.
-        const auto& color_handle = std::dynamic_pointer_cast<ColorType>(id_handle.second);
-        DayBaseType::ValueType value;
-        if (color_handle)
-            value = color_handle->get_value_at(impl_->time_);
-        else
-            value = std::dynamic_pointer_cast<ScalarType>(id_handle.second)->get_scaled_value_at(impl_->time_);
-
+        DayBaseType::ValueType value = id_handle.second->get_shader_input_value(impl_->time_);
         if (value.second == 1)
             impl_->input_ubo_->update_input(id_handle.first, value.first[0]);
         else
