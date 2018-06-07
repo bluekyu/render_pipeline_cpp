@@ -78,14 +78,13 @@ public:
     virtual void set_value(T value);
 
 protected:
-    const std::string _template_type;
     T _default;
     T _minval;
     T _maxval;
 };
 
 template <class T>
-TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data), _template_type(typeid(T).name())
+TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data)
 {
     _default = data["default"].as<T>();
     data.remove("default");
