@@ -162,7 +162,15 @@ function(_panda3d_add_library component_name)
             )
         endif()
 
-        if(${component_name} STREQUAL "panda")
+        if(${component_name} STREQUAL "p3dtool")
+            if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+                include(CMakeFindDependencyMacro)
+                find_dependency(Threads REQUIRED)
+                set_property(TARGET panda3d::${component_name} APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads
+                )
+            endif()
+        elseif(${component_name} STREQUAL "panda")
             if((${CMAKE_SYSTEM_NAME} MATCHES "Windows") OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
                 # check if Eigen is used
                 file(STRINGS "${panda3d_INCLUDE_DIR}/dtool_config.h"
