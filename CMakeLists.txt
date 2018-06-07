@@ -8,6 +8,8 @@ project(render_pipeline
 )
 
 # === configure ====================================================================================
+option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
 include(debugging-information)
@@ -70,6 +72,7 @@ if(MSVC)
     )
 
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275
+        $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
@@ -80,7 +83,9 @@ if(MSVC)
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall
+        $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:-fno-rtti>
+    )
 endif()
 
 target_compile_definitions(${PROJECT_NAME}

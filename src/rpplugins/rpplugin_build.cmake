@@ -3,6 +3,7 @@ add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}_sources} ${${PROJECT_NAME}_
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
+        $<$<NOT:$<BOOL:${render_pipeline_ENABLE_RTTI}>>:/GR->
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
@@ -13,7 +14,9 @@ if(MSVC)
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall
+        $<$<NOT:$<BOOL:${render_pipeline_ENABLE_RTTI}>>:-fno-rtti>
+    )
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
