@@ -47,8 +47,6 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::PSSMPlugin)
 
 namespace rpplugins {
 
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(PSSMPlugin);
-
 class PSSMPlugin::Impl
 {
 public:

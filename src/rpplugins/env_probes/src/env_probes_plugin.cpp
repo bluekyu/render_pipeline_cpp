@@ -47,8 +47,6 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::EnvProbesPlugin)
 
 namespace rpplugins {
 
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(EnvProbesPlugin);
-
 class EnvProbesPlugin::Impl
 {
 public:

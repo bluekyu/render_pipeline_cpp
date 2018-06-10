@@ -39,19 +39,9 @@
     } \
     BOOST_DLL_ALIAS(::rpcpp_plugin_creator__, create_plugin)
 
-#define RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL() \
-    void* downcast() override; \
-    const void* downcast() const override;
-
-#define RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(PLUGIN_TYPE) \
-    void* PLUGIN_TYPE::downcast() \
-    { \
-        return this; \
-    } \
-    const void* PLUGIN_TYPE::downcast() const \
-    { \
-        return this; \
-    }
+#define RENDER_PIPELINE_PLUGIN_DOWNCAST() \
+    void* downcast() override { return this; } \
+    const void* downcast() const override { return this; }
 
 // ************************************************************************************************
 

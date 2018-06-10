@@ -40,6 +40,8 @@ public:
     ProduceType get_produced_pipes() const final;
     ProduceType get_produced_inputs() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     void create() final;
     void update() final;
     void reload_shaders() final;

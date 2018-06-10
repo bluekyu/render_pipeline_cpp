@@ -44,6 +44,8 @@ public:
     RequireType& get_required_pipes() const final { return required_pipes_; }
     ProduceType get_produced_pipes() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     std::shared_ptr<SimpleInputBlock> make_gbuffer_ubo() const;
     void create() final;
 

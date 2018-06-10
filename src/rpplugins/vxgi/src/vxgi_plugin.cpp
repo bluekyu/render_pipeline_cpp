@@ -39,8 +39,6 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::VXGIPlugin)
 
 namespace rpplugins {
 
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(VXGIPlugin);
-
 class VXGIPlugin::Impl
 {
 public:

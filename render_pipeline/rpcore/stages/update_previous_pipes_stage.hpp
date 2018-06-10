@@ -41,6 +41,8 @@ public:
     RequireType& get_required_inputs() const final;
     RequireType& get_required_pipes() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     /**
      * Adds a new texture which should be copied from "from_tex" to
      * "to_tex". This should be called before the stage gets constructed.

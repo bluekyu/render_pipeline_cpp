@@ -33,6 +33,10 @@
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
+#define RENDER_PIPELINE_STAGE_DOWNCAST() \
+    void* downcast() override { return this; } \
+    const void* downcast() const override { return this; }
+
 namespace rpcore {
 
 class RenderPipeline;
@@ -70,7 +74,7 @@ public:
     virtual ~RenderStage();
 
     RenderStage& operator=(const RenderStage&) = delete;
-    RenderStage& operator=(RenderStage&&) = delete;
+    RenderStage& operator=(RenderStage&&) = default;
 
     virtual RequireType& get_required_inputs() const = 0;
     virtual RequireType& get_required_pipes() const = 0;
@@ -79,6 +83,9 @@ public:
     virtual ProduceType get_produced_pipes() const;
 
     virtual DefinesType get_produced_defines() const;
+
+    virtual void* downcast() = 0;
+    virtual const void* downcast() const = 0;
 
     virtual void create() = 0;
     virtual void update() {}

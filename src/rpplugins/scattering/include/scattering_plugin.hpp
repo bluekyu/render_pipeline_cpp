@@ -39,7 +39,7 @@ public:
     virtual ~ScatteringPlugin();
 
     RequrieType& get_required_plugins() const final;
-    RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL();
+    RENDER_PIPELINE_PLUGIN_DOWNCAST();
 
     void on_pipeline_created() final;
     void on_stage_setup() final;

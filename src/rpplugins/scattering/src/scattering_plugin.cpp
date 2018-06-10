@@ -41,8 +41,6 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::ScatteringPlugin)
 
 namespace rpplugins {
 
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(ScatteringPlugin);
-
 class ScatteringPlugin::Impl
 {
 public:

@@ -46,6 +46,8 @@ public:
 
     DefinesType get_produced_defines() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     void create() final;
     void set_dimensions() final;
 

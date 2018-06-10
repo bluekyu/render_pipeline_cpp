@@ -30,8 +30,6 @@ RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::SkinShadingPlugin)
 
 namespace rpplugins {
 
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(SkinShadingPlugin);
-
 SkinShadingPlugin::RequrieType SkinShadingPlugin::require_plugins_;
 
 // ************************************************************************************************

@@ -36,6 +36,8 @@ public:
     RequireType& get_required_pipes() const final { return required_pipes_; }
     ProduceType get_produced_pipes() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     void create() final;
     void reload_shaders() final;
 

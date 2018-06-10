@@ -40,6 +40,8 @@ public:
     RequireType& get_required_pipes() const final { return required_pipes_; }
     ProduceType get_produced_pipes() const final;
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     SamplerState make_pcf_state() const;
     GraphicsOutput* get_atlas_buffer() const;
 

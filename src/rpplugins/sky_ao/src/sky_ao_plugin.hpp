@@ -32,7 +32,7 @@ public:
     SkyAOPlugin(rpcore::RenderPipeline& pipeline);
 
     RequrieType& get_required_plugins() const final;
-    RENDER_PIPELINE_PLUGIN_DOWNCAST_DECL();
+    RENDER_PIPELINE_PLUGIN_DOWNCAST();
 
     void on_stage_setup() final;
     void on_post_stage_setup() final;
