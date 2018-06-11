@@ -150,16 +150,12 @@ public:
         boost::optional<bool> ok_missing = boost::none
     );
     Actor(const Actor&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Actor(Actor&&) = default;
-#endif
 
     virtual ~Actor();
 
     Actor& operator=(const Actor&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    Actor& operator=(Actor&&);
-#endif
+    Actor& operator=(Actor&&) = default;
 
     ALLOC_DELETED_CHAIN(Actor);
 

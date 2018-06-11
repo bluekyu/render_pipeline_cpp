@@ -47,16 +47,12 @@ public:
 
     Effect();
     Effect(const Effect&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Effect(Effect&&);
-#endif
 
     ~Effect();
 
     Effect& operator=(const Effect&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Effect& operator=(Effect&&);
-#endif
 
     int get_effect_id() const;
 

@@ -44,7 +44,6 @@
 #include <depthTestAttrib.h>
 #include <depthWriteAttrib.h>
 #include <pgTop.h>
-#include <pgMouseWatcherBackground.h>
 #include <orthographicLens.h>
 #include <audioManager.h>
 
@@ -570,11 +569,7 @@ void ShowBase::initialize(int argc, char* argv[])
 
 void ShowBase::initialize(PandaFramework* framework)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto) {});
-#else
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](PandaFramework*) {});
-#endif
 
     impl_->initailize(this);
 }

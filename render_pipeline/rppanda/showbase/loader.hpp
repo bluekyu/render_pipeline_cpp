@@ -96,16 +96,12 @@ public:
 public:
     Loader(ShowBase& base);
     Loader(const Loader&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Loader(Loader&&);
-#endif
 
     virtual ~Loader();
 
     Loader& operator=(const Loader&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     Loader& operator=(Loader&&);
-#endif
 
     ALLOC_DELETED_CHAIN(Loader);
 

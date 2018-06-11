@@ -248,21 +248,12 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
     }
 
     const auto& info_node = config["information"];
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo{
         info_node["category"].as<std::string>("empty_category"),
         info_node["name"].as<std::string>("empty_name"),
         info_node["author"].as<std::string>("empty_author"),
         info_node["version"].as<std::string>(""),
         info_node["description"].as<std::string>("empty_description") });
-#else
-    plugin_info_map_[plugin_id] = BasePlugin::PluginInfo{
-        info_node["category"].as<std::string>("empty_category"),
-        info_node["name"].as<std::string>("empty_name"),
-        info_node["author"].as<std::string>("empty_author"),
-        info_node["version"].as<std::string>("empty_version"),
-        info_node["description"].as<std::string>("empty_description") };
-#endif
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'settings'?");
@@ -584,7 +575,7 @@ BasePlugin* PluginManager::get_instance(const std::string& plugin_id) const
     return impl_->instances_.at(plugin_id).get();
 }
 
-size_t PluginManager::get_enabled_plugins_count() const NOEXCEPT
+size_t PluginManager::get_enabled_plugins_count() const noexcept
 {
     return impl_->enabled_plugins_.size();
 }
@@ -594,7 +585,7 @@ const PluginManager::SettingsDataType& PluginManager::get_setting(const std::str
     return impl_->settings_.at(setting_id);
 }
 
-const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const NOEXCEPT
+const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const noexcept
 {
     try
     {

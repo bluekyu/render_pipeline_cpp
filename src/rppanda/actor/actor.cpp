@@ -263,10 +263,6 @@ Actor::Actor(const boost::variant<void*, ModelsType, LODModelsType, MultiPartLOD
     }
 }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-Actor& Actor::operator=(Actor&&) = default;
-#endif
-
 Actor::~Actor() = default;
 
 void Actor::list_joints(const std::string& part_name, const std::string& lod_name) const
@@ -341,27 +337,13 @@ Actor::ActorInfoType Actor::get_actor_info() const
             anim_info.reserve(anim_dict.size());
             for (const auto& animname_anim: anim_dict)
             {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 anim_info.push_back({animname_anim.first,
                     animname_anim.second.filename,
                     animname_anim.second.anim_control});
-#else
-                anim_info.push_back(AnimInfoType{animname_anim.first,
-                    animname_anim.second.filename,
-                    animname_anim.second.anim_control});
-#endif
             }
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
             part_info.push_back({part_name, part_bundle, std::move(anim_info)});
-#else
-            part_info.push_back(PartInfoType{part_name, part_bundle, std::move(anim_info)});
-#endif
         }
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         lod_info.push_back({lod_name, std::move(part_info)});
-#else
-        lod_info.push_back(LODInfoType{lod_name, std::move(part_info)});
-#endif
     }
     return lod_info;
 }
@@ -742,11 +724,7 @@ void Actor::load_model(const Filename& model_path, const std::string& part_name,
 
     rppanda_actor_cat.debug() << fmt::format("in load_model: {}, part: {}, lod: {}, copy: {}", model_path, part_name, lod_name, copy) << std::endl;
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options_, [](auto){});
-#else
-    std::shared_ptr<LoaderOptions> loader_options = std::shared_ptr<LoaderOptions>(&Actor::model_loader_options_, [](LoaderOptions*){});
-#endif
 
     if (!copy)
     {
@@ -845,11 +823,7 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
             auto& part_dict = anim_control_dict_.at(l_name);
             if (first_load)
             {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 part_dict.at(part_name).insert_or_assign(anim_name, AnimDef());
-#else
-                part_dict.at(part_name).insert({anim_name, AnimDef()});
-#endif
             }
 
             auto& anim_def = part_dict.at(part_name).at(anim_name);
@@ -1314,20 +1288,7 @@ bool Actor::build_controls_from_anim_name(std::vector<AnimControl*>& controls, c
                     auto anim_found = part_dict.at(true_part_name).find(anim_name);
                     if (anim_found != part_dict.at(true_part_name).end())
                     {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
                         found = anim_dict.insert_or_assign(anim_name, anim_found->second.make_copy()).first;
-#else
-                        auto anim_dict_found = anim_dict.find(anim_name);
-                        if (anim_dict_found == anim_dict.end())
-                        {
-                            found = anim_dict.insert({ anim_name, anim_found->second.make_copy() }).first;
-                        }
-                        else
-                        {
-                            anim_dict_found->second = anim_found->second.make_copy();
-                            found = anim_dict_found;
-                        }
-#endif
                     }
                 }
             }
@@ -1453,11 +1414,7 @@ void Actor::post_load_model(NodePath model, const std::string& part_name, const 
 
             AnimDef anim_def;
             anim_def.anim_control = anim_contorl;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
             anim_control_dict_.at(new_lod_name).at(part_name).insert_or_assign(anim_name, anim_def);
-#else
-            anim_control_dict_.at(new_lod_name).at(part_name)[anim_name] = anim_def;
-#endif
         }
     }
 }
@@ -1509,25 +1466,11 @@ void Actor::prepare_bundle(NodePath bundle_np, PandaNode* part_model, const std:
         }
         else
         {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
             common_bundle_handles_.insert_or_assign(part_name, bundle_handle);
-#else
-            common_bundle_handles_[part_name] = bundle_handle;
-#endif
         }
     }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     bundle_dict.insert_or_assign(part_name, PartDef{ bundle_np, bundle_handle, part_model });
-#else
-    {
-        auto found = bundle_dict.find(part_name);
-        if (found == bundle_dict.end())
-            bundle_dict.insert({ part_name, PartDef{ bundle_np, bundle_handle, part_model } });
-        else
-            found->second = PartDef{ bundle_np, bundle_handle, part_model };
-    }
-#endif
 }
 
 void Actor::update_sorted_LOD_names()
@@ -1579,12 +1522,7 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
     {
         // It must be a subpart that hasn't been bound yet.
         auto& anim = part_dict[true_part_name].at(anim_name);
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         anim_found = anim_dict_found->second.insert_or_assign(anim_name, anim.make_copy()).first;
-#else
-        anim_dict_found->second[anim_name] = anim.make_copy();
-        anim_found = anim_dict_found->second.find(anim_name);
-#endif
     }
 
     if (anim_found == anim_dict_found->second.end())

@@ -145,11 +145,7 @@ FunctionalTask* TaskManager::do_method_later(float delay_time,
     if (upon_death)
         task->set_upon_death(upon_death);
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     do_method_later(delay_time, task, {}, sort, priority, task_chain);
-#else
-    do_method_later(delay_time, task.p(), std::string(), sort, priority, task_chain);
-#endif
 
     return task;
 }
@@ -173,11 +169,7 @@ FunctionalTask* TaskManager::add(const FunctionalTask::TaskFunc& func, const std
     if (upon_death)
         task->set_upon_death(upon_death);
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     add(task, {}, sort, priority, task_chain);
-#else
-    add(task.p(), {}, sort, priority, task_chain);
-#endif
 
     return task;
 }

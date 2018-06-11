@@ -67,14 +67,12 @@ public:
 
     RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
     RenderStage(const RenderStage&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     RenderStage(RenderStage&&);
-#endif
 
     virtual ~RenderStage();
 
     RenderStage& operator=(const RenderStage&) = delete;
-    RenderStage& operator=(RenderStage&&) = default;
+    RenderStage& operator=(RenderStage&&) = delete;
 
     virtual RequireType& get_required_inputs() const = 0;
     virtual RequireType& get_required_pipes() const = 0;

@@ -58,16 +58,12 @@ class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
 public:
     DirectObject() = default;
     DirectObject(const DirectObject&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    DirectObject(DirectObject&&);
-#endif
+    DirectObject(DirectObject&&) = default;
 
     virtual ~DirectObject();
 
     DirectObject& operator=(const DirectObject&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    DirectObject& operator=(DirectObject&&);
-#endif
+    DirectObject& operator=(DirectObject&&) = default;
 
     ALLOC_DELETED_CHAIN(DirectObject);
 

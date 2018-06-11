@@ -123,19 +123,11 @@ void DirectFrame::update_text()
                 return;
             else
             {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 create_component(component_name, boost::any(OnscreenText(
                     text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
                     {}, {}, {}, OnscreenText::Default::shadow_offset, {},
                     {}, {}, {}, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
                     options->text_may_change)));
-#else
-                create_component(component_name, boost::any(OnscreenText(
-                    text, OnscreenText::Style::plain, LVecBase2(0), 0, LVecBase2(1),
-                    boost::none, boost::none, boost::none, OnscreenText::Default::shadow_offset, boost::none,
-                    boost::none, boost::none, boost::none, false, nullptr, _state_node_path.at(i), DGG_TEXT_SORT_INDEX,
-                    static_cast<Options*>(options_.get())->text_may_change)));
-#endif
             }
         }
     }

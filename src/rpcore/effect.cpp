@@ -420,15 +420,11 @@ Effect::Effect(): RPObject("Effect"), impl_(std::make_unique<Impl>())
     impl_->options_ = Impl::default_options_;
 }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
 Effect::Effect(Effect&&) = default;
-#endif
 
 Effect::~Effect() = default;
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
 Effect& Effect::operator=(Effect&&) = default;
-#endif
 
 int Effect::get_effect_id() const
 {
@@ -476,11 +472,7 @@ bool Effect::do_load(const Filename& filename)
         if (geometry_src_iter != impl_->generated_shader_paths_.end())
             geometry_src = geometry_src_iter->second;
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         impl_->shader_objs_.insert_or_assign(pass_id_multiview.first, RPLoader::load_shader({vertex_src, fragment_src, geometry_src}));
-#else
-        impl_->shader_objs_[pass_id_multiview.first] = RPLoader::load_shader({vertex_src, fragment_src, geometry_src});
-#endif
     }
 
     return true;

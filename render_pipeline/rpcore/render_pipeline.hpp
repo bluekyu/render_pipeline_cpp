@@ -79,10 +79,12 @@ public:
     RenderPipeline();
 
     RenderPipeline(const RenderPipeline&) = delete;
+    RenderPipeline(RenderPipeline&&);
 
     ~RenderPipeline();
 
     RenderPipeline& operator=(const RenderPipeline&) = delete;
+    RenderPipeline& operator=(RenderPipeline&&);
 
     /** Call ShowBase::Run() */
     void run();

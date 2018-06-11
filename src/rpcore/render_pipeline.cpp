@@ -960,7 +960,11 @@ RenderPipeline::RenderPipeline(): RPObject("RenderPipeline"), impl_(std::make_un
     set_loading_screen_image("/$$rp/data/gui/loading_screen_bg.txo");
 }
 
+RenderPipeline::RenderPipeline(RenderPipeline&&) = default;
+
 RenderPipeline::~RenderPipeline() = default;
+
+RenderPipeline& RenderPipeline::operator=(RenderPipeline&&) = default;
 
 void RenderPipeline::run()
 {

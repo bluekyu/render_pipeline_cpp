@@ -84,19 +84,19 @@ public:
      * You can also pass a string containing a percentage, e.g. '25%', '50%'
      * or '100%' (the default).
      */
-    void set_size(const std::string& width, const std::string& height) NOEXCEPT;
-    void set_size(const std::string& size) NOEXCEPT;
+    void set_size(const std::string& width, const std::string& height) noexcept;
+    void set_size(const std::string& size) noexcept;
 
     /**
      * Set size_constraint.
      * If width or height has negative value,
      * it will be re-calculated to be proportional to resolution.
      */
-    void set_size(const LVecBase2i& size) NOEXCEPT;
+    void set_size(const LVecBase2i& size) noexcept;
     /** @overload set_size(const LVecBase2i&) */
-    void set_size(int size) NOEXCEPT;
+    void set_size(int size) noexcept;
     /** @overload set_size(const LVecBase2i&) */
-    void set_size(int width, int height) NOEXCEPT;
+    void set_size(int width, int height) noexcept;
 
     /** Get current active. */
     bool get_active() const;
@@ -149,8 +149,8 @@ public:
 
     void consider_resize();
 
-    const boost::optional<int>& get_sort() const NOEXCEPT;
-    void set_sort(int sort) NOEXCEPT;
+    const boost::optional<int>& get_sort() const noexcept;
+    void set_sort(int sort) noexcept;
 
     bool get_support_transparency() const;
     bool get_create_default_region() const;
@@ -171,7 +171,7 @@ inline void RenderTarget::add_color_attachment(int bits, bool alpha)
     add_color_attachment(LVecBase4i(bits, bits, bits, alpha ? bits : 0));
 }
 
-inline void RenderTarget::set_size(const std::string& size) NOEXCEPT
+inline void RenderTarget::set_size(const std::string& size) noexcept
 {
     set_size(size, size);
 }

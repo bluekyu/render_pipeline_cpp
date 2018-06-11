@@ -39,16 +39,12 @@ public:
         GeomEnums::UsageHint buffer_hint = GeomEnums::UH_static);
 
     PointsNode(const PointsNode&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     PointsNode(PointsNode&&);
-#endif
 
     ~PointsNode();
 
     PointsNode& operator=(const PointsNode&) = delete;
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-    PointsNode& operator=(PointsNode&& other);
-#endif
+    PointsNode& operator=(PointsNode&&);
 
     NodePath get_nodepath() const;
 

@@ -103,45 +103,6 @@ public:
     std::vector<std::string> stage_order_;
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#else
-struct VisitorBindToStage : public boost::static_visitor<>
-{
-    template <class T>
-    void operator()(const T& block)
-    {
-        block->bind_to(stage);
-    }
-
-    RenderStage* stage;
-};
-
-struct VisitorInsertToInputBlocks : public boost::static_visitor<>
-{
-    VisitorInsertToInputBlocks(std::unordered_map<std::string, boost::variant<
-        std::shared_ptr<SimpleInputBlock>,
-        std::shared_ptr<GroupedInputBlock>>>& input_blocks): input_blocks_(input_blocks)
-    {
-    }
-
-    template <class T>
-    void operator()(const T& block)
-    {
-        std::string block_name = block->get_name();
-        auto found = input_blocks_.find(block_name);
-        if (found == input_blocks_.end())
-            input_blocks_.insert({block_name, block});
-        else
-            found->second = block;
-    }
-
-private:
-    std::unordered_map<std::string, boost::variant<
-        std::shared_ptr<SimpleInputBlock>,
-        std::shared_ptr<GroupedInputBlock>>>& input_blocks_;
-};
-#endif
-
 StageManager::Impl::Impl(StageManager& self, RenderPipeline& pipeline): self_(self), pipeline_(pipeline)
 {
 }
@@ -186,23 +147,13 @@ void StageManager::Impl::prepare_stages()
 
 bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#else
-    VisitorBindToStage vbts;
-    vbts.stage = stage;
-#endif
-
     const auto& required_pipes = stage->get_required_pipes();
     for (const auto& pipe: required_pipes)
     {
         // Check if there is an input block named like the pipe
         if (input_blocks_.find(pipe) != input_blocks_.end())
         {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
             boost::apply_visitor([&](const auto& block) { block->bind_to(stage); }, input_blocks_.at(pipe));
-#else
-            boost::apply_visitor(vbts, input_blocks_.at(pipe));
-#endif
             continue;
         }
 
@@ -225,11 +176,7 @@ bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
                 if (boost::to_lower_copy(pipe_name).find("depth") != std::string::npos)
                     tex_format = "R32";
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
                 previous_pipes_.insert_or_assign(pipe_name, Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format));
-#else
-                previous_pipes_[pipe_name] = Image::create_2d("Prev-" + pipe_name, 0, 0, tex_format);
-#endif
                 previous_pipes_.at(pipe_name)->clear_image();
             }
             stage->set_shader_input(ShaderInput(std::string("Previous_") + pipe_name, previous_pipes_.at(pipe_name)->get_texture()));
@@ -261,12 +208,6 @@ bool StageManager::Impl::bind_pipes_to_stage(RenderStage* stage)
 
 bool StageManager::Impl::bind_inputs_to_stage(RenderStage* stage)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#else
-    VisitorBindToStage vbts;
-    vbts.stage = stage;
-#endif
-
     std::vector<std::string> common_inputs = { "MainSceneData", "TimeOfDay" };
 
     if (!pipeline_.is_stereo_mode())
@@ -292,11 +233,7 @@ bool StageManager::Impl::bind_inputs_to_stage(RenderStage* stage)
         }
         else if (input_blocks_.find(input_binding) != input_blocks_.end())
         {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
             boost::apply_visitor([&](const auto& block){ block->bind_to(stage); }, input_blocks_.at(input_binding));
-#else
-            boost::apply_visitor(vbts, input_blocks_.at(input_binding));
-#endif
         }
         else
         {
@@ -313,21 +250,12 @@ void StageManager::Impl::register_stage_result(RenderStage* stage)
 
     for (const auto& pipe_data: stage->get_produced_pipes())
     {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         if (auto data = boost::get<ShaderInput>(&pipe_data))
             pipes_.insert_or_assign(data->get_name()->get_name(), *data);
         else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_data))
             input_blocks_.insert_or_assign((*data)->get_name(), *data);
         else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_data))
             input_blocks_.insert_or_assign((*data)->get_name(), *data);
-#else
-        if (auto data = boost::get<ShaderInput>(&pipe_data))
-            pipes_[data->get_name()->get_name()] = *data;
-        else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_data))
-            input_blocks_.insert({(*data)->get_name(), *data});
-        else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_data))
-            input_blocks_.insert({(*data)->get_name(), *data});
-#endif
     }
 
     for (const auto& define: stage->get_produced_defines())
@@ -339,7 +267,6 @@ void StageManager::Impl::register_stage_result(RenderStage* stage)
 
     for (const auto& input_data: stage->get_produced_inputs())
     {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         if (auto data = boost::get<ShaderInput>(&input_data))
         {
             const auto& input_name = data->get_name()->get_name();
@@ -355,23 +282,6 @@ void StageManager::Impl::register_stage_result(RenderStage* stage)
         {
             input_blocks_.insert_or_assign((*data)->get_name(), *data);
         }
-#else
-        if (auto data = boost::get<ShaderInput>(&input_data))
-        {
-            const auto& input_name = data->get_name()->get_name();
-            if (inputs_.find(input_name) != inputs_.end())
-                self_.warn(fmt::format("Stage {} overrides input {}", stage->get_debug_name(), input_name));
-            inputs_[input_name] = *data;
-        }
-        else if (auto data = boost::get<std::shared_ptr<SimpleInputBlock>>(&input_data))
-        {
-            input_blocks_.insert({(*data)->get_name(), *data});
-        }
-        else if (auto data = boost::get<std::shared_ptr<GroupedInputBlock>>(&input_data))
-        {
-            input_blocks_.insert({(*data)->get_name(), *data});
-        }
-#endif
     }
 }
 
@@ -450,11 +360,7 @@ const StageManager::DefinesType& StageManager::get_defines() const
 
 void StageManager::add_input(const ShaderInput& inp)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     impl_->inputs_.insert_or_assign(inp.get_name()->get_name(), inp);
-#else
-    impl_->inputs_[inp.get_name()->get_name()] = inp;
-#endif
 }
 
 const ShaderInput& StageManager::get_pipe(const std::string& pipe_name) const
@@ -518,25 +424,16 @@ RenderStage* StageManager::get_stage(const std::string& stage_id) const
 
 void StageManager::setup()
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#else
-    VisitorInsertToInputBlocks vitib(impl_->input_blocks_);
-#endif
-
     debug("Setup Stages ..");
     impl_->created_ = true;
 
     // Convert input blocks so we can access them in a better way
     for (const auto& block: impl_->input_block_list_)
     {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         boost::apply_visitor([this](const auto& block) {
             std::string block_name = block->get_name();
             impl_->input_blocks_.insert_or_assign(block_name, std::move(block));
         }, block);
-#else
-        boost::apply_visitor(vitib, block);
-#endif
     }
     impl_->input_block_list_.clear();
 

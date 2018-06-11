@@ -53,15 +53,9 @@ Text::Text(const std::string& text, NodePath parent, float x, float y, float siz
 
     initial_pos_ = LVecBase2f(x, -y);
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     node_ = rppanda::OnscreenText(text, rppanda::OnscreenText::Default::style, initial_pos_, 0.0f,
         LVecBase2f(size), LColorf(color, 1.0f), {}, {}, rppanda::OnscreenText::Default::shadow_offset,
         {}, align_mode, {}, {}, false, font, parent, 0, may_change);
-#else
-    node_ = rppanda::OnscreenText(text, rppanda::OnscreenText::Default::style, initial_pos_, 0.0f,
-        LVecBase2f(size), LColorf(color, 1.0f), boost::none, boost::none, rppanda::OnscreenText::Default::shadow_offset,
-        boost::none, align_mode, boost::none, boost::none, false, font, parent, 0, may_change);
-#endif
 }
 
 }

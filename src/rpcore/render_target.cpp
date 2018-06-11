@@ -56,7 +56,7 @@ public:
     void prepare_render(const NodePath& camera_np);
     void remove();
 
-    int percent_to_number(const std::string& v) const NOEXCEPT;
+    int percent_to_number(const std::string& v) const noexcept;
 
     void create_buffer(bool point_buffer=false);
     void compute_size_from_constraint();
@@ -184,7 +184,7 @@ void RenderTarget::Impl::remove()
     targets_.clear();
 }
 
-int RenderTarget::Impl::percent_to_number(const std::string& v) const NOEXCEPT
+int RenderTarget::Impl::percent_to_number(const std::string& v) const noexcept
 {
     static const std::unordered_map<std::string, int> percent_to_number_map = {
         { "100%", -1 },
@@ -496,17 +496,17 @@ void RenderTarget::set_texture_type(Texture::TextureType tex_type)
     impl_->texture_type_= tex_type;
 }
 
-void RenderTarget::set_size(int width, int height) NOEXCEPT
+void RenderTarget::set_size(int width, int height) noexcept
 {
     impl_->size_constraint_ = LVecBase2i(width, height);
 }
 
-void RenderTarget::set_size(int size) NOEXCEPT
+void RenderTarget::set_size(int size) noexcept
 {
     impl_->size_constraint_ = LVecBase2i(size);
 }
 
-void RenderTarget::set_size(const LVecBase2i& size) NOEXCEPT
+void RenderTarget::set_size(const LVecBase2i& size) noexcept
 {
     impl_->size_constraint_ = size;
 }
@@ -531,17 +531,17 @@ Texture* RenderTarget::get_aux_tex(size_t index) const
     return impl_->targets_.at(std::string("aux_") + std::to_string(index));
 }
 
-const boost::optional<int>& RenderTarget::get_sort() const NOEXCEPT
+const boost::optional<int>& RenderTarget::get_sort() const noexcept
 {
     return impl_->sort_;
 }
 
-void RenderTarget::set_sort(int sort) NOEXCEPT
+void RenderTarget::set_sort(int sort) noexcept
 {
     impl_->sort_ = sort;
 }
 
-void RenderTarget::set_size(const std::string& width, const std::string& height) NOEXCEPT
+void RenderTarget::set_size(const std::string& width, const std::string& height) noexcept
 {
     impl_->size_constraint_ = LVecBase2i(impl_->percent_to_number(width), impl_->percent_to_number(height));
 }

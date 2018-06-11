@@ -69,58 +69,34 @@ private:
 // ************************************************************************************************
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, tex));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, tex);
-#endif
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex, const SamplerState &sampler)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, tex, sampler));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, tex, sampler);
-#endif
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, Texture *tex, bool read, bool write, int z, int n)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, tex, read, write, z, n));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, tex, read, write, z, n);
-#endif
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, int n1, int n2, int n3, int n4)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, LVecBase4i(n1, n2, n3, n4)));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, LVecBase4i(n1, n2, n3, n4));
-#endif
 }
 
 inline void SimpleInputBlock::add_input(const std::string& id, PN_stdfloat n1, PN_stdfloat n2, PN_stdfloat n3, PN_stdfloat n4)
 {
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, LVecBase4f(n1, n2, n3, n4)));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, LVecBase4f(n1, n2, n3, n4));
-#endif
 }
 
 template <class T>
 inline void SimpleInputBlock::add_input(const std::string& id, const T& np)
 {
     // XXX: force to set priority.
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
     inputs_.insert_or_assign(id, ShaderInput(name_ + "." + id, np, 0));
-#else
-    inputs_[id] = ShaderInput(name_ + "." + id, np, 0);
-#endif
 }
 
 inline const std::string& SimpleInputBlock::get_name() const

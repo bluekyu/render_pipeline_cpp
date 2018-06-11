@@ -132,11 +132,8 @@ BaseType::BaseType(YAML::Node& data): RPObject("BaseType")
     }
 
     for (auto key_val: data["display_if"])
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         _display_conditions.insert_or_assign(key_val.first.as<std::string>(), key_val.second.as<std::string>());
-#else
-        _display_conditions[key_val.first.as<std::string>()] = key_val.second.as<std::string>();
-#endif
+
     data.remove("display_if");
 
     set_debug_name("psetting:" + _label);

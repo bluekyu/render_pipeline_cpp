@@ -43,7 +43,6 @@ FunctionalTask::FunctionalTask(TaskFunc&& func, const std::string& name) :
 FunctionalTask::FunctionalTask(TaskFunc&& func, const UserDataType& data, const std::string& name) :
     AsyncTask(name), function_(func), user_data_(data)
 {
-
 }
 
 FunctionalTask::~FunctionalTask() = default;

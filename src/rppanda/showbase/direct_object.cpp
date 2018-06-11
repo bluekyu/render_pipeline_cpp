@@ -61,18 +61,10 @@ void DirectObject::TaskContainer::wp_callback(void*)
 
 TypeHandle DirectObject::type_handle_;
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-DirectObject::DirectObject(DirectObject&&) = default;
-#endif
-
 DirectObject::~DirectObject()
 {
     ignore_all();
 }
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-DirectObject& DirectObject::operator=(DirectObject&&) = default;
-#endif
 
 void DirectObject::accept(const std::string& ev_name, const Messenger::EventFunction& func)
 {
