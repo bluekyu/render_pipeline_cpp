@@ -114,7 +114,7 @@ OnscreenText::OnscreenText(const std::string& text, Style style,
         break;
 
     default:
-        nout << "DESIGN ERROR: missing a TextStyle case." << endl;
+        nout << "DESIGN ERROR: missing a TextStyle case." << std::endl;
         return;
     }
 
@@ -226,19 +226,19 @@ void OnscreenText::clear_text()
 
 // Reimplementation of TextNode::set_text.
 // text: the actual text to display.
-void OnscreenText::set_text(const string& text)
+void OnscreenText::set_text(const std::string& text)
 {
     DCAST(TextNode, text_node_)->set_text(text);
 }
 
 // Reimplementation of TextNode::append_text.
-void OnscreenText::append_text(const string& text)
+void OnscreenText::append_text(const std::string& text)
 {
     DCAST(TextNode, text_node_)->append_text(text);
 }
 
 // Reimplementation of TextNode::get_text.
-string OnscreenText::get_text() const
+std::string OnscreenText::get_text() const
 {
     return DCAST(TextNode, text_node_)->get_text();
 }

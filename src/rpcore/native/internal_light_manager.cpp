@@ -72,7 +72,7 @@ void InternalLightManager::add_light(PT(RPLight) light) {
     // Don't attach the light in case its already attached
     if (light->has_slot()) {
         lightmgr_cat.error() << "could not add light because it already is attached! "
-                             << "Detach the light first, then try it again." << endl;
+                             << "Detach the light first, then try it again." << std::endl;
         return;
     }
 
@@ -80,7 +80,7 @@ void InternalLightManager::add_light(PT(RPLight) light) {
     int slot;
     if (!_lights.find_slot(slot)) {
         lightmgr_cat.error() << "Light limit of " << MAX_LIGHT_COUNT << " reached, "
-                             << "all light slots used!" << endl;
+                             << "all light slots used!" << std::endl;
         return;
     }
 
@@ -130,7 +130,7 @@ void InternalLightManager::setup_shadows(RPLight* light) {
     if (!_shadow_sources.find_consecutive_slots(base_slot, static_cast<int>(num_sources))) {
         lightmgr_cat.error() << "Failed to find slot for shadow sources! "
                              << "Shadow-Source limit of " << MAX_SHADOW_SOURCES
-                             << " reached!" << endl;
+                             << " reached!" << std::endl;
         return;
     }
 
@@ -172,7 +172,7 @@ void InternalLightManager::remove_light(PT(RPLight) light) {
     nassertv(_shadow_manager != nullptr);
 
     if (!light->has_slot()) {
-        lightmgr_cat.error() << "Could not detach light, light was not attached!" << endl;
+        lightmgr_cat.error() << "Could not detach light, light was not attached!" << std::endl;
         return;
     }
 
@@ -405,7 +405,7 @@ void InternalLightManager::update_shadow_sources() {
 
         if(!_shadow_manager->add_update(source)) {
             // In case the ShadowManager lied about the number of updates left
-            lightmgr_cat.error() << "ShadowManager ensured update slot, but slot is taken!" << endl;
+            lightmgr_cat.error() << "ShadowManager ensured update slot, but slot is taken!" << std::endl;
             break;
         }
 

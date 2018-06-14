@@ -78,7 +78,7 @@ void TagStateManager::apply_state(StateContainer& container, NodePath np, Shader
                                   const std::string &name, int sort) {
     if (tagstatemgr_cat.is_spam()) {
         tagstatemgr_cat.spam() << "Constructing new state " << name
-                               << " with shader " << shader << endl;
+                               << " with shader " << shader << std::endl;
     }
 
     // Construct the render state
@@ -92,7 +92,7 @@ void TagStateManager::apply_state(StateContainer& container, NodePath np, Shader
 
     // Emit a warning if we override an existing state
     if (container.tag_states.count(name) != 0) {
-        tagstatemgr_cat.warning() << "Overriding existing state " << name << endl;
+        tagstatemgr_cat.warning() << "Overriding existing state " << name << std::endl;
     }
 
     // Store the state, this is required whenever we attach a new camera, so
@@ -122,7 +122,7 @@ void TagStateManager::cleanup_state(const std::string& state, NodePath np)
     const std::string& name = np.get_tag(container.tag_name);
 
     if (container.tag_states.count(name) == 0) {
-        tagstatemgr_cat.warning() << "Clear non-existing state " << name << endl;
+        tagstatemgr_cat.warning() << "Clear non-existing state " << name << std::endl;
         return;
     }
 
@@ -144,7 +144,7 @@ void TagStateManager::cleanup_state(const std::string& state, NodePath np)
  */
 void TagStateManager::cleanup_states() {
     if (tagstatemgr_cat.is_info()) {
-        tagstatemgr_cat.info() << "cleaning up states" << endl;
+        tagstatemgr_cat.info() << "cleaning up states" << std::endl;
     }
 
     // Clear all tag states of the main camera
@@ -211,7 +211,7 @@ void TagStateManager::unregister_camera(StateContainer& container, Camera* sourc
     // Make sure the camera was attached so far
     if (std::find(cameras.begin(), cameras.end(), source) == std::end(cameras)) {
         tagstatemgr_cat.error()
-            << "Called unregister_camera but camera was never registered!" << endl;
+            << "Called unregister_camera but camera was never registered!" << std::endl;
         return;
     }
 
