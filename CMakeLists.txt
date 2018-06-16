@@ -9,6 +9,7 @@ project(render_pipeline
 
 # === configure ====================================================================================
 option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp module" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
@@ -195,4 +196,8 @@ install_debugging_information(TARGET ${PROJECT_NAME}
 
 # === subdirectory =================================================================================
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
+
+if(${${PROJECT_NAME}_BUILD_RPASSIMP})
+    add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpassimp")
+endif()
 # ==================================================================================================

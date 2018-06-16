@@ -351,13 +351,6 @@ set(source_rplibs
     "${PROJECT_SOURCE_DIR}/src/rplibs/yaml.hpp"
 )
 
-set(source_rplibs_assimp
-    #"${PROJECT_SOURCE_DIR}/src/rplibs/assimp/assimp_loader.cpp"
-    #"${PROJECT_SOURCE_DIR}/src/rplibs/assimp/assimp_loader.hpp"
-    "${PROJECT_SOURCE_DIR}/src/rplibs/assimp/loader_file_type_assimp.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rplibs/assimp/loader_file_type_assimp.hpp"
-)
-
 set(render_pipeline_sources
     ${source_rppanda_actor}
     ${source_rppanda_gui}
@@ -372,7 +365,6 @@ set(render_pipeline_sources
     ${source_rpcore_stages}
     ${source_rpcore_util}
     ${source_rplibs}
-    #${source_rplibs_assimp}
 )
 
 # grouping
@@ -389,4 +381,3 @@ source_group("src\\rpcore\\pluginbase" FILES ${source_rpcore_pluginbase})
 source_group("src\\rpcore\\stages" FILES ${source_rpcore_stages})
 source_group("src\\rpcore\\util" FILES ${source_rpcore_util})
 source_group("src\\rplibs" FILES ${source_rplibs})
-source_group("src\\rplibs\\assimp" FILES ${source_rplibs_assimp})
