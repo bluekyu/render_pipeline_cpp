@@ -2,9 +2,8 @@
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}_sources} ${${PROJECT_NAME}_headers})
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /utf-8
         $<$<NOT:$<BOOL:${render_pipeline_ENABLE_RTTI}>>:/GR->
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
         # note: windows.cmake in vcpkg
