@@ -23,6 +23,8 @@
 #include <virtualFileSystem.h>
 #include <virtualFileMountSystem.h>
 
+#include <boost/dll/runtime_symbol_info.hpp>
+
 #include "render_pipeline/rppanda/util/filesystem.hpp"
 
 namespace rppanda {
@@ -76,6 +78,11 @@ Filename convert_path(const boost::filesystem::path& path)
 #else
     return Filename::from_os_specific(path.string());
 #endif
+}
+
+boost::filesystem::path get_library_location()
+{
+    return boost::dll::this_line_location();
 }
 
 }
