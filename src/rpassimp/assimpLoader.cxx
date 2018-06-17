@@ -108,7 +108,7 @@ bool AssimpLoader::read(const Filename &filename)
 
     // I really don't know why we need to flip the winding order, but otherwise
     // the models I tested with are showing inside out.
-    _scene = _importer.ReadFile(_filename.c_str(), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_FlipWindingOrder);
+    _scene = _importer.ReadFile(_filename.c_str(), aiProcess_Triangulate | aiProcess_GenUVCoords);
     if (_scene == nullptr) {
         _error = true;
         return false;
@@ -354,10 +354,7 @@ void AssimpLoader::load_material(size_t index)
     have = false;
 
     if (AI_SUCCESS == mat.Get(AI_MATKEY_NAME, name))
-    {
         pmat->set_name(name.C_Str());
-        // have = true;
-    }
 
     if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col)) {
         pmat->set_diffuse(LColor(col.r, col.g, col.b, 1));
@@ -392,24 +389,22 @@ void AssimpLoader::load_material(size_t index)
     }
 
     // Wireframe.
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_ENABLE_WIREFRAME, ival)) {
-        if (ival) {
+    if (AI_SUCCESS == mat.Get(AI_MATKEY_ENABLE_WIREFRAME, ival))
+    {
+        if (ival)
             state = state->add_attrib(RenderModeAttrib::make(RenderModeAttrib::M_wireframe));
-        }
-        else {
+        else
             state = state->add_attrib(RenderModeAttrib::make(RenderModeAttrib::M_filled));
-        }
     }
 
     // Backface culling.  Not sure if this is also supposed to set the twoside
     // flag in the material, I'm guessing not.
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_TWOSIDED, ival)) {
-        if (ival) {
+    if (AI_SUCCESS == mat.Get(AI_MATKEY_TWOSIDED, ival))
+    {
+        if (ival)
             state = state->add_attrib(CullFaceAttrib::make(CullFaceAttrib::M_cull_none));
-        }
-        else {
+        else
             state = state->add_attrib(CullFaceAttrib::make_default());
-        }
     }
 
     // And let's not forget the textures!
@@ -591,20 +586,26 @@ void AssimpLoader::load_mesh(size_t index)
     // Create the vertex format.
     PT(GeomVertexArrayFormat) aformat = new GeomVertexArrayFormat;
     aformat->add_column(InternalName::get_vertex(), 3, Geom::NT_stdfloat, Geom::C_point);
-    if (mesh.HasNormals()) {
-        aformat->add_column(InternalName::get_normal(), 3, Geom::NT_stdfloat, Geom::C_vector);
+    if (mesh.HasNormals())
+    {
+        aformat->add_column(InternalName::get_normal(), 3, Geom::NT_stdfloat, Geom::C_normal);
     }
-    if (mesh.HasVertexColors(0)) {
+
+    if (mesh.HasVertexColors(0))
+    {
         aformat->add_column(InternalName::get_color(), 4, Geom::NT_stdfloat, Geom::C_color);
     }
-    unsigned int num_uvs = mesh.GetNumUVChannels();
-    if (num_uvs > 0) {
+
+    const unsigned int num_uvs = mesh.GetNumUVChannels();
+    if (num_uvs > 0)
+    {
         // UV sets are named texcoord, texcoord.1, texcoord.2...
-        aformat->add_column(InternalName::get_texcoord(), 3, Geom::NT_stdfloat, Geom::C_texcoord);
-        for (unsigned int u = 1; u < num_uvs; ++u) {
+        aformat->add_column(InternalName::get_texcoord(), mesh.mNumUVComponents[0], Geom::NT_stdfloat, Geom::C_texcoord);
+        for (unsigned int u = 1; u < num_uvs; ++u)
+        {
             ostringstream out;
             out << u;
-            aformat->add_column(InternalName::get_texcoord_name(out.str()), 3, Geom::NT_stdfloat, Geom::C_texcoord);
+            aformat->add_column(InternalName::get_texcoord_name(out.str()), mesh.mNumUVComponents[u], Geom::NT_stdfloat, Geom::C_texcoord);
         }
     }
 
@@ -721,20 +722,85 @@ void AssimpLoader::load_mesh(size_t index)
     }
 
     // Now the texture coordinates.
-    if (num_uvs > 0) {
+    if (num_uvs > 0)
+    {
         // UV sets are named texcoord, texcoord.1, texcoord.2...
         GeomVertexWriter texcoord0(vdata, InternalName::get_texcoord());
-        for (size_t i = 0; i < mesh.mNumVertices; ++i) {
-            const aiVector3D &vec = mesh.mTextureCoords[0][i];
-            texcoord0.add_data3(vec.x, vec.y, vec.z);
+        switch (mesh.mNumUVComponents[0])
+        {
+            case 1:
+            {
+                for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                {
+                    const aiVector3D &vec = mesh.mTextureCoords[0][i];
+                    texcoord0.add_data1(vec.x);
+                }
+                break;
+            }
+
+            case 2:
+            {
+                for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                {
+                    const aiVector3D &vec = mesh.mTextureCoords[0][i];
+                    texcoord0.add_data2(vec.x, vec.y);
+                }
+                break;
+            }
+
+            case 3:
+            {
+                for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                {
+                    const aiVector3D &vec = mesh.mTextureCoords[0][i];
+                    texcoord0.add_data3(vec.x, vec.y, vec.z);
+                }
+                break;
+            }
+
+            default:
+                break;
         }
-        for (unsigned int u = 1; u < num_uvs; ++u) {
+        
+        for (unsigned int u = 1; u < num_uvs; ++u)
+        {
             ostringstream out;
             out << u;
             GeomVertexWriter texcoord(vdata, InternalName::get_texcoord_name(out.str()));
-            for (size_t i = 0; i < mesh.mNumVertices; ++i) {
-                const aiVector3D &vec = mesh.mTextureCoords[u][i];
-                texcoord.add_data3(vec.x, vec.y, vec.z);
+            switch (mesh.mNumUVComponents[0])
+            {
+                case 1:
+                {
+                    for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                    {
+                        const aiVector3D &vec = mesh.mTextureCoords[u][i];
+                        texcoord.add_data1(vec.x);
+                    }
+                    break;
+                }
+
+                case 2:
+                {
+                    for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                    {
+                        const aiVector3D &vec = mesh.mTextureCoords[u][i];
+                        texcoord.add_data2(vec.x, vec.y);
+                    }
+                    break;
+                }
+
+                case 3:
+                {
+                    for (size_t i = 0; i < mesh.mNumVertices; ++i)
+                    {
+                        const aiVector3D &vec = mesh.mTextureCoords[u][i];
+                        texcoord.add_data3(vec.x, vec.y, vec.z);
+                    }
+                    break;
+                }
+
+                default:
+                    break;
             }
         }
     }
@@ -857,16 +923,17 @@ void AssimpLoader::load_node(const aiNode &node, PandaNode *parent)
         size_t meshIndex;
 
         // If there's only mesh, don't bother using a per-geom state.
-        if (node.mNumMeshes == 1) {
+        if (node.mNumMeshes == 1)
+        {
             meshIndex = node.mMeshes[0];
-            gnode->add_geom(_geoms[meshIndex]);
-            gnode->set_state(_mat_states[_geom_matindices[meshIndex]]);
+            gnode->add_geom(_geoms[meshIndex], _mat_states[_geom_matindices[meshIndex]]);
         }
-        else {
-            for (size_t i = 0; i < node.mNumMeshes; ++i) {
+        else
+        {
+            for (size_t i = 0; i < node.mNumMeshes; ++i)
+            {
                 meshIndex = node.mMeshes[i];
-                gnode->add_geom(_geoms[node.mMeshes[i]],
-                    _mat_states[_geom_matindices[meshIndex]]);
+                gnode->add_geom(_geoms[node.mMeshes[i]], _mat_states[_geom_matindices[meshIndex]]);
             }
         }
 
