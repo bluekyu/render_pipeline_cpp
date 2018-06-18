@@ -128,7 +128,7 @@ const BasePlugin::PipelineInfo& BasePlugin::get_pipeline_info() const
     return impl_->pipeline_info_;
 }
 
-boost::dll::shared_library* BasePlugin::load_shared_library(const Filename& path)
+boost::dll::shared_library* BasePlugin::load_shared_library(const Filename& path, boost::dll::load_mode::type mode)
 {
     auto lib_path = rppanda::convert_path(path);
 
@@ -136,9 +136,7 @@ boost::dll::shared_library* BasePlugin::load_shared_library(const Filename& path
 
     try
     {
-        impl_->shared_libs_.push_back(std::make_unique<boost::dll::shared_library>(
-            lib_path,
-            boost::dll::load_mode::append_decorations));
+        impl_->shared_libs_.push_back(std::make_unique<boost::dll::shared_library>(lib_path, mode));
         return impl_->shared_libs_.back().get();
     }
     catch (const boost::system::system_error& err)
