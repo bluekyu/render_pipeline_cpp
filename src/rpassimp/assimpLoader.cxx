@@ -276,7 +276,7 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
     for (size_t i = 0; i < mat.GetTextureCount(ttype); ++i) {
         mat.GetTexture(ttype, i, &path, &mapping, nullptr, &blend, &op, &mapmode);
 
-        if (AI_SUCCESS != mat.Get(AI_MATKEY_UVWSRC(ttype, i), uvindex)) {
+        if (aiReturn_SUCCESS != mat.Get(AI_MATKEY_UVWSRC(ttype, i), uvindex)) {
             // If there's no texture coordinate set for this texture, assume that
             // it's the same as the index on the stack.  TODO: if there's only one
             // set on the mesh, force everything to use just the first stage.
@@ -333,7 +333,16 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
             ptex = TexturePool::load_texture(fn);
         }
 
-        if (ptex != nullptr) {
+        if (ptex != nullptr)
+        {
+            if (ttype == aiTextureType_DIFFUSE)
+            {
+                const auto current_format = ptex->get_format();
+                if (current_format == Texture::Format::F_rgb)
+                    ptex->set_format(Texture::Format::F_srgb);
+                else if (current_format == Texture::Format::F_rgba)
+                    ptex->set_format(Texture::Format::F_srgb_alpha);
+            }
             tattr = DCAST(TextureAttrib, tattr->add_on_stage(stage, ptex));
         }
     }
@@ -361,13 +370,13 @@ void AssimpLoader::load_material(size_t index)
     rpcore::RPMaterial rpmat;
     have = false;
 
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_NAME, name))
+    if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_NAME, name))
     {
         rpmat->set_name(name.C_Str());
         rpassimp_cat.debug() << "Processing material: " << name.C_Str() << std::endl;
     }
 
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_SHADING_MODEL, shading))
+    if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_SHADING_MODEL, shading))
     {
         if (shading != aiShadingMode_Blinn && shading != aiShadingMode_Phong && shading != aiShadingMode_Fresnel)
         {
@@ -383,27 +392,27 @@ void AssimpLoader::load_material(size_t index)
             rpmat.set_base_color(LColor(1));
             have = true;
         }
-        else if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col))
+        else if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col))
         {
             rpmat.set_base_color(LColor(col.r, col.g, col.b, 1));
             have = true;
         }
 
-        if ((AI_SUCCESS == mat.Get(AI_MATKEY_OPACITY, fval)) && fval != 1.0f)
+        if ((aiReturn_SUCCESS == mat.Get(AI_MATKEY_OPACITY, fval)) && fval != 1.0f)
         {
             rpmat.set_shading_model(rpcore::RPMaterial::ShadingModel::TRANSPARENT_MODEL);
             rpmat.set_alpha(fval);
             have = true;
         }
 
-        if (AI_SUCCESS == mat.Get(AI_MATKEY_SHININESS, fval))
+        if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_SHININESS, fval))
         {
             // shininess is 0 ~ inf
             rpmat.set_roughness(1.0f / (1 + std::log2f((std::max)(0.0f, fval) + 1)));
             have = true;
         }
 
-        if (AI_SUCCESS == mat.Get(AI_MATKEY_REFRACTI, fval))
+        if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_REFRACTI, fval))
         {
             rpmat.set_specular_ior(fval);
             have = true;
@@ -411,7 +420,7 @@ void AssimpLoader::load_material(size_t index)
     }
     else if (shading == aiShadingMode_Fresnel)
     {
-        //if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_EMISSIVE, col))
+        //if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_COLOR_EMISSIVE, col))
         //{
         //    rpmat.set_shading_model(rpcore::RPMaterial::ShadingModel::EMISSIVE_MODEL);
         //    rpmat.set_base_color(LColor(col.r, col.g, col.b, 1));
@@ -423,7 +432,7 @@ void AssimpLoader::load_material(size_t index)
         state = state->add_attrib(MaterialAttrib::make(rpmat.get_material()));
 
     // Wireframe.
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_ENABLE_WIREFRAME, ival))
+    if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_ENABLE_WIREFRAME, ival))
     {
         if (ival)
             state = state->add_attrib(RenderModeAttrib::make(RenderModeAttrib::M_wireframe));
@@ -433,7 +442,7 @@ void AssimpLoader::load_material(size_t index)
 
     // Backface culling.  Not sure if this is also supposed to set the twoside
     // flag in the material, I'm guessing not.
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_TWOSIDED, ival))
+    if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_TWOSIDED, ival))
     {
         if (ival)
             state = state->add_attrib(CullFaceAttrib::make(CullFaceAttrib::M_cull_none));
