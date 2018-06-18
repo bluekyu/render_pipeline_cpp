@@ -108,8 +108,13 @@ bool AssimpLoader::read(const Filename &filename)
 
     // I really don't know why we need to flip the winding order, but otherwise
     // the models I tested with are showing inside out.
-    _scene = _importer.ReadFile(_filename.c_str(), aiProcess_Triangulate | aiProcess_GenUVCoords);
-    if (_scene == nullptr) {
+    _scene = _importer.ReadFile(
+        _filename.c_str(),
+        aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_ValidateDataStructure |
+        aiProcess_GenUVCoords | aiProcess_TransformUVCoords);
+
+    if (_scene == nullptr)
+    {
         _error = true;
         return false;
     }
