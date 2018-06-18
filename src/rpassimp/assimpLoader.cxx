@@ -41,6 +41,8 @@
 
 #include <assimp/postprocess.h>
 
+#include <render_pipeline/rpcore/util/rpmaterial.hpp>
+
 #include "config_assimp.h"
 
 namespace rpassimp {
@@ -206,7 +208,7 @@ void AssimpLoader::load_texture(size_t index)
     if (tex.mHeight == 0) {
         // Compressed texture.
         rpassimp_cat.debug()
-            << "Reading embedded compressed texture with format " << tex.achFormatHint << " and size " << tex.mWidth << "\n";
+            << "Reading embedded compressed texture with format " << tex.achFormatHint << " and size " << tex.mWidth << std::endl;
         stringstream str;
         str.write((char*)tex.pcData, tex.mWidth);
 
@@ -237,7 +239,7 @@ void AssimpLoader::load_texture(size_t index)
     }
     else {
         rpassimp_cat.debug()
-            << "Reading embedded raw texture with size " << tex.mWidth << "x" << tex.mHeight << "\n";
+            << "Reading embedded raw texture with size " << tex.mWidth << "x" << tex.mHeight << std::endl;
 
         ptex->setup_2d_texture(tex.mWidth, tex.mHeight, Texture::T_unsigned_byte, Texture::F_rgba);
         PTA_uchar data = ptex->modify_ram_image();
@@ -349,49 +351,76 @@ void AssimpLoader::load_material(size_t index)
     aiColor3D col;
     bool have;
     int ival;
-    PN_stdfloat fval;
+    ai_real fval;
     aiString name;
+    aiShadingMode shading = aiShadingMode_Blinn;
 
     // XXX a lot of this is untested.
 
     // First do the material attribute.
-    PT(Material) pmat = new Material;
+    rpcore::RPMaterial rpmat;
     have = false;
 
     if (AI_SUCCESS == mat.Get(AI_MATKEY_NAME, name))
-        pmat->set_name(name.C_Str());
+    {
+        rpmat->set_name(name.C_Str());
+        rpassimp_cat.debug() << "Processing material: " << name.C_Str() << std::endl;
+    }
 
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col)) {
-        pmat->set_diffuse(LColor(col.r, col.g, col.b, 1));
-        have = true;
-    }
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_SPECULAR, col)) {
-        if (AI_SUCCESS == mat.Get(AI_MATKEY_SHININESS_STRENGTH, fval)) {
-            pmat->set_specular(LColor(col.r * fval, col.g * fval, col.b * fval, 1));
+    if (AI_SUCCESS == mat.Get(AI_MATKEY_SHADING_MODEL, shading))
+    {
+        if (shading != aiShadingMode_Blinn && shading != aiShadingMode_Phong && shading != aiShadingMode_Fresnel)
+        {
+            rpassimp_cat.warning() << "Unknown shading model: " << shading << std::endl;
+            shading = aiShadingMode_Blinn;
         }
-        else {
-            pmat->set_specular(LColor(col.r, col.g, col.b, 1));
+    }
+
+    if (shading == aiShadingMode_Blinn || shading == aiShadingMode_Phong)
+    {
+        if (mat.GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            rpmat.set_base_color(LColor(1));
+            have = true;
         }
-        have = true;
+        else if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col))
+        {
+            rpmat.set_base_color(LColor(col.r, col.g, col.b, 1));
+            have = true;
+        }
+
+        if ((AI_SUCCESS == mat.Get(AI_MATKEY_OPACITY, fval)) && fval != 1.0f)
+        {
+            rpmat.set_shading_model(rpcore::RPMaterial::ShadingModel::TRANSPARENT_MODEL);
+            rpmat.set_alpha(fval);
+            have = true;
+        }
+
+        if (AI_SUCCESS == mat.Get(AI_MATKEY_SHININESS, fval))
+        {
+            // shininess is 0 ~ inf
+            rpmat.set_roughness(1.0f / (1 + std::log2f((std::max)(0.0f, fval) + 1)));
+            have = true;
+        }
+
+        if (AI_SUCCESS == mat.Get(AI_MATKEY_REFRACTI, fval))
+        {
+            rpmat.set_specular_ior(fval);
+            have = true;
+        }
     }
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_AMBIENT, col)) {
-        pmat->set_specular(LColor(col.r, col.g, col.b, 1));
-        have = true;
+    else if (shading == aiShadingMode_Fresnel)
+    {
+        //if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_EMISSIVE, col))
+        //{
+        //    rpmat.set_shading_model(rpcore::RPMaterial::ShadingModel::EMISSIVE_MODEL);
+        //    rpmat.set_base_color(LColor(col.r, col.g, col.b, 1));
+        //    have = true;
+        //}
     }
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_EMISSIVE, col)) {
-        pmat->set_emission(LColor(col.r, col.g, col.b, 1));
-        have = true;
-    }
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_COLOR_TRANSPARENT, col)) {
-        // FIXME: ???
-    }
-    if (AI_SUCCESS == mat.Get(AI_MATKEY_SHININESS, fval)) {
-        pmat->set_shininess(fval);
-        have = true;
-    }
-    if (have) {
-        state = state->add_attrib(MaterialAttrib::make(pmat));
-    }
+
+    if (have)
+        state = state->add_attrib(MaterialAttrib::make(rpmat.get_material()));
 
     // Wireframe.
     if (AI_SUCCESS == mat.Get(AI_MATKEY_ENABLE_WIREFRAME, ival))
@@ -436,7 +465,7 @@ void AssimpLoader::create_joint(Character *character, CharacterJointBundle *bund
     PT(CharacterJoint) joint = new CharacterJoint(character, bundle, parent, node.mName.C_Str(), mat);
 
     rpassimp_cat.debug()
-        << "Creating joint for: " << node.mName.C_Str() << "\n";
+        << "Creating joint for: " << node.mName.C_Str() << std::endl;
 
     for (size_t i = 0; i < node.mNumChildren; ++i) {
         if (_bonemap.find(node.mChildren[i]->mName.C_Str()) != _bonemap.end()) {
@@ -462,12 +491,12 @@ void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bund
 
     if (node_anim) {
         rpassimp_cat.debug()
-            << "Found channel for node: " << node.mName.C_Str() << "\n";
+            << "Found channel for node: " << node.mName.C_Str() << std::endl;
         // rpassimp_cat.debug() << "Num Position Keys " <<
-        // node_anim->mNumPositionKeys << "\n"; rpassimp_cat.debug() << "Num
-        // Rotation Keys " << node_anim->mNumRotationKeys << "\n";
+        // node_anim->mNumPositionKeys << std::endl; rpassimp_cat.debug() << "Num
+        // Rotation Keys " << node_anim->mNumRotationKeys << std::endl;
         // rpassimp_cat.debug() << "Num Scaling Keys " << node_anim->mNumScalingKeys
-        // << "\n";
+        // << std::endl;
 
         // Convert positions
         PTA_stdfloat tablex = PTA_stdfloat::empty_array(node_anim->mNumPositionKeys);
@@ -512,7 +541,7 @@ void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bund
     }
     else {
         rpassimp_cat.debug()
-            << "No channel found for node: " << node.mName.C_Str() << "\n";
+            << "No channel found for node: " << node.mName.C_Str() << std::endl;
     }
 
     for (size_t i = 0; i < node.mNumChildren; ++i) {
@@ -533,7 +562,7 @@ void AssimpLoader::load_mesh(size_t index)
     PT(Character) character = nullptr;
     if (mesh.HasBones()) {
         rpassimp_cat.debug()
-            << "Creating character for " << mesh.mName.C_Str() << "\n";
+            << "Creating character for " << mesh.mName.C_Str() << std::endl;
 
         // Find and add all bone nodes to the bone map
         for (size_t i = 0; i < mesh.mNumBones; ++i) {
@@ -574,7 +603,7 @@ void AssimpLoader::load_mesh(size_t index)
             CharacterJoint *joint = character->find_joint(bone.mName.C_Str());
             if (joint == nullptr) {
                 rpassimp_cat.debug()
-                    << "Could not find joint for bone: " << bone.mName.C_Str() << "\n";
+                    << "Could not find joint for bone: " << bone.mName.C_Str() << std::endl;
                 continue;
             }
 
@@ -626,7 +655,7 @@ void AssimpLoader::load_mesh(size_t index)
             << "Checking to see if anim (" << ai_anim.mName.C_Str() << ") matches character (" << mesh.mName.C_Str() << ")\n";
         for (size_t j = 0; j < ai_anim.mNumChannels; ++j) {
             rpassimp_cat.debug()
-                << "Searching for " << ai_anim.mChannels[j]->mNodeName.C_Str() << " in bone map" << "\n";
+                << "Searching for " << ai_anim.mChannels[j]->mNodeName.C_Str() << " in bone map" << std::endl;
             if (_bonemap.find(ai_anim.mChannels[j]->mNodeName.C_Str()) != _bonemap.end()) {
                 convert_anim = true;
                 break;
@@ -652,9 +681,9 @@ void AssimpLoader::load_mesh(size_t index)
             }
             PN_stdfloat fps = frames / (ai_anim.mTicksPerSecond * ai_anim.mDuration);
             rpassimp_cat.debug()
-                << "FPS " << fps << "\n";
+                << "FPS " << fps << std::endl;
             rpassimp_cat.debug()
-                << "Frames " << frames << "\n";
+                << "Frames " << frames << std::endl;
 
             PT(AnimBundle) bundle = new AnimBundle(mesh.mName.C_Str(), fps, frames);
             PT(AnimGroup) skeleton = new AnimGroup(bundle, "<skeleton>");
