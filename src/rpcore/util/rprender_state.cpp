@@ -173,7 +173,7 @@ RPRenderState& RPRenderState::set_basecolor_texture(Texture* texture, int priori
     else
     {
         CPT(TextureAttrib) new_attrib = DCAST(TextureAttrib, TextureAttrib::make());
-        PT(TextureStage) stage = new TextureStage("basecolor-0");
+        PT(TextureStage) stage = new TextureStage(texture->get_name() + "-basecolor");
         stage->set_sort(0);
         state_ = state_->set_attrib(new_attrib->add_on_stage(stage, texture, priority));
     }

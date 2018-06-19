@@ -42,6 +42,8 @@
 #include <assimp/postprocess.h>
 
 #include <render_pipeline/rpcore/util/rpmaterial.hpp>
+#include <render_pipeline/rpcore/util/rprender_state.hpp>
+#include <render_pipeline/rpcore/util/primitives.hpp>
 
 #include "config_assimp.h"
 
@@ -273,10 +275,29 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
     aiTextureOp op;
     aiTextureMapMode mapmode;
 
-    for (size_t i = 0; i < mat.GetTextureCount(ttype); ++i) {
+    const auto texture_count = mat.GetTextureCount(ttype);
+    if (texture_count == 0)
+    {
+        if (ttype == aiTextureType_DIFFUSE)
+        {
+            PT(TextureStage) stage = new TextureStage("basecolor-0");
+            stage->set_sort(0);
+            tattr = DCAST(TextureAttrib, tattr->add_on_stage(stage, rpcore::load_empty_basecolor()));
+        }
+        else if (ttype == aiTextureType_NORMALS)
+        {
+            PT(TextureStage) stage = new TextureStage("normal-10");
+            stage->set_sort(10);
+            tattr = DCAST(TextureAttrib, tattr->add_on_stage(stage, rpcore::load_empty_normal()));
+        }
+    }
+
+    for (unsigned int i = 0; i < texture_count; ++i)
+    {
         mat.GetTexture(ttype, i, &path, &mapping, nullptr, &blend, &op, &mapmode);
 
-        if (aiReturn_SUCCESS != mat.Get(AI_MATKEY_UVWSRC(ttype, i), uvindex)) {
+        if (aiReturn_SUCCESS != mat.Get(AI_MATKEY_UVWSRC(ttype, i), uvindex))
+        {
             // If there's no texture coordinate set for this texture, assume that
             // it's the same as the index on the stack.  TODO: if there's only one
             // set on the mesh, force everything to use just the first stage.
@@ -286,19 +307,21 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
         stringstream str;
         str << uvindex;
         PT(TextureStage) stage = new TextureStage(str.str());
-        if (uvindex > 0) {
+        if (uvindex > 0)
             stage->set_texcoord_name(InternalName::get_texcoord_name(str.str()));
-        }
+
         PT(Texture) ptex = nullptr;
 
         // I'm not sure if this is the right way to handle it, as I couldn't find
         // much information on embedded textures.
-        if (path.data[0] == '*') {
+        if (path.data[0] == '*')
+        {
             long num = strtol(path.data + 1, nullptr, 10);
             ptex = _textures[num];
 
         }
-        else if (path.length > 0) {
+        else if (path.length > 0)
+        {
             Filename fn = Filename::from_os_specific(string(path.data, path.length));
 
             // Try to find the file by moving up twice in the hierarchy.
@@ -342,7 +365,14 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
                     ptex->set_format(Texture::Format::F_srgb);
                 else if (current_format == Texture::Format::F_rgba)
                     ptex->set_format(Texture::Format::F_srgb_alpha);
+
+                stage->set_sort(0);
             }
+            else if (ttype == aiTextureType_NORMALS)
+            {
+                stage->set_sort(10);
+            }
+
             tattr = DCAST(TextureAttrib, tattr->add_on_stage(stage, ptex));
         }
     }
@@ -395,6 +425,12 @@ void AssimpLoader::load_material(size_t index)
         else if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_COLOR_DIFFUSE, col))
         {
             rpmat.set_base_color(LColor(col.r, col.g, col.b, 1));
+            have = true;
+        }
+
+        if (mat.GetTextureCount(aiTextureType_NORMALS) > 0)
+        {
+            rpmat.set_normal_factor(1.0f);
             have = true;
         }
 
@@ -453,10 +489,23 @@ void AssimpLoader::load_material(size_t index)
     // And let's not forget the textures!
     CPT(TextureAttrib) tattr = DCAST(TextureAttrib, TextureAttrib::make());
     load_texture_stage(mat, aiTextureType_DIFFUSE, tattr);
-    load_texture_stage(mat, aiTextureType_LIGHTMAP, tattr);
-    if (tattr->get_num_on_stages() > 0) {
-        state = state->add_attrib(tattr);
+    load_texture_stage(mat, aiTextureType_NORMALS, tattr);
+
+    // specular and roughness
+    {
+        PT(TextureStage) specular_stage = new TextureStage("specular-20");
+        specular_stage->set_sort(20);
+        tattr = DCAST(TextureAttrib, tattr->add_on_stage(specular_stage, rpcore::load_empty_specular()));
+
+        PT(TextureStage) roughness_stage = new TextureStage("roughness-30");
+        roughness_stage->set_sort(30);
+        tattr = DCAST(TextureAttrib, tattr->add_on_stage(roughness_stage, rpcore::load_empty_roughness()));
     }
+
+    //load_texture_stage(mat, aiTextureType_LIGHTMAP, tattr);
+
+    if (tattr->get_num_on_stages() > 0)
+        state = state->add_attrib(tattr);
 
     _mat_states[index] = state;
 }
