@@ -38,28 +38,28 @@ void PandaLogger::set_default() {
  *
  */
 void PandaLogger::OnDebug(const char *message) {
-  rpassimp_cat.debug() << message << "\n";
+  rpassimp_cat.debug() << "[Assimp] " << message << std::endl;
 }
 
 /**
  *
  */
 void PandaLogger::OnError(const char *message) {
-  rpassimp_cat.error() << message << "\n";
+  rpassimp_cat.error() << "[Assimp] " << message << std::endl;
 }
 
 /**
  *
  */
 void PandaLogger::OnInfo(const char *message) {
-  rpassimp_cat.info() << message << "\n";
+  rpassimp_cat.info() << "[Assimp] " << message << std::endl;
 }
 
 /**
  *
  */
 void PandaLogger::OnWarn(const char *message) {
-  rpassimp_cat.warning() << message << "\n";
+  rpassimp_cat.warning() << "[Assimp] " << message << std::endl;
 }
 
 }
