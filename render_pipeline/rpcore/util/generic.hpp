@@ -39,4 +39,4 @@ LVecBase3 rgb_from_string(const std::string& text, float min_brightness=0.6f);
  */
 RENDER_PIPELINE_DECL void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution);
 
-}   // namespace rpcore
+}

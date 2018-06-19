@@ -78,4 +78,9 @@ RENDER_PIPELINE_DECL NodePath create_cube(const std::string& name);
  */
 RENDER_PIPELINE_DECL NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned int longitude);
 
+RENDER_PIPELINE_DECL Texture* load_empty_basecolor(bool no_cache = false);
+RENDER_PIPELINE_DECL Texture* load_empty_normal(bool no_cache = false);
+RENDER_PIPELINE_DECL Texture* load_empty_specular(bool no_cache = false);
+RENDER_PIPELINE_DECL Texture* load_empty_roughness(bool no_cache = false);
+
 }
