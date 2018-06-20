@@ -13,6 +13,9 @@
 
 #include "assimpLoader.h"
 
+#include <regex>
+#include <numeric>
+
 #include "geomNode.h"
 #include "luse.h"
 #include "geomVertexWriter.h"
@@ -86,21 +89,23 @@ AssimpLoader::~AssimpLoader()
 * Returns a space-separated list of extensions that Assimp can load, without
 * the leading dots.
 */
-void AssimpLoader::get_extensions(string &ext) const
+void AssimpLoader::get_extensions(std::string &ext) const
 {
     aiString aexts;
     _importer.GetExtensionList(aexts);
 
-    // The format is like: *.mdc;*.mdl;*.mesh.xml;*.mot
-    char *sub = strtok(aexts.data, ";");
-    while (sub != nullptr) {
-        ext += sub + 2;
-        sub = strtok(nullptr, ";");
+    std::string tmp = aexts.C_Str();
 
-        if (sub != nullptr) {
-            ext += ' ';
-        }
-    }
+    // The format is like: *.mdc;*.mdl;*.mesh.xml;*.mot
+    const std::regex token(";");
+    std::vector<std::string> parsed(std::sregex_token_iterator(tmp.begin(), tmp.end(), token, -1), std::sregex_token_iterator());
+
+    if (parsed.empty())
+        return;
+
+    ext = std::accumulate(parsed.begin()+1, parsed.end(), parsed.begin()->substr(2), [](const std::string& a, const std::string& b) {
+        return a + " " + b.substr(2);
+    });
 }
 
 /**
