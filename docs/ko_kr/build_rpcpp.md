@@ -119,7 +119,7 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 ### 2. CMakeLists.txt 파일
 ```.cmake
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(render_pipeline_projects
     LANGUAGES NONE
 )

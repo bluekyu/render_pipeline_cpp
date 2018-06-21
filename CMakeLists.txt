@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(render_pipeline
     VERSION 0.6.0
     DESCRIPTION "Render Pipeline C++ project"
@@ -68,9 +68,7 @@ add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_
 render_pipeline_generate_version_hpp()
 
 if(MSVC)
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14
-    )
-
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275 /utf-8
         $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
