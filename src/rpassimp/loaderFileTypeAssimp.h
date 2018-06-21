@@ -26,36 +26,46 @@ class AssimpLoader;
 class LoaderFileTypeAssimp : public LoaderFileType
 {
 public:
-  LoaderFileTypeAssimp();
-  virtual ~LoaderFileTypeAssimp();
+    LoaderFileTypeAssimp();
+    virtual ~LoaderFileTypeAssimp();
 
-  virtual std::string get_name() const;
-  virtual std::string get_extension() const;
-  virtual std::string get_additional_extensions() const;
-  virtual bool supports_compressed() const;
+    virtual std::string get_name() const;
+    virtual std::string get_extension() const;
+    virtual std::string get_additional_extensions() const;
+    virtual bool supports_compressed() const;
 
-  virtual PT(PandaNode) load_file(const Filename &path, const LoaderOptions &options,
-                                  BamCacheRecord *record) const;
-
-public:
-  AssimpLoader *_loader;
+    virtual PT(PandaNode) load_file(const Filename &path, const LoaderOptions &options,
+        BamCacheRecord *record) const;
 
 public:
-  static TypeHandle get_class_type() {
-    return _type_handle;
-  }
-  static void init_type() {
-    LoaderFileType::init_type();
-    register_type(_type_handle, "rpassimp::LoaderFileTypeAssimp",
-                  LoaderFileType::get_class_type());
-  }
-  virtual TypeHandle get_type() const {
-    return get_class_type();
-  }
-  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
+    AssimpLoader * _loader;
+
+public:
+    static TypeHandle get_class_type()
+    {
+        return _type_handle;
+    }
+
+    static void init_type()
+    {
+        LoaderFileType::init_type();
+        register_type(_type_handle, "rpassimp::LoaderFileTypeAssimp",
+            LoaderFileType::get_class_type());
+    }
+
+    virtual TypeHandle get_type() const
+    {
+        return get_class_type();
+    }
+
+    virtual TypeHandle force_init_type()
+    {
+        init_type();
+        return get_class_type();
+    }
 
 private:
-  static TypeHandle _type_handle;
+    static TypeHandle _type_handle;
 };
 
 }

@@ -54,7 +54,6 @@ namespace rpassimp {
 
 using std::ostringstream;
 using std::stringstream;
-using std::string;
 
 struct BoneWeight
 {
@@ -65,30 +64,20 @@ struct BoneWeight
         : joint_vertex_xform(joint_vertex_xform), weight(weight)
     {}
 };
+
 typedef pvector<BoneWeight> BoneWeightList;
 
-/**
-*
-*/
 AssimpLoader::AssimpLoader() : _error(false), _geoms(nullptr)
 {
-
     PandaLogger::set_default();
     _importer.SetIOHandler(new PandaIOSystem);
 }
 
-/**
-*
-*/
 AssimpLoader::~AssimpLoader()
 {
     _importer.FreeScene();
 }
 
-/**
-* Returns a space-separated list of extensions that Assimp can load, without
-* the leading dots.
-*/
 void AssimpLoader::get_extensions(std::string &ext) const
 {
     aiString aexts;
@@ -108,9 +97,6 @@ void AssimpLoader::get_extensions(std::string &ext) const
     });
 }
 
-/**
-* Reads from the indicated file.
-*/
 bool AssimpLoader::read(const Filename &filename)
 {
     _filename = filename;
@@ -132,10 +118,6 @@ bool AssimpLoader::read(const Filename &filename)
     return true;
 }
 
-/**
-* Converts scene graph structures into a Panda3D scene graph, with _root
-* being the root node.
-*/
 void AssimpLoader::build_graph()
 {
     nassertv(_scene != nullptr); // read() must be called first
@@ -181,12 +163,9 @@ void AssimpLoader::build_graph()
     delete[] _geom_matindices;
 }
 
-/**
-* Finds a node by name.
-*/
 const aiNode *AssimpLoader::find_node(const aiNode &root, const aiString &name)
 {
-    const aiNode *node;
+    const aiNode* node = nullptr;
 
     if (root.mName == name) {
         return &root;
@@ -203,48 +182,52 @@ const aiNode *AssimpLoader::find_node(const aiNode &root, const aiString &name)
     return nullptr;
 }
 
-/**
-* Converts an aiTexture into a Texture.
-*/
 void AssimpLoader::load_texture(size_t index)
 {
     const aiTexture &tex = *_scene->mTextures[index];
 
     PT(Texture) ptex = new Texture;
 
-    if (tex.mHeight == 0) {
+    if (tex.mHeight == 0)
+    {
         // Compressed texture.
         rpassimp_cat.debug()
             << "Reading embedded compressed texture with format " << tex.achFormatHint << " and size " << tex.mWidth << std::endl;
         stringstream str;
         str.write((char*)tex.pcData, tex.mWidth);
 
-        if (strncmp(tex.achFormatHint, "dds", 3) == 0) {
+        if (strncmp(tex.achFormatHint, "dds", 3) == 0)
+        {
             ptex->read_dds(str);
-
         }
-        else {
+        else
+        {
             const PNMFileTypeRegistry *reg = PNMFileTypeRegistry::get_global_ptr();
             PNMFileType *ftype;
             PNMImage img;
 
             // Work around a bug in Assimp, it sometimes writes jp instead of jpg
-            if (strncmp(tex.achFormatHint, "jp\0", 3) == 0) {
+            if (strncmp(tex.achFormatHint, "jp\0", 3) == 0)
+            {
                 ftype = reg->get_type_from_extension("jpg");
             }
-            else {
+            else
+            {
                 ftype = reg->get_type_from_extension(tex.achFormatHint);
             }
 
-            if (img.read(str, "", ftype)) {
+            if (img.read(str, "", ftype))
+            {
                 ptex->load(img);
             }
-            else {
+            else
+            {
                 ptex = nullptr;
             }
         }
     }
-    else {
+    else
+    {
         rpassimp_cat.debug()
             << "Reading embedded raw texture with size " << tex.mWidth << "x" << tex.mHeight << std::endl;
 
@@ -252,7 +235,8 @@ void AssimpLoader::load_texture(size_t index)
         PTA_uchar data = ptex->modify_ram_image();
 
         size_t p = 0;
-        for (size_t i = 0; i < tex.mWidth * tex.mHeight; ++i) {
+        for (size_t i = 0; i < tex.mWidth * tex.mHeight; ++i)
+        {
             const aiTexel &texel = tex.pcData[i];
             data[p++] = texel.b;
             data[p++] = texel.g;
@@ -265,12 +249,8 @@ void AssimpLoader::load_texture(size_t index)
     // ptex->write(path.str());
 
     _textures[index] = ptex;
-
 }
 
-/**
-* Converts an aiMaterial into a RenderState.
-*/
 void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType &ttype, CPT(TextureAttrib) &tattr)
 {
     aiString path;
@@ -323,11 +303,10 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
         {
             long num = strtol(path.data + 1, nullptr, 10);
             ptex = _textures[num];
-
         }
         else if (path.length > 0)
         {
-            Filename fn = Filename::from_os_specific(string(path.data, path.length));
+            Filename fn = Filename::from_os_specific(std::string(path.data, path.length));
 
             // Try to find the file by moving up twice in the hierarchy.
             VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
@@ -383,9 +362,6 @@ void AssimpLoader::load_texture_stage(const aiMaterial &mat, const aiTextureType
     }
 }
 
-/**
-* Converts an aiMaterial into a RenderState.
-*/
 void AssimpLoader::load_material(size_t index)
 {
     const aiMaterial &mat = *_scene->mMaterials[index];
@@ -515,9 +491,6 @@ void AssimpLoader::load_material(size_t index)
     _mat_states[index] = state;
 }
 
-/**
-* Creates a CharacterJoint from an aiNode
-*/
 void AssimpLoader::create_joint(Character *character, CharacterJointBundle *bundle, PartGroup *parent, const aiNode &node)
 {
     const aiMatrix4x4 &t = node.mTransformation;
@@ -537,9 +510,6 @@ void AssimpLoader::create_joint(Character *character, CharacterJointBundle *bund
     }
 }
 
-/**
-* Creates a AnimChannelMatrixXfmTable from an aiNodeAnim
-*/
 void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bundle, AnimGroup *parent, const aiNode &node)
 {
     PT(AnimChannelMatrixXfmTable) group = new AnimChannelMatrixXfmTable(parent, node.mName.C_Str());
@@ -552,7 +522,8 @@ void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bund
         }
     }
 
-    if (node_anim) {
+    if (node_anim)
+    {
         rpassimp_cat.debug()
             << "Found channel for node: " << node.mName.C_Str() << std::endl;
         // rpassimp_cat.debug() << "Num Position Keys " <<
@@ -602,9 +573,9 @@ void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bund
         group->set_table('j', tablej);
         group->set_table('k', tablek);
     }
-    else {
-        rpassimp_cat.debug()
-            << "No channel found for node: " << node.mName.C_Str() << std::endl;
+    else
+    {
+        rpassimp_cat.debug() << "No channel found for node: " << node.mName.C_Str() << std::endl;
     }
 
     for (size_t i = 0; i < node.mNumChildren; ++i) {
@@ -614,9 +585,6 @@ void AssimpLoader::create_anim_channel(const aiAnimation &anim, AnimBundle *bund
     }
 }
 
-/**
-* Converts an aiMesh into a Geom.
-*/
 void AssimpLoader::load_mesh(size_t index)
 {
     const aiMesh &mesh = *_scene->mMeshes[index];
@@ -786,7 +754,7 @@ void AssimpLoader::load_mesh(size_t index)
     }
 
     // Create the GeomVertexData.
-    string name(mesh.mName.data, mesh.mName.length);
+    std::string name(mesh.mName.data, mesh.mName.length);
     PT(GeomVertexData) vdata = new GeomVertexData(name, GeomVertexFormat::register_format(format), Geom::UH_static);
     if (character) {
         vdata->set_transform_blend_table(tbtable);
@@ -858,7 +826,7 @@ void AssimpLoader::load_mesh(size_t index)
             default:
                 break;
         }
-        
+
         for (unsigned int u = 1; u < num_uvs; ++u)
         {
             ostringstream out;
@@ -970,9 +938,6 @@ void AssimpLoader::load_mesh(size_t index)
     }
 }
 
-/**
-* Converts an aiNode into a PandaNode.
-*/
 void AssimpLoader::load_node(const aiNode &node, PandaNode *parent)
 {
     PT(PandaNode) pnode;
@@ -984,7 +949,7 @@ void AssimpLoader::load_node(const aiNode &node, PandaNode *parent)
     }
 
     // Create the node and give it a name.
-    string name(node.mName.data, node.mName.length);
+    std::string name(node.mName.data, node.mName.length);
     if (node.mNumMeshes > 0) {
         pnode = new GeomNode(name);
     }
@@ -1041,12 +1006,9 @@ void AssimpLoader::load_node(const aiNode &node, PandaNode *parent)
     }
 }
 
-/**
-* Converts an aiLight into a LightNode.
-*/
 void AssimpLoader::load_light(const aiLight &light)
 {
-    string name(light.mName.data, light.mName.length);
+    std::string name(light.mName.data, light.mName.length);
     rpassimp_cat.debug() << "Found light '" << name << "'\n";
 
     aiColor3D col;
@@ -1117,7 +1079,7 @@ void AssimpLoader::load_light(const aiLight &light)
             LQuaternion quat;
             ::look_at(quat, LPoint3(vec.x, vec.y, vec.z), LVector3::up());
             plight->set_transform(TransformState::make_pos_quat_scale(pos, quat, LVecBase3(1, 1, 1)));
-            break; 
+            break;
         }
 
         // This is a somewhat recent addition to Assimp, so let's be kind to those

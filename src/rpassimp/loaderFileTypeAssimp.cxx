@@ -18,40 +18,37 @@
 
 namespace rpassimp {
 
-using std::string;
-
 TypeHandle LoaderFileTypeAssimp::_type_handle;
 
 /**
  *
  */
-LoaderFileTypeAssimp::
-LoaderFileTypeAssimp() : _loader(new AssimpLoader) {
+LoaderFileTypeAssimp::LoaderFileTypeAssimp() : _loader(new AssimpLoader)
+{
 }
 
 /**
  *
  */
-LoaderFileTypeAssimp::
-~LoaderFileTypeAssimp() {
-  if (_loader != nullptr) {
-    delete _loader;
-  }
+LoaderFileTypeAssimp::~LoaderFileTypeAssimp()
+{
+    if (_loader != nullptr)
+        delete _loader;
 }
 
 /**
  *
  */
-string LoaderFileTypeAssimp::
-get_name() const {
-  return "Assimp Importer";
+std::string LoaderFileTypeAssimp::get_name() const
+{
+    return "Assimp Importer";
 }
 
 /**
  *
  */
-string LoaderFileTypeAssimp::
-get_extension() const {
+std::string LoaderFileTypeAssimp::get_extension() const
+{
   return "";
 }
 
@@ -59,38 +56,35 @@ get_extension() const {
  * Returns a space-separated list of extension, in addition to the one
  * returned by get_extension(), that are recognized by this converter.
  */
-string LoaderFileTypeAssimp::
-get_additional_extensions() const {
-  string exts;
-  _loader->get_extensions(exts);
-  return exts;
+std::string LoaderFileTypeAssimp::get_additional_extensions() const
+{
+    std::string exts;
+    _loader->get_extensions(exts);
+    return exts;
 }
 
 /**
  * Returns true if this file type can transparently load compressed files
  * (with a .pz or .gz extension), false otherwise.
  */
-bool LoaderFileTypeAssimp::
-supports_compressed() const {
-  return true;
+bool LoaderFileTypeAssimp::supports_compressed() const
+{
+    return true;
 }
 
 /**
  *
  */
-PT(PandaNode) LoaderFileTypeAssimp::
-load_file(const Filename &path, const LoaderOptions &options,
-          BamCacheRecord *record) const {
+PT(PandaNode) LoaderFileTypeAssimp::load_file(const Filename &path, const LoaderOptions &options,
+    BamCacheRecord *record) const
+{
+    rpassimp_cat.info() << "Reading " << path << "\n";
 
-  rpassimp_cat.info()
-    << "Reading " << path << "\n";
+    if (!_loader->read(path))
+        return nullptr;
 
-  if (!_loader->read(path)) {
-    return nullptr;
-  }
-
-  _loader->build_graph();
-  return DCAST(PandaNode, _loader->_root);
+    _loader->build_graph();
+    return DCAST(PandaNode, _loader->_root);
 }
 
 }

@@ -47,9 +47,21 @@ public:
     AssimpLoader();
     virtual ~AssimpLoader();
 
+    /**
+     * Returns a space-separated list of extensions that Assimp can load, without
+     * the leading dots.
+     */
     void get_extensions(std::string &ext) const;
 
+    /**
+     * Reads from the indicated file.
+     */
     bool read(const Filename &filename);
+
+    /**
+     * Converts scene graph structures into a Panda3D scene graph, with _root
+     * being the root node.
+     */
     void build_graph();
 
 public:
@@ -70,15 +82,49 @@ private:
     BoneMap _bonemap;
     CharacterMap _charmap;
 
+    /**
+     * Finds a node by name.
+     */
     const aiNode *find_node(const aiNode &root, const aiString &name);
 
+    /**
+     * Converts an aiTexture into a Texture.
+     */
     void load_texture(size_t index);
+
+    /**
+     * Converts an aiMaterial into a RenderState.
+     */
     void load_texture_stage(const aiMaterial &mat, const aiTextureType &ttype, CPT(TextureAttrib) &tattr);
+
+    /**
+     * Converts an aiMaterial into a RenderState.
+     */
     void load_material(size_t index);
+
+    /**
+     * Creates a CharacterJoint from an aiNode
+     */
     void create_joint(Character *character, CharacterJointBundle *bundle, PartGroup *parent, const aiNode &node);
+
+    /**
+     * Creates a AnimChannelMatrixXfmTable from an aiNodeAnim
+     */
     void create_anim_channel(const aiAnimation &anim, AnimBundle *bundle, AnimGroup *parent, const aiNode &node);
+
+    /**
+     * Converts an aiMesh into a Geom.
+     */
     void load_mesh(size_t index);
+
+    /**
+     * Converts an aiNode into a PandaNode.
+     */
     void load_node(const aiNode &node, PandaNode *parent);
+
+    /**
+     * Converts an aiLight into a LightNode.
+     */
     void load_light(const aiLight &light);
 };
 
