@@ -413,7 +413,7 @@ void AssimpLoader::load_material(size_t index)
 
     if (aiReturn_SUCCESS == mat.Get(AI_MATKEY_SHADING_MODEL, shading))
     {
-        if (shading != aiShadingMode_Blinn && shading != aiShadingMode_Phong && shading != aiShadingMode_Fresnel)
+        if (shading != aiShadingMode_Blinn && shading != aiShadingMode_Phong)
         {
             rpassimp_cat.warning() << "Unknown shading model: " << shading << std::endl;
             shading = aiShadingMode_Blinn;

@@ -33,6 +33,7 @@ These are required when you include related headers to access internal data.
 
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp): required when to access YAML node.
 - [spdlog](https://github.com/gabime/spdlog): required when to access the internal logger of spdlog.
+- [assimp](https://github.com/assimp/assimp): required to use rpassimp plugin.
 
 
 

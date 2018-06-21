@@ -15,6 +15,7 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (conditional): Panda3D does not have Eigen3 although Panda3D uses it
+- Assimp (optional): Required to build rpassimp plugin
 
 
 
@@ -37,11 +38,17 @@ If you does not use `vcpkg`, then build and install those and setup proper value
 
   # conditional
   vcpkg install --triplet x64-windows eigen3
+
+  # optional
+  vcpkg install --triplet x64-windows assimp
   ```
 
 - Ubuntu
   ```
   apt-get install libfmt-dev libspdlog-dev
+
+  # optional
+  apt-get install libassimp-dev
   ```
 
 
@@ -143,7 +150,7 @@ add_subdirectory("rpcpp_samples")
 ```
 
 ### 3. Run CMake
-If `vcpkg` is used, select "Specify toolchain file for cross-compiling" and
+If `vcpkg` is used, select **Specify toolchain file for cross-compiling** and
 choose toolchain file (vcpkg.cmake) of vcpkg in CMake GUI.
 In command line, generate CMake project with
 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` option.

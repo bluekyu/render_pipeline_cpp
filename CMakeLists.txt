@@ -9,7 +9,7 @@ project(render_pipeline
 
 # === configure ====================================================================================
 option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
-option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp module" OFF)
+option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp plugin for Panda3D" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)

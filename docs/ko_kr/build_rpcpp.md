@@ -15,6 +15,7 @@
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (조건부): Panda3D 가 Eigen3 를 사용하지만 없을 경우
+- Assimp (선택사항): rpassimp 플러그인 사용 시 필요
 
 
 
@@ -37,11 +38,17 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 
   # conditional
   vcpkg install --triplet x64-windows eigen3
+
+  # optional
+  vcpkg install --triplet x64-windows assimp
   ```
 
 - Ubuntu
   ```
   apt-get install libfmt-dev libspdlog-dev
+
+  # optional
+  apt-get install libassimp-dev
   ```
 
 
@@ -143,7 +150,7 @@ add_subdirectory("rpcpp_samples")
 ```
 
 ### 3. CMake 실행
-`vcpkg` 를 사용한다면, CMake GUI 에서 "Specify toolchain file for cross-compiling" 을 선택하고,
+`vcpkg` 를 사용한다면, CMake GUI 에서 **Specify toolchain file for cross-compiling** 을 선택하고,
 vcpkg 에 설치된 toolchain 파일(vcpkg.cmake)을 선택.
 명령줄에서는 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` 옵션을
 사용해서 CMake 프로젝트 생성.

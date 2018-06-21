@@ -15,14 +15,21 @@ include(debugging-information)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+find_package(assimp CONFIG REQUIRED)
+if(NOT ASSIMP_LIBRARIES)
+    message(FATAL_ERROR
+        "  \n"
+        "  '${PROJECT_NAME}' project requires 'assimp' package.\n"
+        "  Set OFF to 'render_pipeline_BUILD_RPASSIMP' option If you want to disable this.\n"
+    )
+endif()
+
 find_package(fmt CONFIG REQUIRED)
 if(TARGET fmt::fmt-header-only)
     set(FMT_TARGET fmt::fmt-header-only)
 else()                                      # for ubuntu libfmt-dev package
     set(FMT_TARGET fmt::fmt)
 endif()
-
-find_package(assimp CONFIG REQUIRED)
 # ==================================================================================================
 
 # === target =======================================================================================

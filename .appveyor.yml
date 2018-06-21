@@ -58,7 +58,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
-- vcpkg install fmt spdlog yaml-cpp eigen3
+- vcpkg install fmt spdlog yaml-cpp eigen3 assimp
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: >-
     if ($env:CONFIGURATION -eq "Debug") {
