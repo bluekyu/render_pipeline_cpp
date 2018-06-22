@@ -61,7 +61,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER "render_pipeline/rpassimp"
+    FOLDER "render_pipeline"
     PREFIX "lib"
     DEBUG_POSTFIX "_d"
     VERSION ${PROJECT_VERSION}

@@ -22,7 +22,11 @@
 
 #include "render_pipeline/rpcore/util/generic.hpp"
 
+#include <load_dso.h>
+
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 #include "render_pipeline/rplibs/py_to_cpp.hpp"
+#include "render_pipeline/rpcore/rpobject.hpp"
 
 namespace rpcore {
 
@@ -52,6 +56,19 @@ void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution)
         (base_point.get_y() - offset_y) * 2.0 - 1.0,
         (base_point.get_z()) * 2.0 - 1.0, 1));
     cam_node.set_pos(cam_node.get_pos() - new_base.get_xyz());
+}
+
+void* load_rpassimp()
+{
+    // load librpassimp.so explicitly
+    void* dso = load_dso(
+        rppanda::convert_path(rppanda::get_library_location().parent_path()),
+        Filename::dso_filename("librpassimp.so"));
+
+    if (!dso)
+        RPObject::global_error("rpcore", "Failed to load RPAssimp");
+
+    return dso;
 }
 
 }
