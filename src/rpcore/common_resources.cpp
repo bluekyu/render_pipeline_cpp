@@ -116,7 +116,7 @@ void CommonResources::update()
         };
 
         // Compute the view matrix, but with a z-up coordinate system
-        const LMatrix4f& zup_conversion = LMatrix4f::convert_mat(CS_zup_right, CS_yup_right);
+        const LMatrix4f& zup_conversion = LMatrix4f::z_to_y_up_mat();
         input_ubo_->update_input("stereo_view_mat_z_up", view_mat[0] * zup_conversion, 0);
         input_ubo_->update_input("stereo_view_mat_z_up", view_mat[1] * zup_conversion, 1);
 
@@ -156,8 +156,8 @@ void CommonResources::update()
         }
 
         const LMatrix4f stereo_proj_mat_z_up[2] ={
-            LMatrix4f::convert_mat(CS_yup_right, CS_zup_right) * stereo_proj_mat[0],
-            LMatrix4f::convert_mat(CS_yup_right, CS_zup_right) * stereo_proj_mat[1],
+            LMatrix4f::y_to_z_up_mat() * stereo_proj_mat[0],
+            LMatrix4f::y_to_z_up_mat() * stereo_proj_mat[1],
         };
 
         const LMatrix4f stereo_view_proj_mat[2] = {
@@ -207,7 +207,7 @@ void CommonResources::update()
         const LMatrix4f& view_mat = Globals::render.get_transform(showbase_->get_cam())->get_mat();
 
         // Compute the view matrix, but with a z-up coordinate system
-        const LMatrix4f& zup_conversion = LMatrix4f::convert_mat(CS_zup_right, CS_yup_right);
+        const LMatrix4f& zup_conversion = LMatrix4f::z_to_y_up_mat();
         input_ubo_->update_input("view_mat_z_up", view_mat * zup_conversion);
 
         // Compute the view matrix without the camera rotation
@@ -231,7 +231,7 @@ void CommonResources::update()
 
         // Set the projection matrix as an input, but convert it to the correct
         // coordinate system before.
-        const LMatrix4f& proj_mat_zup = LMatrix4f::convert_mat(CS_yup_right, CS_zup_right) * proj_mat;
+        const LMatrix4f& proj_mat_zup = LMatrix4f::y_to_z_up_mat() * proj_mat;
         input_ubo_->update_input("proj_mat", proj_mat_zup);
 
         // Set the inverse projection matrix
