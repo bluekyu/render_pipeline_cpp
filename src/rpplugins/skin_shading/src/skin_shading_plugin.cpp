@@ -34,7 +34,7 @@ SkinShadingPlugin::RequrieType SkinShadingPlugin::require_plugins_;
 
 // ************************************************************************************************
 
-SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
+SkinShadingPlugin::SkinShadingPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING)
 {
 }
 

@@ -135,7 +135,7 @@ void SMAAPlugin::Impl::update_jitter_pattern()
 
 // ************************************************************************************************
 
-SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+SMAAPlugin::SMAAPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

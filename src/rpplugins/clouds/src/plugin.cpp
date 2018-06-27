@@ -32,7 +32,7 @@ namespace rpplugins {
 
 Plugin::RequrieType Plugin::require_plugins = { "scattering" };
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING)
 {
 }
 

@@ -145,9 +145,9 @@ std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
     boost::filesystem::path plugin_path = get_canonical_path(plugin_dir_ / plugin_id);
 
 #if defined(RENDER_PIPELINE_BUILD_CFG_POSTFIX)
-    plugin_path = plugin_path / ("rpplugin_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);
+    plugin_path = plugin_path / ("rpplugins_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);
 #else
-    plugin_path = plugin_path / ("rpplugin_" + plugin_id);
+    plugin_path = plugin_path / ("rpplugins_" + plugin_id);
 #endif
 
     self_.trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));

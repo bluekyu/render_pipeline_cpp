@@ -40,7 +40,7 @@ SkyAOPlugin::RequrieType SkyAOPlugin::require_plugins_;
 
 // ************************************************************************************************
 
-SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING)
+SkyAOPlugin::SkyAOPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING)
 {
 }
 
