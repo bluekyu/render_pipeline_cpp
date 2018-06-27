@@ -84,13 +84,13 @@ public:
     std::string convert_filename_to_name(const Filename& filepath);
 
     /** Internal method to construct the effect from a yaml object. */
-    void parse_content(Effect& self, YAML::Node& parsed_yaml);
+    void parse_content(RenderPipeline& pipeline, Effect& self, YAML::Node& parsed_yaml);
 
     /**
      * Parses a fragment template. This just finds the default template
      * for the shader, and redirects that to construct_shader_from_data.
      */
-    void parse_shader_template(Effect& self, const PassType& pass_id_multiview, const std::string& stage,
+    void parse_shader_template(RenderPipeline& pipeline, Effect& self, const PassType& pass_id_multiview, const std::string& stage,
         YAML::Node& data);
 
     /** Constructs a shader from a given dataset. */
@@ -171,7 +171,7 @@ std::string Effect::Impl::convert_filename_to_name(const Filename& filepath)
     return filename;
 }
 
-void Effect::Impl::parse_content(Effect& self, YAML::Node& parsed_yaml)
+void Effect::Impl::parse_content(RenderPipeline& pipeline, Effect& self, YAML::Node& parsed_yaml)
 {
     YAML::Node vtx_data = parsed_yaml["vertex"];
     YAML::Node geom_data = parsed_yaml["geometry"];
@@ -179,16 +179,16 @@ void Effect::Impl::parse_content(Effect& self, YAML::Node& parsed_yaml)
 
     for (const auto& pass_id_multiview: passes_)
     {
-        parse_shader_template(self, pass_id_multiview, "vertex", vtx_data);
-        parse_shader_template(self, pass_id_multiview, "geometry", geom_data);
-        parse_shader_template(self, pass_id_multiview, "fragment", frag_data);
+        parse_shader_template(pipeline, self, pass_id_multiview, "vertex", vtx_data);
+        parse_shader_template(pipeline, self, pass_id_multiview, "geometry", geom_data);
+        parse_shader_template(pipeline, self, pass_id_multiview, "fragment", frag_data);
     }
 }
 
-void Effect::Impl::parse_shader_template(Effect& self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
+void Effect::Impl::parse_shader_template(RenderPipeline& pipeline, Effect& self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
 {
     const std::string& pass_id = pass_id_multiview.first;
-    bool stereo_mode = RenderPipeline::get_global_ptr()->is_stereo_mode() && pass_id_multiview.second;
+    bool stereo_mode = pipeline.is_stereo_mode() && pass_id_multiview.second;
 
     std::string template_src;
     if (stage == "fragment")
@@ -206,7 +206,7 @@ void Effect::Impl::parse_shader_template(Effect& self, const PassType& pass_id_m
     else if (stage == "geometry")
     {
         // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
-        if (stereo_mode && RenderPipeline::get_global_ptr()->get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
+        if (stereo_mode && pipeline.get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
         {
             template_src = "/$$rp/shader/templates/vertex_stereo.geom.glsl";
         }
@@ -390,7 +390,7 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 }
 
 // ************************************************************************************************
-std::shared_ptr<Effect> Effect::load(const Filename& filename, const OptionType& options)
+std::shared_ptr<Effect> Effect::load(RenderPipeline& pipeline, const Filename& filename, const OptionType& options)
 {
     const std::string& effect_hash = Impl::generate_hash(filename, options);
 
@@ -400,7 +400,7 @@ std::shared_ptr<Effect> Effect::load(const Filename& filename, const OptionType&
 
     auto effect = std::make_shared<Effect>();
     effect->set_options(options);
-    if (!effect->do_load(filename))
+    if (!effect->do_load(pipeline, filename))
     {
         RPObject::global_error("Effect", "Could not load effect!");
         return nullptr;
@@ -449,7 +449,7 @@ void Effect::set_options(const OptionType& options)
     }
 }
 
-bool Effect::do_load(const Filename& filename)
+bool Effect::do_load(RenderPipeline& pipeline, const Filename& filename)
 {
     impl_->filename_ = filename;
     impl_->effect_name_ = impl_->convert_filename_to_name(filename);
@@ -459,7 +459,7 @@ bool Effect::do_load(const Filename& filename)
     YAML::Node parsed_yaml;
     if (!rplibs::load_yaml_file(filename, parsed_yaml))
         return false;
-    impl_->parse_content(*this, parsed_yaml);
+    impl_->parse_content(pipeline, *this, parsed_yaml);
 
     // Construct a shader object for each pass
     for (const auto& pass_id_multiview: Impl::passes_)

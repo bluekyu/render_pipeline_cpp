@@ -73,8 +73,6 @@ public:
     static const std::string& get_build_data();
     static const std::string& get_git_commit();
 
-    static RenderPipeline* get_global_ptr();
-
     /** Initialize RenderPipeline. */
     RenderPipeline();
 

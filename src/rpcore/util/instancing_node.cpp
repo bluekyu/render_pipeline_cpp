@@ -33,7 +33,7 @@ static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeo
 class InstancingNode::Impl
 {
 public:
-    void initilize(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint);
+    void initilize(RenderPipeline& pipeline, NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint);
 
     void set_instance_count(int instance_count);
 
@@ -49,7 +49,7 @@ public:
     PT(Texture) buffer_texture_;
 };
 
-void InstancingNode::Impl::initilize(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint)
+void InstancingNode::Impl::initilize(RenderPipeline& pipeline, NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint)
 {
     instanced_np_ = np;
 
@@ -63,7 +63,7 @@ void InstancingNode::Impl::initilize(NodePath np, const Filename& effect_path, G
     if (epath.empty())
         epath = "/$$rp/effects/basic_instancing.yaml";
 
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(instanced_np_, epath, {});
+    pipeline.set_effect(instanced_np_, epath, {});
 
     instanced_np_.set_shader_input("InstancingData", buffer_texture_);
     instanced_np_.set_shader_input("instanceNode", instanced_np_);
@@ -114,14 +114,14 @@ void InstancingNode::Impl::upload_transforms()
 
 // ************************************************************************************************
 
-InstancingNode::InstancingNode(NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint):
+InstancingNode::InstancingNode(RenderPipeline& pipeline, NodePath np, const Filename& effect_path, GeomEnums::UsageHint buffer_hint):
     impl_(std::make_unique<Impl>())
 {
-    impl_->initilize(np, effect_path, buffer_hint);
+    impl_->initilize(pipeline, np, effect_path, buffer_hint);
 }
 
-InstancingNode::InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
-    const Filename& effect_path, GeomEnums::UsageHint buffer_hint): InstancingNode(np, effect_path, buffer_hint)
+InstancingNode::InstancingNode(RenderPipeline& pipeline, NodePath np, const std::vector<LMatrix4f>& transforms,
+    const Filename& effect_path, GeomEnums::UsageHint buffer_hint): InstancingNode(pipeline, np, effect_path, buffer_hint)
 {
     set_transforms(transforms);
 }

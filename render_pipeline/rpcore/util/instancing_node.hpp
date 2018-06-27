@@ -27,6 +27,8 @@
 
 namespace rpcore {
 
+class RenderPipeline;
+
 /**
  * Wrapper class to add instanced mesh.
  *
@@ -42,9 +44,9 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL InstancingNode
 {
 public:
-    InstancingNode(NodePath np, const Filename& effect_path="",
+    InstancingNode(RenderPipeline& pipeline, NodePath np, const Filename& effect_path="",
         GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
-    InstancingNode(NodePath np, const std::vector<LMatrix4f>& transforms,
+    InstancingNode(RenderPipeline& pipeline, NodePath np, const std::vector<LMatrix4f>& transforms,
         const Filename& effect_path="", GeomEnums::UsageHint buffer_hint=GeomEnums::UH_static);
 
     ~InstancingNode();

@@ -75,8 +75,6 @@
 
 namespace rpcore {
 
-static RenderPipeline* global_ptr_ = nullptr;
-
 class RenderPipeline::Impl
 {
 public:
@@ -307,13 +305,11 @@ RenderPipeline::Impl::~Impl()
     mount_mgr_.reset();
 
     LoggerManager::get_instance().clear();
-
-    global_ptr_ = nullptr;
 }
 
 void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
-    const auto& effect = Effect::load(effect_src, options);
+    const auto& effect = Effect::load(self_, effect_src, options);
     if (!effect)
     {
         self_.error("Could not apply effect");
@@ -939,17 +935,10 @@ const std::string& RenderPipeline::get_git_commit(void)
     return git_commit;
 }
 
-RenderPipeline* RenderPipeline::get_global_ptr()
-{
-    return global_ptr_;
-}
-
 RenderPipeline::RenderPipeline(): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
     if (!LoggerManager::get_instance().is_created())
         LoggerManager::get_instance().create("render_pipeline.log");
-
-    global_ptr_ = this;
 
     debug("Constructing render pipeline ...");
 
