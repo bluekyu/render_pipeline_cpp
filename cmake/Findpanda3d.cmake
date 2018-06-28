@@ -163,6 +163,7 @@ function(_panda3d_add_library component_name)
         endif()
 
         if(${component_name} STREQUAL "p3dtool")
+            set_target_properties(panda3d::${component_name} PROPERTIES INTERFACE_COMPILE_FEATURES "cxx_std_11")
             if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
                 include(CMakeFindDependencyMacro)
                 find_dependency(Threads REQUIRED)
