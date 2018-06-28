@@ -24,7 +24,6 @@
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 
-#include <cctype>
 #include <chrono>
 #include <regex>
 
