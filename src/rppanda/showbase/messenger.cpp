@@ -41,7 +41,13 @@
 
 namespace rppanda {
 
+const Messenger::AcceptorMap Messenger::empty_acceptor_;
+
 TypeHandle Messenger::type_handle_;
+
+Messenger::Messenger() : handler_(EventHandler::get_global_event_handler())
+{
+}
 
 Messenger::~Messenger()
 {
@@ -65,7 +71,7 @@ void Messenger::accept(const EventName& event_name, const EventFunction& method,
 
     add_hook(event_name);
 
-    auto& object_callbacks = hooks_[event_name].object_callbacks;
+    auto& object_callbacks = hooks_[event_name];
 
     auto found = object_callbacks.find(object);
     if (found == object_callbacks.end())
@@ -81,6 +87,15 @@ void Messenger::accept(const EventName& event_name, const EventFunction& method,
     }
 }
 
+auto Messenger::who_accepts(const EventName& event_name) const -> const AcceptorMap&
+{
+    auto found = hooks_.find(event_name);
+    if (found != hooks_.end())
+        return found->second;
+    else
+        return empty_acceptor_;
+}
+
 void Messenger::process_event(const Event* ev, void* user_data)
 {
     const auto& event_name = ev->get_name();
@@ -88,34 +103,17 @@ void Messenger::process_event(const Event* ev, void* user_data)
     auto self = reinterpret_cast<Messenger*>(user_data);
     auto& hook = self->hooks_.at(event_name);
 
-    // call in callbacks
-    {
-        auto iter = hook.callbacks.cbegin();
-
-        // NOTE: the end iterator is virtual end, so it indicates the end of list although new callbacks are inserted.
-        // Therefore, this iterator will call also the new callbacks.
-        auto iter_end = hook.callbacks.cend();
-        for (; iter != iter_end; ++iter)
-        {
-            iter->first(ev);
-
-            // NOTE: the erased element is only invalidated, so we can use the iterator.
-            if (!iter->second)
-                hook.callbacks.erase(iter);
-        }
-    }
-
     // call in object_callbacks
     {
-        auto iter = hook.object_callbacks.cbegin();
-        auto iter_end = hook.object_callbacks.cend();
+        auto iter = hook.cbegin();
+        auto iter_end = hook.cend();
         for (; iter != iter_end; ++iter)
         {
             iter->second.first(ev);
 
             // NOTE: the erased element is only invalidated, so we can use the iterator.
             if (!iter->second.second)
-                hook.object_callbacks.erase(iter);
+                hook.erase(iter);
         }
     }
 
