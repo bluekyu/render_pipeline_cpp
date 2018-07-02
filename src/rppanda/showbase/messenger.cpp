@@ -71,7 +71,7 @@ void Messenger::accept(const EventName& event_name, const EventFunction& method,
 
     add_hook(event_name);
 
-    auto& object_callbacks = hooks_[event_name];
+    auto& object_callbacks = callbacks_[event_name];
 
     auto found = object_callbacks.find(object);
     if (found == object_callbacks.end())
@@ -89,8 +89,8 @@ void Messenger::accept(const EventName& event_name, const EventFunction& method,
 
 auto Messenger::who_accepts(const EventName& event_name) const -> const AcceptorMap&
 {
-    auto found = hooks_.find(event_name);
-    if (found != hooks_.end())
+    auto found = callbacks_.find(event_name);
+    if (found != callbacks_.end())
         return found->second;
     else
         return empty_acceptor_;
@@ -101,23 +101,23 @@ void Messenger::process_event(const Event* ev, void* user_data)
     const auto& event_name = ev->get_name();
 
     auto self = reinterpret_cast<Messenger*>(user_data);
-    auto& hook = self->hooks_.at(event_name);
+    auto& acceptor_map = self->callbacks_.at(event_name);
 
     // call in object_callbacks
     {
-        auto iter = hook.cbegin();
-        auto iter_end = hook.cend();
+        auto iter = acceptor_map.cbegin();
+        auto iter_end = acceptor_map.cend();
         for (; iter != iter_end; ++iter)
         {
             iter->second.first(ev);
 
             // NOTE: the erased element is only invalidated, so we can use the iterator.
             if (!iter->second.second)
-                hook.erase(iter);
+                acceptor_map.erase(iter);
         }
     }
 
-    if (hook.empty())
+    if (acceptor_map.empty())
         self->remove_hook(event_name);
 }
 
