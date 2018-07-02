@@ -41,6 +41,7 @@
 
 #include <list>
 #include <unordered_map>
+#include <unordered_set>
 #include <functional>
 
 #include <render_pipeline/rpcore/config.hpp>
@@ -65,6 +66,9 @@ public:
     using AcceptorMap = std::unordered_map<const DirectObject*, AcceptorType>;
     using CallbacksType = std::unordered_map<EventName, AcceptorMap>;
 
+    using EventSetType = std::unordered_set<EventName>;
+    using ObjectEventsType = std::unordered_map<const DirectObject*, EventSetType>;
+
 public:
     static Messenger* get_global_instance();
 
@@ -74,13 +78,16 @@ public:
 
     size_t get_num_listners() const;
     size_t get_num_listners(const EventName& event_name) const;
+    size_t get_num_listners(const DirectObject* object) const;
 
+    /**
+     * Returns a future that is triggered by the given event name.  This
+     * will function only once.
+     */
     AsyncFuture* get_future(const EventName& event_name) const;
 
     /**
      * Add the method to hook with given event name.
-     *
-     * @return Iterator of callbacks.
      */
     void accept(const EventName& event_name, const EventFunction& method, const DirectObject* object,
         bool persistent = true);
@@ -97,7 +104,7 @@ public:
     void ignore_all(const DirectObject* object);
 
     /** Returns the list of all events accepted by the indicated object. */
-    std::vector<EventName> get_all_accepting(const DirectObject* object) const;
+    const EventSetType& get_all_accepting(const DirectObject* object) const;
 
     /** Is this object accepting this event? */
     bool is_accepting(const EventName& event_name, const DirectObject* object) const;
@@ -137,8 +144,10 @@ private:
 
     EventHandler* handler_;
     CallbacksType callbacks_;
+    ObjectEventsType object_events_;
 
     static const AcceptorMap empty_acceptor_;
+    static const EventSetType empty_events_;
 
 public:
     static TypeHandle get_class_type();
@@ -169,6 +178,15 @@ inline size_t Messenger::get_num_listners(const EventName& event_name) const
         return 0;
 }
 
+inline size_t Messenger::get_num_listners(const DirectObject* object) const
+{
+    const auto found = object_events_.find(object);
+    if (found != object_events_.end())
+        return found->second.size();
+    else
+        return 0;
+}
+
 inline AsyncFuture* Messenger::get_future(const EventName& event_name) const
 {
     return handler_->get_future(event_name);
@@ -183,7 +201,14 @@ inline void Messenger::ignore(const EventName& event_name, const DirectObject* o
     auto& acceptor_map = found->second;
     auto acceptor_map_found = acceptor_map.find(object);
     if (acceptor_map_found != acceptor_map.end())
+    {
         acceptor_map.erase(acceptor_map_found);
+
+        auto& event_set = object_events_.at(object);
+        event_set.erase(event_name);
+        if (event_set.empty())
+            object_events_.erase(object);
+    }
 
     if (acceptor_map.empty())
         remove_hook(event_name);
@@ -200,33 +225,28 @@ inline void Messenger::ignore_all(const EventName& event_name)
 
 inline void Messenger::ignore_all(const DirectObject* object)
 {
-    auto iter = callbacks_.begin();
-    const auto iter_end = callbacks_.end();
-    while (iter != iter_end)
-    {
-        auto& acceptor_map = iter->second;
-        auto found = acceptor_map.find(object);
-        if (found != acceptor_map.end())
-            acceptor_map.erase(found);
+    auto found = object_events_.find(object);
+    if (found == object_events_.end())
+        return;
 
-        // iterator becomes invalidated after erase.
-        auto iter_tmp = iter;
-        ++iter;
-        if (iter_tmp->second.empty())
-            remove_hook(iter_tmp->first);
+    for (const auto& event_name: found->second)
+    {
+        auto callback_found = callbacks_.find(event_name);
+        callback_found->second.erase(object);
+        if (callback_found->second.empty())
+            remove_hook(event_name);
     }
+
+    object_events_.erase(object);
 }
 
-inline auto Messenger::get_all_accepting(const DirectObject* object) const -> std::vector<EventName>
+inline auto Messenger::get_all_accepting(const DirectObject* object) const -> const EventSetType&
 {
-    std::vector<EventName> events;
-    for (const auto& kv : callbacks_)
-    {
-        const auto& acceptor_map = kv.second;
-        if (acceptor_map.find(object) != acceptor_map.end())
-            events.push_back(kv.first);
-    }
-    return events;
+    auto found = object_events_.find(object);
+    if (found == object_events_.end())
+        return empty_events_;
+    else
+        return found->second;
 }
 
 inline bool Messenger::is_accepting(const EventName& event_name, const DirectObject* object) const
@@ -298,6 +318,7 @@ inline void Messenger::clear()
     for (auto&& kv : callbacks_)
         handler_->remove_hook(kv.first, process_event, this);
     callbacks_.clear();
+    object_events_.clear();
 }
 
 inline bool Messenger::is_empty() const

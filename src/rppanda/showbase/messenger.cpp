@@ -42,6 +42,7 @@
 namespace rppanda {
 
 const Messenger::AcceptorMap Messenger::empty_acceptor_;
+const Messenger::EventSetType Messenger::empty_events_;
 
 TypeHandle Messenger::type_handle_;
 
@@ -85,6 +86,8 @@ void Messenger::accept(const EventName& event_name, const EventFunction& method,
 
         found->second = AcceptorType{ method, persistent };
     }
+
+    object_events_[object].insert(event_name);
 }
 
 auto Messenger::who_accepts(const EventName& event_name) const -> const AcceptorMap&
