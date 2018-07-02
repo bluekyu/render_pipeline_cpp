@@ -54,18 +54,31 @@ Messenger* Messenger::get_global_instance()
     return &instance;
 }
 
-auto Messenger::accept(const EventName& event_name, const EventFunction& method,
-    DirectObject* object, bool persistent) -> AcceptorMap::const_iterator
+void Messenger::accept(const EventName& event_name, const EventFunction& method,
+    const DirectObject* object, bool persistent)
 {
     if (!object)
     {
         rppanda_showbase_cat.error() << "Messenger::accept is called with null DirectObject: " << event_name << std::endl;
-        return hooks_[event_name].object_callbacks.end();
+        return;
     }
 
     add_hook(event_name);
 
-    return hooks_[event_name].object_callbacks.insert_or_assign(object, AcceptorType{ method, persistent }).first;
+    auto& object_callbacks = hooks_[event_name].object_callbacks;
+
+    auto found = object_callbacks.find(object);
+    if (found == object_callbacks.end())
+    {
+        object_callbacks.emplace(object, AcceptorType{ method, persistent });
+    }
+    else
+    {
+        if (rppanda_showbase_cat.is_debug())
+            rppanda_showbase_cat.warning() << "object: Messenger accept: \"" << event_name << "\" new callback" << std::endl;
+
+        found->second = AcceptorType{ method, persistent };
+    }
 }
 
 void Messenger::process_event(const Event* ev, void* user_data)

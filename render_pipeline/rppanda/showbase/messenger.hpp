@@ -63,7 +63,7 @@ public:
 
     using AcceptorType = std::pair<EventFunction, bool>;    //  { function, persistent }
     using AcceptorList = std::list<AcceptorType>;
-    using AcceptorMap = std::unordered_map<DirectObject*, AcceptorType>;
+    using AcceptorMap = std::unordered_map<const DirectObject*, AcceptorType>;
 
     struct CallbackData
     {
@@ -73,6 +73,8 @@ public:
         AcceptorList callbacks;
         AcceptorMap object_callbacks;
     };
+
+    using HooksType = std::unordered_map<EventName, CallbackData>;
 
 public:
     static Messenger* get_global_instance();
@@ -84,8 +86,6 @@ public:
     size_t get_num_listners() const;
     size_t get_num_listners(const EventName& event_name) const;
 
-    bool is_empty() const;
-
     AsyncFuture* get_future(const EventName& event_name) const;
 
     /**
@@ -93,8 +93,8 @@ public:
      *
      * @return Iterator of callbacks.
      */
-    AcceptorList::const_iterator accept(const EventName& event_name, const EventFunction& method, bool persistent=true);
-    AcceptorMap::const_iterator accept(const EventName& event_name, const EventFunction& method, DirectObject* object,
+    void accept(const EventName& event_name, const EventFunction& method, bool persistent=true);
+    void accept(const EventName& event_name, const EventFunction& method, const DirectObject* object,
         bool persistent = true);
 
     /** Ignore the event has @event_name. */
@@ -104,7 +104,7 @@ public:
     void ignore(const EventName& event_name, const AcceptorMap::const_iterator& object);
 
     /** Ignore the event has @event_name binding to DirectObject. */
-    void ignore(const EventName& event_name, DirectObject* object);
+    void ignore(const EventName& event_name, const DirectObject* object);
 
     /**
      * Ignore all events has @event_name.
@@ -114,7 +114,19 @@ public:
     void ignore_all(const EventName& event_name, bool include_object=true);
 
     /** Ignore all events binding to DirectObject. */
-    void ignore_all(DirectObject* object);
+    void ignore_all(const DirectObject* object);
+
+    /** Returns the list of all events accepted by the indicated object. */
+    std::vector<EventName> get_all_accepting(const DirectObject* object) const;
+
+    /** Is this object accepting this event? */
+    bool is_accepting(const EventName& event_name, const DirectObject* object) const;
+
+    /** Return objects accepting the given event. */
+    HooksType::const_iterator who_accepts(const EventName& event_name) const;
+
+    /** Is this object ignoring this event? */
+    bool is_ignoring(const EventName& event_name, const DirectObject* object) const;
 
     void send(const EventName& event_name, bool queuing = false);
     void send(const EventName& event_name, const EventParameter& p1, bool queuing = false);
@@ -123,7 +135,12 @@ public:
     void send(const EventName& event_name, const EventParameter& p1,
         const EventParameter& p2, const EventParameter& p3, bool queuing = false);
 
+    /** Start fresh with a clear dict. */
     void clear();
+
+    bool is_empty() const;
+
+    std::vector<EventName> get_events() const;
 
 private:
     static void process_event(const Event* ev, void* user_data);
@@ -139,7 +156,7 @@ private:
     void remove_hook(const EventName& event_name);
 
     EventHandler* handler_;
-    std::unordered_map<EventName, CallbackData> hooks_;
+    HooksType hooks_;
 
 public:
     static TypeHandle get_class_type();
@@ -174,22 +191,16 @@ inline size_t Messenger::get_num_listners(const EventName& event_name) const
         return 0;
 }
 
-inline bool Messenger::is_empty() const
-{
-    return get_num_listners() == 0;
-}
-
 inline AsyncFuture* Messenger::get_future(const EventName& event_name) const
 {
     return handler_->get_future(event_name);
 }
 
-inline auto Messenger::accept(const EventName& event_name, const EventFunction& method,
-    bool persistent) -> AcceptorList::const_iterator
+inline void Messenger::accept(const EventName& event_name, const EventFunction& method,
+    bool persistent)
 {
     add_hook(event_name);
     hooks_[event_name].callbacks.push_back(AcceptorType{ method, persistent });
-    return --hooks_[event_name].callbacks.end();
 }
 
 inline void Messenger::ignore(const EventName& event_name, const AcceptorList::const_iterator& iter)
@@ -204,7 +215,7 @@ inline void Messenger::ignore(const EventName& event_name, const AcceptorList::c
         remove_hook(event_name);
 }
 
-inline void Messenger::ignore(const EventName& event_name, DirectObject* object)
+inline void Messenger::ignore(const EventName& event_name, const DirectObject* object)
 {
     auto found = hooks_.find(event_name);
     if (found == hooks_.end())
@@ -240,7 +251,7 @@ inline void Messenger::ignore_all(const EventName& event_name, bool include_obje
         remove_hook(event_name);
 }
 
-inline void Messenger::ignore_all(DirectObject* object)
+inline void Messenger::ignore_all(const DirectObject* object)
 {
     auto iter = hooks_.begin();
     const auto iter_end = hooks_.end();
@@ -264,6 +275,44 @@ inline void Messenger::ignore_all(DirectObject* object)
         if (iter_tmp->second.empty())
             remove_hook(iter_tmp->first);
     }
+}
+
+inline auto Messenger::get_all_accepting(const DirectObject* object) const -> std::vector<EventName>
+{
+    std::vector<EventName> events;
+    for (const auto& hook : hooks_)
+    {
+        const auto& object_callbacks = hook.second.object_callbacks;
+        if (object_callbacks.find(object) != object_callbacks.end())
+            events.push_back(hook.first);
+    }
+    return events;
+}
+
+inline bool Messenger::is_accepting(const EventName& event_name, const DirectObject* object) const
+{
+    auto found = hooks_.find(event_name);
+    if (found != hooks_.end())
+    {
+        if (found->second.object_callbacks.find(object) != found->second.object_callbacks.cend())
+            return true;
+    }
+
+    return false;
+}
+
+inline auto Messenger::who_accepts(const EventName& event_name) const -> HooksType::const_iterator
+{
+    auto found = hooks_.find(event_name);
+    if (found != hooks_.end())
+        return found;
+    else
+        return hooks_.end();
+}
+
+inline bool Messenger::is_ignoring(const EventName& event_name, const DirectObject* object) const
+{
+    return !is_accepting(event_name, object);
 }
 
 inline void Messenger::send(const EventName& event_name, bool queuing)
@@ -329,6 +378,20 @@ inline void Messenger::clear()
     for (auto&& hook : hooks_)
         handler_->remove_hook(hook.first, process_event, this);
     hooks_.clear();
+}
+
+inline bool Messenger::is_empty() const
+{
+    return get_num_listners() == 0;
+}
+
+inline auto Messenger::get_events() const -> std::vector<EventName>
+{
+    std::vector<EventName> events;
+    events.reserve(hooks_.size());
+    for (const auto& kv: hooks_)
+        events.push_back(kv.first);
+    return events;
 }
 
 inline TypeHandle Messenger::get_class_type()

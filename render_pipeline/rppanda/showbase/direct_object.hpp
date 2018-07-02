@@ -126,9 +126,9 @@ private:
         WPT(AsyncTask) task_;
 
     private:
-        DirectObject* owner_;
-        AtomicAdjust::Integer task_id_;     // While destructing AsyncTask, ID already is deleted
-                                            // So, we save it.
+        DirectObject* const owner_;
+        const AtomicAdjust::Integer task_id_;   // While destructing AsyncTask, ID already is deleted
+                                                // So, we save it.
     };
 
     void do_add_task(AsyncTask* task);
