@@ -113,3 +113,16 @@ PandaFramework::task_igloop()
     }
 }
 ```
+
+#### GraphicsOutput
+```cpp
+GraphicsOutput::begin_frame()
+{
+    ...     // GL make current
+
+    GraphicsStateGuardian::begin_frame()
+    {
+        PreparedGraphicsObjects::begin_frame();
+    }
+}
+```
