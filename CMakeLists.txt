@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.10.2)
 project(render_pipeline
-    VERSION 0.6.0
+    VERSION 0.7.0
     DESCRIPTION "Render Pipeline C++ project"
     LANGUAGES CXX
 )
