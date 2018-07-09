@@ -24,7 +24,7 @@
 
 #include <luse.h>
 
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <render_pipeline/rpcore/config.hpp>
 
 class ClockObject;
 
@@ -39,7 +39,7 @@ namespace rpcore {
  * debugging features. It is not really part of the pipeline, but included to
  * view the demo scenes.
  */
-class RENDER_PIPELINE_DECL MovementController : public rppanda::DirectObject
+class RENDER_PIPELINE_DECL MovementController
 {
 public:
     using MotionPathType = std::vector<std::pair<LVecBase3, LVecBase3>>;
@@ -50,9 +50,7 @@ public:
     MovementController(const MovementController&) = delete;
     MovementController(MovementController&&) = delete;
 
-    virtual ~MovementController();
-
-    ALLOC_DELETED_CHAIN(MovementController);
+    ~MovementController();
 
     MovementController& operator=(const MovementController&) = delete;
     MovementController& operator=(MovementController&&) = delete;

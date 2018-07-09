@@ -163,7 +163,7 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
         std::cout << fmt::format("Average frame time (ms): {:4.1f}", avg_ms * 1000.0) << std::endl;
         std::cout << fmt::format("Average frame rate: {:4.1f}", 1.0 / avg_ms) << std::endl;
 
-        update_task_ = self->add_task([this, self](rppanda::FunctionalTask* task) {
+        update_task_ = showbase_->add_task([this, self](rppanda::FunctionalTask* task) {
             return update(self);
         }, "RP_UpdateMovementController", -50);
         showbase_->get_render_2d().show();
@@ -180,7 +180,8 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
     curve_->evaluate_xyz(lerp, pos);
     curve_->evaluate_hpr(lerp, hpr);
 
-    showbase_->get_camera().set_pos_hpr(pos, hpr);
+    showbase_->get_camera().set_pos(pos);
+    showbase_->get_camera().set_hpr(hpr);
 
     delta_time_sum_ += self->get_clock_obj()->get_dt();
     delta_time_count_ += 1;
@@ -197,7 +198,11 @@ MovementController::MovementController(rppanda::ShowBase* showbase): impl_(std::
 {
 }
 
-MovementController::~MovementController() = default;
+MovementController::~MovementController()
+{
+    if (impl_->update_task_)
+        impl_->update_task_->remove();
+}
 
 void MovementController::reset_to_initial()
 {
@@ -224,45 +229,45 @@ void MovementController::setup()
     auto showbase = impl_->showbase_;
 
     // x
-    accept("raw-w", [this](const Event*) { set_movement(0, 1); });
-    accept("raw-w-up", [this](const Event*) { set_movement(0, 0); });
-    accept("raw-s", [this](const Event*) { set_movement(0, -1); });
-    accept("raw-s-up", [this](const Event*) { set_movement(0, 0); });
+    showbase->accept("raw-w", [this](const Event*) { set_movement(0, 1); });
+    showbase->accept("raw-w-up", [this](const Event*) { set_movement(0, 0); });
+    showbase->accept("raw-s", [this](const Event*) { set_movement(0, -1); });
+    showbase->accept("raw-s-up", [this](const Event*) { set_movement(0, 0); });
 
     // y
-    accept("raw-a", [this](const Event*) { set_movement(1, -1); });
-    accept("raw-a-up", [this](const Event* ev) { set_movement(1, 0); });
-    accept("raw-d", [this](const Event* ev) { set_movement(1, 1); });
-    accept("raw-d-up", [this](const Event* ev) { set_movement(1, 0); });
+    showbase->accept("raw-a", [this](const Event*) { set_movement(1, -1); });
+    showbase->accept("raw-a-up", [this](const Event* ev) { set_movement(1, 0); });
+    showbase->accept("raw-d", [this](const Event* ev) { set_movement(1, 1); });
+    showbase->accept("raw-d-up", [this](const Event* ev) { set_movement(1, 0); });
 
     // z
-    accept("space", [this](const Event* ev) { set_movement(2, 1); });
-    accept("space-up", [this](const Event* ev) { set_movement(2, 0); });
-    accept("shift", [this](const Event* ev) { set_movement(2, -1); });
-    accept("shift-up", [this](const Event* ev) { set_movement(2, 0); });
+    showbase->accept("space", [this](const Event* ev) { set_movement(2, 1); });
+    showbase->accept("space-up", [this](const Event* ev) { set_movement(2, 0); });
+    showbase->accept("shift", [this](const Event* ev) { set_movement(2, -1); });
+    showbase->accept("shift-up", [this](const Event* ev) { set_movement(2, 0); });
 
     // wireframe + debug + buffer viewer
-    accept("f3", [this](const Event* ev) { impl_->showbase_->toggle_wireframe(); });
-    accept("f11", [this](const Event* ev) { impl_->showbase_->get_win()->save_screenshot("screenshot.png"); });
-    accept("j", [this](const Event* ev) { print_position(); });
+    showbase->accept("f3", [this](const Event* ev) { impl_->showbase_->toggle_wireframe(); });
+    showbase->accept("f11", [this](const Event* ev) { impl_->showbase_->get_win()->save_screenshot("screenshot.png"); });
+    showbase->accept("j", [this](const Event* ev) { print_position(); });
 
     // mouse
-    accept("mouse1", [this](const Event* ev) { set_mouse_enabled(true); });
-    accept("mouse1-up", [this](const Event* ev) { set_mouse_enabled(false); });
+    showbase->accept("mouse1", [this](const Event* ev) { set_mouse_enabled(true); });
+    showbase->accept("mouse1-up", [this](const Event* ev) { set_mouse_enabled(false); });
 
     // arrow mouse navigation
-    accept("arrow_up", [this](const Event* ev) { set_hpr_movement(1, 1); });
-    accept("arrow_up-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
-    accept("arrow_down", [this](const Event* ev) { set_hpr_movement(1, -1); });
-    accept("arrow_down-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
-    accept("arrow_left", [this](const Event* ev) { set_hpr_movement(0, 1); });
-    accept("arrow_left-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
-    accept("arrow_right", [this](const Event* ev) { set_hpr_movement(0, -1); });
-    accept("arrow_right-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
+    showbase->accept("arrow_up", [this](const Event* ev) { set_hpr_movement(1, 1); });
+    showbase->accept("arrow_up-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
+    showbase->accept("arrow_down", [this](const Event* ev) { set_hpr_movement(1, -1); });
+    showbase->accept("arrow_down-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
+    showbase->accept("arrow_left", [this](const Event* ev) { set_hpr_movement(0, 1); });
+    showbase->accept("arrow_left-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
+    showbase->accept("arrow_right", [this](const Event* ev) { set_hpr_movement(0, -1); });
+    showbase->accept("arrow_right-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
 
     // increase / decrease speed
-    accept("+", [this](const Event* ev) { increase_speed(); });
-    accept("-", [this](const Event* ev) { decrease_speed(); });
+    showbase->accept("+", [this](const Event* ev) { increase_speed(); });
+    showbase->accept("-", [this](const Event* ev) { decrease_speed(); });
 
     // disable modifier buttons to be able to move while pressing shift for example
     showbase->get_mouse_watcher_node()->set_modifier_buttons(ModifierButtons());
@@ -272,13 +277,13 @@ void MovementController::setup()
     showbase->disable_mouse();
 
     // add ourself as an update task which gets executed very early before the rendering
-    impl_->update_task_ = add_task([this](rppanda::FunctionalTask* task) {
+    impl_->update_task_ = showbase->add_task([this](rppanda::FunctionalTask* task) {
         return impl_->update(this);
     }, "RP_UpdateMovementController", -50);
 
     // Hotkeys to connect to pstats and reset the initial position
-    accept("1", [](const Event* ev) { PStatClient::connect(); });
-    accept("3", [this](const Event* ev) { reset_to_initial(); });
+    showbase->accept("1", [](const Event* ev) { PStatClient::connect(); });
+    showbase->accept("3", [this](const Event* ev) { reset_to_initial(); });
 }
 
 void MovementController::print_position()
@@ -306,7 +311,7 @@ void MovementController::play_motion_path(const MotionPathType& points, float po
     impl_->curve_time_end_ = get_clock_obj()->get_frame_time() + points.size() * point_duration;
     impl_->delta_time_sum_ = 0;
     impl_->delta_time_count_ = 0;
-    add_task([this](rppanda::FunctionalTask* task) {
+    impl_->showbase_->add_task([this](rppanda::FunctionalTask* task) {
         return impl_->camera_motion_update(this);
     }, "RP_CameraMotionPath", -50);
     impl_->update_task_->remove();
