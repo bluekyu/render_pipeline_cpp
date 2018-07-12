@@ -95,18 +95,18 @@ build_script:
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
-- cmake --build . --config %CONFIGURATION% --target install
+- cmake --build . --config %CONFIGURATION% --target ALL_BUILD
 - ps: popd
-
-after_build:
-- 7z a render_pipeline_cpp.7z "C:/projects/_install/render_pipeline_cpp"
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 
-# to disable automatic tests
-test: off
+test_script:
+
+after_test:
+- cmake --build _build --config %CONFIGURATION% --target INSTALL
+- 7z a render_pipeline_cpp.7z "C:/projects/_install/render_pipeline_cpp"
 
 #---------------------------------#
 #      artifacts configuration    #
