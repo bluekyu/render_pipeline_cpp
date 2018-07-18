@@ -22,4 +22,8 @@
 #pragma once
 
 #define RENDER_PIPELINE_VERSION "@render_pipeline_SEMANTIC_VERSION@"
+#define RENDER_PIPELINE_VERSION_MAJOR @render_pipeline_VERSION_MAJOR@
+#define RENDER_PIPELINE_VERSION_MINOR @render_pipeline_VERSION_MINOR@
+#define RENDER_PIPELINE_VERSION_PATCH @render_pipeline_VERSION_PATCH@
+
 #define RENDER_PIPELINE_GIT_COMMIT "@render_pipeline_GIT_COMMIT@"
