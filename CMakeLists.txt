@@ -1,6 +1,10 @@
 # Author: Younguk Kim (bluekyu)
 
 cmake_minimum_required(VERSION 3.10.2)
+
+cmake_policy(PUSH)
+cmake_policy(SET CMP0074 NEW)
+
 project(render_pipeline
     VERSION 0.7.0
     DESCRIPTION "Render Pipeline C++ project"
@@ -197,3 +201,5 @@ if(${${PROJECT_NAME}_BUILD_RPASSIMP})
     add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpassimp")
 endif()
 # ==================================================================================================
+
+cmake_policy(POP)
