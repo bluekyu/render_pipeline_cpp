@@ -38,6 +38,8 @@
 #include <materialAttrib.h>
 #include <geomTristrips.h>
 
+#include <boost/dll/runtime_symbol_info.hpp>
+
 #include "render_pipeline/rpcore/version.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
@@ -937,7 +939,15 @@ const std::string& RenderPipeline::get_git_commit(void)
 RenderPipeline::RenderPipeline(): RPObject("RenderPipeline"), impl_(std::make_unique<Impl>(*this))
 {
     if (!LoggerManager::get_instance().is_created())
-        LoggerManager::get_instance().create("render_pipeline.log");
+    {
+        Filename log_file_path = boost::dll::program_location().stem().string() + ".log";
+
+        auto appdata_dir = Filename::get_user_appdata_directory();
+        if (!appdata_dir.empty())
+            log_file_path = appdata_dir / "render_pipeline" / "logs" / log_file_path;
+
+        LoggerManager::get_instance().create(log_file_path);
+    }
 
     debug("Constructing render pipeline ...");
 

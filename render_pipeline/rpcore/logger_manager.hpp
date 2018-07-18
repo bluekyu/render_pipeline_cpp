@@ -26,6 +26,8 @@
 
 #include <render_pipeline/rpcore/config.hpp>
 
+class Filename;
+
 namespace rpcore {
 
 class RENDER_PIPELINE_DECL LoggerManager
@@ -42,7 +44,7 @@ public:
      * Create internal logger.
      * If @p file_path is empty, file logging will be disabled.
      */
-    void create(const std::string& file_path);
+    void create(const Filename& file_path);
 
     bool is_created() const;
 
