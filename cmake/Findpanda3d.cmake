@@ -177,10 +177,12 @@ function(_panda3d_add_library component_name)
             if((${CMAKE_SYSTEM_NAME} MATCHES "Windows") OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
                 # check if Eigen is used
                 foreach(configuration ${panda3d_configurations})
-                    file(STRINGS "${panda3d_INCLUDE_DIR_${configuration}}/dtool_config.h"
-                        panda3d_dtool_HAVE_EIGEN_${configuration}
-                        REGEX "#define HAVE_EIGEN 1"
-                    )
+                    if(panda3d_INCLUDE_DIR_${configuration})
+                        file(STRINGS "${panda3d_INCLUDE_DIR_${configuration}}/dtool_config.h"
+                            panda3d_dtool_HAVE_EIGEN_${configuration}
+                            REGEX "#define HAVE_EIGEN 1"
+                        )
+                    endif()
                 endforeach()
                 if(panda3d_dtool_HAVE_EIGEN_DEBUG OR panda3d_dtool_HAVE_EIGEN_RELEASE)
                     include(CMakeFindDependencyMacro)
