@@ -73,8 +73,6 @@ public:
     DirectGuiBase() = default;
     virtual ~DirectGuiBase();
 
-    ALLOC_DELETED_CHAIN(DirectGuiBase);
-
     const std::string& get_gui_id() const;
 
     /** Create a component (during construction or later) for this widget. */

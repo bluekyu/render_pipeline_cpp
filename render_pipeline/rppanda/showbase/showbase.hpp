@@ -90,8 +90,6 @@ public:
 
     virtual ~ShowBase();
 
-    ALLOC_DELETED_CHAIN(ShowBase);
-
     ShowBase& operator=(const ShowBase&) = delete;
 
     void initialize(int argc, char* argv[]);

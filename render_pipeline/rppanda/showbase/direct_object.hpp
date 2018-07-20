@@ -65,8 +65,6 @@ public:
     DirectObject& operator=(const DirectObject&) = delete;
     DirectObject& operator=(DirectObject&&) = default;
 
-    ALLOC_DELETED_CHAIN(DirectObject);
-
     void accept(const std::string& ev_name, const Messenger::EventFunction& func);
 
     void accept_once(const std::string& ev_name, const Messenger::EventFunction& func);
