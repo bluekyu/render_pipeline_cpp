@@ -122,7 +122,7 @@ PluginManager::Impl::Impl(PluginManager& self, RenderPipeline& pipeline): self_(
 
 void PluginManager::Impl::unload()
 {
-    self_.debug("Unloading all plugins");
+    self_.debug(fmt::format("Unloading all plugins: {}", instances_.size()));
 
     self_.on_unload();
 
