@@ -60,6 +60,8 @@ public:
     MetaInterval(std::initializer_list<CInterval*> ivals, const boost::optional<std::string>& name=boost::none,
         bool auto_pause=false, bool auto_finish=false);
 
+    virtual ~MetaInterval();
+
 protected:
     MetaInterval(const std::string& name, bool auto_pause, bool auto_finish);
 

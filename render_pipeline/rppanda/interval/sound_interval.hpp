@@ -60,7 +60,7 @@ public:
         boost::optional<NodePath> node=boost::none, bool seamless_loop=true, boost::optional<NodePath> listener_node=boost::none,
         boost::optional<float> cut_off=boost::none);
 
-    ~SoundInterval() = default;
+    virtual ~SoundInterval();
 
     AudioSound* get_sound() const;
     float get_sound_duration() const;

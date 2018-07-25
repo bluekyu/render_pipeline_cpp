@@ -87,6 +87,8 @@ SoundInterval::SoundInterval(AudioSound* sound, bool loop, double duration,
         _name = id;
 }
 
+SoundInterval::~SoundInterval() = default;
+
 void SoundInterval::loop(double start_t, double end_t, double play_rate, bool stagger)
 {
     f_loop_ = true;

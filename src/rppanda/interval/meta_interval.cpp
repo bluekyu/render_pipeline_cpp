@@ -62,4 +62,6 @@ MetaInterval::MetaInterval(std::initializer_list<CInterval*> ivals, const boost:
         rppanda_interval_cat.error() << "Cannot build list from MetaInterval directly." << std::endl;
 }
 
+MetaInterval::~MetaInterval() = default;
+
 }
