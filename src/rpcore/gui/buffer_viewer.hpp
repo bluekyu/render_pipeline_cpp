@@ -94,14 +94,7 @@ private:
     std::vector<std::pair<Texture*, EntryID>> _stages;
     std::unique_ptr<TexturePreview> _tex_preview;
 
-    std::vector<PT(rppanda::DirectFrame)> frame_hovers_;
-
-    struct FrameClickDataType
-    {
-        BufferViewer* self;
-        Texture* tex;
-    };
-    std::vector<std::shared_ptr<FrameClickDataType>> frame_click_data;
+    std::vector<rppanda::DirectFrame*> frame_hovers_;
 };
 
 }
