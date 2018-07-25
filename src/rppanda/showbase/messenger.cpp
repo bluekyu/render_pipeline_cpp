@@ -44,8 +44,6 @@ namespace rppanda {
 const Messenger::AcceptorMap Messenger::empty_acceptor_;
 const Messenger::EventSetType Messenger::empty_events_;
 
-TypeHandle Messenger::type_handle_;
-
 Messenger::Messenger() : handler_(EventHandler::get_global_event_handler())
 {
 }

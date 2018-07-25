@@ -47,14 +47,14 @@ class ClockObject;
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL TaskManager : public TypedObject
+class RENDER_PIPELINE_DECL TaskManager
 {
 public:
     static TaskManager* get_global_instance();
 
     TaskManager();
 
-    virtual ~TaskManager();
+    ~TaskManager();
 
     AsyncTaskManager* get_mgr() const;
     ClockObject* get_global_clock() const;
@@ -206,15 +206,6 @@ private:
 
     AsyncTaskManager* mgr_;
     ClockObject* global_clock_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
@@ -227,28 +218,6 @@ inline AsyncTaskManager* TaskManager::get_mgr() const
 inline ClockObject* TaskManager::get_global_clock() const
 {
     return global_clock_;
-}
-
-inline TypeHandle TaskManager::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void TaskManager::init_type()
-{
-    TypedObject::init_type();
-    register_type(type_handle_, "rppanda::TaskManager", TypedObject::get_class_type());
-}
-
-inline TypeHandle TaskManager::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle TaskManager::force_init_type()
-{
-    init_type();
-    return get_class_type();
 }
 
 }

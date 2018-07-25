@@ -56,7 +56,7 @@ class DirectObject;
  * This is used to accept std::function as hook or hook with DirectObject.
  * Messenger is NOT thread-safe except send() functions with queuing.
  */
-class RENDER_PIPELINE_DECL Messenger : public TypedObject
+class RENDER_PIPELINE_DECL Messenger
 {
 public:
     using EventName = std::string;
@@ -74,7 +74,7 @@ public:
 
     Messenger();
 
-    virtual ~Messenger();
+    ~Messenger();
 
     size_t get_num_listners() const;
     size_t get_num_listners(const EventName& event_name) const;
@@ -148,15 +148,6 @@ private:
 
     static const AcceptorMap empty_acceptor_;
     static const EventSetType empty_events_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
@@ -333,28 +324,6 @@ inline auto Messenger::get_events() const -> std::vector<EventName>
     for (const auto& kv: callbacks_)
         events.push_back(kv.first);
     return events;
-}
-
-inline TypeHandle Messenger::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void Messenger::init_type()
-{
-    TypedObject::init_type();
-    register_type(type_handle_, "rppanda::Messenger", TypedObject::get_class_type());
-}
-
-inline TypeHandle Messenger::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle Messenger::force_init_type()
-{
-    init_type();
-    return get_class_type();
 }
 
 }

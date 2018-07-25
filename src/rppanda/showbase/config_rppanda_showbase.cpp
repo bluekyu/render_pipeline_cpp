@@ -23,12 +23,6 @@
 
 #include <dconfig.h>
 
-#include "render_pipeline/rppanda/showbase/direct_object.hpp"
-#include "render_pipeline/rppanda/showbase/loader.hpp"
-#include "render_pipeline/rppanda/showbase/showbase.hpp"
-#include "render_pipeline/rppanda/showbase/sfx_player.hpp"
-#include "render_pipeline/rppanda/showbase/messenger.hpp"
-
 Configure(config_rppanda_showbase);
 NotifyCategoryDef(rppanda_showbase, "");
 
@@ -38,7 +32,4 @@ ConfigureFn(config_rppanda_showbase)
     if (initialized)
         return;
     initialized = true;
-
-    rppanda::Messenger::init_type();
-    rppanda::SfxPlayer::init_type();
 }

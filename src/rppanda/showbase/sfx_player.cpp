@@ -43,8 +43,6 @@
 
 namespace rppanda {
 
-TypeHandle SfxPlayer::type_handle_;
-
 bool SfxPlayer::use_inverse_suqare_ = false;
 
 class SfxPlayer::Impl

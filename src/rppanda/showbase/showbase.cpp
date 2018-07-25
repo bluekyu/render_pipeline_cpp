@@ -89,7 +89,7 @@ public:
     GraphicsEngine* graphics_engine_ = nullptr;
     GraphicsWindow* win_ = nullptr;
 
-    PT(SfxPlayer) sfx_player_;
+    std::unique_ptr<SfxPlayer> sfx_player_;
     PT(AudioManager) sfx_manager_;
     PT(AudioManager) music_manager_;
 
@@ -446,7 +446,7 @@ void ShowBase::Impl::create_base_audio_managers()
 {
     rppanda_showbase_cat.debug() << "Creating base audio manager ..." << std::endl;
 
-    sfx_player_ = new SfxPlayer;
+    sfx_player_ = std::make_unique<SfxPlayer>();
     sfx_manager_ = AudioManager::create_AudioManager();
     add_sfx_manager(sfx_manager_);
 
@@ -651,7 +651,7 @@ const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list() const
 
 SfxPlayer* ShowBase::get_sfx_player() const
 {
-    return impl_->sfx_player_;
+    return impl_->sfx_player_.get();
 }
 
 AudioManager* ShowBase::get_music_manager() const

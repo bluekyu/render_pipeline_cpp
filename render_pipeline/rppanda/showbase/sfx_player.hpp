@@ -55,13 +55,13 @@ namespace rppanda {
 /**
  * Play sound effects, potentially localized.
  */
-class RENDER_PIPELINE_DECL SfxPlayer : public TypedReferenceCount
+class RENDER_PIPELINE_DECL SfxPlayer
 {
 public:
     static bool use_inverse_suqare_;
 
     SfxPlayer();
-    virtual ~SfxPlayer();
+    ~SfxPlayer();
 
     /** Return the curent cutoff distance. */
     float get_cutoff_distance();
@@ -81,39 +81,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle SfxPlayer::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void SfxPlayer::init_type()
-{
-    TypedReferenceCount::init_type();
-    register_type(type_handle_, "rppanda::SfxPlayer", TypedReferenceCount::get_class_type());
-}
-
-inline TypeHandle SfxPlayer::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle SfxPlayer::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }
