@@ -44,15 +44,26 @@
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL OnscreenImage : public DirectObject, public NodePath
+class RENDER_PIPELINE_DECL OnscreenImage : public DirectObject, public TypedReferenceCount, public NodePath
 {
 public:
     OnscreenImage(NodePath parent={}, int sort=0);
     OnscreenImage(const std::shared_ptr<ImageInput>& image, NodePath parent={}, int sort=0);
 
+    ALLOC_DELETED_CHAIN(OnscreenImage);
+
     void set_image(const std::shared_ptr<ImageInput>& image, NodePath parent={}, const TransformState* transform=nullptr, int sort=0);
 
     void destroy();
+
+public:
+    static TypeHandle get_class_type();
+    static void init_type();
+    TypeHandle get_type() const override;
+    TypeHandle force_init_type() override;
+
+private:
+    static TypeHandle type_handle_;
 };
 
 // ************************************************************************************************
@@ -73,6 +84,28 @@ inline OnscreenImage::OnscreenImage(const std::shared_ptr<ImageInput>& image, No
 inline void OnscreenImage::destroy()
 {
     remove_node();
+}
+
+inline TypeHandle OnscreenImage::get_class_type()
+{
+    return type_handle_;
+}
+
+inline void OnscreenImage::init_type()
+{
+    TypedReferenceCount::init_type();
+    register_type(type_handle_, "rppanda::OnscreenImage", TypedReferenceCount::get_class_type());
+}
+
+inline TypeHandle OnscreenImage::get_type() const
+{
+    return get_class_type();
+}
+
+inline TypeHandle OnscreenImage::force_init_type()
+{
+    init_type();
+    return get_class_type();
 }
 
 }

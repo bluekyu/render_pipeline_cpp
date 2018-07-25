@@ -45,6 +45,8 @@
 
 namespace rppanda {
 
+TypeHandle OnscreenImage::type_handle_;
+
 void OnscreenImage::set_image(const std::shared_ptr<ImageInput>& image, NodePath parent, const TransformState* transform, int sort)
 {
     // Get the original parent, transform, and sort, if any, so we can

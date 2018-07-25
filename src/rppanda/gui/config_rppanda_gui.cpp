@@ -51,4 +51,5 @@ ConfigureFn(config_rppanda_gui)
     rppanda::DirectScrollBar::init_type();
     rppanda::DirectScrolledFrame::init_type();
     rppanda::DirectSlider::init_type();
+    rppanda::OnscreenImage::init_type();
 }
