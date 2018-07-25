@@ -255,8 +255,7 @@ public:
 
     std::vector<std::unique_ptr<RenderStage>> internal_stages_;
 
-    PT(rppanda::ShowBase) showbase_holder_;
-    rppanda::ShowBase* showbase_;
+    std::shared_ptr<rppanda::ShowBase> showbase_;
     std::unique_ptr<TaskScheduler> task_scheduler_;
     std::unique_ptr<TagStateManager> tag_mgr_;
     std::unique_ptr<PluginManager> plugin_mgr_;
@@ -297,8 +296,7 @@ RenderPipeline::Impl::~Impl()
 
     Globals::unload();
 
-    showbase_ = nullptr;
-    showbase_holder_.clear();
+    showbase_.reset();
 
     // should delete at last to delete resources in DLL module.
     plugin_mgr_.reset();
@@ -566,7 +564,7 @@ void RenderPipeline::Impl::init_globals()
 {
     self_.trace("Initailizing global parameters.");
 
-    Globals::load(showbase_);
+    Globals::load(showbase_.get());
     Globals::native_resolution = showbase_->get_win()->get_size();
 
     last_window_dims = Globals::native_resolution;
@@ -660,7 +658,7 @@ bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBa
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = showbase_holder_ = new rppanda::ShowBase(argc, argv);
+        showbase_ = std::make_shared<rppanda::ShowBase>(argc, argv);
     }
     else
     {
@@ -680,7 +678,7 @@ bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBa
                     "pipeline sample to see how to initialize the RP.");
             }
         }
-        showbase_ = base;
+        showbase_ = std::shared_ptr<rppanda::ShowBase>(base, [](auto) {});
     }
 
     print_driver_status();
@@ -697,7 +695,7 @@ bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::Sho
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = showbase_holder_ = new rppanda::ShowBase(framework);
+        showbase_ = std::make_shared<rppanda::ShowBase>(framework);
     }
     else
     {
@@ -717,7 +715,7 @@ bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::Sho
                     "pipeline sample to see how to initialize the RP.");
             }
         }
-        showbase_ = base;
+        showbase_ = std::shared_ptr<rppanda::ShowBase>(base, [](auto) {});
     }
 
     print_driver_status();
@@ -1331,7 +1329,7 @@ std::string RenderPipeline::get_setting(const std::string& setting_path, const s
 
 rppanda::ShowBase* RenderPipeline::get_showbase() const
 {
-    return impl_->showbase_;
+    return impl_->showbase_.get();
 }
 
 MountManager* RenderPipeline::get_mount_mgr() const

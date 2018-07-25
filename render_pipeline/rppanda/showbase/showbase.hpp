@@ -64,7 +64,7 @@ class Loader;
 class TaskManager;
 class Messenger;
 
-class RENDER_PIPELINE_DECL ShowBase : public DirectObject, public TypedReferenceCount
+class RENDER_PIPELINE_DECL ShowBase : public DirectObject
 {
 public:
     static ShowBase* get_global_ptr();
@@ -322,39 +322,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle ShowBase::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void ShowBase::init_type()
-{
-    TypedReferenceCount::init_type();
-    register_type(type_handle_, "rppanda::ShowBase", TypedReferenceCount::get_class_type());
-}
-
-inline TypeHandle ShowBase::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle ShowBase::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }

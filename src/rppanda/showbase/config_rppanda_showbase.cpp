@@ -40,6 +40,5 @@ ConfigureFn(config_rppanda_showbase)
     initialized = true;
 
     rppanda::Messenger::init_type();
-    rppanda::ShowBase::init_type();
     rppanda::SfxPlayer::init_type();
 }

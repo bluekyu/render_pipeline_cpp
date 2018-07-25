@@ -526,8 +526,6 @@ void ShowBase::Impl::window_event(ShowBase* self, const Event* ev)
 
 // ************************************************************************************************
 
-TypeHandle ShowBase::type_handle_;
-
 ShowBase* ShowBase::get_global_ptr()
 {
     return Impl::global_ptr;
