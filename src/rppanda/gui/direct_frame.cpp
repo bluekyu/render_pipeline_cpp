@@ -189,12 +189,12 @@ void DirectFrame::update_image()
         {
             if (!image || image->is_none())
             {
-                boost::any_cast<PT(OnscreenImage)>(get_component(component_name))->destroy();
+                boost::any_cast<std::shared_ptr<OnscreenImage>>(get_component(component_name))->destroy();
                 remove_component(component_name);
             }
             else
             {
-                boost::any_cast<PT(OnscreenImage)>(get_component(component_name))->set_image(image);
+                boost::any_cast<std::shared_ptr<OnscreenImage>>(get_component(component_name))->set_image(image);
             }
         }
         else
@@ -205,8 +205,8 @@ void DirectFrame::update_image()
             }
             else
             {
-                PT(OnscreenImage) onscreen_image = new OnscreenImage(image, _state_node_path.at(i), DGG_IMAGE_SORT_INDEX);
-                create_component(component_name, boost::any(onscreen_image));
+                create_component(component_name, boost::any(
+                    std::make_shared<OnscreenImage>(image, _state_node_path.at(i), DGG_IMAGE_SORT_INDEX)));
             }
         }
     }

@@ -53,7 +53,7 @@ void Sprite::init(Texture* image, int w, int h, NodePath parent, float x, float 
 
     _initial_pos = translate_pos(x, y);
 
-    node_ = new rppanda::OnscreenImage(std::make_shared<rppanda::ImageInput>(image), parent);
+    node_ = std::make_unique<rppanda::OnscreenImage>(std::make_shared<rppanda::ImageInput>(image), parent);
     node_->set_pos(_initial_pos);
     node_->set_scale(_width / 2.0f, 1.0f, _height / 2.0f);
 

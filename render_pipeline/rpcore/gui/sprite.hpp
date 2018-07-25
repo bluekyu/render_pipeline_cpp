@@ -88,7 +88,7 @@ private:
     int _height;
     LVecBase3f _initial_pos;
 
-    PT(rppanda::OnscreenImage) node_;
+    std::unique_ptr<rppanda::OnscreenImage> node_;
 };
 
 // ************************************************************************************************
@@ -150,7 +150,7 @@ inline bool Sprite::is_hidden() const
 
 inline rppanda::OnscreenImage* Sprite::get_node() const
 {
-    return node_;
+    return node_.get();
 }
 
 }
