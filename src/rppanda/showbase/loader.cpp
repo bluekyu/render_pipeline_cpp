@@ -231,8 +231,6 @@ void Loader::Callback::wait() const
 
 // ************************************************************************************************
 
-TypeHandle Loader::type_handle_;
-
 Loader::Loader(ShowBase& base): impl_(std::make_unique<Impl>(base))
 {
     impl_->loader_ = ::Loader::get_global_ptr();

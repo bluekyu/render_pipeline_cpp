@@ -83,7 +83,7 @@ public:
     std::shared_ptr<PandaFramework> panda_framework_;
     WindowFramework* window_framework_ = nullptr;
 
-    PT(rppanda::Loader) loader_ = nullptr;
+    std::unique_ptr<rppanda::Loader> loader_;
     Messenger* messenger_ = nullptr;
     TaskManager* task_mgr_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
@@ -257,7 +257,7 @@ void ShowBase::Impl::initailize(ShowBase* self)
     // interface.
     self->use_trackball();
 
-    loader_ = new rppanda::Loader(*self);
+    loader_ = std::make_unique<rppanda::Loader>(*self);
 
     messenger_ = Messenger::get_global_instance();
     task_mgr_ = TaskManager::get_global_instance();
@@ -597,10 +597,7 @@ void ShowBase::destroy()
         impl_->sfx_manager_is_valid_list_.clear();
     }
 
-    if (impl_->loader_)
-    {
-        impl_->loader_.clear();
-    }
+    impl_->loader_.reset();
 
     // will remove in PandaFramework::close_framework() or PandaFramework::~PandaFramework()
     //impl_->graphics_engine_->remove_all_windows();
@@ -626,7 +623,7 @@ WindowFramework* ShowBase::get_window_framework() const
 
 rppanda::Loader* ShowBase::get_loader() const
 {
-    return impl_->loader_;
+    return impl_->loader_.get();
 }
 
 Messenger* ShowBase::get_messenger() const

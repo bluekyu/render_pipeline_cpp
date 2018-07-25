@@ -55,7 +55,7 @@ namespace rppanda {
 
 class ShowBase;
 
-class RENDER_PIPELINE_DECL Loader : public DirectObject, public TypedReferenceCount
+class RENDER_PIPELINE_DECL Loader : public DirectObject
 {
 public:
     using CallbackType = std::function<void(std::vector<NodePath>&)>;
@@ -245,39 +245,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle Loader::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void Loader::init_type()
-{
-    TypedReferenceCount::init_type();
-    register_type(type_handle_, "rppanda::Loader", TypedReferenceCount::get_class_type());
-}
-
-inline TypeHandle Loader::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle Loader::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }
