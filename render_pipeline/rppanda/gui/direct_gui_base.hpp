@@ -67,7 +67,7 @@ namespace rppanda {
  * Instead, if you want to change only options like `setProp()` in Python,
  * use 'prepare_' function.
  */
-class RENDER_PIPELINE_DECL DirectGuiBase : public DirectObject
+class RENDER_PIPELINE_DECL DirectGuiBase : public DirectObject, public TypedReferenceCount
 {
 public:
     DirectGuiBase() = default;
@@ -126,8 +126,8 @@ inline TypeHandle DirectGuiBase::get_class_type()
 
 inline void DirectGuiBase::init_type()
 {
-    DirectObject::init_type();
-    register_type(type_handle_, "rppanda::DirectGuiBase", DirectObject::get_class_type());
+    TypedReferenceCount::init_type();
+    register_type(type_handle_, "rppanda::DirectGuiBase", TypedReferenceCount::get_class_type());
 }
 
 inline TypeHandle DirectGuiBase::get_type() const

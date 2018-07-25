@@ -104,7 +104,7 @@ DirectEntry::DirectEntry(PGItem* gui_item, NodePath parent, const std::shared_pt
 
     // listen for auto - capitalize events on a separate object to prevent
     // clashing with other parts of the system
-    auto_cap_listener_ = new DirectObject;
+    auto_cap_listener_ = std::make_unique<DirectObject>();
 
     // Call option initialization functions
     if (is_exact_type(type_handle))

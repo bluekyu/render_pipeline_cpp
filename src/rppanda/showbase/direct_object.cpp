@@ -59,8 +59,6 @@ void DirectObject::TaskContainer::wp_callback(void*)
 
 // ************************************************************************************************
 
-TypeHandle DirectObject::type_handle_;
-
 DirectObject::~DirectObject()
 {
     ignore_all();

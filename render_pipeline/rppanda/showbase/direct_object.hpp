@@ -53,7 +53,7 @@
 namespace rppanda {
 
 /** This is the class that all Direct/SAL classes should inherit from. */
-class RENDER_PIPELINE_DECL DirectObject : public TypedReferenceCount
+class RENDER_PIPELINE_DECL DirectObject
 {
 public:
     DirectObject() = default;
@@ -132,39 +132,6 @@ private:
     void do_add_task(AsyncTask* task);
 
     std::unordered_map<AtomicAdjust::Integer, TaskContainer> task_list_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle DirectObject::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void DirectObject::init_type()
-{
-    TypedReferenceCount::init_type();
-    register_type(type_handle_, "rppanda::DirectObject", TypedReferenceCount::get_class_type());
-}
-
-inline TypeHandle DirectObject::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle DirectObject::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }
