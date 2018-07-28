@@ -1,5 +1,36 @@
 # Panda3D 모델
-**Translation**: [English](../../rendering/model.md)
+**Languages**: [English](../../rendering/model.md)
+
+## 모델 로드하기
+Python 버전에 있는 유사한 API를 제공한다.
+
+```cpp
+// load single model
+NodePath model = get_loader()->load_model("model1.bam");
+
+// load multiple models
+std::vector<NodePath> models = get_loader()->load_model({
+    "model1.bam",
+    "model2.bam"});
+```
+
+비동기 로드의 경우에는 `load_model_async` API를 사용하면 된다.
+```cpp
+get_loader()->load_model_async(
+    "model1.bam",
+    {},
+    boost::none,
+    false,
+    boost::none,
+    [](const std::vector<NodePath>& models) {
+        // process after loading is finished.
+    });
+```
+
+자세한 사항은 아래 Panda3D 문서를 참고하면 된다.
+- [Panda3D Manual: Loading Models](https://www.panda3d.org/manual/index.php/Loading_Models)
+
+
 
 ## Egg 포맷 생성
 다른 포맷(obj, fbx, ma) 파일 등에서 egg 포맷으로 변환하기 위한 방법으로 아래 Panda3D 매뉴얼을 참조하면 된다.
