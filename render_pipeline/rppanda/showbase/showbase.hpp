@@ -70,16 +70,15 @@ public:
     static ShowBase* get_global_ptr();
 
     /**
-     * Create just ShowBase and not initialize ShowBase.
+     * Create ShowBase and initialize ShowBase if @p lazy_initialize is false.
      *
-     * This just consturct ShowBase instance, so you should call ShowBase::initialize.
+     * Without @p lazy_initialize, this will create PandaFramework and open main window,
+     * and then initialize ShowBase.
+     *
+     * With @p lazy_initialize, this just consturct ShowBase instance,
+     * so you should call ShowBase::initialize.
      */
-    ShowBase();
-
-    /**
-     * Create PandaFramework and open main window, and then initialize ShowBase.
-     */
-    ShowBase(int argc, char* argv[]);
+    ShowBase(bool lazy_initialize = false);
 
     /**
      * Initialize ShowBase with given PandaFramework.
@@ -87,13 +86,14 @@ public:
     ShowBase(PandaFramework* framework);
 
     ShowBase(const ShowBase&) = delete;
+    ShowBase(ShowBase&&);
 
     virtual ~ShowBase();
 
     ShowBase& operator=(const ShowBase&) = delete;
+    ShowBase& operator=(ShowBase&&);
 
-    void initialize(int argc, char* argv[]);
-    void initialize(PandaFramework* framework);
+    void initialize(PandaFramework* framework = nullptr);
 
     /**
      * Call this function to destroy the ShowBase and stop all

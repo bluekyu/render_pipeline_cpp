@@ -531,13 +531,10 @@ ShowBase* ShowBase::get_global_ptr()
     return Impl::global_ptr;
 }
 
-ShowBase::ShowBase() : impl_(std::make_unique<Impl>())
+ShowBase::ShowBase(bool lazy_initialize) : impl_(std::make_unique<Impl>())
 {
-}
-
-ShowBase::ShowBase(int argc, char* argv[]): ShowBase()
-{
-    initialize(argc, argv);
+    if (!lazy_initialize)
+        initialize();
 }
 
 ShowBase::ShowBase(PandaFramework* framework): ShowBase()
@@ -545,10 +542,14 @@ ShowBase::ShowBase(PandaFramework* framework): ShowBase()
     initialize(framework);
 }
 
+ShowBase::ShowBase(ShowBase&&) = default;
+
 ShowBase::~ShowBase()
 {
     destroy();
 }
+
+ShowBase& ShowBase::operator=(ShowBase&&) = default;
 
 void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
 void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
@@ -557,17 +558,17 @@ void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
 
-void ShowBase::initialize(int argc, char* argv[])
-{
-    impl_->panda_framework_ = std::make_shared<PandaFramework>();
-    impl_->panda_framework_->open_framework(argc, argv);
-
-    impl_->initailize(this);
-}
-
 void ShowBase::initialize(PandaFramework* framework)
 {
-    impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto) {});
+    if (framework)
+    {
+        impl_->panda_framework_ = std::shared_ptr<PandaFramework>(framework, [](auto) {});
+    }
+    else
+    {
+        impl_->panda_framework_ = std::make_shared<PandaFramework>();
+        impl_->panda_framework_->open_framework();
+    }
 
     impl_->initailize(this);
 }

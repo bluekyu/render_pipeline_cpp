@@ -125,8 +125,7 @@ public:
 
     void reload_shaders();
 
-    bool create(int argc, char* argv[], rppanda::ShowBase* base);
-    bool create(PandaFramework* framework, rppanda::ShowBase* base);
+    bool create(rppanda::ShowBase* base, PandaFramework* framework);
 
     /**
      * Re-applies all custom shaders the user applied, to avoid them getting
@@ -200,8 +199,7 @@ public:
      * expected to either be an uninitialized ShowBase instance, or an
      * initialized instance with pre_showbase_init() called inbefore.
      */
-    bool init_showbase(int argc, char* argv[], rppanda::ShowBase* base);
-    bool init_showbase(PandaFramework* framework, rppanda::ShowBase* base);
+    bool init_showbase(rppanda::ShowBase* base, PandaFramework* framework);
 
     /**
      * Internal method to init the tasks and keybindings. This constructs
@@ -485,16 +483,10 @@ void RenderPipeline::Impl::reload_shaders()
     apply_custom_shaders();
 }
 
-bool RenderPipeline::Impl::create(int argc, char* argv[], rppanda::ShowBase* base)
+bool RenderPipeline::Impl::create(rppanda::ShowBase* base, PandaFramework* framework)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    return init_showbase(argc, argv, base) && post_create(start_time);
-}
-
-bool RenderPipeline::Impl::create(PandaFramework* framework, rppanda::ShowBase* base)
-{
-    const auto& start_time = std::chrono::system_clock::now();
-    return init_showbase(framework, base) && post_create(start_time);
+    return init_showbase(base, framework) && post_create(start_time);
 }
 
 void RenderPipeline::Impl::apply_custom_shaders()
@@ -652,50 +644,17 @@ void RenderPipeline::Impl::compute_render_resolution()
     Globals::resolution = LVecBase2i(resolution_width, resolution_height);
 }
 
-bool RenderPipeline::Impl::init_showbase(int argc, char* argv[], rppanda::ShowBase* base)
+bool RenderPipeline::Impl::init_showbase(rppanda::ShowBase* base, PandaFramework* framework)
 {
     if (!base)
     {
         if (!self_.pre_showbase_init())
             return false;
-        showbase_ = std::make_shared<rppanda::ShowBase>(argc, argv);
-    }
-    else
-    {
-        if (!base->get_global_ptr())
-        {
-            if (!self_.pre_showbase_init())
-                return false;
-            base->initialize(argc, argv);
-        }
+
+        if (framework)
+            showbase_ = std::make_shared<rppanda::ShowBase>(framework);
         else
-        {
-            if (!pre_showbase_initialized)
-            {
-                self_.fatal("You constructed your own ShowBase object but you\n"
-                    "did not call pre_show_base_init() on the render\n"
-                    "pipeline object before! Checkout the 00-Loading the\n"
-                    "pipeline sample to see how to initialize the RP.");
-            }
-        }
-        showbase_ = std::shared_ptr<rppanda::ShowBase>(base, [](auto) {});
-    }
-
-    print_driver_status();
-
-    return true;
-}
-
-bool RenderPipeline::Impl::init_showbase(PandaFramework* framework, rppanda::ShowBase* base)
-{
-    if (!framework)
-        self_.fatal("PandaFramework is nullptr!");
-
-    if (!base)
-    {
-        if (!self_.pre_showbase_init())
-            return false;
-        showbase_ = std::make_shared<rppanda::ShowBase>(framework);
+            showbase_ = std::make_shared<rppanda::ShowBase>();
     }
     else
     {
@@ -1041,14 +1000,9 @@ bool RenderPipeline::pre_showbase_init()
     return true;
 }
 
-bool RenderPipeline::create(int argc, char* argv[], rppanda::ShowBase* base)
+bool RenderPipeline::create(rppanda::ShowBase* base, PandaFramework* framework)
 {
-    return impl_->create(argc, argv, base);
-}
-
-bool RenderPipeline::create(PandaFramework* framework, rppanda::ShowBase* base)
-{
-    return impl_->create(framework, base);
+    return impl_->create(base, framework);
 }
 
 void RenderPipeline::set_loading_screen_image(const Filename& image_source)
