@@ -262,10 +262,6 @@ public:
     std::unique_ptr<LightManager> light_mgr_;
     std::unique_ptr<DayTimeManager> daytime_mgr_;
     std::unique_ptr<IESProfileLoader> ies_loader_;
-
-private:
-    bool post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time);
-    void print_driver_status();
 };
 
 const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
@@ -486,7 +482,47 @@ void RenderPipeline::Impl::reload_shaders()
 bool RenderPipeline::Impl::create(rppanda::ShowBase* base, PandaFramework* framework)
 {
     const auto& start_time = std::chrono::system_clock::now();
-    return init_showbase(base, framework) && post_create(start_time);
+
+    if (!init_showbase(base, framework))
+        return false;
+
+    if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
+    {
+        self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
+            "you have the latest drivers. If you already have, your gpu might\n"
+            "be too old, or you might be using the open source drivers on linux.");
+        return false;
+    }
+
+    init_globals();
+    loading_screen_->create();
+    adjust_camera_settings();
+    create_managers();
+    plugin_mgr_->load();
+    plugin_mgr_->on_load();
+    daytime_mgr_->load_settings();
+    common_resources_->write_config();
+    init_debugger();
+
+    plugin_mgr_->on_stage_setup();
+    plugin_mgr_->on_post_stage_setup();
+
+    create_common_defines();
+    initialize_managers();
+    create_default_skybox();
+
+    plugin_mgr_->on_pipeline_created();
+
+    set_default_effect();
+
+    // Measure how long it took to initialize everything, and also store
+    // when we finished, so we can measure how long it took to render the
+    // first frame (where the shaders are actually compiled)
+    const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
+    first_frame_ = std::make_unique<decltype(first_frame_)::element_type>(std::chrono::system_clock::now());
+    self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
+
+    return true;
 }
 
 void RenderPipeline::Impl::apply_custom_shaders()
@@ -677,7 +713,11 @@ bool RenderPipeline::Impl::init_showbase(rppanda::ShowBase* base, PandaFramework
         showbase_ = std::shared_ptr<rppanda::ShowBase>(base, [](auto) {});
     }
 
-    print_driver_status();
+    // Now that we have a showbase and a window, we can print out driver info
+    auto gsg = showbase_->get_win()->get_gsg();
+    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
+    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
+    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
 
     return true;
 }
@@ -805,56 +845,6 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
         return fallback;
     else
         return settings.at(setting_path).as<T>(fallback);
-}
-
-bool RenderPipeline::Impl::post_create(const std::chrono::time_point<std::chrono::system_clock>& start_time)
-{
-    if (!showbase_->get_win()->get_gsg()->get_supports_compute_shaders())
-    {
-        self_.fatal("Sorry, your GPU does not support compute shaders! Make sure\n"
-            "you have the latest drivers. If you already have, your gpu might\n"
-            "be too old, or you might be using the open source drivers on linux.");
-        return false;
-    }
-
-    init_globals();
-    loading_screen_->create();
-    adjust_camera_settings();
-    create_managers();
-    plugin_mgr_->load();
-    plugin_mgr_->on_load();
-    daytime_mgr_->load_settings();
-    common_resources_->write_config();
-    init_debugger();
-
-    plugin_mgr_->on_stage_setup();
-    plugin_mgr_->on_post_stage_setup();
-
-    create_common_defines();
-    initialize_managers();
-    create_default_skybox();
-
-    plugin_mgr_->on_pipeline_created();
-
-    set_default_effect();
-
-    // Measure how long it took to initialize everything, and also store
-    // when we finished, so we can measure how long it took to render the
-    // first frame (where the shaders are actually compiled)
-    const std::chrono::duration<float>& init_duration = std::chrono::system_clock::now() - start_time;
-    first_frame_ = std::make_unique<decltype(first_frame_)::element_type>(std::chrono::system_clock::now());
-    self_.debug(fmt::format("Finished initialization in {} s, first frame: {}", init_duration.count(), rpcore::Globals::clock->get_frame_count()));
-
-    return true;
-}
-
-void RenderPipeline::Impl::print_driver_status()
-{
-    // Now that we have a showbase and a window, we can print out driver info
-    auto gsg = showbase_->get_win()->get_gsg();
-    self_.debug(fmt::format("Driver Version = {}", gsg->get_driver_version()));
-    self_.debug(fmt::format("Driver Vendor = {}", gsg->get_driver_vendor()));
-    self_.debug(fmt::format("Driver Renderer = {}", gsg->get_driver_renderer()));
 }
 
 // ************************************************************************************************
