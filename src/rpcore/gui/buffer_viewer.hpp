@@ -94,7 +94,7 @@ private:
     std::vector<std::pair<Texture*, EntryID>> _stages;
     std::unique_ptr<TexturePreview> _tex_preview;
 
-    std::vector<rppanda::DirectFrame*> frame_hovers_;
+    std::vector<PT(rppanda::DirectFrame)> frame_hovers_;
 };
 
 }
