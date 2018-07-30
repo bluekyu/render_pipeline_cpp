@@ -60,15 +60,9 @@ void snap_shadow_map(const LMatrix4f& mvp, NodePath cam_node, int resolution)
 
 void* load_rpassimp()
 {
-    // load librpassimp.so explicitly
-    void* dso = load_dso(
+    return load_dso(
         rppanda::convert_path(rppanda::get_library_location().parent_path()),
         Filename::dso_filename("librpassimp.so"));
-
-    if (!dso)
-        RPObject::global_error("rpcore", "Failed to load RPAssimp");
-
-    return dso;
 }
 
 }

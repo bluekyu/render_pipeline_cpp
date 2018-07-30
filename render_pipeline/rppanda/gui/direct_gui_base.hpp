@@ -150,6 +150,11 @@ public:
     static bool gui_edit;
     static std::string inactive_init_state;
 
+    /**
+     * Construct base widget of Direct GUI
+     *
+     * @param[in]   parent  Parent of PGItem.
+     */
     DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
     virtual ~DirectGuiWidget();
 
