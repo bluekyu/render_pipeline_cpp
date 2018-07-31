@@ -40,7 +40,7 @@
 
 #pragma once
 
-#include <typedReferenceCount.h>
+#include <dtoolbase.h>
 
 #include <string>
 #include <unordered_map>

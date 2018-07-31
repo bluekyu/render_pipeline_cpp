@@ -310,7 +310,8 @@ inline TypeHandle DirectGuiWidget::get_class_type()
 
 inline void DirectGuiWidget::init_type()
 {
-    register_type(type_handle_, "rppanda::DirectGuiWidget");
+    TypedReferenceCount::init_type();
+    register_type(type_handle_, "rppanda::DirectGuiWidget", TypedReferenceCount::get_class_type());
 }
 
 inline TypeHandle DirectGuiWidget::get_type() const
