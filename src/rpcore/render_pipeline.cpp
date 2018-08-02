@@ -1146,7 +1146,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                 continue;
             }
             set_effect(geom_np, "/$$rp/effects/default.yaml",
-                {{"render_forward", true}, {"render_gbuffer", false}, {"render_shadow", false}}, 100);
+                {{"render_forward", true}, {"render_gbuffer", false}}, 100);
         }
     }
 
