@@ -63,6 +63,8 @@ public:
     float get_normal_factor() const;
     float get_arbitrary0() const;
 
+    float get_emssive_intentisy() const;
+
     /** Used in only TRANSPARENT_MODEL mode. */
     float get_alpha() const;
     bool is_alpha_texture_mode() const;
@@ -87,6 +89,8 @@ public:
     void set_normal_factor(float normal_factor);
 
     void set_arbitrary0(float arbitrary0);
+
+    void set_emissive_intensity(float intenisty);
 
     /**
      * Set alpha value.
@@ -180,6 +184,11 @@ inline float RPMaterial::get_arbitrary0() const
     return material_->get_emission().get_z();
 }
 
+inline float RPMaterial::get_emssive_intentisy() const
+{
+    return get_arbitrary0();
+}
+
 inline float RPMaterial::get_alpha() const
 {
     if (get_shading_model() == ShadingModel::TRANSPARENT_MODEL)
@@ -249,6 +258,12 @@ inline void RPMaterial::set_arbitrary0(float arbitrary0)
     LColor e = material_->get_emission();
     e.set_z(arbitrary0);
     material_->set_emission(e);
+}
+
+inline void RPMaterial::set_emissive_intensity(float intenisty)
+{
+    if (get_shading_model() == ShadingModel::EMISSIVE_MODEL)
+        set_arbitrary0(intenisty);
 }
 
 inline void RPMaterial::set_alpha(float alpha)
