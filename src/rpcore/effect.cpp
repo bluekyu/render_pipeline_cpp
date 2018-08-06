@@ -28,6 +28,8 @@
 #include <filename.h>
 #include <graphicsWindow.h>
 
+#include <fmt/format.h>
+
 #include <boost/algorithm/string.hpp>
 
 #include "render_pipeline/rppanda/stdpy/file.hpp"
@@ -53,16 +55,13 @@ public:
      * Configuration options which can be set per effect instance.These control
      * which features are available in the effect, and which passes to render.
      */
-    static const OptionType default_options_;
-
-    /** { Pass ID, Multiview flag } */
-    using PassType = std::pair<std::string, bool>;
+    static OptionType default_options_;
 
     /**
      * All supported render passes, should match the available passes in the
      * TagStateManager class.
      */
-    static const std::vector<PassType> passes_;
+    static std::vector<PassType> passes_;
 
     /**
      * Effects are cached based on their source filename and options, this is
@@ -95,13 +94,13 @@ public:
 
     /** Constructs a shader from a given dataset. */
     std::string construct_shader_from_data(Effect& self, const std::string& pass_id, const std::string& stage,
-        const std::string& template_src, YAML::Node& data);
+        const Filename& template_src, YAML::Node& data);
 
     /**
      * Generates a compiled shader object from a given shader
      * source location and code injection definitions.
      */
-    std::string process_shader_template(Effect& self, const std::string& template_src,
+    std::string process_shader_template(Effect& self, const Filename& template_src,
         const std::string& cache_key, InjectionType& injections);
 
 public:
@@ -115,7 +114,7 @@ public:
     std::unordered_map<std::string, PT(Shader)> shader_objs_;
 };
 
-const Effect::OptionType Effect::Impl::default_options_ =
+Effect::OptionType Effect::Impl::default_options_ =
 {
     {"render_gbuffer", true},
     {"render_shadow", true},
@@ -127,7 +126,7 @@ const Effect::OptionType Effect::Impl::default_options_ =
     {"parallax_mapping", false},
 };
 
-const std::vector<Effect::Impl::PassType> Effect::Impl::passes_ = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
+std::vector<Effect::PassType> Effect::Impl::passes_ = {{"gbuffer", true}, {"shadow", false}, {"voxelize", false}, {"envmap", false}, {"forward", true}};
 
 std::unordered_map<std::string, std::shared_ptr<Effect>> Effect::Impl::global_cache_;
 int Effect::Impl::effect_id_ = 0;
@@ -177,50 +176,73 @@ void Effect::Impl::parse_content(RenderPipeline& pipeline, Effect& self, YAML::N
     YAML::Node geom_data = parsed_yaml["geometry"];
     YAML::Node frag_data = parsed_yaml["fragment"];
 
-    for (const auto& pass_id_multiview: passes_)
+    for (const auto& pass: passes_)
     {
-        parse_shader_template(pipeline, self, pass_id_multiview, "vertex", vtx_data);
-        parse_shader_template(pipeline, self, pass_id_multiview, "geometry", geom_data);
-        parse_shader_template(pipeline, self, pass_id_multiview, "fragment", frag_data);
+        parse_shader_template(pipeline, self, pass, "vertex", vtx_data);
+        parse_shader_template(pipeline, self, pass, "geometry", geom_data);
+        parse_shader_template(pipeline, self, pass, "fragment", frag_data);
     }
 }
 
-void Effect::Impl::parse_shader_template(RenderPipeline& pipeline, Effect& self, const PassType& pass_id_multiview, const std::string& stage, YAML::Node& data)
+void Effect::Impl::parse_shader_template(RenderPipeline& pipeline, Effect& self, const PassType& pass, const std::string& stage, YAML::Node& data)
 {
-    const std::string& pass_id = pass_id_multiview.first;
-    bool stereo_mode = pipeline.is_stereo_mode() && pass_id_multiview.second;
+    const std::string& pass_id = pass.id;
+    bool stereo_mode = pipeline.is_stereo_mode() && pass.stereo_flag;
 
-    std::string template_src;
+    Filename template_src;
     if (stage == "fragment")
     {
-        template_src = "/$$rp/shader/templates/" + pass_id + ".frag.glsl";
+        if (pass.template_fragment.empty())
+            template_src = "/$$rp/shader/templates/" + pass_id + ".frag.glsl";
+        else
+            template_src = pass.template_fragment;
     }
     else if (stage == "vertex")
     {
-        // Using a shared vertex shader
-        if (stereo_mode)
-            template_src = "/$$rp/shader/templates/vertex_stereo.vert.glsl";
+        if (pass.template_vertex.empty())
+        {
+            // Using a shared vertex shader
+            if (stereo_mode)
+                template_src = "/$$rp/shader/templates/vertex_stereo.vert.glsl";
+            else
+                template_src = "/$$rp/shader/templates/vertex.vert.glsl";
+        }
         else
-            template_src = "/$$rp/shader/templates/vertex.vert.glsl";
+        {
+            template_src = pass.template_vertex;
+        }
     }
     else if (stage == "geometry")
     {
-        // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
-        if (stereo_mode && pipeline.get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
+        if (pass.template_geometry.empty())
         {
-            template_src = "/$$rp/shader/templates/vertex_stereo.geom.glsl";
+            // for stereo, add geometry shader except that NVIDIA single pass stereo exists.
+            if (stereo_mode && pipeline.get_stage_mgr()->get_defines().at("NVIDIA_STEREO_VIEW") == "0")
+            {
+                template_src = "/$$rp/shader/templates/vertex_stereo.geom.glsl";
+            }
+        }
+        else
+        {
+            template_src = pass.template_geometry;
         }
     }
 
     if (template_src.empty())
         return;
 
+    if (!rppanda::exists(template_src))
+    {
+        self.error(fmt::format("Template file does not exist: {}", template_src.to_os_generic()));
+        return;
+    }
+
     const std::string& shader_path = construct_shader_from_data(self, pass_id, stage, template_src, data);
     generated_shader_paths_[stage + "-" + pass_id] = shader_path;
 }
 
 std::string Effect::Impl::construct_shader_from_data(Effect& self, const std::string& pass_id, const std::string& stage,
-    const std::string& template_src, YAML::Node& data)
+    const Filename& template_src, YAML::Node& data)
 {
     InjectionType injects ={{std::string("defines"), {}}};
 
@@ -275,7 +297,7 @@ std::string Effect::Impl::construct_shader_from_data(Effect& self, const std::st
     return process_shader_template(self, template_src, cache_key, injects);
 }
 
-std::string Effect::Impl::process_shader_template(Effect& self, const std::string& template_src, const std::string& cache_key,
+std::string Effect::Impl::process_shader_template(Effect& self, const Filename& template_src, const std::string& cache_key,
     InjectionType& injections)
 {
     std::vector<std::string> shader_lines;
@@ -296,7 +318,7 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 
     std::vector<std::string> parsed_lines ={std::string("\n\n")};
     parsed_lines.push_back("/* Compiled Shader Template");
-    parsed_lines.push_back(std::string(" * generated from: '") + template_src + "'");
+    parsed_lines.push_back(std::string(" * generated from: '") + template_src.to_os_generic() + "'");
     parsed_lines.push_back(std::string(" * cache key: '") + cache_key + "'");
     parsed_lines.push_back(" *");
     parsed_lines.push_back(" * !!! Autogenerated, do not edit! Your changes will be lost. !!!");
@@ -370,7 +392,7 @@ std::string Effect::Impl::process_shader_template(Effect& self, const std::strin
 
     // Warn the user about all unused hooks
     for (const auto& key_val: injections)
-        self.warn(std::string("Hook '") + key_val.first + "' not found in template '" + template_src + "'!");
+        self.warn(std::string("Hook '") + key_val.first + "' not found in template '" + template_src.to_os_generic() + "'!");
 
     // Write the constructed shader and load it back
     const std::string& temp_path = std::string("/$$rptemp/$$effect-") + cache_key + ".glsl";
@@ -412,6 +434,17 @@ std::shared_ptr<Effect> Effect::load(RenderPipeline& pipeline, const Filename& f
 const Effect::OptionType& Effect::get_default_options()
 {
     return Impl::default_options_;
+}
+
+void Effect::add_pass(const PassType& pass)
+{
+    Impl::passes_.push_back(pass);
+}
+
+void Effect::add_option(const std::string& option_name, bool flag)
+{
+    if (!Impl::default_options_.insert({option_name, flag}).second)
+        RPObject::global_warn("Effect", fmt::format("The option is already added: {}", option_name));
 }
 
 Effect::Effect(): RPObject("Effect"), impl_(std::make_unique<Impl>())
@@ -464,15 +497,15 @@ bool Effect::do_load(RenderPipeline& pipeline, const Filename& filename)
     // Construct a shader object for each pass
     for (const auto& pass_id_multiview: Impl::passes_)
     {
-        const std::string& vertex_src = impl_->generated_shader_paths_.at("vertex-" + pass_id_multiview.first);
-        const std::string& fragment_src = impl_->generated_shader_paths_.at("fragment-" + pass_id_multiview.first);
+        const std::string& vertex_src = impl_->generated_shader_paths_.at("vertex-" + pass_id_multiview.id);
+        const std::string& fragment_src = impl_->generated_shader_paths_.at("fragment-" + pass_id_multiview.id);
         std::string geometry_src;
 
-        auto geometry_src_iter = impl_->generated_shader_paths_.find("geometry-" + pass_id_multiview.first);
+        auto geometry_src_iter = impl_->generated_shader_paths_.find("geometry-" + pass_id_multiview.id);
         if (geometry_src_iter != impl_->generated_shader_paths_.end())
             geometry_src = geometry_src_iter->second;
 
-        impl_->shader_objs_.insert_or_assign(pass_id_multiview.first, RPLoader::load_shader({vertex_src, fragment_src, geometry_src}));
+        impl_->shader_objs_.insert_or_assign(pass_id_multiview.id, RPLoader::load_shader({vertex_src, fragment_src, geometry_src}));
     }
 
     return true;

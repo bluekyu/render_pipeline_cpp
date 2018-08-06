@@ -71,6 +71,27 @@ inline bool isdir(const Filename& path)
     return VirtualFileSystem::get_global_ptr()->is_directory(path);
 }
 
+inline bool exists(const Filename& path)
+{
+    return VirtualFileSystem::get_global_ptr()->exists(path);
+}
+
+inline time_t get_mtime(const Filename& path)
+{
+    auto file = VirtualFileSystem::get_global_ptr()->get_file(path, true);
+    if (!file)
+        throw std::ios_base::failure("Failed to get file");
+    return file->get_timestamp();
+}
+
+inline std::streamsize get_size(const Filename& path)
+{
+    auto file = VirtualFileSystem::get_global_ptr()->get_file(path, true);
+    if (!file)
+        throw std::ios_base::failure("Failed to get file");
+    return file->get_file_size();
+}
+
 inline std::shared_ptr<std::istream> open_read_file(const Filename& path, bool unwrap)
 {
     return std::shared_ptr<std::istream>(

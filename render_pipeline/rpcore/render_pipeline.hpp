@@ -22,14 +22,11 @@
 
 #pragma once
 
-#include <memory>
-
 #include <render_pipeline/rpcore/effect.hpp>
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class PandaFramework;
 class NodePath;
-class Filename;
 
 namespace YAML {
 class Node;

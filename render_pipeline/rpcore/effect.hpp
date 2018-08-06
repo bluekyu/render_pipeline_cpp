@@ -22,13 +22,13 @@
 
 #pragma once
 
+#include <filename.h>
+
 #include <unordered_map>
-#include <memory>
 
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class Shader;
-class Filename;
 
 namespace rpcore {
 
@@ -43,9 +43,22 @@ class RENDER_PIPELINE_DECL Effect : public RPObject
 public:
     using OptionType = std::unordered_map<std::string, bool>;
 
+    struct PassType
+    {
+        std::string id;
+        bool stereo_flag;
+        Filename template_vertex;
+        Filename template_fragment;
+        Filename template_geometry;
+    };
+
 public:
     static std::shared_ptr<Effect> load(RenderPipeline& pipeline, const Filename& filename, const OptionType& options);
     static const OptionType& get_default_options();
+    static void add_pass(const PassType& pass);
+
+    /** This  */
+    static void add_option(const std::string& option_name, bool flag);
 
     Effect();
     Effect(const Effect&) = delete;
