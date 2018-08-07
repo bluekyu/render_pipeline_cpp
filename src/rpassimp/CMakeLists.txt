@@ -10,7 +10,6 @@ project(rpassimp
 # === configure ====================================================================================
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
-include(debugging-information)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
@@ -66,17 +65,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     DEBUG_POSTFIX "_d"
     VERSION ${PROJECT_VERSION}
 )
-
-configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
 # ==================================================================================================
 
 # === install ======================================================================================
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-install_debugging_information(TARGET ${PROJECT_NAME}
-    DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    CONFIGURATIONS Debug RelWithDebInfo Release
-)
+install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # ==================================================================================================

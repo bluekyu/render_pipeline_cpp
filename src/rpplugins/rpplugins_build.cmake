@@ -36,8 +36,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX ${render_pipeline_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
-
-configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
 # ==================================================================================================
 
 # === target =======================================================================================
