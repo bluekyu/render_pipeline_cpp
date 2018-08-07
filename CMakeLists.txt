@@ -13,7 +13,6 @@ option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp plugin for Panda3D" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
-include(debugging-information)
 include(git-utils)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -119,8 +118,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
 )
 
-configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
-
 # === configure package ===
 set(PACKAGE_NAME "${PROJECT_NAME}")
 set(PACKAGE_VERSION "${PROJECT_VERSION}")
@@ -184,10 +181,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/"
 )
 
-install_debugging_information(TARGET ${PROJECT_NAME}
-    DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    CONFIGURATIONS Debug RelWithDebInfo Release
-)
+install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # ==================================================================================================
 
 # === subdirectory =================================================================================
