@@ -24,6 +24,10 @@
 #include <virtualFileSystem.h>
 
 #include <spdlog/spdlog.h>
+#if defined(SPDLOG_VER_MAJOR)
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#endif
 
 #include "render_pipeline/rppanda/util/filesystem.hpp"
 
@@ -59,10 +63,15 @@ void LoggerManager::create(const Filename& file_path)
         return;
 
     std::vector<spdlog::sink_ptr> sinks;
+
+#if defined(SPDLOG_VER_MAJOR)
+    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+#else
 #ifdef _WIN32
     sinks.push_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
 #else
     sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
+#endif
 #endif
 
     std::string err_msg;
@@ -80,14 +89,22 @@ void LoggerManager::create(const Filename& file_path)
             if (!vfs->is_directory(dir))
                 vfs->make_directory_full(dir);
 
+#if defined(SPDLOG_VER_MAJOR)
+            sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(rppanda::convert_path(file_path).string(), true));
+#else
             sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(rppanda::convert_path(file_path).string(), true));
+#endif
         }
     }
 
     logger_ = std::make_shared<spdlog::logger>("render_pipeline", std::begin(sinks), std::end(sinks));
     global_logger_ = logger_.get();
 
+#if defined(SPDLOG_VER_MAJOR)
+    logger_->set_pattern("%^[%H:%M:%S.%e] [%t] [%l] %v%$");
+#else
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
+#endif
     logger_->flush_on(spdlog::level::err);
 
     if (!err_msg.empty())
