@@ -28,10 +28,10 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-# checkout vcpkg v0.0.113
+# checkout recent vcpkg
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
-- git checkout -qf b07568da4100d8be5d54feb1b1ccf65d0a5c0c3f
+- git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
 - .\bootstrap-vcpkg.bat > nul
 - ps: popd
 - git --version
