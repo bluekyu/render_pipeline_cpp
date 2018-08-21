@@ -101,12 +101,35 @@ bool AssimpLoader::read(const Filename &filename)
 {
     _filename = filename;
 
-    // I really don't know why we need to flip the winding order, but otherwise
-    // the models I tested with are showing inside out.
-    _scene = _importer.ReadFile(
-        _filename.c_str(),
-        aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_ValidateDataStructure |
-        aiProcess_GenUVCoords | aiProcess_TransformUVCoords);
+    unsigned int flags = aiProcess_Triangulate | aiProcess_GenUVCoords |
+        aiProcess_GenNormals | aiProcess_ValidateDataStructure | aiProcess_TransformUVCoords;
+
+    if (assimp_calc_tangent_space) {
+        flags |= aiProcess_CalcTangentSpace;
+    }
+    if (assimp_join_identical_vertices) {
+        flags |= aiProcess_JoinIdenticalVertices;
+    }
+    if (assimp_improve_cache_locality) {
+        flags |= aiProcess_ImproveCacheLocality;
+    }
+    if (assimp_remove_redundant_materials) {
+        flags |= aiProcess_RemoveRedundantMaterials;
+    }
+    if (assimp_fix_infacing_normals) {
+        flags |= aiProcess_FixInfacingNormals;
+    }
+    if (assimp_optimize_meshes) {
+        flags |= aiProcess_OptimizeMeshes;
+    }
+    if (assimp_optimize_graph) {
+        flags |= aiProcess_OptimizeGraph;
+    }
+    if (assimp_flip_winding_order) {
+        flags |= aiProcess_FlipWindingOrder;
+    }
+
+    _scene = _importer.ReadFile(_filename.c_str(), flags);
 
     if (_scene == nullptr)
     {
