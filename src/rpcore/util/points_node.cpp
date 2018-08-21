@@ -165,19 +165,19 @@ void PointsNode::Impl::set_active_point_count(int count)
 
 // ************************************************************************************************
 
-void PointsNode::set_square_point_effect(NodePath np)
+void PointsNode::set_square_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "/$$rp/effects/square_point.yaml");
+    pipeline.set_effect(np, "/$$rp/effects/square_point.yaml");
 }
 
-void PointsNode::set_disk_point_effect(NodePath np)
+void PointsNode::set_disk_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "/$$rp/effects/disk_point.yaml");
+    pipeline.set_effect(np, "/$$rp/effects/disk_point.yaml");
 }
 
-void PointsNode::set_sphere_point_effect(NodePath np)
+void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "/$$rp/effects/sphere_point.yaml");
+    pipeline.set_effect(np, "/$$rp/effects/sphere_point.yaml");
 }
 
 PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
@@ -212,19 +212,19 @@ float PointsNode::get_radius() const
     return impl_->points_np_.get_shader_input("point_radius").get_vector().get_x();
 }
 
-void PointsNode::set_square_point_effect() const
+void PointsNode::set_square_point_effect(RenderPipeline& pipeline) const
 {
-    set_square_point_effect(impl_->points_np_);
+    set_square_point_effect(pipeline, impl_->points_np_);
 }
 
-void PointsNode::set_disk_point_effect() const
+void PointsNode::set_disk_point_effect(RenderPipeline& pipeline) const
 {
-    set_disk_point_effect(impl_->points_np_);
+    set_disk_point_effect(pipeline, impl_->points_np_);
 }
 
-void PointsNode::set_sphere_point_effect() const
+void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline) const
 {
-    set_sphere_point_effect(impl_->points_np_);
+    set_sphere_point_effect(pipeline, impl_->points_np_);
 }
 
 const LPoint3f& PointsNode::get_position(int point_index) const

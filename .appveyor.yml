@@ -32,7 +32,7 @@ init:
     if (($isLinux) -and ($env:CONFIGURATION -eq "Debug") -and (Test-Path env:TRIGGER_NAME)) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-# checkout vcpkg v0.0.113
+# checkout recent vcpkg
 - ps: >-
     if ($isWindows) {
 
@@ -40,7 +40,7 @@ init:
 
     git pull --quiet
 
-    git checkout -qf b07568da4100d8be5d54feb1b1ccf65d0a5c0c3f
+    git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
 
     .\bootstrap-vcpkg.bat > $null
 
@@ -56,7 +56,7 @@ init:
 
     pushd vcpkg
 
-    git checkout -qf b07568da4100d8be5d54feb1b1ccf65d0a5c0c3f
+    git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
 
     ./bootstrap-vcpkg.sh
 
@@ -71,8 +71,6 @@ init:
 
 # environment variables
 environment:
-    # Visual Studio 2017
-    CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     CMAKE_PREFIX_PATH: C:\projects\_install;
     INSTALL_PREFIX: C:/projects/_install
     BOOST_ROOT: C:\Libraries\boost_1_67_0
@@ -113,7 +111,7 @@ install:
 
     } else {
 
-    vcpkg install fmt spdlog yaml-cpp eigen3
+    vcpkg install fmt spdlog yaml-cpp eigen3 assimp
 
     if ($env:CONFIGURATION -eq "Debug") {
         Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+MixForDebug'
@@ -160,8 +158,6 @@ build_script:
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="$INSTALL_PREFIX/panda3d"
 
-- sh: cmake --build . --config $CONFIGURATION --target install
-
 # Visual Studio
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
@@ -170,33 +166,26 @@ build_script:
     -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="%INSTALL_PREFIX%/panda3d"
 
-    cmake --build . --config %CONFIGURATION% --target install
-
+- cmake --build . --config $env:CONFIGURATION
 - ps: popd
 
-
-after_build:
-# Ubuntu
-- sh: pushd "$INSTALL_PREFIX"
-- sh: tar cJf "$APPVEYOR_BUILD_FOLDER/panda3d.tar.xz" "panda3d"
-- sh: popd
-
-# Visual Studio
-- cmd: 7z a render_pipeline_cpp.7z "%INSTALL_PREFIX%/render_pipeline_cpp"
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 
-# to disable automatic tests
-test: off
+test_script:
 
-#---------------------------------#
-#      artifacts configuration    #
-#---------------------------------#
+after_test:
+- cmake --build _build --config $env:CONFIGURATION --target install
 
-artifacts:
-- path: render_pipeline_cpp.7z
+# Ubuntu
+- sh: pushd "$INSTALL_PREFIX"
+- sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
+- sh: popd
+
+# Visual Studio
+- cmd: 7z a render_pipeline_cpp.7z "%INSTALL_PREFIX%/render_pipeline_cpp"
 
 #---------------------------------#
 #     deployment configuration    #
@@ -247,3 +236,17 @@ for:
             - image: Visual Studio 2015
     environment:
         CMAKE_GENERATOR: Visual Studio 14 2015 Win64
+
+    artifacts:
+        - path: render_pipeline_cpp.7z
+
+-
+    matrix:
+        only:
+            - image: Visual Studio 2017
+
+    environment:
+        CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+
+    artifacts:
+        - path: render_pipeline_cpp.7z

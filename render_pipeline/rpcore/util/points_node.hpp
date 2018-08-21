@@ -27,12 +27,14 @@
 
 namespace rpcore {
 
+class RenderPipeline;
+
 class RENDER_PIPELINE_DECL PointsNode
 {
 public:
-    static void set_square_point_effect(NodePath np);
-    static void set_disk_point_effect(NodePath np);
-    static void set_sphere_point_effect(NodePath np);
+    static void set_square_point_effect(RenderPipeline& pipeline, NodePath np);
+    static void set_disk_point_effect(RenderPipeline& pipeline, NodePath np);
+    static void set_sphere_point_effect(RenderPipeline& pipeline, NodePath np);
 
 public:
     PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius = 1.0f,
@@ -48,9 +50,9 @@ public:
 
     NodePath get_nodepath() const;
 
-    void set_square_point_effect() const;
-    void set_disk_point_effect() const;
-    void set_sphere_point_effect() const;
+    void set_square_point_effect(RenderPipeline& pipeline) const;
+    void set_disk_point_effect(RenderPipeline& pipeline) const;
+    void set_sphere_point_effect(RenderPipeline& pipeline) const;
 
     /** Get position. */
     const LPoint3f& get_position(int point_index) const;

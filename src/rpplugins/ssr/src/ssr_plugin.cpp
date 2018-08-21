@@ -34,7 +34,7 @@ SSRPlugin::RequrieType SSRPlugin::require_plugins_;
 
 // ************************************************************************************************
 
-SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING)
+SSRPlugin::SSRPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGINS_ID_STRING)
 {
 }
 

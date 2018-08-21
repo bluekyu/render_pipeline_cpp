@@ -36,7 +36,7 @@ function(render_pipeline_find_plugins)
         endif()
 
         foreach(plugin_id ${missed_plugin_id_list})
-            find_package(rpplugin_${plugin_id} CONFIG ${plugin_required} HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
+            find_package(rpplugins_${plugin_id} CONFIG ${plugin_required} HINTS "${PLUGIN_DIR_HINT}/${plugin_id}")
             if(TARGET rpplugins::${plugin_id})
                 list(APPEND found_plugin_id_list ${plugin_id})
             else()
@@ -50,5 +50,20 @@ function(render_pipeline_find_plugins)
         foreach(plugin_id ${found_plugin_id_list})
             message(STATUS "  ${plugin_id}")
         endforeach()
+    endif()
+endfunction()
+
+# helper to check install directory
+function(render_pipeline_check_install_directory)
+    if(NOT DEFINED render_pipeline_INSTALL_DIR)
+        return()
+    endif()
+
+    get_filename_component(_render_pipeline_INSTALL_DIR ${render_pipeline_INSTALL_DIR} ABSOLUTE)
+    get_filename_component(_CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
+    if(NOT "${_render_pipeline_INSTALL_DIR}" STREQUAL "${_CMAKE_INSTALL_PREFIX}")
+        message(AUTHOR_WARNING "CMAKE_INSTALL_PREFIX is NOT same as installed directory of Render Pipeline:
+        CMAKE_INSTALL_PREFIX: ${_CMAKE_INSTALL_PREFIX}
+ render_pipeline_INSTALL_DIR: ${_render_pipeline_INSTALL_DIR}\n")
     endif()
 endfunction()

@@ -55,7 +55,7 @@ ScatteringPlugin::RequrieType ScatteringPlugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+ScatteringPlugin::ScatteringPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

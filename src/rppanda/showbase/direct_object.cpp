@@ -59,8 +59,6 @@ void DirectObject::TaskContainer::wp_callback(void*)
 
 // ************************************************************************************************
 
-TypeHandle DirectObject::type_handle_;
-
 DirectObject::~DirectObject()
 {
     ignore_all();
@@ -137,7 +135,7 @@ void DirectObject::remove_task(const std::string& task_name)
     {
         auto& task = task_container.second.task_;
         if (task->get_name() == task_name)
-            remove_task(task);
+            remove_task(task.p());
     }
 }
 

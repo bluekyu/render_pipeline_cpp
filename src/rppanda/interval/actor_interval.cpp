@@ -145,6 +145,8 @@ ActorInterval::ActorInterval(Actor* actor, const std::vector<std::string>& anim_
     _duration = duration.value();
 }
 
+ActorInterval::~ActorInterval() = default;
+
 void ActorInterval::priv_step(double t)
 {
     auto frame_count = t * frame_rate_;

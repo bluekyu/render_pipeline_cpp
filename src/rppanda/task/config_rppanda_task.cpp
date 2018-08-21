@@ -23,7 +23,6 @@
 
 #include <dconfig.h>
 
-#include "render_pipeline/rppanda/task/task_manager.hpp"
 #include "render_pipeline/rppanda/task/functional_task.hpp"
 
 Configure(config_rppanda_task);
@@ -36,6 +35,5 @@ ConfigureFn(config_rppanda_task)
         return;
     initialized = true;
 
-    rppanda::TaskManager::init_type();
     rppanda::FunctionalTask::init_type();
 }

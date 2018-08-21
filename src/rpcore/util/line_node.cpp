@@ -25,16 +25,15 @@
 
 namespace rpcore {
 
-void LineNode::set_vertex_color_line_effect(NodePath np)
+void LineNode::set_vertex_color_line_effect(RenderPipeline& pipeline, NodePath np)
 {
-    rpcore::RenderPipeline::get_global_ptr()->set_effect(np, "/$$rp/effects/vcolor_line.yaml");
+    pipeline.set_effect(np, "/$$rp/effects/vcolor_line.yaml");
 }
 
-void LineNode::set_line_effect(NodePath np)
+void LineNode::set_line_effect(RenderPipeline& pipeline, NodePath np)
 {
-    auto pipeline = rpcore::RenderPipeline::get_global_ptr();
-    if (pipeline->is_stereo_mode())
-        pipeline->set_effect(np, "/$$rp/effects/line.yaml");
+    if (pipeline.is_stereo_mode())
+        pipeline.set_effect(np, "/$$rp/effects/line.yaml");
 }
 
 }

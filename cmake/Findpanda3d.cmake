@@ -62,7 +62,11 @@ function(_panda3d_get_dependencies component_name ret)
     set(panda3d_DEPENDENCIES_pandadx9           p3windisplay)
     set(panda3d_DEPENDENCIES_p3framework        panda)
     set(panda3d_DEPENDENCIES_pandaegg           panda)
-    set(panda3d_DEPENDENCIES_pandagl            pandafx p3windisplay)
+    if(WIN32)
+        set(panda3d_DEPENDENCIES_pandagl            p3windisplay)
+    else()
+        set(panda3d_DEPENDENCIES_pandagl            panda)
+    endif()
     set(panda3d_DEPENDENCIES_pandagles          panda)
     set(panda3d_DEPENDENCIES_pandagles2         panda)
     set(panda3d_DEPENDENCIES_pandaode           panda)
@@ -163,25 +167,29 @@ function(_panda3d_add_library component_name)
         endif()
 
         if(${component_name} STREQUAL "p3dtool")
+            set_target_properties(panda3d::${component_name} PROPERTIES INTERFACE_COMPILE_FEATURES "cxx_std_11")
             if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
                 include(CMakeFindDependencyMacro)
                 find_dependency(Threads REQUIRED)
-                set_property(TARGET panda3d::${component_name} APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads
-                )
+                target_link_libraries(panda3d::${component_name} INTERFACE Threads::Threads)
             endif()
         elseif(${component_name} STREQUAL "panda")
             if((${CMAKE_SYSTEM_NAME} MATCHES "Windows") OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
                 # check if Eigen is used
-                file(STRINGS "${panda3d_INCLUDE_DIR}/dtool_config.h"
-                    panda3d_dtool_HAVE_EIGEN
-                    REGEX "#define HAVE_EIGEN 1"
-                )
-                if(panda3d_dtool_HAVE_EIGEN)
+                foreach(configuration ${panda3d_configurations})
+                    if(panda3d_INCLUDE_DIR_${configuration})
+                        file(STRINGS "${panda3d_INCLUDE_DIR_${configuration}}/dtool_config.h"
+                            panda3d_dtool_HAVE_EIGEN_${configuration}
+                            REGEX "#define HAVE_EIGEN 1"
+                        )
+                    endif()
+                endforeach()
+                if(panda3d_dtool_HAVE_EIGEN_DEBUG OR panda3d_dtool_HAVE_EIGEN_RELEASE)
                     include(CMakeFindDependencyMacro)
                     find_dependency(Eigen3 REQUIRED)
-                    set_property(TARGET panda3d::${component_name} APPEND
-                        PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
+                    target_link_libraries(panda3d::${component_name} INTERFACE
+                        $<$<AND:$<BOOL:${panda3d_dtool_HAVE_EIGEN_DEBUG}>,$<CONFIG:DEBUG>>:Eigen3::Eigen>
+                        $<$<AND:$<BOOL:${panda3d_dtool_HAVE_EIGEN_RELEASE}>,$<CONFIG:RELEASE>>:Eigen3::Eigen>
                     )
                 endif()
             endif()

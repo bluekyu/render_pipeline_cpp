@@ -10,6 +10,7 @@
 - [Render Pipeline Structures](structures.md)
 - [Panda3D Math](math.md)
 - [Virtual File System](virtual_filesystem.md)
+- [Logging](logging.md)
 
 ## Rendering
 - [Panda3D Model](rendering/model.md)

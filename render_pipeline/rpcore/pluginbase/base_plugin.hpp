@@ -26,6 +26,8 @@
 
 #include <vector>
 
+#include <boost/dll/shared_library_load_mode.hpp>
+
 #include <render_pipeline/rpcore/version.hpp>
 #include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
@@ -64,6 +66,11 @@ class RENDER_PIPELINE_DECL BasePlugin : public RPObject
 {
 public:
     using RequrieType = std::vector<std::string>;
+
+    struct Default
+    {
+        static constexpr boost::dll::load_mode::type dll_load_mode = boost::dll::load_mode::append_decorations;
+    };
 
     struct PluginInfo
     {
@@ -157,7 +164,10 @@ protected:
      * @return  Handle of shared_library or nullptr if failed.
      * @throw   boost::system::system_error from boost::dll library.
      */
-    boost::dll::shared_library* load_shared_library(const Filename& path);
+    boost::dll::shared_library* load_shared_library(
+        const Filename& path,
+        boost::dll::load_mode::type mode = Default::dll_load_mode
+    );
 
     RenderPipeline& pipeline_;
     const std::string plugin_id_;

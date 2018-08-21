@@ -70,16 +70,15 @@ public:
     static ShowBase* get_global_ptr();
 
     /**
-     * Create just ShowBase and not initialize ShowBase.
+     * Create ShowBase and initialize ShowBase if @p lazy_initialize is false.
      *
-     * This just consturct ShowBase instance, so you should call ShowBase::initialize.
+     * Without @p lazy_initialize, this will create PandaFramework and open main window,
+     * and then initialize ShowBase.
+     *
+     * With @p lazy_initialize, this just consturct ShowBase instance,
+     * so you should call ShowBase::initialize.
      */
-    ShowBase();
-
-    /**
-     * Create PandaFramework and open main window, and then initialize ShowBase.
-     */
-    ShowBase(int argc, char* argv[]);
+    ShowBase(bool lazy_initialize = false);
 
     /**
      * Initialize ShowBase with given PandaFramework.
@@ -87,15 +86,14 @@ public:
     ShowBase(PandaFramework* framework);
 
     ShowBase(const ShowBase&) = delete;
+    ShowBase(ShowBase&&);
 
     virtual ~ShowBase();
 
-    ALLOC_DELETED_CHAIN(ShowBase);
-
     ShowBase& operator=(const ShowBase&) = delete;
+    ShowBase& operator=(ShowBase&&);
 
-    void initialize(int argc, char* argv[]);
-    void initialize(PandaFramework* framework);
+    void initialize(PandaFramework* framework = nullptr);
 
     /**
      * Call this function to destroy the ShowBase and stop all
@@ -324,39 +322,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle ShowBase::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void ShowBase::init_type()
-{
-    DirectObject::init_type();
-    register_type(type_handle_, "rppanda::ShowBase", DirectObject::get_class_type());
-}
-
-inline TypeHandle ShowBase::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle ShowBase::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }

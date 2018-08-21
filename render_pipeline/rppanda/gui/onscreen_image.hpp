@@ -44,7 +44,7 @@
 
 namespace rppanda {
 
-class RENDER_PIPELINE_DECL OnscreenImage : public DirectObject, public NodePath
+class RENDER_PIPELINE_DECL OnscreenImage : public DirectObject, public TypedReferenceCount, public NodePath
 {
 public:
     OnscreenImage(NodePath parent={}, int sort=0);
@@ -93,8 +93,8 @@ inline TypeHandle OnscreenImage::get_class_type()
 
 inline void OnscreenImage::init_type()
 {
-    DirectObject::init_type();
-    register_type(type_handle_, "rppanda::OnscreenImage", DirectObject::get_class_type());
+    TypedReferenceCount::init_type();
+    register_type(type_handle_, "rppanda::OnscreenImage", TypedReferenceCount::get_class_type());
 }
 
 inline TypeHandle OnscreenImage::get_type() const

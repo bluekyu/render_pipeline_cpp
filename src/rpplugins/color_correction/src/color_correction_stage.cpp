@@ -55,7 +55,7 @@ void ColorCorrectionStage::reload_shaders()
 
 std::string ColorCorrectionStage::get_plugin_id() const
 {
-    return RPPLUGIN_ID_STRING;
+    return RPPLUGINS_ID_STRING;
 }
 
 }    // namespace rpplugins

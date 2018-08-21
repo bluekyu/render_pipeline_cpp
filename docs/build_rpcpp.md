@@ -7,7 +7,7 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - Tools
   - CMake (build tool)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 0.0.113
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: above 1.65.0
@@ -15,10 +15,11 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (conditional): Panda3D does not have Eigen3 although Panda3D uses it
+- Assimp (optional): Required to build rpassimp plugin
 
 
 
-## CMake
+### CMake
 Render Pipeline C++ uses CMake build system.
 CMake will find required libraries and generate build tools (ex, Unix Makefiles or Visual Studio solutions.)
 
@@ -37,11 +38,17 @@ If you does not use `vcpkg`, then build and install those and setup proper value
 
   # conditional
   vcpkg install --triplet x64-windows eigen3
+
+  # optional
+  vcpkg install --triplet x64-windows assimp
   ```
 
 - Ubuntu
   ```
   apt-get install libfmt-dev libspdlog-dev
+
+  # optional
+  apt-get install libassimp-dev
   ```
 
 
@@ -119,7 +126,7 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 2. CMakeLists.txt File
 ```.cmake
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(render_pipeline_projects
     LANGUAGES NONE
 )
@@ -143,7 +150,7 @@ add_subdirectory("rpcpp_samples")
 ```
 
 ### 3. Run CMake
-If `vcpkg` is used, select "Specify toolchain file for cross-compiling" and
+If `vcpkg` is used, select **Specify toolchain file for cross-compiling** and
 choose toolchain file (vcpkg.cmake) of vcpkg in CMake GUI.
 In command line, generate CMake project with
 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` option.

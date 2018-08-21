@@ -59,7 +59,7 @@ void SmoothConnectedCurve::build_curve()
     for (const auto& point: _cv_points)
     {
         // Clamp point x position to avoid artifacts at the beginning
-        float point_t = max(0.01f, point[0]);
+        float point_t = (std::max)(0.01f, point[0]);
         fitter.add_xyz(point_t, LVecBase3f(point_t, point[1], 0));
     }
 

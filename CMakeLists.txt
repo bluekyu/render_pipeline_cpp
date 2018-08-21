@@ -1,18 +1,18 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2...3.12)
 project(render_pipeline
-    VERSION 0.6.0
+    VERSION 0.7.0
     DESCRIPTION "Render Pipeline C++ project"
     LANGUAGES CXX
 )
 
 # === configure ====================================================================================
 option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp plugin for Panda3D" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
-include(debugging-information)
 include(git-utils)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -67,13 +67,9 @@ add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_
 render_pipeline_generate_version_hpp()
 
 if(MSVC)
-    target_compile_features(${PROJECT_NAME} PUBLIC cxx_final cxx_strong_enums cxx_delegating_constructors
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:cxx_std_14>
-    )
-
-    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275 /utf-8
         $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
         # note: windows.cmake in vcpkg
@@ -121,8 +117,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
-
-configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
 
 # === configure package ===
 set(PACKAGE_NAME "${PROJECT_NAME}")
@@ -187,12 +181,13 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/"
 )
 
-install_debugging_information(TARGET ${PROJECT_NAME}
-    DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    CONFIGURATIONS Debug RelWithDebInfo Release
-)
+install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # ==================================================================================================
 
 # === subdirectory =================================================================================
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpplugins")
+
+if(${${PROJECT_NAME}_BUILD_RPASSIMP})
+    add_subdirectory("${PROJECT_SOURCE_DIR}/src/rpassimp")
+endif()
 # ==================================================================================================

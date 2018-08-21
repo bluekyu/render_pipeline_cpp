@@ -141,7 +141,7 @@ inline float SmoothConnectedCurve::get_value(float offset) const
     LVecBase3f point(0);
     _curve->evaluate_xyz(offset, point);
     const float y = point.get_y();
-    return max(0.0f, min(1.0f, y));
+    return (std::max)(0.0f, (std::min)(1.0f, y));
 }
 
 }

@@ -7,7 +7,7 @@
 - 도구
   - CMake (빌드 도구)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 0.0.113
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.0 이상
@@ -15,10 +15,11 @@
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (조건부): Panda3D 가 Eigen3 를 사용하지만 없을 경우
+- Assimp (선택사항): rpassimp 플러그인 사용 시 필요
 
 
 
-## CMake
+### CMake
 Render Pipeline C++ 에서는 CMake 빌드 시스템을 사용한다.
 CMake 를 사용하여 필요한 라이브러리들을 찾고, 빌드 도구(Unix Makefiles or Visual Studio solutions 등)를 생성한다.
 
@@ -37,11 +38,17 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 
   # conditional
   vcpkg install --triplet x64-windows eigen3
+
+  # optional
+  vcpkg install --triplet x64-windows assimp
   ```
 
 - Ubuntu
   ```
   apt-get install libfmt-dev libspdlog-dev
+
+  # optional
+  apt-get install libassimp-dev
   ```
 
 
@@ -119,7 +126,7 @@ Native 모듈은 Python 버전의 Render Pipeline 과 동일하며 정적 링크
 
 ### 2. CMakeLists.txt 파일
 ```.cmake
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(render_pipeline_projects
     LANGUAGES NONE
 )
@@ -143,7 +150,7 @@ add_subdirectory("rpcpp_samples")
 ```
 
 ### 3. CMake 실행
-`vcpkg` 를 사용한다면, CMake GUI 에서 "Specify toolchain file for cross-compiling" 을 선택하고,
+`vcpkg` 를 사용한다면, CMake GUI 에서 **Specify toolchain file for cross-compiling** 을 선택하고,
 vcpkg 에 설치된 toolchain 파일(vcpkg.cmake)을 선택.
 명령줄에서는 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` 옵션을
 사용해서 CMake 프로젝트 생성.

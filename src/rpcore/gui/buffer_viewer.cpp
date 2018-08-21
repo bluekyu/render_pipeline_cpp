@@ -164,8 +164,6 @@ void BufferViewer::remove_components()
 {
     frame_hovers_.clear();
 
-    frame_click_data.clear();
-
     _content_node.node()->remove_all_children();
 
     _tex_preview->hide();
@@ -240,7 +238,6 @@ void BufferViewer::render_stages()
     int index = -1;
 
     // Iterate over all stages
-    frame_click_data.clear();
     for (const auto& stage_tex_id: _stages)
     {
         Texture* stage_tex = stage_tex_id.first;
@@ -276,7 +273,7 @@ void BufferViewer::render_stages()
         df_options->frame_size = LVecBase4f(7, entry_width - 17, -7, -entry_height + 17);
         df_options->frame_color = LColorf(rgb, 1.0f);
         df_options->pos = LVecBase3(0, 0, 0);
-        rppanda::DirectFrame df(node, df_options);
+        PT(rppanda::DirectFrame) df = new rppanda::DirectFrame(node, df_options);
 
         auto frame_hover_options = std::make_shared<rppanda::DirectFrame::Options>();
         frame_hover_options->frame_size = LVecBase4(0, entry_width - 10, 0, -entry_height + 10);
@@ -285,10 +282,9 @@ void BufferViewer::render_stages()
         frame_hover_options->state = rppanda::DGG_NORMAL;
         PT(rppanda::DirectFrame) frame_hover = new rppanda::DirectFrame(node, frame_hover_options);
         frame_hovers_.push_back(frame_hover);
-        frame_hover->bind(rppanda::DGG_ENTER, [frame_hover, this](const Event*) { on_texture_hovered(frame_hover); });
-        frame_hover->bind(rppanda::DGG_EXIT, [frame_hover, this](const Event*) { on_texture_blurred(frame_hover); });
-
-        //frame_click_data.push_back(std::make_shared<FrameClickDataType>(FrameClickDataType{this, stage_tex}));
+        auto frame_hover_raw = frame_hover.p();
+        frame_hover->bind(rppanda::DGG_ENTER, [frame_hover_raw, this](const Event*) { on_texture_hovered(frame_hover_raw); });
+        frame_hover->bind(rppanda::DGG_EXIT, [frame_hover_raw, this](const Event*) { on_texture_blurred(frame_hover_raw); });
         frame_hover->bind(rppanda::DGG_B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
 
         Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3f(0.8f));

@@ -21,7 +21,15 @@
 
 #include "render_pipeline/rpcore/logger_manager.hpp"
 
+#include <virtualFileSystem.h>
+
 #include <spdlog/spdlog.h>
+#if defined(SPDLOG_VER_MAJOR)
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#endif
+
+#include "render_pipeline/rppanda/util/filesystem.hpp"
 
 namespace rpcore {
 
@@ -47,7 +55,7 @@ spdlog::logger* LoggerManager::get_logger() const
     return logger_.get();
 }
 
-void LoggerManager::create(const std::string& file_path)
+void LoggerManager::create(const Filename& file_path)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -55,19 +63,52 @@ void LoggerManager::create(const std::string& file_path)
         return;
 
     std::vector<spdlog::sink_ptr> sinks;
+
+#if defined(SPDLOG_VER_MAJOR)
+    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+#else
 #ifdef _WIN32
     sinks.push_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
 #else
     sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
 #endif
+#endif
+
+    std::string err_msg;
     if (!file_path.empty())
-        sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(file_path, true));
+    {
+        if (file_path.is_directory())
+        {
+            err_msg = "[LoggerManager] file_path is not file.";
+        }
+        else
+        {
+            auto dir = Filename(file_path.get_dirname());
+
+            VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+            if (!vfs->is_directory(dir))
+                vfs->make_directory_full(dir);
+
+#if defined(SPDLOG_VER_MAJOR)
+            sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(rppanda::convert_path(file_path).string(), true));
+#else
+            sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(rppanda::convert_path(file_path).string(), true));
+#endif
+        }
+    }
 
     logger_ = std::make_shared<spdlog::logger>("render_pipeline", std::begin(sinks), std::end(sinks));
     global_logger_ = logger_.get();
 
+#if defined(SPDLOG_VER_MAJOR)
+    logger_->set_pattern("%^[%H:%M:%S.%e] [%t] [%l] %v%$");
+#else
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
+#endif
     logger_->flush_on(spdlog::level::err);
+
+    if (!err_msg.empty())
+        logger_->error(err_msg);
 
     logger_->debug("LoggerManager created logger");
 }

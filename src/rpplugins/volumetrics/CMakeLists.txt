@@ -1,9 +1,9 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 
-get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(rpplugin_${RPPLUGIN_ID}
+get_filename_component(RPPLUGINS_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
+project(rpplugins_${RPPLUGINS_ID}
     VERSION 0.1.0
     DESCRIPTION "Volumetric lighting plugin"
     LANGUAGES CXX
@@ -12,7 +12,7 @@ project(rpplugin_${RPPLUGIN_ID}
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
-set(RPPLUGIN_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
+set(RPPLUGINS_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGINS_ID}")
 
 # === plugin specific packages ===
 
@@ -27,9 +27,9 @@ set(${PROJECT_NAME}_sources
     "${PROJECT_SOURCE_DIR}/src/volumetrics_plugin.cpp"
     "${PROJECT_SOURCE_DIR}/src/volumetrics_stage.cpp"
 )
-include("../rpplugin_build.cmake")
+include("../rpplugins_build.cmake")
 # ==================================================================================================
 
 # === install ======================================================================================
-include("../rpplugin_install.cmake")
+include("../rpplugins_install.cmake")
 # ==================================================================================================

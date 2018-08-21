@@ -43,7 +43,6 @@ ConfigureFn(config_rppanda_gui)
         return;
     initialized = true;
 
-    rppanda::DirectGuiBase::init_type();
     rppanda::DirectGuiWidget::init_type();
     rppanda::DirectEntry::init_type();
     rppanda::DirectFrame::init_type();

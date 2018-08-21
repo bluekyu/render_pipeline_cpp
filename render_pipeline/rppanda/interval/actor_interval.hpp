@@ -37,13 +37,15 @@
 
 #include <boost/optional.hpp>
 
+#include <render_pipeline/rpcore/config.hpp>
+
 class AnimControl;
 
 namespace rppanda {
 
 class Actor;
 
-class ActorInterval : public CInterval
+class RENDER_PIPELINE_DECL ActorInterval : public CInterval
 {
 public:
     // Name counter
@@ -56,6 +58,8 @@ public:
         boost::optional<double> start_frame=boost::none, boost::optional<double> end_frame=boost::none,
         double play_rate=1.0, const boost::optional<std::string> name=boost::none, bool force_update=false,
         const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name=boost::none);
+
+    virtual ~ActorInterval();
 
     void priv_step(double t) override;
     void priv_finalize() override;

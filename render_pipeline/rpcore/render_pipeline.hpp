@@ -73,8 +73,6 @@ public:
     static const std::string& get_build_data();
     static const std::string& get_git_commit();
 
-    static RenderPipeline* get_global_ptr();
-
     /** Initialize RenderPipeline. */
     RenderPipeline();
 
@@ -127,8 +125,7 @@ public:
      * initialized ShowBase object. In this case, you should call
      * pre_showbase_init() before initializing the ShowBase
      */
-    bool create(int argc, char* argv[], rppanda::ShowBase* base = nullptr);
-    bool create(PandaFramework* framework, rppanda::ShowBase* base = nullptr);
+    bool create(rppanda::ShowBase* base = nullptr, PandaFramework* framework = nullptr);
 
     /**
      * Tells the pipeline to use the default loading screen, which consists

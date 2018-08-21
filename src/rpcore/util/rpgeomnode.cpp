@@ -445,7 +445,7 @@ bool RPGeomNode::modify_index_data(const unsigned char* indices, size_t data_siz
     // see GeomPrimitive::add_vertex
     auto handle = primitive->modify_vertices()->modify_handle();
     handle->set_num_rows(static_cast<int>(num_rows));
-    std::copy(indices, indices + data_size, handle->get_write_pointer());
+    std::memcpy(handle->get_write_pointer(), indices, data_size);
 
     return true;
 }
@@ -497,7 +497,7 @@ bool RPGeomNode::modify_index_data(const std::vector<int>& indices, int geom_ind
         case GeomEnums::NT_uint32:
         {
             static_assert(sizeof(int) == sizeof(uint32_t), "ERROR: type size is not same in std::copy");
-            std::copy(indices.begin(), indices.end(), reinterpret_cast<uint32_t*>(ptr));
+            std::memcpy(reinterpret_cast<uint32_t*>(ptr), indices.data(), indices.size() * sizeof(std::decay<decltype(indices)>::type));
             break;
         }
         default:
@@ -600,7 +600,7 @@ bool RPGeomNode::get_vertex_data(const GeomVertexData* vdata, std::vector<unsign
     data.resize(dest_total_bytes);
 
     const unsigned char* read_pointer = vdata->get_array_handle(array_index)->get_read_pointer(true);
-    std::copy(read_pointer, read_pointer + dest_total_bytes, data.data());
+    std::memcpy(data.data(), read_pointer, dest_total_bytes);
 
     return true;
 }

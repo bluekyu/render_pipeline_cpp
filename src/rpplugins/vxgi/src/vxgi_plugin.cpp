@@ -125,7 +125,7 @@ void VXGIPlugin::Impl::generate_mipmaps()
 
 // ************************************************************************************************
 
-VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+VXGIPlugin::VXGIPlugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGINS_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

@@ -27,9 +27,11 @@
 #include <geomTriangles.h>
 #include <geomNode.h>
 #include <materialAttrib.h>
+#include <texturePool.h>
 
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/util/rpmaterial.hpp"
+#include "render_pipeline/rpcore/util/rprender_state.hpp"
 #include "render_pipeline/rpcore/logger_manager.hpp"
 
 namespace rpcore {
@@ -352,6 +354,53 @@ NodePath create_sphere(const std::string& name, unsigned int latitude, unsigned 
     geom->add_primitive(prim);
 
     return create_geom_node(name, geom);
+}
+
+static Texture* load_empty_texture(RPRenderState::TextureStageIndex index, bool no_cache)
+{
+    LoaderOptions default_option;
+    if (no_cache)
+        default_option.set_flags(default_option.get_flags() | LoaderOptions::LoaderFlags::LF_no_cache);
+
+    switch (index)
+    {
+    case RPRenderState::TextureStageIndex::basecolor:
+        return TexturePool::load_texture("/$$rp/data/empty_textures/empty_basecolor.png", 0, false, default_option);
+
+    case RPRenderState::TextureStageIndex::normal:
+        return TexturePool::load_texture("/$$rp/data/empty_textures/empty_normal.png", 0, false, default_option);
+
+    case RPRenderState::TextureStageIndex::specular:
+        return TexturePool::load_texture("/$$rp/data/empty_textures/empty_specular.png", 0, false, default_option);
+
+    case RPRenderState::TextureStageIndex::roughness:
+        return TexturePool::load_texture("/$$rp/data/empty_textures/empty_roughness.png", 0, false, default_option);
+
+    default:
+        return nullptr;
+    }
+}
+
+Texture* load_empty_basecolor(bool no_cache)
+{
+    auto tex = load_empty_texture(RPRenderState::TextureStageIndex::basecolor, no_cache);
+    tex->set_format(Texture::Format::F_srgb);
+    return tex;
+}
+
+Texture* load_empty_normal(bool no_cache)
+{
+    return load_empty_texture(RPRenderState::TextureStageIndex::normal, no_cache);
+}
+
+Texture* load_empty_specular(bool no_cache)
+{
+    return load_empty_texture(RPRenderState::TextureStageIndex::specular, no_cache);
+}
+
+Texture* load_empty_roughness(bool no_cache)
+{
+    return load_empty_texture(RPRenderState::TextureStageIndex::roughness, no_cache);
 }
 
 }

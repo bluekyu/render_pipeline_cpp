@@ -133,7 +133,7 @@ void PSSMPlugin::Impl::on_pre_render_update()
 
 // ************************************************************************************************
 
-PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>(*this))
+PSSMPlugin::PSSMPlugin(rpcore::RenderPipeline& pipeline): BasePlugin(pipeline, RPPLUGINS_ID_STRING), impl_(std::make_unique<Impl>(*this))
 {
 }
 

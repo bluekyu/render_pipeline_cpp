@@ -162,7 +162,7 @@ protected:
     virtual void auto_capitalize();
 
     OnscreenText onscreen_text_;
-    PT(DirectObject) auto_cap_listener_;
+    std::unique_ptr<DirectObject> auto_cap_listener_;
 
 private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);

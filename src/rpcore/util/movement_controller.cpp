@@ -180,8 +180,7 @@ AsyncTask::DoneStatus MovementController::Impl::camera_motion_update(MovementCon
     curve_->evaluate_xyz(lerp, pos);
     curve_->evaluate_hpr(lerp, hpr);
 
-    showbase_->get_camera().set_pos(pos);
-    showbase_->get_camera().set_hpr(hpr);
+    showbase_->get_camera().set_pos_hpr(pos, hpr);
 
     delta_time_sum_ += self->get_clock_obj()->get_dt();
     delta_time_count_ += 1;

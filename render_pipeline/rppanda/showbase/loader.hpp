@@ -103,8 +103,6 @@ public:
     Loader& operator=(const Loader&) = delete;
     Loader& operator=(Loader&&);
 
-    ALLOC_DELETED_CHAIN(Loader);
-
     NodePath load_model(const Filename& model_path, const LoaderOptions& loader_options={},
         boost::optional<bool> no_cache=boost::none, bool allow_instance=false, boost::optional<bool> ok_missing=boost::none);
 
@@ -247,39 +245,6 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
-
-public:
-    static TypeHandle get_class_type();
-    static void init_type();
-    TypeHandle get_type() const override;
-    TypeHandle force_init_type() override;
-
-private:
-    static TypeHandle type_handle_;
 };
-
-// ************************************************************************************************
-
-inline TypeHandle Loader::get_class_type()
-{
-    return type_handle_;
-}
-
-inline void Loader::init_type()
-{
-    DirectObject::init_type();
-    register_type(type_handle_, "rppanda::Loader", DirectObject::get_class_type());
-}
-
-inline TypeHandle Loader::get_type() const
-{
-    return get_class_type();
-}
-
-inline TypeHandle Loader::force_init_type()
-{
-    init_type();
-    return get_class_type();
-}
 
 }

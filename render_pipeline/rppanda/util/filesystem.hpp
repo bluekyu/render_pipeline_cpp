@@ -39,4 +39,6 @@ RENDER_PIPELINE_DECL boost::filesystem::path convert_path(const Filename& path);
 
 RENDER_PIPELINE_DECL Filename convert_path(const boost::filesystem::path& path);
 
+RENDER_PIPELINE_DECL boost::filesystem::path get_library_location();
+
 }

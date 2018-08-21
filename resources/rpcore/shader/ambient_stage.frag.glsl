@@ -291,7 +291,7 @@ void main() {
     #if !DEBUG_MODE
         if (m.shading_model == SHADING_MODEL_EMISSIVE) {
             // TODO: For emissive, use: compute_bloom_luminance() instead of a fixed value
-            ambient = m.basecolor * 5000.0;
+            ambient = m.basecolor * 5000.0 * exp(m.shading_model_param0);
         }
     #endif
 

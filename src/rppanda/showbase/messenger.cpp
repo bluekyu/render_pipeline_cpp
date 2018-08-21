@@ -41,7 +41,12 @@
 
 namespace rppanda {
 
-TypeHandle Messenger::type_handle_;
+const Messenger::AcceptorMap Messenger::empty_acceptor_;
+const Messenger::EventSetType Messenger::empty_events_;
+
+Messenger::Messenger() : handler_(EventHandler::get_global_event_handler())
+{
+}
 
 Messenger::~Messenger()
 {
@@ -54,18 +59,42 @@ Messenger* Messenger::get_global_instance()
     return &instance;
 }
 
-auto Messenger::accept(const EventName& event_name, const EventFunction& method,
-    DirectObject* object, bool persistent) -> AcceptorMap::const_iterator
+void Messenger::accept(const EventName& event_name, const EventFunction& method,
+    const DirectObject* object, bool persistent)
 {
     if (!object)
     {
         rppanda_showbase_cat.error() << "Messenger::accept is called with null DirectObject: " << event_name << std::endl;
-        return hooks_[event_name].object_callbacks.end();
+        return;
     }
 
     add_hook(event_name);
 
-    return hooks_[event_name].object_callbacks.insert_or_assign(object, AcceptorType{ method, persistent }).first;
+    auto& object_callbacks = callbacks_[event_name];
+
+    auto found = object_callbacks.find(object);
+    if (found == object_callbacks.end())
+    {
+        object_callbacks.emplace(object, AcceptorType{ method, persistent });
+    }
+    else
+    {
+        if (rppanda_showbase_cat.is_debug())
+            rppanda_showbase_cat.warning() << "object: Messenger accept: \"" << event_name << "\" new callback" << std::endl;
+
+        found->second = AcceptorType{ method, persistent };
+    }
+
+    object_events_[object].insert(event_name);
+}
+
+auto Messenger::who_accepts(const EventName& event_name) const -> const AcceptorMap&
+{
+    auto found = callbacks_.find(event_name);
+    if (found != callbacks_.end())
+        return found->second;
+    else
+        return empty_acceptor_;
 }
 
 void Messenger::process_event(const Event* ev, void* user_data)
@@ -73,40 +102,23 @@ void Messenger::process_event(const Event* ev, void* user_data)
     const auto& event_name = ev->get_name();
 
     auto self = reinterpret_cast<Messenger*>(user_data);
-    auto& hook = self->hooks_.at(event_name);
-
-    // call in callbacks
-    {
-        auto iter = hook.callbacks.cbegin();
-
-        // NOTE: the end iterator is virtual end, so it indicates the end of list although new callbacks are inserted.
-        // Therefore, this iterator will call also the new callbacks.
-        auto iter_end = hook.callbacks.cend();
-        for (; iter != iter_end; ++iter)
-        {
-            iter->first(ev);
-
-            // NOTE: the erased element is only invalidated, so we can use the iterator.
-            if (!iter->second)
-                hook.callbacks.erase(iter);
-        }
-    }
+    auto& acceptor_map = self->callbacks_.at(event_name);
 
     // call in object_callbacks
     {
-        auto iter = hook.object_callbacks.cbegin();
-        auto iter_end = hook.object_callbacks.cend();
+        auto iter = acceptor_map.cbegin();
+        auto iter_end = acceptor_map.cend();
         for (; iter != iter_end; ++iter)
         {
             iter->second.first(ev);
 
             // NOTE: the erased element is only invalidated, so we can use the iterator.
             if (!iter->second.second)
-                hook.object_callbacks.erase(iter);
+                acceptor_map.erase(iter);
         }
     }
 
-    if (hook.empty())
+    if (acceptor_map.empty())
         self->remove_hook(event_name);
 }
 
