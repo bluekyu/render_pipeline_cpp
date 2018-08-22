@@ -45,7 +45,7 @@ If you does not use `vcpkg`, then build and install those and setup proper value
 
 - Ubuntu
   ```
-  apt-get install libfmt-dev libspdlog-dev
+  apt-get install libboost-filesystem-dev libfmt-dev libspdlog-dev
 
   # optional
   apt-get install libassimp-dev

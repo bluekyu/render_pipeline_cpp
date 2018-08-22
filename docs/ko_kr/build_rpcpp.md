@@ -45,7 +45,7 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
 
 - Ubuntu
   ```
-  apt-get install libfmt-dev libspdlog-dev
+  apt-get install libboost-filesystem-dev libfmt-dev libspdlog-dev
 
   # optional
   apt-get install libassimp-dev
