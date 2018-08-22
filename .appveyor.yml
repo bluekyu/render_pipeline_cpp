@@ -10,66 +10,98 @@ skip_commits:
     files:
         - docs/*
 
+
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
 
 # Build worker image (VM template)
 image:
+- Ubuntu
 - Visual Studio 2015
 - Visual Studio 2017
+
 
 # set clone depth
 clone_depth: 1
 
+
 # scripts that are called at very beginning, before repo cloning
 init:
 - ps: >-
-    if (Test-Path env:TRIGGER_NAME) {
+    if (($isLinux) -and ($env:CONFIGURATION -eq "Debug") -and (Test-Path env:TRIGGER_NAME)) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
+- sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
 # checkout recent vcpkg
-- ps: pushd C:\tools\vcpkg
-- git pull --quiet
+- sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
+- ps: pushd $env:VCPKG_ROOT
+- cmd: git pull --quiet
 - git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
-- .\bootstrap-vcpkg.bat > nul
+- sh: ./bootstrap-vcpkg.sh > /dev/null
+- cmd: .\bootstrap-vcpkg.bat > nul
 - ps: popd
+
 - git --version
 - cmake --version
-- vcpkg version
+- sh: $VCPKG_ROOT/vcpkg version
+- cmd: vcpkg version
+
 
 # environment variables
 environment:
+    # Visual Studio (default)
     CMAKE_PREFIX_PATH: C:\projects\_install;
+    INSTALL_PREFIX: C:/projects/_install
     BOOST_ROOT: C:\Libraries\boost_1_67_0
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
     VCPKG_DEFAULT_TRIPLET: x64-windows
+    VCPKG_ROOT: C:/tools/vcpkg
+
 
 # this is how to allow failing jobs in the matrix
 matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
+    allow_failures:
+        - image: Ubuntu # Sometimes, Ubuntu fails without any reason.
     exclude:
         - configuration: Debug
           image: Visual Studio 2015
+
 
 # build cache to preserve files/folders between builds
 cache:
     - c:\tools\vcpkg\installed\ -> .appveyor.yml
 
+
 # scripts that run after cloning repository
 install:
-- vcpkg install fmt spdlog yaml-cpp eigen3 assimp
-- ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
+- sh: sudo apt-get update
+- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev
+- sh: $VCPKG_ROOT/vcpkg install boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp
+- cmd: vcpkg install fmt spdlog yaml-cpp eigen3 assimp
+
+- ps: mkdir $env:INSTALL_PREFIX
+- ps: pushd $env:INSTALL_PREFIX
 - ps: >-
-    if ($env:CONFIGURATION -eq "Debug") {
-        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+MixForDebug'
-    } else {
-        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
+    if ($isWindows) {
+        if ($env:CONFIGURATION -eq "Debug") {
+            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+MixForDebug'
+        } else {
+            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
+        }
     }
-- 7z x -y panda3d-thirdparty.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
-- 7z x -y panda3d.7z > nul
+- cmd: 7z x -y panda3d-thirdparty.7z > nul
+- ps: >-
+    if ($isLinux) {
+        Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.tar.xz?branch=master&job=Image%3A+Ubuntu%3B+Configuration%3A+' + "$env:CONFIGURATION")
+    } else {
+        Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
+    }
+- sh: tar xf panda3d.tar.xz
+- cmd: 7z x -y panda3d.7z > nul
 - ps: popd
+
 
 #---------------------------------#
 #       build configuration       #
@@ -86,17 +118,32 @@ configuration:
 build:
     parallel: true                  # enable MSBuild parallel builds
 
+
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-- ps: (mkdir _build) -and (pushd _build)
+- ps: mkdir _build
+- ps: pushd _build
+
+# Ubuntu
+- sh: >-
+    cmake -G "$CMAKE_GENERATOR" -Wno-dev ..
+    -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+    -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
+    -Dpanda3d_ROOT:PATH="$INSTALL_PREFIX/panda3d"
+- sh: cmake --build . --config $CONFIGURATION
+
+# Visual Studio
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
-    -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+    -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
-    -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
-    -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
-- cmake --build . --config %CONFIGURATION%
+    -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/render_pipeline_cpp"
+    -Dpanda3d_ROOT:PATH="%INSTALL_PREFIX%/panda3d"
+- cmd: cmake --build . --config %CONFIGURATION%
+
 - ps: popd
+
 
 #---------------------------------#
 #       tests configuration       #
@@ -105,14 +152,22 @@ build_script:
 test_script:
 
 after_test:
-- cmake --build _build --config %CONFIGURATION% --target install
-- 7z a render_pipeline_cpp.7z "C:/projects/_install/render_pipeline_cpp"
+# Ubuntu
+- sh: cmake --build _build --config $CONFIGURATION --target install
+- sh: pushd "$INSTALL_PREFIX"
+- sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
+- sh: popd
+
+# Visual Studio
+- cmd: cmake --build _build --config %CONFIGURATION% --target install
+- cmd: 7z a render_pipeline_cpp.7z "%INSTALL_PREFIX%/render_pipeline_cpp"
 
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
 
 artifacts:
+# Visual Studio (default)
 - path: render_pipeline_cpp.7z
 
 #---------------------------------#
@@ -143,8 +198,26 @@ for:
 -
     matrix:
         only:
-            - image: Visual Studio 2015
+            - image: Ubuntu
+    environment:
+        CMAKE_GENERATOR: Unix Makefiles
+        CMAKE_PREFIX_PATH: /home/appveyor/projects/_install;/home/appveyor/projects/_cache
+        CACHE_PREFIX: /home/appveyor/projects/_cache
+        INSTALL_PREFIX: /home/appveyor/projects/_install
+        BOOST_ROOT: ""
+        FREETYPE_DIR: ""
+        VCPKG_DEFAULT_TRIPLET: x64-linux
+        VCPKG_ROOT: /home/appveyor/projects/vcpkg
+    cache:
+        - /home/appveyor/projects/_cache/ -> .appveyor.yml
+        - /home/appveyor/projects/vcpkg/installed/ -> .appveyor.yml
+    artifacts:
+        - path: render_pipeline_cpp.tar.xz
 
+-
+    matrix:
+        only:
+            - image: Visual Studio 2015
     environment:
         CMAKE_GENERATOR: Visual Studio 14 2015 Win64
 
@@ -152,6 +225,5 @@ for:
     matrix:
         only:
             - image: Visual Studio 2017
-
     environment:
         CMAKE_GENERATOR: Visual Studio 15 2017 Win64
