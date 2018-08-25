@@ -92,9 +92,6 @@ PartBundle* Actor::PartDef::get_bundle() const
 
 // ************************************************************************************************
 
-const std::string Actor::Default::part_name("modelRoot");
-const std::string Actor::Default::lod_name("lodRoot");
-
 TypeHandle Actor::type_handle_;
 
 std::string Actor::part_prefix_("__Actor_");

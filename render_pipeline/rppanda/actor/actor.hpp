@@ -63,8 +63,8 @@ class RENDER_PIPELINE_DECL Actor : public DirectObject, public TypedReferenceCou
 public:
     struct RENDER_PIPELINE_DECL Default
     {
-        static const std::string part_name;
-        static const std::string lod_name;
+        static constexpr const char* part_name = "modelRoot";
+        static constexpr const char* lod_name = "lodRoot";
     };
 
 public:
@@ -591,7 +591,7 @@ public:
         const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name=boost::none);
 
 protected:
-    Loader* loader_;
+    Loader* loader_ = nullptr;
 
     bool this_merge_LOD_bundles_;
     bool this_allow_async_bind_;
@@ -615,7 +615,7 @@ private:
         AnimDef make_copy();
 
         std::string filename;
-        PT(AnimControl) anim_control = nullptr;
+        PT(AnimControl) anim_control;
         AnimBundle* anim_bundle;
     };
 
