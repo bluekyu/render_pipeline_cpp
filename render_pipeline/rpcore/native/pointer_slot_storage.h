@@ -210,6 +210,10 @@ public:
         return _data.begin();
     }
 
+    typename InternalContainer::const_iterator begin() const {
+        return _data.begin();
+    }
+
     /**
      * @brief Returns an iterator to the end of the container
      * @details This returns an iterator to the end of the iterator. This only
@@ -217,6 +221,10 @@ public:
      * @return [description]
      */
     typename InternalContainer::iterator end() {
+        return _data.begin() + _max_index + 1;
+    }
+
+    typename InternalContainer::const_iterator end() const {
         return _data.begin() + _max_index + 1;
     }
 

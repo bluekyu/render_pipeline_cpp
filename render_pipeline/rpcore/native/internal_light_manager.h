@@ -53,6 +53,7 @@ class InternalLightManager {
     PUBLISHED:
         InternalLightManager();
 
+        inline RPLight* get_light(int slot) const;
 
         void add_light(PT(RPLight) light);
         void remove_light(PT(RPLight) light);
