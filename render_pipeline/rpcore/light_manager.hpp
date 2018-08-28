@@ -50,10 +50,10 @@ class RENDER_PIPELINE_DECL LightManager : public RPObject
 {
 public:
     // Maximum amount of lights, has to match the definitions in the native code
-    static const int MAX_LIGHTS = 65535;
+    static constexpr int MAX_LIGHTS = 65535;
 
     // Maximum amount of shadow sources
-    static const int MAX_SOURCES = 2048;
+    static constexpr int MAX_SOURCES = 2048;
 
 public:
     LightManager(RenderPipeline& pipeline);
@@ -76,6 +76,8 @@ public:
 
     /** Returns the shadow atlas coverage in percentage. */
     float get_shadow_atlas_coverage() const;
+
+    RPLight* get_light(int slot) const;
 
     /** Adds a new light. */
     void add_light(PT(RPLight) light);

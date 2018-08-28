@@ -71,5 +71,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
+if(MSVC)
+    install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()
 # ==================================================================================================

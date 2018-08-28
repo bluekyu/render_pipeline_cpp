@@ -24,7 +24,12 @@
  *
  */
 
- namespace rpcore {
+namespace rpcore {
+
+inline RPLight* InternalLightManager::get_light(int slot) const
+{
+    return *(_lights.begin() + slot);
+}
 
 /**
  * @brief Returns the maximum light index

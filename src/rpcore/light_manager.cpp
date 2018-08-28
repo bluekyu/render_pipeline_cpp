@@ -86,6 +86,11 @@ float LightManager::get_shadow_atlas_coverage() const
     return internal_mgr_->get_shadow_manager()->get_atlas()->get_coverage() * 100.0f;
 }
 
+RPLight* LightManager::get_light(int slot) const
+{
+    return internal_mgr_->get_light(slot);
+}
+
 void LightManager::add_light(PT(RPLight) light)
 {
     internal_mgr_->add_light(light);
