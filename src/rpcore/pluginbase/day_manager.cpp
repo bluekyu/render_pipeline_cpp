@@ -76,15 +76,15 @@ void DayTimeManager::set_time(float time)
 
 void DayTimeManager::set_time(const std::string& time)
 {
-    const std::regex colon_re(":");
-    std::vector<std::string> parsed_val(std::sregex_token_iterator(time.begin(), time.end(), colon_re, -1), std::sregex_token_iterator());
-
-    if (parsed_val.size() != 2)
+    std::smatch match;
+    if (std::regex_match(time, match, std::regex("^([0-9]{2}):([0-9]{2})$")))
+    {
+        impl_->time_ = (std::stoi(match[1]) * 60.0f + std::stoi(match[2])) / (24.0f * 60.0f);
+    }
+    else
     {
         warn(std::string("Invalid time format: ") + time);
-        return;
     }
-    impl_->time_ = (std::stoi(parsed_val[0]) * 60.0f + std::stoi(parsed_val[1])) / (24.0f * 60.0f);
 }
 
 std::string DayTimeManager::get_formatted_time() const
