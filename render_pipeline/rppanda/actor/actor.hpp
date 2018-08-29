@@ -271,8 +271,8 @@ public:
     ///@}
 
     /**
-     * Returns a list of the AnimControl that represent the given
-     * animation for the given part and the given lod.
+     * Returns a list of the AnimControl that represent the given or all
+     * animations for the given part and the given lod.
      *
      * If @p anim_name is empty, the currently-playing
      * animation (or all currently-playing animations) is returned.
@@ -290,20 +290,13 @@ public:
     std::vector<AnimControl*> get_anim_controls(const std::vector<std::string>& anim_name={}, const std::vector<std::string>& part_name={},
         const boost::optional<std::string>& lod_name=boost::none, bool allow_async_bind=true);
 
-    /**
-     * Returns a list of the AnimControl that represent all animations
-     * for the given part and the given lod.
-     * (This function is same as 'animName=True' in python version)
-     *
-     * If part_name is none, all parts are returned (or
-     * possibly the one overall Actor part, according to the
-     * subpartsComplete flag).
-     *
-     * If lod_name is none, all LOD's are returned.
-     */
     std::vector<AnimControl*> get_all_anim_controls(const std::vector<std::string>& part_name = {},
         const boost::optional<std::string>& lod_name = boost::none, bool allow_async_bind = true);
 
+    /**
+     * Actor model loader. Takes a model name (ie file path), a part
+     * name (defaults to "modelRoot") and an lod name(defaults to "lodRoot").
+     */
     void load_model(NodePath model_path, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name,
         bool copy=true, bool auto_bind_anims=true);
     void load_model(const Filename& model_path, const std::string& part_name=Default::part_name, const std::string& lod_name=Default::lod_name,
@@ -420,21 +413,15 @@ public:
     ///@{
 
     /**
-     * Stop named animation on the given part of the actor.
+     * Stop named or all animations on the given part of the actor.
      *
      * NOTE: stops all LODs
      */
     void stop(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name={});
-
-    /**
-     * Stop all animations on the actor on the given part of the actor.
-     *
-     * NOTE: stops all LODs
-     */
     void stop_all(const std::vector<std::string>& part_name = {});
 
     /**
-     * Play the given animation on the given part of the actor.
+     * Play the given or all animations on the given part of the actor.
      * If no part is specified, try to play on all parts. NOTE:
      * plays over ALL LODs
      */
@@ -445,7 +432,7 @@ public:
         boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     /**
-     * Loop the given animation on the given part of the actor,
+     * Loop the given or all animations on the given part of the actor,
      * restarting at zero frame if requested. If no part name
      * is given then try to loop on all parts. NOTE: loops on
      * all LOD's
@@ -457,7 +444,7 @@ public:
         boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     /**
-     * Loops the animation from the frame "from" to and including the frame "to",
+     * Loops the given or all animations from the frame "from" to and including the frame "to",
      * and then back in the opposite direction, indefinitely. If no part name
      * is given then try to loop on all parts. NOTE: loops on
      * all LOD's
@@ -469,8 +456,8 @@ public:
         boost::optional<double> from_frame = boost::none, boost::optional<double> to_frame = boost::none);
 
     /**
-     * Pose the actor in position found at given frame in the specified
-     * animation for the specified part. If no part is specified attempt
+     * Pose the actor in position found at given frame in the specified or all
+     * animations for the specified part. If no part is specified attempt
      * to apply pose to all parts.
      */
     void pose(const std::vector<std::string>& anim_name, double frame, const std::vector<std::string>& part_name={},
@@ -519,7 +506,7 @@ public:
         boost::optional<PartBundle::BlendType> blend_type=boost::none, const boost::optional<std::string>& part_name=boost::none);
 
     /**
-     * Sets the amount by which the named animation contributes to
+     * Sets the amount by which the named or all animations contributes to
      * the overall pose.  This controls blending of multiple
      * animations; it only makes sense to call this after a previous
      * call to setBlend(animBlend = True).
@@ -528,12 +515,6 @@ public:
         const std::vector<std::string>& part_name = {},
         boost::optional<std::string> lod_name = boost::none);
 
-    /**
-     * Sets the amount by which the named animation contributes to
-     * the overall pose.  This controls blending of multiple
-     * animations; it only makes sense to call this after a previous
-     * call to setBlend(animBlend = True).
-     */
     void set_all_control_effect(float effect,
         const std::vector<std::string>& part_name = {},
         boost::optional<std::string> lod_name = boost::none);
@@ -547,7 +528,7 @@ public:
     void hide_all_bounds();
 
     /**
-     * Binds the named animation to the named part and/or lod.  If
+     * Binds the named or all animations to the named part and/or lod.  If
      * allow_async_bind is false, this guarantees that the animation is
      * bound immediately--the animation is never bound in a
      * sub-thread; it will be loaded and bound in the main thread, so
@@ -566,21 +547,6 @@ public:
         boost::optional<std::string> lod_name = boost::none,
         bool allow_async_bind = false);
 
-    /**
-     * Binds all animations to the named part and/or lod.  If
-     * allow_async_bind is false, this guarantees that the animation is
-     * bound immediately--the animation is never bound in a
-     * sub-thread; it will be loaded and bound in the main thread, so
-     * it will be available by the time this method returns.
-     *
-     * The parameters are the same as that for get_anim_controls().  In
-     * fact, this method is a thin wrapper around that other method.
-     *
-     * Use this method if you need to ensure that an animation is
-     * available before you start to play it, and you don't mind
-     * holding up the render for a frame or two until the animation
-     * is available.
-     */
     void bind_all_anims(
         const std::vector<std::string>& part_name,
         boost::optional<std::string> lod_name = boost::none,
