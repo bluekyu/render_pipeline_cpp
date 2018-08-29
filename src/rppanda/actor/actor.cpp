@@ -607,67 +607,6 @@ boost::optional<double> Actor::get_any_frame_time(double frame, const std::vecto
     return anim_time.value() * frame / num_frames.value();
 }
 
-std::vector<AnimControl*> Actor::get_anim_controls(bool is_all, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
-    const boost::optional<std::string>& lod_name, bool allow_async_bind)
-{
-    std::vector<AnimControl*> controls;
-    LODDictType::iterator iter;
-    LODDictType::iterator iter_end;
-
-    std::vector<std::string> part_name_list = part_name;
-    build_LOD_dict_items(part_name_list, iter, iter_end, lod_name);
-
-    for (; iter != iter_end; ++iter)
-    {
-        const std::string& lod_name = iter->first;
-        auto& part_dict = iter->second;
-
-        std::vector<PartDictType::iterator> anim_dict_items;
-
-        build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
-
-        if (is_all)
-        {
-            // anim_name: True to indicate all anims.
-            for (auto&& iter : anim_dict_items)
-            {
-                auto& anim_dict = iter->second;
-
-                std::vector<std::string> names;
-                names.reserve(anim_dict.size());
-                for (auto&& key_val : anim_dict)
-                    names.push_back(key_val.first);
-
-                if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
-                    return {};
-            }
-        }
-        else if (anim_name.empty())
-        {
-            // get all playing animations
-            for (const auto& iter: anim_dict_items)
-            {
-                for (const auto& key_anim: iter->second)
-                {
-                    if (key_anim.second.anim_control && key_anim.second.anim_control->is_playing())
-                        controls.push_back(key_anim.second.anim_control);
-                }
-            }
-        }
-        else
-        {
-            // get the named animation(s) only.
-            for (auto&& iter: anim_dict_items)
-            {
-                if (!build_controls_from_anim_name(controls, anim_name, iter->second, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
-                    return {};
-            }
-        }
-    }
-
-    return controls;
-}
-
 void Actor::load_model(NodePath model_path, const std::string& part_name, const std::string& lod_name,
     bool copy, bool auto_bind_anims)
 {
@@ -1544,6 +1483,67 @@ AnimControl* Actor::bind_anim_to_part(const std::string& anim_name, const std::s
     anim.anim_control = anim_control;
     rppanda_actor_cat.debug() << "binding anim: " << anim_name << " to part: " << part_name << ", lod: " << lod_name << std::endl;
     return anim_control;
+}
+
+std::vector<AnimControl*> Actor::get_anim_controls(bool is_all, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
+    const boost::optional<std::string>& lod_name, bool allow_async_bind)
+{
+    std::vector<AnimControl*> controls;
+    LODDictType::iterator iter;
+    LODDictType::iterator iter_end;
+
+    std::vector<std::string> part_name_list = part_name;
+    build_LOD_dict_items(part_name_list, iter, iter_end, lod_name);
+
+    for (; iter != iter_end; ++iter)
+    {
+        const std::string& lod_name = iter->first;
+        auto& part_dict = iter->second;
+
+        std::vector<PartDictType::iterator> anim_dict_items;
+
+        build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
+
+        if (is_all)
+        {
+            // anim_name: True to indicate all anims.
+            for (auto&& iter : anim_dict_items)
+            {
+                auto& anim_dict = iter->second;
+
+                std::vector<std::string> names;
+                names.reserve(anim_dict.size());
+                for (auto&& key_val : anim_dict)
+                    names.push_back(key_val.first);
+
+                if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
+                    return {};
+            }
+        }
+        else if (anim_name.empty())
+        {
+            // get all playing animations
+            for (const auto& iter : anim_dict_items)
+            {
+                for (const auto& key_anim : iter->second)
+                {
+                    if (key_anim.second.anim_control && key_anim.second.anim_control->is_playing())
+                        controls.push_back(key_anim.second.anim_control);
+                }
+            }
+        }
+        else
+        {
+            // get the named animation(s) only.
+            for (auto&& iter : anim_dict_items)
+            {
+                if (!build_controls_from_anim_name(controls, anim_name, iter->second, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
+                    return {};
+            }
+        }
+    }
+
+    return controls;
 }
 
 }
