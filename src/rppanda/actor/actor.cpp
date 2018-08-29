@@ -480,9 +480,9 @@ boost::optional<double> Actor::get_frame_rate(const std::vector<std::string>& an
     return controls[0]->get_frame_rate();
 }
 
-boost::optional<double> Actor::get_frame_rate(bool, const std::vector<std::string>& part_name)
+boost::optional<double> Actor::get_any_frame_rate(const std::vector<std::string>& part_name)
 {
-    const auto& controls = get_anim_controls(true, part_name);
+    const auto& controls = get_all_anim_controls(part_name);
     if (controls.empty())
         return {};
 
@@ -498,9 +498,9 @@ boost::optional<double> Actor::get_base_frame_rate(const std::vector<std::string
     return controls[0]->get_anim()->get_base_frame_rate();
 }
 
-boost::optional<double> Actor::get_base_frame_rate(bool, const std::vector<std::string>& part_name)
+boost::optional<double> Actor::get_any_base_frame_rate(const std::vector<std::string>& part_name)
 {
-    const auto& controls = get_anim_controls(true, part_name);
+    const auto& controls = get_all_anim_controls(part_name);
     if (controls.empty())
         return {};
 
@@ -519,13 +519,12 @@ boost::optional<double> Actor::get_play_rate(const std::vector<std::string>& ani
     return {};
 }
 
-
-boost::optional<double> Actor::get_play_rate(bool, const std::vector<std::string>& part_name)
+boost::optional<double> Actor::get_any_play_rate(const std::vector<std::string>& part_name)
 {
     if (!anim_control_dict_.empty())
     {
         // use the first lod
-        const auto& controls = get_anim_controls(true, part_name);
+        const auto& controls = get_all_anim_controls(part_name);
         if (!controls.empty())
             return controls[0]->get_play_rate();
     }
@@ -538,9 +537,9 @@ void Actor::set_play_rate(double rate, const std::vector<std::string>& anim_name
         control->set_play_rate(rate);
 }
 
-void Actor::set_play_rate(double rate, bool, const std::vector<std::string>& part_name)
+void Actor::set_all_play_rate(double rate, const std::vector<std::string>& part_name)
 {
-    for (auto control : get_anim_controls(true, part_name))
+    for (auto control : get_all_anim_controls(part_name))
         control->set_play_rate(rate);
 }
 
@@ -559,10 +558,10 @@ boost::optional<double> Actor::get_duration(const std::vector<std::string>& anim
     return ((to_frame.value() + 1) - from_frame.value()) / anim_control->get_frame_rate();
 }
 
-boost::optional<double> Actor::get_duration(bool, const std::vector<std::string>& part_name,
+boost::optional<double> Actor::get_any_duration(const std::vector<std::string>& part_name,
     boost::optional<double> from_frame, boost::optional<double> to_frame)
 {
-    const auto& controls = get_anim_controls(true, part_name);
+    const auto& controls = get_all_anim_controls(part_name);
     if (controls.empty())
         return {};
 
@@ -582,9 +581,9 @@ boost::optional<int> Actor::get_num_frames(const std::vector<std::string>& anim_
     return controls[0]->get_num_frames();
 }
 
-boost::optional<int> Actor::get_num_frames(bool, const std::vector<std::string>& part_name)
+boost::optional<int> Actor::get_any_num_frames(const std::vector<std::string>& part_name)
 {
-    const auto& controls = get_anim_controls(true, part_name);
+    const auto& controls = get_all_anim_controls(part_name);
     if (controls.empty())
         return {};
     return controls[0]->get_num_frames();
@@ -599,16 +598,16 @@ boost::optional<double> Actor::get_frame_time(const std::vector<std::string>& an
     return anim_time.value() * frame / num_frames.value();
 }
 
-boost::optional<double> Actor::get_frame_time(bool, double frame, const std::vector<std::string>& part_name)
+boost::optional<double> Actor::get_any_frame_time(double frame, const std::vector<std::string>& part_name)
 {
-    auto num_frames = get_num_frames(true, part_name);
-    auto anim_time = get_duration(true, part_name);
+    auto num_frames = get_any_num_frames(part_name);
+    auto anim_time = get_any_duration(part_name);
     if (!num_frames || !anim_time)
         return {};
     return anim_time.value() * frame / num_frames.value();
 }
 
-std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
+std::vector<AnimControl*> Actor::get_anim_controls(bool is_all, const std::vector<std::string>& anim_name, const std::vector<std::string>& part_name,
     const boost::optional<std::string>& lod_name, bool allow_async_bind)
 {
     std::vector<AnimControl*> controls;
@@ -627,7 +626,23 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
 
         build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
 
-        if (anim_name.empty())
+        if (is_all)
+        {
+            // anim_name: True to indicate all anims.
+            for (auto&& iter : anim_dict_items)
+            {
+                auto& anim_dict = iter->second;
+
+                std::vector<std::string> names;
+                names.reserve(anim_dict.size());
+                for (auto&& key_val : anim_dict)
+                    names.push_back(key_val.first);
+
+                if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
+                    return {};
+            }
+        }
+        else if (anim_name.empty())
         {
             // get all playing animations
             for (const auto& iter: anim_dict_items)
@@ -644,49 +659,9 @@ std::vector<AnimControl*> Actor::get_anim_controls(const std::vector<std::string
             // get the named animation(s) only.
             for (auto&& iter: anim_dict_items)
             {
-                auto& anim_dict = iter->second;
-
-                if (!build_controls_from_anim_name(controls, anim_name, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
+                if (!build_controls_from_anim_name(controls, anim_name, iter->second, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
                     return {};
             }
-        }
-    }
-
-    return controls;
-}
-
-std::vector<AnimControl*> Actor::get_anim_controls(bool, const std::vector<std::string>& part_name,
-    const boost::optional<std::string>& lod_name, bool allow_async_bind)
-{
-    std::vector<AnimControl*> controls;
-    LODDictType::iterator iter;
-    LODDictType::iterator iter_end;
-
-    std::vector<std::string> part_name_list = part_name;
-    build_LOD_dict_items(part_name_list, iter, iter_end, lod_name);
-
-    for (; iter != iter_end; ++iter)
-    {
-        const std::string& lod_name = iter->first;
-        auto& part_dict = iter->second;
-
-        std::vector<PartDictType::iterator> anim_dict_items;
-
-        build_anim_dict_items(anim_dict_items, part_name_list, part_dict);
-
-        // get the named animation(s) only.
-        for (auto&& iter: anim_dict_items)
-        {
-            auto& anim_dict = iter->second;
-
-            // anim_name: True to indicate all anims.
-            std::vector<std::string> names;
-            names.reserve(anim_dict.size());
-            for (auto&& key_val: anim_dict)
-                names.push_back(key_val.first);
-
-            if (!build_controls_from_anim_name(controls, names, anim_dict, part_dict, part_name_list, iter->first, lod_name, allow_async_bind))
-                return {};
         }
     }
 
@@ -1129,11 +1104,11 @@ void Actor::set_control_effect(const std::vector<std::string>& anim_name, float 
         control->get_part()->set_control_effect(control, effect);
 }
 
-void Actor::set_control_effect(bool, float effect,
+void Actor::set_all_control_effect(float effect,
     const std::vector<std::string>& part_name,
     boost::optional<std::string> lod_name)
 {
-    for (auto&& control : get_anim_controls(true, part_name, lod_name))
+    for (auto&& control : get_all_anim_controls(part_name, lod_name))
         control->get_part()->set_control_effect(control, effect);
 }
 
