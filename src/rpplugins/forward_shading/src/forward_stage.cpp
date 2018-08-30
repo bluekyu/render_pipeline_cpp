@@ -46,6 +46,10 @@ void ForwardStage::create()
 
     _forward_cam = new Camera("ForwardShadingCam");
     _forward_cam->set_lens(rpcore::Globals::base->get_cam_lens());
+
+    CPT(RenderState) cam_is = _forward_cam->get_initial_state();
+    _forward_cam->set_initial_state(cam_is->set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_alpha)));
+
     _forward_cam_np = rpcore::Globals::base->get_cam().attach_new_node(_forward_cam);
 
     _target = create_target("ForwardShading");
