@@ -186,7 +186,7 @@ void TagStateManager::register_camera(StateContainer& container, Camera* source)
 
     // Construct an initial state which also disables color write, additionally
     // to the ColorWriteAttrib on each unique state.
-    CPT(RenderState) state = RenderState::make_empty();
+    CPT(RenderState) state = source->get_initial_state();
 
     if (!container.write_color) {
         state = state->set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 10000);
