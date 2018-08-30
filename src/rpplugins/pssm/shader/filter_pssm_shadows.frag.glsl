@@ -71,6 +71,12 @@ void main() {
     Material m = unpack_material(GBuffer);
 #endif
 
+    if (m.shading_model == SHADING_MODEL_UNLIT)
+    {
+        result = 1.0f;
+        return;
+    }
+
     // Early out, different optimizations
 #if STEREO_MODE
     bool early_out = is_skybox(m, gl_Layer) || sun_vector.z < SUN_VECTOR_HORIZON;

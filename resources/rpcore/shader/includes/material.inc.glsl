@@ -32,6 +32,7 @@
 #define SHADING_MODEL_TRANSPARENT 3
 #define SHADING_MODEL_SKIN 4
 #define SHADING_MODEL_FOLIAGE 5
+#define SHADING_MODEL_UNLIT 6
 
 // Pandas material representation
 struct Panda3DMaterial {

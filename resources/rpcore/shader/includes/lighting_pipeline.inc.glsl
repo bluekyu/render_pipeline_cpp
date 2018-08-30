@@ -169,9 +169,14 @@ vec3 shade_material_from_tile_buffer(Material m, ivec3 tile) {
         return vec3(0);
     #endif
 
-    // Skip emissive materials
-    if (m.shading_model == SHADING_MODEL_EMISSIVE)
-        return vec3(0);
+    // Skip emissive && unlit materials
+    switch (m.shading_model)
+    {
+        case SHADING_MODEL_EMISSIVE:
+            return vec3(0);
+        case SHADING_MODEL_UNLIT:
+            return m.basecolor;
+    }
 
     vec3 shading_result = vec3(0);
 
