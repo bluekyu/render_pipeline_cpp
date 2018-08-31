@@ -32,6 +32,10 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL PointsNode
 {
 public:
+    static constexpr const char* square_point_effect_source = "/$$rp/effects/square_point.yaml";
+    static constexpr const char* disk_point_effect_source = "/$$rp/effects/disk_point.yaml";
+    static constexpr const char* sphere_point_effect_source = "/$$rp/effects/sphere_point.yaml";
+
     static void set_square_point_effect(RenderPipeline& pipeline, NodePath np);
     static void set_disk_point_effect(RenderPipeline& pipeline, NodePath np);
     static void set_sphere_point_effect(RenderPipeline& pipeline, NodePath np);

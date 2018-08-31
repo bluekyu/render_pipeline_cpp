@@ -624,7 +624,7 @@ void RenderPipeline::Impl::init_globals()
 
 void RenderPipeline::Impl::set_default_effect()
 {
-    self_.set_effect(Globals::render, "/$$rp/effects/default.yaml", {}, -10);
+    self_.set_effect(Globals::render, default_effect_source, {}, -10);
 }
 
 void RenderPipeline::Impl::adjust_camera_settings()
@@ -1027,6 +1027,17 @@ void RenderPipeline::set_effect(const NodePath& nodepath, const Filename& effect
     impl_->internal_set_effect(nodepath, effect_src, options, sort);
 }
 
+std::tuple<Filename, Effect::OptionType> RenderPipeline::get_transparent_effect() const
+{
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
+void RenderPipeline::set_transparent_effect(const NodePath& nodepath, int sort)
+{
+    set_effect(nodepath, default_effect_source,
+        { {"render_forward", true}, {"render_gbuffer", false} }, sort);
+}
+
 void RenderPipeline::clear_effect(NodePath& nodepath)
 {
     impl_->clear_effect(nodepath);
@@ -1150,8 +1161,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                     "problematic mesh is: {}", geom_np.get_name()));
                 continue;
             }
-            set_effect(geom_np, "/$$rp/effects/default.yaml",
-                {{"render_forward", true}, {"render_gbuffer", false}}, 100);
+            set_transparent_effect(geom_np);
         }
     }
 

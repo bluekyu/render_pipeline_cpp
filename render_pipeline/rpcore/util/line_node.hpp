@@ -32,6 +32,9 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL LineNode
 {
 public:
+    static constexpr const char* vertex_color_line_effect_source = "/$$rp/effects/vcolor_line.yaml";
+    static constexpr const char* line_effect_source = "/$$rp/effects/line.yaml";
+
     /**
      * Set vertex-color line effect.
      *

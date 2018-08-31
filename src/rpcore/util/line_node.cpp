@@ -27,13 +27,13 @@ namespace rpcore {
 
 void LineNode::set_vertex_color_line_effect(RenderPipeline& pipeline, NodePath np)
 {
-    pipeline.set_effect(np, "/$$rp/effects/vcolor_line.yaml");
+    pipeline.set_effect(np, vertex_color_line_effect_source);
 }
 
 void LineNode::set_line_effect(RenderPipeline& pipeline, NodePath np)
 {
     if (pipeline.is_stereo_mode())
-        pipeline.set_effect(np, "/$$rp/effects/line.yaml");
+        pipeline.set_effect(np, line_effect_source);
 }
 
 }

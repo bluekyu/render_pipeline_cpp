@@ -167,17 +167,17 @@ void PointsNode::Impl::set_active_point_count(int count)
 
 void PointsNode::set_square_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    pipeline.set_effect(np, "/$$rp/effects/square_point.yaml");
+    pipeline.set_effect(np, square_point_effect_source);
 }
 
 void PointsNode::set_disk_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    pipeline.set_effect(np, "/$$rp/effects/disk_point.yaml");
+    pipeline.set_effect(np, disk_point_effect_source);
 }
 
 void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline, NodePath np)
 {
-    pipeline.set_effect(np, "/$$rp/effects/sphere_point.yaml");
+    pipeline.set_effect(np, sphere_point_effect_source);
 }
 
 PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,

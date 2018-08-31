@@ -67,6 +67,8 @@ public:
         stereo = 3
     };
 
+    static constexpr const char* default_effect_source = "/$$rp/effects/default.yaml";
+
 public:
     static const std::string& get_version();
     static bool get_version(int& major, int& minor, int& patch);
@@ -161,6 +163,9 @@ public:
      */
     void set_effect(const NodePath& nodepath, const Filename& effect_src,
         const Effect::OptionType& options={}, int sort=30);
+
+    std::tuple<Filename, Effect::OptionType> get_transparent_effect() const;
+    void set_transparent_effect(const NodePath& nodepath, int sort = 100);
 
     /**
      * Clear applied effect on the node path.
