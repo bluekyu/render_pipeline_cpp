@@ -242,7 +242,7 @@ public:
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
     std::unique_ptr<std::chrono::system_clock::time_point> first_frame_;
-    std::vector<std::tuple<NodePath, Filename, Effect::OptionType, int>> applied_effects;
+    std::map<NodePath, std::tuple<Filename, Effect::OptionType, int>> applied_effects_;
     StereoMode stereo_mode_;
 
     bool pre_showbase_initialized = false;
@@ -341,19 +341,14 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const Filename
 
 void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
 {
-    auto iter = applied_effects.begin();
-    const auto iter_end = applied_effects.end();
-    for (; iter != iter_end; ++iter)
-    {
-        if (std::get<0>(*iter) == nodepath)
-            break;
-    }
-
-    if (iter == iter_end)
+    auto found = applied_effects_.find(nodepath);
+    if (found == applied_effects_.end())
         return;
 
+    const auto& effect = found->second;
+
     // override options
-    auto options = std::get<2>(*iter);      // copy
+    auto options = std::get<1>(effect);      // copy
     const auto& default_options = Effect::get_default_options();
     options.insert(default_options.begin(), default_options.end());
 
@@ -373,7 +368,7 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
         }
         nodepath.show(tag_mgr_->get_mask(stage));
     }
-    applied_effects.erase(iter);
+    applied_effects_.erase(found);
 }
 
 AsyncTask::DoneStatus RenderPipeline::Impl::clear_state_cache(rppanda::FunctionalTask* task)
@@ -527,9 +522,9 @@ bool RenderPipeline::Impl::create(rppanda::ShowBase* base, PandaFramework* frame
 
 void RenderPipeline::Impl::apply_custom_shaders()
 {
-    self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects.size()));
-    for (auto&& args: applied_effects)
-        internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
+    self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects_.size()));
+    for (const auto& np_effect : applied_effects_)
+        internal_set_effect(np_effect.first, std::get<0>(np_effect.second), std::get<1>(np_effect.second), std::get<2>(np_effect.second));
 }
 
 void RenderPipeline::Impl::create_managers()
@@ -1015,11 +1010,21 @@ size_t RenderPipeline::load_ies_profile(const Filename& filename)
     return impl_->ies_loader_->load(filename);
 }
 
+bool RenderPipeline::has_effect(const NodePath& nodepath) const noexcept
+{
+    return impl_->applied_effects_.find(nodepath) != impl_->applied_effects_.end();
+}
+
+const std::tuple<Filename, Effect::OptionType, int>& RenderPipeline::get_effect(const NodePath& nodepath) const
+{
+    return impl_->applied_effects_.at(nodepath);
+}
+
 void RenderPipeline::set_effect(const NodePath& nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
-    decltype(Impl::applied_effects)::value_type args(NodePath(nodepath), effect_src, options, sort);
-    impl_->applied_effects.push_back(args);
-    impl_->internal_set_effect(std::get<0>(args), std::get<1>(args), std::get<2>(args), std::get<3>(args));
+    decltype(Impl::applied_effects_)::mapped_type args(effect_src, options, sort);
+    impl_->applied_effects_.insert_or_assign(nodepath, args);
+    impl_->internal_set_effect(nodepath, effect_src, options, sort);
 }
 
 void RenderPipeline::clear_effect(NodePath& nodepath)
@@ -1087,7 +1092,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
 
     bool tristrips_warning_emitted = false;
     NodePathCollection gn_npc = scene.find_all_matches("**/+GeomNode");
-    if (!scene.is_empty() && scene.node()->is_of_type(GeomNode::get_class_type()))
+    if (scene.node()->is_of_type(GeomNode::get_class_type()))
         gn_npc.add_path(scene);
     for (int k=0, k_end=gn_npc.get_num_paths(); k < k_end; ++k)
     {

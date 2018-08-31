@@ -148,6 +148,9 @@ public:
      */
     size_t load_ies_profile(const Filename& filename);
 
+    bool has_effect(const NodePath& nodepath) const noexcept;
+    const std::tuple<Filename, Effect::OptionType, int>& get_effect(const NodePath& nodepath) const;
+
     /**
      * Sets an effect to the given object, using the specified options.
      * Check out the effect documentation for more information about possible
