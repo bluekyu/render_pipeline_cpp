@@ -25,10 +25,11 @@
 #include <unordered_map>
 #include <memory>
 
+#include <filename.h>
+
 #include <render_pipeline/rpcore/rpobject.hpp>
 
 class Shader;
-class Filename;
 
 namespace rpcore {
 
@@ -42,6 +43,9 @@ class RENDER_PIPELINE_DECL Effect : public RPObject
 {
 public:
     using OptionType = std::unordered_map<std::string, bool>;
+    using SourceType = std::pair<Filename, OptionType>;
+
+    static const SourceType default_effect_source;
 
 public:
     static std::shared_ptr<Effect> load(RenderPipeline& pipeline, const Filename& filename, const OptionType& options);

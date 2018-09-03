@@ -23,7 +23,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/config.hpp>
+#include <render_pipeline/rpcore/effect.hpp>
 
 namespace rpcore {
 
@@ -32,13 +32,9 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL PointsNode
 {
 public:
-    static constexpr const char* square_point_effect_source = "/$$rp/effects/square_point.yaml";
-    static constexpr const char* disk_point_effect_source = "/$$rp/effects/disk_point.yaml";
-    static constexpr const char* sphere_point_effect_source = "/$$rp/effects/sphere_point.yaml";
-
-    static void set_square_point_effect(RenderPipeline& pipeline, NodePath np);
-    static void set_disk_point_effect(RenderPipeline& pipeline, NodePath np);
-    static void set_sphere_point_effect(RenderPipeline& pipeline, NodePath np);
+    static const Effect::SourceType square_point_effect_source;
+    static const Effect::SourceType disk_point_effect_source;
+    static const Effect::SourceType sphere_point_effect_source;
 
 public:
     PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius = 1.0f,

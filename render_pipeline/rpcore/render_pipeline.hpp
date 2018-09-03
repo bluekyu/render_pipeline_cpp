@@ -67,8 +67,6 @@ public:
         stereo = 3
     };
 
-    static constexpr const char* default_effect_source = "/$$rp/effects/default.yaml";
-
 public:
     static const std::string& get_version();
     static bool get_version(int& major, int& minor, int& patch);
@@ -151,7 +149,7 @@ public:
     size_t load_ies_profile(const Filename& filename);
 
     bool has_effect(const NodePath& nodepath) const noexcept;
-    const std::tuple<Filename, Effect::OptionType, int>& get_effect(const NodePath& nodepath) const;
+    const std::pair<Effect::SourceType, int>& get_effect(const NodePath& nodepath) const;
 
     /**
      * Sets an effect to the given object, using the specified options.
@@ -162,10 +160,8 @@ public:
      * sort parameter).
      */
     void set_effect(const NodePath& nodepath, const Filename& effect_src,
-        const Effect::OptionType& options={}, int sort=30);
-
-    std::tuple<Filename, Effect::OptionType> get_transparent_effect() const;
-    void set_transparent_effect(const NodePath& nodepath, int sort = 100);
+        const Effect::OptionType& options = {}, int sort = 30);
+    void set_effect(const NodePath& nodepath, const Effect::SourceType& source, int sort = 30);
 
     /**
      * Clear applied effect on the node path.
@@ -232,6 +228,11 @@ private:
 inline bool RenderPipeline::is_stereo_mode() const
 {
     return get_stereo_mode() != StereoMode::none;
+}
+
+inline void RenderPipeline::set_effect(const NodePath& nodepath, const Effect::SourceType& source, int sort)
+{
+    set_effect(nodepath, source.first, source.second, sort);
 }
 
 /** Get bool value from given flatten path in pipeline setting. */

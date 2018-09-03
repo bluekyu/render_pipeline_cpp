@@ -49,6 +49,7 @@
 #include "render_pipeline/rpcore/mount_manager.hpp"
 #include "render_pipeline/rpcore/light_manager.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
+#include "render_pipeline/rpcore/util/transparent_node.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 #include "render_pipeline/rpcore/image.hpp"
@@ -242,7 +243,7 @@ public:
     rplibs::YamlFlatType settings;
     LVecBase2i last_window_dims;
     std::unique_ptr<std::chrono::system_clock::time_point> first_frame_;
-    std::map<NodePath, std::tuple<Filename, Effect::OptionType, int>> applied_effects_;
+    std::map<NodePath, std::pair<Effect::SourceType, int>> applied_effects_;
     StereoMode stereo_mode_;
 
     bool pre_showbase_initialized = false;
@@ -348,7 +349,7 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
     const auto& effect = found->second;
 
     // override options
-    auto options = std::get<1>(effect);      // copy
+    auto options = effect.first.second;      // copy
     const auto& default_options = Effect::get_default_options();
     options.insert(default_options.begin(), default_options.end());
 
@@ -424,7 +425,12 @@ AsyncTask::DoneStatus RenderPipeline::Impl::plugin_post_render_update(rppanda::F
 void RenderPipeline::Impl::handle_window_event(const Event* ev)
 {
     showbase_->window_event(ev);
-    LVecBase2i window_dims(showbase_->get_win()->get_size());
+
+    auto win = showbase_->get_win();
+    if (!win)
+        return;
+
+    LVecBase2i window_dims(win->get_size());
     if (window_dims != last_window_dims && window_dims != Globals::native_resolution)
     {
         last_window_dims = window_dims;
@@ -436,7 +442,7 @@ void RenderPipeline::Impl::handle_window_event(const Event* ev)
             window_dims.set_x(window_dims.get_x() - (window_dims.get_x() & 0x3));
             window_dims.set_y(window_dims.get_y() - (window_dims.get_y() & 0x3));
             WindowProperties props = WindowProperties::size(window_dims.get_x(), window_dims.get_y());
-            showbase_->get_win()->request_properties(props);
+            win->request_properties(props);
         }
 
         self_.debug(fmt::format("Resizing to {} x {}", window_dims.get_x(), window_dims.get_y()));
@@ -524,7 +530,10 @@ void RenderPipeline::Impl::apply_custom_shaders()
 {
     self_.debug(fmt::format("Re-applying {} custom shaders", applied_effects_.size()));
     for (const auto& np_effect : applied_effects_)
-        internal_set_effect(np_effect.first, std::get<0>(np_effect.second), std::get<1>(np_effect.second), std::get<2>(np_effect.second));
+    {
+        const auto& effect_souce = np_effect.second.first;
+        internal_set_effect(np_effect.first, effect_souce.first, effect_souce.second, np_effect.second.second);
+    }
 }
 
 void RenderPipeline::Impl::create_managers()
@@ -624,7 +633,7 @@ void RenderPipeline::Impl::init_globals()
 
 void RenderPipeline::Impl::set_default_effect()
 {
-    self_.set_effect(Globals::render, default_effect_source, {}, -10);
+    self_.set_effect(Globals::render, Effect::default_effect_source, -10);
 }
 
 void RenderPipeline::Impl::adjust_camera_settings()
@@ -1015,27 +1024,16 @@ bool RenderPipeline::has_effect(const NodePath& nodepath) const noexcept
     return impl_->applied_effects_.find(nodepath) != impl_->applied_effects_.end();
 }
 
-const std::tuple<Filename, Effect::OptionType, int>& RenderPipeline::get_effect(const NodePath& nodepath) const
+const std::pair<Effect::SourceType, int>& RenderPipeline::get_effect(const NodePath& nodepath) const
 {
     return impl_->applied_effects_.at(nodepath);
 }
 
 void RenderPipeline::set_effect(const NodePath& nodepath, const Filename& effect_src, const Effect::OptionType& options, int sort)
 {
-    decltype(Impl::applied_effects_)::mapped_type args(effect_src, options, sort);
+    decltype(Impl::applied_effects_)::mapped_type args({effect_src, options}, sort);
     impl_->applied_effects_.insert_or_assign(nodepath, args);
     impl_->internal_set_effect(nodepath, effect_src, options, sort);
-}
-
-std::tuple<Filename, Effect::OptionType> RenderPipeline::get_transparent_effect() const
-{
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-}
-
-void RenderPipeline::set_transparent_effect(const NodePath& nodepath, int sort)
-{
-    set_effect(nodepath, default_effect_source,
-        { {"render_forward", true}, {"render_gbuffer", false} }, sort);
 }
 
 void RenderPipeline::clear_effect(NodePath& nodepath)
@@ -1161,7 +1159,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                     "problematic mesh is: {}", geom_np.get_name()));
                 continue;
             }
-            set_transparent_effect(geom_np);
+            TransparentNode(geom_np).set_effect(*this);
         }
     }
 
