@@ -37,7 +37,7 @@ init:
 - sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
 - ps: pushd $env:VCPKG_ROOT
 - cmd: git pull --quiet
-- git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
+- git checkout -qf 40510c3aafc3d96876aaa57e42e2bbac801b25d7
 - sh: ./bootstrap-vcpkg.sh > /dev/null
 - cmd: .\bootstrap-vcpkg.bat > nul
 - ps: popd
