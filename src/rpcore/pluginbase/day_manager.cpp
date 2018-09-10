@@ -77,7 +77,7 @@ void DayTimeManager::set_time(float time)
 void DayTimeManager::set_time(const std::string& time)
 {
     std::smatch match;
-    if (std::regex_match(time, match, std::regex("^([0-9]{2}):([0-9]{2})$")))
+    if (std::regex_match(time, match, std::regex("^([0-9]{1,2}):([0-9]{1,2})$")))
     {
         impl_->time_ = (std::stoi(match[1]) * 60.0f + std::stoi(match[2])) / (24.0f * 60.0f);
     }
