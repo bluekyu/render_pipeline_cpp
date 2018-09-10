@@ -130,7 +130,7 @@ build_script:
 
 # Ubuntu
 - sh: >-
-    cmake -G "$CMAKE_GENERATOR" -Wno-dev ..
+    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
@@ -139,7 +139,7 @@ build_script:
 
 # Visual Studio
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
+    cmake .. -G "%CMAKE_GENERATOR%" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/render_pipeline_cpp"
