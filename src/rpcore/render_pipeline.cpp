@@ -755,11 +755,13 @@ void RenderPipeline::Impl::create_common_defines()
         defines["CONST_ARRAY"] = std::string("");
 
     // Provide driver vendor as a define
-    std::string vendor = showbase_->get_win()->get_gsg()->get_driver_vendor();
-    std::transform(vendor.begin(), vendor.end(), vendor.begin(), [](std::string::value_type c) { return std::tolower(c); });
-    defines["IS_NVIDIA"] = std::string(vendor.find("nvidia") != std::string::npos ? "1" : "0");
-    defines["IS_AMD"] = std::string(vendor.find("amd") != std::string::npos ? "1" : "0");
-    defines["IS_INTEL"] = std::string(vendor.find("intel") != std::string::npos ? "1" : "0");
+    const std::string& vendor = showbase_->get_win()->get_gsg()->get_driver_vendor();
+    defines["IS_NVIDIA"] = std::string(vendor.find("NVIDIA") != std::string::npos ? "1" : "0");
+    defines["IS_AMD"] = std::string(vendor.find("ATI") != std::string::npos ? "1" : "0");
+    defines["IS_INTEL"] = std::string(vendor.find("Intel") != std::string::npos ? "1" : "0");
+
+    if (defines["IS_NVIDIA"] == "0" && defines["IS_AMD"] == "0" && defines["IS_INTEL"] == "0")
+        self_.warn(fmt::format("Unsupported driver vendor is detected in Render Pipeline: {}", vendor));
 
     defines["REFERENCE_MODE"] = std::string(self_.get_setting<bool>("pipeline.reference_mode", false) ? "1" : "0");
 
