@@ -26,6 +26,13 @@
 
  namespace rpcore {
 
+ inline bool TagStateManager::has_state(const std::string& state_name) const
+ {
+     if (state_name == "gbuffer")
+         return true;
+     return _containers.find(state_name) != _containers.end();
+ }
+
 /**
  * @brief Registers a new camera which renders a certain pass
  * @details This registers a new camera which will be used to render the given

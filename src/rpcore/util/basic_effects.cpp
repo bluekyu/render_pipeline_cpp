@@ -37,7 +37,10 @@ const Effect::SourceType& get_transparent_effect_source()
 {
     static const Effect::SourceType effect_source = {
         "/$$rp/effects/default.yaml",
-        { {"render_forward", true}, {"render_gbuffer", false} }
+        {
+            {Effect::pass_option_prefix + std::string("forward"), true},
+            {Effect::pass_option_prefix + std::string("gbuffer"), false}
+        }
     };
 
     return effect_source;

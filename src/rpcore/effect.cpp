@@ -116,11 +116,11 @@ public:
 
 Effect::OptionType Effect::Impl::default_options_ =
 {
-    {"render_gbuffer", true},
-    {"render_shadow", true},
-    {"render_voxelize", true},
-    {"render_envmap", true},
-    {"render_forward", false},
+    {pass_option_prefix + std::string("gbuffer"), true},
+    {pass_option_prefix + std::string("shadow"), true},
+    {pass_option_prefix + std::string("voxelize"), true},
+    {pass_option_prefix + std::string("envmap"), true},
+    {pass_option_prefix + std::string("forward"), false},
     {"alpha_testing", true},
     {"normal_mapping", true},
     {"parallax_mapping", false},
@@ -437,15 +437,16 @@ const Effect::OptionType& Effect::get_default_options()
     return Impl::default_options_;
 }
 
-void Effect::add_pass(const PassType& pass)
+const std::vector<Effect::PassType>& Effect::get_passes()
 {
-    Impl::passes_.push_back(pass);
+    return Impl::passes_;
 }
 
-void Effect::add_option(const std::string& option_name, bool flag)
+void Effect::add_pass(const PassType& pass, bool flag)
 {
-    if (!Impl::default_options_.insert({option_name, flag}).second)
-        RPObject::global_warn("Effect", fmt::format("The option is already added: {}", option_name));
+    Impl::passes_.push_back(pass);
+    if (!Impl::default_options_.insert({ pass_option_prefix + pass.id, flag }).second)
+        RPObject::global_warn("Effect", fmt::format("The pass is already added: {}", pass.id));
 }
 
 Effect::Effect(): RPObject("Effect"), impl_(std::make_unique<Impl>())

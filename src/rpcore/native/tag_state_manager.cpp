@@ -49,10 +49,10 @@ TagStateManager::TagStateManager(NodePath main_cam_node) {
     DCAST(Camera, _main_cam_node.node())->set_camera_mask(BitMask32::bit(1));
 
     // Init containers
-    _containers["shadow"]   = StateContainer("Shadows",  2, false);
-    _containers["voxelize"] = StateContainer("Voxelize", 3, false);
-    _containers["envmap"]   = StateContainer("Envmap",   4, true);
-    _containers["forward"]  = StateContainer("Forward",  5, true);
+    add_state("shadow",     "Shadows",  2, false);
+    add_state("voxelize",   "Voxelize", 3, false);
+    add_state("envmap",     "Envmap",   4, true);
+    add_state("forward",    "Forward",  5, true);
 }
 
 /**
@@ -61,6 +61,11 @@ TagStateManager::TagStateManager(NodePath main_cam_node) {
  */
 TagStateManager::~TagStateManager() {
     cleanup_states();
+}
+
+void TagStateManager::add_state(const std::string& state_name, const std::string& tag_name, int mask, bool write_color)
+{
+    _containers[state_name] = StateContainer(tag_name, mask, write_color);
 }
 
 /**
@@ -151,11 +156,8 @@ void TagStateManager::cleanup_states() {
     DCAST(Camera, _main_cam_node.node())->clear_tag_states();
 
     // Clear the containers
-    // XXX: Just iterate over the _container map
-    cleanup_container_states(_containers["shadow"]);
-    cleanup_container_states(_containers["voxelize"]);
-    cleanup_container_states(_containers["envmap"]);
-    cleanup_container_states(_containers["forward"]);
+    for (auto&& state: _containers)
+        cleanup_container_states(state.second);
 }
 
 /**

@@ -3,6 +3,7 @@
  * RenderPipeline
  *
  * Copyright (c) 2014-2016 tobspr <tobias.springer1@gmail.com>
+ * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +25,7 @@
  *
  */
 
-#ifndef TAG_STATE_MANAGER_H
-#define TAG_STATE_MANAGER_H
+#pragma once
 
 #include "pandabase.h"
 #include "bitMask.h"
@@ -53,48 +53,49 @@ namespace rpcore {
  */
 class RENDER_PIPELINE_DECL TagStateManager
 {
-    PUBLISHED:
-        TagStateManager(NodePath main_cam_node);
-        ~TagStateManager();
+public:
+    TagStateManager(NodePath main_cam_node);
+    ~TagStateManager();
 
-        inline void apply_state(const std::string& state, NodePath np, Shader* shader, const std::string &name, int sort);
-        void cleanup_state(const std::string& state, NodePath np);
-        void cleanup_states();
+    bool has_state(const std::string& state_name) const;
+    void add_state(const std::string& state_name, const std::string& tag_name, int mask, bool write_color);
 
-        inline void register_camera(const std::string& state, Camera* source);
-        inline void unregister_camera(const std::string& state, Camera* source);
-        inline BitMask32 get_mask(const std::string &container_name);
+    inline void apply_state(const std::string& state, NodePath np, Shader* shader, const std::string &name, int sort);
+    void cleanup_state(const std::string& state, NodePath np);
+    void cleanup_states();
 
-    private:
-        typedef std::vector<Camera*> CameraList;
-        typedef pmap<std::string, CPT(RenderState)> TagStateList;
+    inline void register_camera(const std::string& state, Camera* source);
+    inline void unregister_camera(const std::string& state, Camera* source);
+    inline BitMask32 get_mask(const std::string &container_name);
 
-        struct StateContainer {
-            CameraList cameras;
-            TagStateList tag_states;
-            std::string tag_name;
-            BitMask32 mask;
-            bool write_color;
+private:
+    typedef std::vector<Camera*> CameraList;
+    typedef pmap<std::string, CPT(RenderState)> TagStateList;
 
-            StateContainer() {};
-            StateContainer(const std::string &tag_name, size_t mask, bool write_color)
-                : tag_name(tag_name), mask(BitMask32::bit(mask)), write_color(write_color) {};
-        };
+    struct StateContainer {
+        CameraList cameras;
+        TagStateList tag_states;
+        std::string tag_name;
+        BitMask32 mask;
+        bool write_color;
 
-        void apply_state(StateContainer& container, NodePath np, Shader* shader,
-                         const std::string& name, int sort);
-        void cleanup_container_states(StateContainer& container);
-        void register_camera(StateContainer &container, Camera* source);
-        void unregister_camera(StateContainer &container, Camera* source);
+        StateContainer() {};
+        StateContainer(const std::string &tag_name, int mask, bool write_color)
+            : tag_name(tag_name), mask(BitMask32::bit(mask)), write_color(write_color) {};
+    };
 
-        typedef pmap<std::string, StateContainer> ContainerList;
-        ContainerList _containers;
+    void apply_state(StateContainer& container, NodePath np, Shader* shader,
+                        const std::string& name, int sort);
+    void cleanup_container_states(StateContainer& container);
+    void register_camera(StateContainer &container, Camera* source);
+    void unregister_camera(StateContainer &container, Camera* source);
 
-        NodePath _main_cam_node;
+    typedef pmap<std::string, StateContainer> ContainerList;
+    ContainerList _containers;
+
+    NodePath _main_cam_node;
 };
 
 }
 
 #include "tag_state_manager.I"
-
-#endif // TAG_STATE_MANAGER_H

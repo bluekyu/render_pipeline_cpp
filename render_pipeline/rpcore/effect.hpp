@@ -55,13 +55,14 @@ public:
         Filename template_geometry;
     };
 
+    static constexpr const char* pass_option_prefix = "render_";
+
 public:
     static std::shared_ptr<Effect> load(RenderPipeline& pipeline, const Filename& filename, const OptionType& options);
     static const OptionType& get_default_options();
-    static void add_pass(const PassType& pass);
 
-    /** This  */
-    static void add_option(const std::string& option_name, bool flag);
+    static const std::vector<PassType>& get_passes();
+    static void add_pass(const PassType& pass, bool flag);
 
     Effect();
     Effect(const Effect&) = delete;

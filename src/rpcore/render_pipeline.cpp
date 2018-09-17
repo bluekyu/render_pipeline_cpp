@@ -80,8 +80,6 @@ namespace rpcore {
 class RenderPipeline::Impl
 {
 public:
-    static const char* stages[];
-
     Impl(RenderPipeline& self);
     ~Impl();
 
@@ -265,8 +263,6 @@ public:
     std::unique_ptr<IESProfileLoader> ies_loader_;
 };
 
-const char* RenderPipeline::Impl::stages[] = { "gbuffer", "shadow", "voxelize", "envmap", "forward" };
-
 RenderPipeline::Impl::Impl(RenderPipeline& self): self_(self)
 {
 }
@@ -310,10 +306,20 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const Filename
         return;
     }
 
-    for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
+    const auto& passes = Effect::get_passes();
+    for (int i = 0, i_end = static_cast<int>(passes.size()); i < i_end; ++i)
     {
-        const std::string& stage = stages[i];
-        if (!effect->get_option("render_" + stage))
+        const std::string& stage = passes[i].id;
+        const bool stage_option = effect->get_option(Effect::pass_option_prefix + stage);
+
+        if (!tag_mgr_->has_state(stage))
+        {
+            if (stage_option)
+                self_.warn(fmt::format("Stage ({}) does NOT exist in TagStateManager!", stage));
+            continue;
+        }
+
+        if (!stage_option)
         {
             nodepath.hide(tag_mgr_->get_mask(stage));
         }
@@ -332,7 +338,8 @@ void RenderPipeline::Impl::internal_set_effect(NodePath nodepath, const Filename
         }
     }
 
-    if (effect->get_option("render_gbuffer") && effect->get_option("render_forward"))
+    if (effect->get_option(Effect::pass_option_prefix + std::string("gbuffer")) &&
+        effect->get_option(Effect::pass_option_prefix + std::string("forward")))
     {
         self_.error("You cannot render an object forward and deferred at the "
             "same time! Either use render_gbuffer or use render_forward, "
@@ -353,10 +360,14 @@ void RenderPipeline::Impl::clear_effect(NodePath& nodepath)
     const auto& default_options = Effect::get_default_options();
     options.insert(default_options.begin(), default_options.end());
 
-    for (size_t i = 0; i < std::extent<decltype(stages)>::value; ++i)
+    const auto& passes = Effect::get_passes();
+    for (const auto& pass : passes)
     {
-        const std::string& stage = stages[i];
-        if (options.at("render_" + stage))
+        const std::string& stage = pass.id;
+        if (!tag_mgr_->has_state(stage))
+            continue;
+
+        if (options.at(Effect::pass_option_prefix + stage))
         {
             if (stage == "gbuffer")
             {
@@ -816,9 +827,9 @@ NodePath RenderPipeline::Impl::create_default_skybox(float size)
     skybox.set_bin("unsorted", 10000);
 
     self_.set_effect(skybox, "/$$rp/effects/skybox.yaml", {
-        { "render_shadow", false },
-        { "render_envmap", false },
-        { "render_voxelize", false },
+        { Effect::pass_option_prefix + std::string("shadow"), false },
+        { Effect::pass_option_prefix + std::string("envmap"), false },
+        { Effect::pass_option_prefix + std::string("voxelize"), false },
         { "alpha_testing", false },
         { "normal_mapping", false },
         { "parallax_mapping", false },
