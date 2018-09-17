@@ -412,6 +412,12 @@ std::string Effect::Impl::process_shader_template(Effect& self, const Filename& 
 }
 
 // ************************************************************************************************
+
+const Effect::SourceType Effect::default_effect_source = {
+    "/$$rp/effects/default.yaml",
+    {}
+};
+
 std::shared_ptr<Effect> Effect::load(RenderPipeline& pipeline, const Filename& filename, const OptionType& options)
 {
     const std::string& effect_hash = Impl::generate_hash(filename, options);

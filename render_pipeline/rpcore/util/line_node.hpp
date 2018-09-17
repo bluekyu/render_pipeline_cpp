@@ -23,7 +23,7 @@
 
 #include <nodePath.h>
 
-#include <render_pipeline/rpcore/config.hpp>
+#include <render_pipeline/rpcore/effect.hpp>
 
 namespace rpcore {
 
@@ -32,6 +32,12 @@ class RenderPipeline;
 class RENDER_PIPELINE_DECL LineNode
 {
 public:
+    static const Effect::SourceType vertex_color_line_effect_source;
+    static const Effect::SourceType line_effect_source;
+
+public:
+    LineNode(NodePath np);
+
     /**
      * Set vertex-color line effect.
      *
@@ -39,7 +45,7 @@ public:
      * This effect enable Panda3D line geometry with color like LineSegs to work.
      * However, you should set Render Pipeline material to the node.
      */
-    static void set_vertex_color_line_effect(RenderPipeline& pipeline, NodePath np);
+    void set_vertex_color_line_effect(RenderPipeline& pipeline);
 
     /**
      * Set line effect.
@@ -48,7 +54,10 @@ public:
      * However, Panda3D line geometry does not work in only stereo mode.
      * Therefore, in non-stereo mode, this does not apply the effect actually.
      */
-    static void set_line_effect(RenderPipeline& pipeline, NodePath np);
+    void set_line_effect(RenderPipeline& pipeline);
+
+private:
+    NodePath np_;
 };
 
 }

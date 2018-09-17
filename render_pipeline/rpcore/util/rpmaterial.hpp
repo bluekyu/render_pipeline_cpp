@@ -39,6 +39,7 @@ public:
         TRANSPARENT_MODEL,
         SKIN_MODEL,
         FOLIAGE_MODEL,
+        UNLIT_MODEL,
     };
 
 public:

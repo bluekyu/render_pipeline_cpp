@@ -64,6 +64,8 @@ public:
 
     const std::vector<std::string>& get_text() const;
 
+    void clear_text();
+
     /** Prepare to change text. */
     void prepare_text(const std::string& text);
     void prepare_text(const std::vector<std::string>& text_list);
@@ -76,6 +78,8 @@ public:
     void set_text(const std::vector<std::string>& text_list);
 
     const std::vector<std::shared_ptr<ImageInput>>& get_image() const;
+
+    void clear_image();
 
     /** Prepare to change image. */
     void prepare_image(const std::shared_ptr<ImageInput>& image);

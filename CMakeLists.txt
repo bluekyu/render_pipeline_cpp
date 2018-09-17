@@ -87,6 +87,9 @@ endif()
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE
 
+    # Visual Studio 2017 15.8 fixes align bug, which needs macro definition:
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},19.15>>:_ENABLE_EXTENDED_ALIGNED_STORAGE=1>
+
     # used for plugin postfix.
     $<$<CONFIG:Debug>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_DEBUG_POSTFIX}">
     $<$<CONFIG:RelWithDebInfo>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}">

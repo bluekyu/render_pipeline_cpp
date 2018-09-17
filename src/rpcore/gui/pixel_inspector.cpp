@@ -50,9 +50,10 @@ void PixelInspector::show()
 
 void PixelInspector::update()
 {
-    if (Globals::base->get_win()->is_of_type(GraphicsWindow::get_class_type()))
+    auto win = Globals::base->get_win();
+    if (win && win->is_of_type(GraphicsWindow::get_class_type()))
     {
-        const MouseData& mouse = Globals::base->get_win()->get_pointer(0);
+        const MouseData& mouse = win->get_pointer(0);
         if (mouse.get_in_window())
         {
             LVecBase3f pos(mouse.get_x(), 1, -mouse.get_y());

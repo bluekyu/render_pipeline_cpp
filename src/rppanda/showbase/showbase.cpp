@@ -87,7 +87,6 @@ public:
     Messenger* messenger_ = nullptr;
     TaskManager* task_mgr_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
-    GraphicsWindow* win_ = nullptr;
 
     std::unique_ptr<SfxPlayer> sfx_player_;
     PT(AudioManager) sfx_manager_;
@@ -245,8 +244,6 @@ void ShowBase::Impl::initailize(ShowBase* self)
 
     if (want_render_2dp_)
         self->setup_render_2dp();
-
-    win_ = window_framework_->get_graphics_window();
 
     // Open the default rendering window.
     self->open_default_window();
@@ -642,7 +639,7 @@ GraphicsEngine* ShowBase::get_graphics_engine() const
 
 GraphicsWindow* ShowBase::get_win() const
 {
-    return impl_->win_;
+    return impl_->window_framework_->get_graphics_window();
 }
 
 const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list() const
@@ -704,18 +701,18 @@ bool ShowBase::open_default_window()
 {
     open_main_window();
 
-    return impl_->win_ != nullptr;
+    return get_win() != nullptr;
 }
 
 void ShowBase::open_main_window()
 {
-    if (impl_->win_)
+    if (auto win = get_win())
     {
-        if (impl_->win_->is_of_type(GraphicsWindow::get_class_type()))
+        if (win->is_of_type(GraphicsWindow::get_class_type()))
             setup_mouse();
 
         if (impl_->want_render_2dp_)
-            make_camera2dp(impl_->win_);
+            make_camera2dp(win);
     }
 }
 
@@ -845,7 +842,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
     float aspect_ratio = 1.0f;
 
     if (!win)
-        win = impl_->win_;
+        win = get_win();
 
     if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
@@ -875,7 +872,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 LVecBase2i ShowBase::get_size(GraphicsOutput* win) const
 {
     if (!win)
-        win = impl_->win_;
+        win = get_win();
 
     if (win && win->has_size())
     {
@@ -1041,7 +1038,7 @@ Filename ShowBase::screenshot(const std::string& name_prefix, bool default_filen
 {
     Filename filename = impl_->get_screenshot_filename(name_prefix, default_filename);
 
-    bool saved = impl_->win_->save_screenshot(filename, image_comment);
+    bool saved = get_win()->save_screenshot(filename, image_comment);
     if (saved)
     {
         impl_->send_screenshot_event(filename);

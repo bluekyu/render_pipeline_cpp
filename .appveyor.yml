@@ -19,6 +19,7 @@ skip_commits:
 image:
 - Ubuntu
 - Visual Studio 2015
+- Visual Studio 2017 Preview
 - Visual Studio 2017
 
 
@@ -37,7 +38,7 @@ init:
 - sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
 - ps: pushd $env:VCPKG_ROOT
 - cmd: git pull --quiet
-- git checkout -qf 7baf25786d2d4adb827ec4531d2fc2cb1fb0d5a6
+- git checkout -qf 40510c3aafc3d96876aaa57e42e2bbac801b25d7
 - sh: ./bootstrap-vcpkg.sh > /dev/null
 - cmd: .\bootstrap-vcpkg.bat > nul
 - ps: popd
@@ -64,9 +65,12 @@ matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
     allow_failures:
         - image: Ubuntu # Sometimes, Ubuntu fails without any reason.
+        - image: Visual Studio 2017 Preview
     exclude:
         - configuration: Debug
           image: Visual Studio 2015
+        - configuration: Debug
+          image: Visual Studio 2017 Preview
 
 
 # build cache to preserve files/folders between builds
@@ -126,7 +130,7 @@ build_script:
 
 # Ubuntu
 - sh: >-
-    cmake -G "$CMAKE_GENERATOR" -Wno-dev ..
+    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
@@ -135,7 +139,7 @@ build_script:
 
 # Visual Studio
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
+    cmake .. -G "%CMAKE_GENERATOR%" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/render_pipeline_cpp"
@@ -225,5 +229,6 @@ for:
     matrix:
         only:
             - image: Visual Studio 2017
+            - image: Visual Studio 2017 Preview
     environment:
         CMAKE_GENERATOR: Visual Studio 15 2017 Win64

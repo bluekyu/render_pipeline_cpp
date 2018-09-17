@@ -165,20 +165,9 @@ void PointsNode::Impl::set_active_point_count(int count)
 
 // ************************************************************************************************
 
-void PointsNode::set_square_point_effect(RenderPipeline& pipeline, NodePath np)
-{
-    pipeline.set_effect(np, "/$$rp/effects/square_point.yaml");
-}
-
-void PointsNode::set_disk_point_effect(RenderPipeline& pipeline, NodePath np)
-{
-    pipeline.set_effect(np, "/$$rp/effects/disk_point.yaml");
-}
-
-void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline, NodePath np)
-{
-    pipeline.set_effect(np, "/$$rp/effects/sphere_point.yaml");
-}
+const Effect::SourceType PointsNode::square_point_effect_source = { "/$$rp/effects/square_point.yaml", {} };
+const Effect::SourceType PointsNode::disk_point_effect_source = { "/$$rp/effects/disk_point.yaml", {} };
+const Effect::SourceType PointsNode::sphere_point_effect_source = { "/$$rp/effects/sphere_point.yaml", {} };
 
 PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
     GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>())
@@ -214,17 +203,17 @@ float PointsNode::get_radius() const
 
 void PointsNode::set_square_point_effect(RenderPipeline& pipeline) const
 {
-    set_square_point_effect(pipeline, impl_->points_np_);
+    pipeline.set_effect(impl_->points_np_, square_point_effect_source);
 }
 
 void PointsNode::set_disk_point_effect(RenderPipeline& pipeline) const
 {
-    set_disk_point_effect(pipeline, impl_->points_np_);
+    pipeline.set_effect(impl_->points_np_, disk_point_effect_source);
 }
 
 void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline) const
 {
-    set_sphere_point_effect(pipeline, impl_->points_np_);
+    pipeline.set_effect(impl_->points_np_, sphere_point_effect_source);
 }
 
 const LPoint3f& PointsNode::get_position(int point_index) const

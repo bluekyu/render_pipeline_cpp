@@ -75,6 +75,12 @@ const std::vector<std::string>& DirectFrame::get_text() const
     return static_cast<Options*>(options_.get())->text;
 }
 
+void DirectFrame::clear_text()
+{
+    static_cast<Options*>(options_.get())->text.clear();
+    update_text();
+}
+
 void DirectFrame::prepare_text(const std::string& text)
 {
     static_cast<Options*>(options_.get())->text = std::vector<std::string>({ text });
@@ -136,6 +142,12 @@ void DirectFrame::update_text()
 const std::vector<std::shared_ptr<ImageInput>>& DirectFrame::get_image() const
 {
     return static_cast<Options*>(options_.get())->image;
+}
+
+void DirectFrame::clear_image()
+{
+    static_cast<Options*>(options_.get())->image.clear();
+    update_image();
 }
 
 void DirectFrame::prepare_image(const std::shared_ptr<ImageInput>& image)

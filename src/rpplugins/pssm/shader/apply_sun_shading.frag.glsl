@@ -80,6 +80,13 @@ void main() {
 #else
     Material m = unpack_material(GBuffer);
 #endif
+
+    if (m.shading_model == SHADING_MODEL_UNLIT)
+    {
+        result = scene_color;
+        return;
+    }
+
     vec3 transmittance = vec3(1);
 
     // Compute the sun lighting

@@ -145,6 +145,9 @@ public:
      */
     size_t load_ies_profile(const Filename& filename);
 
+    bool has_effect(const NodePath& nodepath) const noexcept;
+    const std::pair<Effect::SourceType, int>& get_effect(const NodePath& nodepath) const;
+
     /**
      * Sets an effect to the given object, using the specified options.
      * Check out the effect documentation for more information about possible
@@ -154,7 +157,8 @@ public:
      * sort parameter).
      */
     void set_effect(const NodePath& nodepath, const Filename& effect_src,
-        const Effect::OptionType& options={}, int sort=30);
+        const Effect::OptionType& options = {}, int sort = 30);
+    void set_effect(const NodePath& nodepath, const Effect::SourceType& source, int sort = 30);
 
     /**
      * Clear applied effect on the node path.
@@ -221,6 +225,11 @@ private:
 inline bool RenderPipeline::is_stereo_mode() const
 {
     return get_stereo_mode() != StereoMode::none;
+}
+
+inline void RenderPipeline::set_effect(const NodePath& nodepath, const Effect::SourceType& source, int sort)
+{
+    set_effect(nodepath, source.first, source.second, sort);
 }
 
 /** Get bool value from given flatten path in pipeline setting. */

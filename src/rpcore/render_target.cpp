@@ -127,16 +127,16 @@ void RenderTarget::Impl::prepare_render(const NodePath& camera_np)
     {
         Camera* camera = DCAST(Camera, camera_np.node());
 
-        NodePath initial_state("rtis");
-        initial_state.set_state(camera->get_initial_state());
+        CPT(RenderState) cam_is = camera->get_initial_state();
 
         if (aux_count_)
-            initial_state.set_attrib(AuxBitplaneAttrib::make(aux_bits_), 20);
+            cam_is = cam_is->set_attrib(AuxBitplaneAttrib::make(aux_bits_), 20);
 
-        initial_state.set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
+        if (!cam_is->has_attrib(TransparencyAttrib::get_class_slot()))
+            cam_is = cam_is->set_attrib(TransparencyAttrib::make(TransparencyAttrib::M_none), 20);
 
         if (max_color_bits(color_bits_) == 0)
-            initial_state.set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
+            cam_is = cam_is->set_attrib(ColorWriteAttrib::make(ColorWriteAttrib::C_off), 20);
 
         // Disable existing regions of the camera
         for (int k = 0, k_end = camera->get_num_display_regions(); k < k_end; ++k)
@@ -150,7 +150,7 @@ void RenderTarget::Impl::prepare_render(const NodePath& camera_np)
                 source_window_->remove_display_region(region);
         }
 
-        camera->set_initial_state(initial_state.get_state());
+        camera->set_initial_state(cam_is);
         source_display_region_->set_camera(camera_np);
     }
 

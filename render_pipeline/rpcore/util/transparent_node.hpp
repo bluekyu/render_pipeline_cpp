@@ -1,7 +1,7 @@
 /**
  * Render Pipeline C++
  *
- * Copyright (c) 2016-2017 Center of Human-centered Interaction for Coexistence.
+ * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,28 +19,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "render_pipeline/rpcore/util/line_node.hpp"
+#pragma once
 
-#include "render_pipeline/rpcore/render_pipeline.hpp"
+#include <nodePath.h>
+
+#include <render_pipeline/rpcore/effect.hpp>
 
 namespace rpcore {
 
-const Effect::SourceType LineNode::vertex_color_line_effect_source = { "/$$rp/effects/vcolor_line.yaml", {} };
-const Effect::SourceType LineNode::line_effect_source = { "/$$rp/effects/line.yaml", {} };
+class RenderPipeline;
 
-LineNode::LineNode(NodePath np) : np_(np)
+class RENDER_PIPELINE_DECL TransparentNode
 {
-}
+public:
+    static const Effect::SourceType effect_source;
 
-void LineNode::set_vertex_color_line_effect(RenderPipeline& pipeline)
-{
-    pipeline.set_effect(np_, vertex_color_line_effect_source);
-}
+public:
+    TransparentNode(NodePath np);
 
-void LineNode::set_line_effect(RenderPipeline& pipeline)
-{
-    if (pipeline.is_stereo_mode())
-        pipeline.set_effect(np_, line_effect_source);
-}
+    /** Set effect to **current** NodePath */
+    void set_effect(RenderPipeline& pipeline, int sort = 100);
+
+    /** Set effect to NodePath of GeomNode type, not current NodePath. */
+    void set_effect_to_geometry(RenderPipeline& pipeline, int sort = 100);
+
+private:
+    NodePath np_;
+};
 
 }
