@@ -49,7 +49,7 @@
 #include "render_pipeline/rpcore/mount_manager.hpp"
 #include "render_pipeline/rpcore/light_manager.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
-#include "render_pipeline/rpcore/util/transparent_node.hpp"
+#include "render_pipeline/rpcore/util/basic_effects.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 #include "render_pipeline/rpcore/image.hpp"
@@ -633,7 +633,7 @@ void RenderPipeline::Impl::init_globals()
 
 void RenderPipeline::Impl::set_default_effect()
 {
-    self_.set_effect(Globals::render, Effect::default_effect_source, -10);
+    self_.set_effect(Globals::render, get_default_effect_source(), -10);
 }
 
 void RenderPipeline::Impl::adjust_camera_settings()
@@ -1161,7 +1161,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
                     "problematic mesh is: {}", geom_np.get_name()));
                 continue;
             }
-            TransparentNode(geom_np).set_effect(*this);
+            set_effect(geom_np, get_transparent_effect_source(), 100);
         }
     }
 

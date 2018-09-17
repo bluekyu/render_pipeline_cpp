@@ -51,7 +51,7 @@ namespace rpcore {
 static boost::filesystem::path get_canonical_path(const boost::filesystem::path& path)
 {
 #ifdef _WIN32
-    wchar_t path_buffer[32768] = {};
+    wchar_t path_buffer[32767 + 1] = {};
     PathCanonicalizeW(path_buffer, boost::filesystem::absolute(path).native().c_str());
     boost::filesystem::path result(path_buffer);
     if (!boost::filesystem::exists(result))

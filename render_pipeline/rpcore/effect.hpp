@@ -46,8 +46,6 @@ public:
     using OptionType = std::unordered_map<std::string, bool>;
     using SourceType = std::pair<Filename, OptionType>;
 
-    static const SourceType default_effect_source;
-
     struct PassType
     {
         std::string id;

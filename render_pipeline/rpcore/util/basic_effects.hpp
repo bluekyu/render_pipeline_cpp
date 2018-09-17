@@ -1,7 +1,7 @@
 /**
  * Render Pipeline C++
  *
- * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence.
+ * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,30 +21,11 @@
 
 #pragma once
 
-#include <nodePath.h>
-
 #include <render_pipeline/rpcore/effect.hpp>
 
 namespace rpcore {
 
-class RenderPipeline;
-
-class RENDER_PIPELINE_DECL TransparentNode
-{
-public:
-    static const Effect::SourceType effect_source;
-
-public:
-    TransparentNode(NodePath np);
-
-    /** Set effect to **current** NodePath */
-    void set_effect(RenderPipeline& pipeline, int sort = 100);
-
-    /** Set effect to NodePath of GeomNode type, not current NodePath. */
-    void set_effect_to_geometry(RenderPipeline& pipeline, int sort = 100);
-
-private:
-    NodePath np_;
-};
+RENDER_PIPELINE_DECL const Effect::SourceType& get_default_effect_source();
+RENDER_PIPELINE_DECL const Effect::SourceType& get_transparent_effect_source();
 
 }

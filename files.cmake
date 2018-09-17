@@ -123,6 +123,7 @@ set(header_rpcore_stages
 )
 
 set(header_rpcore_util
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/basic_effects.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/cubemap_filter.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/generic.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/line_node.hpp"
@@ -137,7 +138,6 @@ set(header_rpcore_util
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/shader_input_blocks.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/task_scheduler.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/rptextnode.hpp"
-    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/util/transparent_node.hpp"
 )
 
 set(header_rplibs
@@ -326,6 +326,7 @@ set(source_rpcore_stages
 )
 
 set(source_rpcore_util
+    "${PROJECT_SOURCE_DIR}/src/rpcore/util/basic_effects.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/cubemap_filter.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/display_shader_builder.hpp"
@@ -345,7 +346,6 @@ set(source_rpcore_util
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/smooth_connected_curve.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/task_scheduler.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/util/rptextnode.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/util/transparent_node.cpp"
 )
 
 set(source_rplibs
