@@ -33,19 +33,8 @@ init:
     if (($isLinux) -and ($env:CONFIGURATION -eq "Debug") -and (Test-Path env:TRIGGER_NAME)) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-# checkout recent vcpkg
-- sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
-- ps: pushd $env:VCPKG_ROOT
-- cmd: git pull --quiet
-- git checkout -qf 40510c3aafc3d96876aaa57e42e2bbac801b25d7
-- sh: ./bootstrap-vcpkg.sh > /dev/null
-- cmd: .\bootstrap-vcpkg.bat > nul
-- ps: popd
-
 - git --version
 - cmake --version
-- sh: $VCPKG_ROOT/vcpkg version
-- cmd: vcpkg version
 
 
 # environment variables
@@ -79,12 +68,29 @@ cache:
 
 # scripts that run after cloning repository
 install:
+# install packages
 - sh: sudo apt-get update
 - sh: sudo apt-get install --yes --no-install-recommends clang
 - sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libyaml-cpp-dev libassimp-dev
+
+# checkout recent vcpkg
+- sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
+- ps: pushd $env:VCPKG_ROOT
+- cmd: git pull --quiet
+- git checkout -qf 40510c3aafc3d96876aaa57e42e2bbac801b25d7
+- sh: ./bootstrap-vcpkg.sh > /dev/null
+- cmd: .\bootstrap-vcpkg.bat > nul
+- ps: popd
+
+# check vcpkg version
+- sh: $VCPKG_ROOT/vcpkg version
+- cmd: vcpkg version
+
+# install thirdparty libs in vcpkg
 - sh: $VCPKG_ROOT/vcpkg install boost-dll boost-any boost-multi-index fmt spdlog
 - cmd: vcpkg install fmt spdlog yaml-cpp assimp
 
+# download and install panda3d-thirdparty & panda3d
 - ps: mkdir $env:INSTALL_PREFIX
 - ps: pushd $env:INSTALL_PREFIX
 - ps: >-
