@@ -17,7 +17,7 @@ skip_commits:
 
 # Build worker image (VM template)
 image:
-- Ubuntu
+- Ubuntu1804
 - Visual Studio 2015
 - Visual Studio 2017 Preview
 - Visual Studio 2017
@@ -33,7 +33,6 @@ init:
     if (($isLinux) -and ($env:CONFIGURATION -eq "Debug") -and (Test-Path env:TRIGGER_NAME)) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-- sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
 # checkout recent vcpkg
 - sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
 - ps: pushd $env:VCPKG_ROOT
@@ -64,7 +63,7 @@ environment:
 matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
     allow_failures:
-        - image: Ubuntu # Sometimes, Ubuntu fails without any reason.
+        - image: Ubuntu1804     # Sometimes, Ubuntu fails without any reason.
         - image: Visual Studio 2017 Preview
     exclude:
         - configuration: Debug
@@ -81,9 +80,10 @@ cache:
 # scripts that run after cloning repository
 install:
 - sh: sudo apt-get update
-- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev
-- sh: $VCPKG_ROOT/vcpkg install boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp
-- cmd: vcpkg install fmt spdlog yaml-cpp eigen3 assimp
+- sh: sudo apt-get install --yes --no-install-recommends clang
+- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libyaml-cpp-dev libassimp-dev
+- sh: $VCPKG_ROOT/vcpkg install boost-dll boost-any boost-multi-index fmt spdlog
+- cmd: vcpkg install fmt spdlog yaml-cpp assimp
 
 - ps: mkdir $env:INSTALL_PREFIX
 - ps: pushd $env:INSTALL_PREFIX
@@ -98,7 +98,7 @@ install:
 - cmd: 7z x -y panda3d-thirdparty.7z > nul
 - ps: >-
     if ($isLinux) {
-        Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.tar.xz?branch=master&job=Image%3A+Ubuntu%3B+Configuration%3A+' + "$env:CONFIGURATION")
+        Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.tar.xz?branch=master&job=Image%3A+Ubuntu1804%3B+Configuration%3A+' + "$env:CONFIGURATION")
     } else {
         Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
     }
@@ -128,7 +128,7 @@ build_script:
 - ps: mkdir _build
 - ps: pushd _build
 
-# Ubuntu
+# Linux
 - sh: >-
     cmake .. -G "$CMAKE_GENERATOR" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
@@ -156,7 +156,7 @@ build_script:
 test_script:
 
 after_test:
-# Ubuntu
+# Linux
 - sh: cmake --build _build --config $CONFIGURATION --target install
 - sh: pushd "$INSTALL_PREFIX"
 - sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
@@ -202,8 +202,10 @@ for:
 -
     matrix:
         only:
-            - image: Ubuntu
+            - image: Ubuntu1804
     environment:
+        CC: /usr/bin/clang
+        CXX: /usr/bin/clang++
         CMAKE_GENERATOR: Unix Makefiles
         CMAKE_PREFIX_PATH: /home/appveyor/projects/_install;/home/appveyor/projects/_cache
         CACHE_PREFIX: /home/appveyor/projects/_cache
