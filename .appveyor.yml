@@ -96,9 +96,9 @@ install:
 - ps: >-
     if ($isWindows) {
         if ($env:CONFIGURATION -eq "Debug") {
-            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+MixForDebug'
+            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+MixForDebug'
         } else {
-            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Configuration%3A+Release'
+            Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d-thirdparty/artifacts/panda3d-thirdparty.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+Release'
         }
     }
 - cmd: 7z x -y panda3d-thirdparty.7z > nul
@@ -120,10 +120,12 @@ install:
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
+
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Debug
 - Release
+
 
 build:
     parallel: true                  # enable MSBuild parallel builds
