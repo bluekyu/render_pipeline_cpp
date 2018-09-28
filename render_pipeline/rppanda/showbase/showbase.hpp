@@ -119,6 +119,9 @@ public:
     const std::vector<PT(AudioManager)>& get_sfx_manager_list() const;
     AudioManager* get_music_manager() const;
 
+    bool is_main_win_minimized() const;
+    bool is_main_win_foreground() const;
+
     NodePath get_hidden() const;
     NodePath get_render() const;
     NodePath get_render_2d() const;
@@ -126,14 +129,19 @@ public:
     NodePath get_pixel_2d() const;
     NodePath get_render_2dp() const;
     NodePath get_pixel_2dp() const;
-    float get_config_aspect_ratio() const;
+
+    /**
+     * Sets the global aspect ratio of the main window.  Set it
+     * to 0 to restore automatic scaling.
+     */
+    void set_aspect_ratio(double aspect_ratio);
 
     /**
      * Returns the actual aspect ratio of the indicated (or main
      * window), or the default aspect ratio if there is not yet a
      * main window.
      */
-    float get_aspect_ratio(GraphicsOutput* win=nullptr) const;
+    double get_aspect_ratio(GraphicsOutput* win=nullptr) const;
 
     /*
      * Returns the actual size of the indicated(or main
@@ -304,6 +312,14 @@ public:
         const std::string& image_comment="");
 
     void window_event(const Event* ev);
+
+    /**
+     * This function is normally called internally by
+     * windowEvent(), but it may also be called to explicitly adjust
+     * the aspect ratio of the render/render2d DisplayRegion, by a
+     * class that has redefined these.
+     */
+    void adjust_window_aspect_ratio(double aspect_ratio);
 
     void user_exit();
     void finalize_exit();

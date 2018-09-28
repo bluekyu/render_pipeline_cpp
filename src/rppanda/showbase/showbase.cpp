@@ -76,6 +76,7 @@ public:
     void send_screenshot_event(const Filename& filename) const;
 
     void window_event(ShowBase* self, const Event* ev);
+    void adjust_window_aspect_ratio(double aspect_ratio, bool is_event);
 
 public:
     static ShowBase* global_ptr;
@@ -96,9 +97,13 @@ public:
     std::vector<bool> sfx_manager_is_valid_list_;
 
     bool want_render_2dp_;
-    float config_aspect_ratio_;
+    std::unique_ptr<ConfigVariableDouble> config_aspect_ratio_;
+    boost::optional<double> old_aspect_ratio_;
     std::string window_type_;
     bool require_window_;
+
+    bool main_win_minimized_;
+    bool main_win_foreground_;
 
     NodePath hidden_;
 
@@ -109,10 +114,10 @@ public:
     NodePath camera2dp_;
     NodePath cam2dp_;
 
-    float a2dp_top_;
-    float a2dp_bottom_;
-    float a2dp_left_;
-    float a2dp_right_;
+    PN_stdfloat a2dp_top_;
+    PN_stdfloat a2dp_bottom_;
+    PN_stdfloat a2dp_left_;
+    PN_stdfloat a2dp_right_;
 
     NodePath a2dp_top_center_;
     NodePath a2dp_bottom_center_;
@@ -125,10 +130,10 @@ public:
     NodePath a2dp_bottom_right_;
 
     NodePath a2d_background_;
-    float a2d_top_;
-    float a2d_bottom_;
-    float a2d_left_;
-    float a2d_right_;
+    PN_stdfloat a2d_top_;
+    PN_stdfloat a2d_bottom_;
+    PN_stdfloat a2d_left_;
+    PN_stdfloat a2d_right_;
 
     NodePath a2d_top_center_;
     NodePath a2d_top_center_ns_;
@@ -222,9 +227,11 @@ void ShowBase::Impl::initailize(ShowBase* self)
     // If the aspect ratio is 0 or None, it means to infer the
     // aspect ratio from the window size.
     // If you need to know the actual aspect ratio call base.getAspectRatio()
+    config_aspect_ratio_ = std::make_unique<ConfigVariableDouble>("aspect-ratio");
 
-    // aspect_ratio in config_framework.h, but NOT exported.
-    config_aspect_ratio_ = ConfigVariableDouble("aspect-ratio", 0).get_value();
+    // This variable is used to see if the aspect ratio has changed when
+    // we get a window - event.
+    old_aspect_ratio_.reset();
 
     // This is set to the value of the window-type config variable, but may
     // optionally be overridden in the Showbase constructor.  Should either be
@@ -233,6 +240,10 @@ void ShowBase::Impl::initailize(ShowBase* self)
     // window_type in config_framework.h, but NOT exported.
     window_type_ = ConfigVariableString("window-type", "onscreen").get_value();
     require_window_ = ConfigVariableBool("require-window", true).get_value();
+
+    // This is the main, or only window; see winList for a list of *all* windows.
+    main_win_minimized_ = false;
+    main_win_foreground_ = false;
 
     hidden_ = NodePath("hidden");
 
@@ -320,17 +331,17 @@ void ShowBase::Impl::setup_render_2dp(ShowBase* self)
     aspect_2dp_ = render_2dp_.attach_new_node(aspect_2dp_pg_top);
     aspect_2dp_pg_top->set_start_sort(16384);
 
-    const float aspect_ratio = self->get_aspect_ratio();
-    aspect_2dp_.set_scale(1.0f / aspect_ratio, 1.0f, 1.0f);
+    const auto aspect_ratio = self->get_aspect_ratio();
+    aspect_2dp_.set_scale(static_cast<PN_stdfloat>(1 / aspect_ratio), 1, 1);
 
     // The Z position of the top border of the aspect2dp screen.
-    a2dp_top_ = 1.0f;
+    a2dp_top_ = 1;
     // The Z position of the bottom border of the aspect2dp screen.
-    a2dp_bottom_ = -1.0f;
+    a2dp_bottom_ = -1;
     // The X position of the left border of the aspect2dp screen.
-    a2dp_left_ = -aspect_ratio;
+    a2dp_left_ = static_cast<PN_stdfloat>(-aspect_ratio);
     // The X position of the right border of the aspect2dp screen.
-    a2dp_right_ = aspect_ratio;
+    a2dp_right_ = static_cast<PN_stdfloat>(aspect_ratio);
 
     a2dp_top_center_ = aspect_2dp_.attach_new_node("a2dpTopCenter");
     a2dp_bottom_center_ = aspect_2dp_.attach_new_node("a2dpBottomCenter");
@@ -425,7 +436,7 @@ void ShowBase::Impl::setup_render_2d(ShowBase* self)
     a2d_bottom_right_.set_pos(a2d_right_, 0, a2d_bottom_);
     a2d_bottom_right_ns_.set_pos(a2d_right_, 0, a2d_bottom_);
 
-    // pixel2d is created in window framework.
+    // pixel2d is created in WindowFramework.
 }
 
 void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
@@ -518,6 +529,120 @@ void ShowBase::Impl::window_event(ShowBase* self, const Event* ev)
         // If the user closes the main window, we should exit.
         rppanda_showbase_cat.info("User closed main window.");
         self->user_exit();
+    }
+
+    if (properties.get_foreground() && !main_win_foreground_)
+    {
+        main_win_foreground_ = true;
+    }
+    else if (!properties.get_foreground() && main_win_foreground_)
+    {
+        main_win_foreground_ = false;
+    }
+
+    if (properties.get_minimized() && !main_win_minimized_)
+    {
+        // If the main window is minimized, throw an event to
+        // stop the music.
+        main_win_minimized_ = true;
+        messenger_->send("PandaPaused");
+    }
+    else if (!properties.get_minimized() && main_win_minimized_)
+    {
+        // If the main window is restored, throw an event to
+        // restart the music.
+        main_win_minimized_ = false;
+        messenger_->send("PandaRestarted");
+    }
+
+    // If we have not forced the aspect ratio, let's see if it has
+    // changed and update the camera lenses and aspect2d parameters
+    adjust_window_aspect_ratio(self->get_aspect_ratio(), true);
+
+    // pixel2d is resized in WindowFramework::adjust_dimensions
+    if (want_render_2dp_)
+    {
+        if (win->has_size() && win->get_sbs_left_y_size() != 0)
+        {
+            const int xsize = win->get_sbs_left_x_size();
+            const int ysize = win->get_sbs_left_y_size();
+            if (xsize > 0 && ysize > 0)
+                pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
+        }
+        else
+        {
+            const auto& size = self->get_size();
+            const int xsize = size.get_x();
+            const int ysize = size.get_y();
+            if (xsize > 0 && ysize > 0)
+                pixel_2dp_.set_scale(2.0f / xsize, 1.0f, 2.0f / ysize);
+        }
+    }
+}
+
+void ShowBase::Impl::adjust_window_aspect_ratio(double aspect_ratio, bool is_event)
+{
+    const auto config_aspect_ratio = config_aspect_ratio_->get_value();
+    if (config_aspect_ratio)
+        aspect_ratio = config_aspect_ratio;
+
+    if (!old_aspect_ratio_ || aspect_ratio != *old_aspect_ratio_)
+    {
+        old_aspect_ratio_ = aspect_ratio;
+
+        // Fix up some anything that depends on the aspectRatio
+
+        // In C++, WindowFramework::adjust_dimensions adjusts aspect2d, pixel2d and lens.
+        // And TALL case does not exist.
+        if (!is_event)
+            window_framework_->adjust_dimensions();     // already called by event
+        a2d_top_ = 1;
+        a2d_bottom_ = -1;
+        a2d_left_ = static_cast<PN_stdfloat>(-aspect_ratio);
+        a2d_right_ = static_cast<PN_stdfloat>(aspect_ratio);
+        // Don't forget 2dp
+        if (want_render_2dp_)
+        {
+            aspect_2dp_.set_scale(static_cast<PN_stdfloat>(1 / aspect_ratio), 1, 1);
+            a2dp_top_ = 1;
+            a2dp_bottom_ = -1;
+            a2dp_left_ = static_cast<PN_stdfloat>(-aspect_ratio);
+            a2dp_right_ = static_cast<PN_stdfloat>(aspect_ratio);
+        }
+
+        // Reposition the aspect2d marker nodes
+        a2d_top_center_.set_pos(0, 0, a2d_top_);
+        a2d_top_center_ns_.set_pos(0, 0, a2d_top_);
+        a2d_bottom_center_.set_pos(0, 0, a2d_bottom_);
+        a2d_bottom_center_ns_.set_pos(0, 0, a2d_bottom_);
+        a2d_left_center_.set_pos(a2d_left_, 0, 0);
+        a2d_left_center_ns_.set_pos(a2d_left_, 0, 0);
+        a2d_right_center_.set_pos(a2d_right_, 0, 0);
+        a2d_right_center_ns_.set_pos(a2d_right_, 0, 0);
+
+        a2d_top_left_.set_pos(a2d_left_, 0, a2d_top_);
+        a2d_top_left_ns_.set_pos(a2d_left_, 0, a2d_top_);
+        a2d_top_right_.set_pos(a2d_right_, 0, a2d_top_);
+        a2d_top_right_ns_.set_pos(a2d_right_, 0, a2d_top_);
+        a2d_bottom_left_.set_pos(a2d_left_, 0, a2d_bottom_);
+        a2d_bottom_left_ns_.set_pos(a2d_left_, 0, a2d_bottom_);
+        a2d_bottom_right_.set_pos(a2d_right_, 0, a2d_bottom_);
+        a2d_bottom_right_ns_.set_pos(a2d_right_, 0, a2d_bottom_);
+
+        if (want_render_2dp_)
+        {
+            a2dp_top_center_.set_pos(0, 0, a2dp_top_);
+            a2dp_bottom_center_.set_pos(0, 0, a2dp_bottom_);
+            a2dp_left_center_.set_pos(a2dp_left_, 0, 0);
+            a2dp_right_center_.set_pos(a2dp_right_, 0, 0);
+
+            a2dp_top_left_.set_pos(a2dp_left_, 0, a2dp_top_);
+            a2dp_top_right_.set_pos(a2dp_right_, 0, a2dp_top_);
+            a2dp_bottom_left_.set_pos(a2dp_left_, 0, a2dp_bottom_);
+            a2dp_bottom_right_.set_pos(a2dp_right_, 0, a2dp_bottom_);
+        }
+
+        messenger_->send("aspectRatioChanged");
     }
 }
 
@@ -657,6 +782,16 @@ AudioManager* ShowBase::get_music_manager() const
     return impl_->music_manager_;
 }
 
+bool ShowBase::is_main_win_minimized() const
+{
+    return impl_->main_win_minimized_;
+}
+
+bool ShowBase::is_main_win_foreground() const
+{
+    return impl_->main_win_foreground_;
+}
+
 NodePath ShowBase::get_hidden() const
 {
     return impl_->hidden_;
@@ -690,11 +825,6 @@ NodePath ShowBase::get_render_2dp() const
 NodePath ShowBase::get_pixel_2dp() const
 {
     return impl_->pixel_2dp_;
-}
-
-float ShowBase::get_config_aspect_ratio() const
-{
-    return impl_->config_aspect_ratio_;
 }
 
 bool ShowBase::open_default_window()
@@ -833,20 +963,28 @@ void ShowBase::wireframe_off()
     impl_->wireframe_enabled_ = false;
 }
 
-float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
+void ShowBase::set_aspect_ratio(double aspect_ratio)
+{
+    impl_->config_aspect_ratio_->set_value(aspect_ratio);
+    adjust_window_aspect_ratio(get_aspect_ratio());
+}
+
+double ShowBase::get_aspect_ratio(GraphicsOutput* win) const
 {
     // If the config it set, we return that
-    if (impl_->config_aspect_ratio_)
-        return impl_->config_aspect_ratio_;
+    double aspect_ratio = impl_->config_aspect_ratio_->get_value();
+    if (aspect_ratio)
+        return aspect_ratio;
 
-    float aspect_ratio = 1.0f;
+    // see also WindowFramework::adjust_dimensions
+    aspect_ratio = 1;
 
     if (!win)
         win = get_win();
 
     if (win && win->has_size() && win->get_sbs_left_y_size() != 0)
     {
-        aspect_ratio = static_cast<float>(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
+        aspect_ratio = static_cast<double>(win->get_sbs_left_x_size()) / win->get_sbs_left_y_size();
     }
     else
     {
@@ -863,7 +1001,7 @@ float ShowBase::get_aspect_ratio(GraphicsOutput* win) const
         }
 
         if (props.has_size() && props.get_y_size() != 0)
-            aspect_ratio = static_cast<float>(props.get_x_size()) / props.get_y_size();
+            aspect_ratio = static_cast<double>(props.get_x_size()) / props.get_y_size();
     }
 
     return aspect_ratio == 0 ? 1 : aspect_ratio;
@@ -1119,6 +1257,11 @@ Filename ShowBase::screenshot(DisplayRegion* source, const std::string& name_pre
 void ShowBase::window_event(const Event* ev)
 {
     impl_->window_event(this, ev);
+}
+
+void ShowBase::adjust_window_aspect_ratio(double aspect_ratio)
+{
+    impl_->adjust_window_aspect_ratio(aspect_ratio, false);
 }
 
 void ShowBase::user_exit()
