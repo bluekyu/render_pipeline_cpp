@@ -40,8 +40,10 @@ public:
 
     virtual std::string get_value_as_string() const = 0;
     const boost::any& get_value() const { return _value; }
+    const boost::any& get_default() const { return default_; }
 
     virtual void set_value(const YAML::Node& value) = 0;
+    virtual void set_value(const boost::any& value) = 0;
 
     virtual void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const;
@@ -53,6 +55,7 @@ public:
     bool is_shader_runtime() const { return _shader_runtime; }
 
 protected:
+    boost::any default_;
     boost::any _value;
     std::string _type;
     std::string _label;
@@ -73,12 +76,15 @@ class TemplatedType : public BaseType
 public:
     TemplatedType(YAML::Node& data);
 
+    T get_value_as_type() const;
+    T get_default_as_type() const;
+
     std::string get_value_as_string() const override;
     void set_value(const YAML::Node& value) override;
+    void set_value(const boost::any& value) override;
     virtual void set_value(T value);
 
 protected:
-    T _default;
     T _minval;
     T _maxval;
 };
@@ -86,9 +92,9 @@ protected:
 template <class T>
 TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data)
 {
-    _default = data["default"].as<T>();
+    default_ = data["default"].as<T>();
     data.remove("default");
-    _value = _default;
+    _value = default_;
 
     const std::vector<T>& setting_range = data["range"].as<std::vector<T>>();
     _minval = setting_range[0];
@@ -97,15 +103,33 @@ TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data)
 }
 
 template <class T>
+T TemplatedType<T>::get_value_as_type() const
+{
+    return boost::any_cast<T>(_value);
+}
+
+template <class T>
+T TemplatedType<T>::get_default_as_type() const
+{
+    return boost::any_cast<T>(default_);
+}
+
+template <class T>
 std::string TemplatedType<T>::get_value_as_string() const
 {
-    return std::to_string(boost::any_cast<T>(_value));
+    return std::to_string(get_value_as_type());
 }
 
 template <class T>
 void TemplatedType<T>::set_value(const YAML::Node& value)
 {
     set_value(value.as<T>());
+}
+
+template <class T>
+void TemplatedType<T>::set_value(const boost::any& value)
+{
+    set_value(boost::any_cast<T>(value));
 }
 
 template <class T>
@@ -161,13 +185,38 @@ class BoolType : public BaseType
 public:
     BoolType(YAML::Node& data);
 
+    bool get_value_as_type() const;
+    bool get_default_as_type() const;
+
     std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
+
+    /** Accept bool or std::string */
+    void set_value(const boost::any& value) final;
+
     void set_value(bool value) { _value = value; }
 
 private:
-    bool _default;
+    void set_value(const std::string& value);
 };
+
+inline bool BoolType::get_value_as_type() const
+{
+    return boost::any_cast<bool>(_value);
+}
+
+inline bool BoolType::get_default_as_type() const
+{
+    return boost::any_cast<bool>(default_);
+}
+
+inline void BoolType::set_value(const boost::any& value)
+{
+    if (auto v = boost::any_cast<bool>(&value))
+        _value = *v;
+    else if (auto v = boost::any_cast<std::string>(&value))
+        set_value(*v);
+}
 
 // ************************************************************************************************
 /** Enumeration setting type. */
@@ -176,16 +225,41 @@ class EnumType : public BaseType
 public:
     EnumType(YAML::Node& data);
 
+    const std::string& get_value_as_type() const;
+    const std::string& get_default_as_type() const;
+
     std::string get_value_as_string() const final;
+
     void set_value(const YAML::Node& value) final;
+    void set_value(const boost::any& value) final;
     void set_value(const std::string& value);
+
     void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
 private:
     std::vector<std::string> _values;
-    std::string _default;
 };
+
+inline const std::string& EnumType::get_value_as_type() const
+{
+    return *boost::any_cast<std::string>(&_value);
+}
+
+inline const std::string& EnumType::get_default_as_type() const
+{
+    return *boost::any_cast<std::string>(&default_);
+}
+
+inline std::string EnumType::get_value_as_string() const
+{
+    return get_value_as_type();
+}
+
+inline void EnumType::set_value(const boost::any& value)
+{
+    set_value(boost::any_cast<std::string>(value));
+}
 
 // ************************************************************************************************
 /** Type for any 2D or 3D sample sequence. */
@@ -198,20 +272,38 @@ public:
 
     SampleSequenceType(YAML::Node& data);
 
+    const std::string& get_value_as_type() const;
+    const std::string& get_default_as_type() const;
+
     std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
+    void set_value(const boost::any& value) final;
     void set_value(const std::string& value);
 
     std::vector<std::string> get_sequences() const;
 
 private:
     int dimension_;
-    std::string default_;
 };
+
+inline const std::string& SampleSequenceType::get_value_as_type() const
+{
+    return *boost::any_cast<std::string>(&_value);
+}
+
+inline const std::string& SampleSequenceType::get_default_as_type() const
+{
+    return *boost::any_cast<std::string>(&default_);
+}
 
 inline std::string SampleSequenceType::get_value_as_string() const
 {
-    return boost::any_cast<const std::string&>(_value);
+    return get_value_as_type();
+}
+
+inline void SampleSequenceType::set_value(const boost::any& value)
+{
+    set_value(boost::any_cast<std::string>(value));
 }
 
 inline void SampleSequenceType::set_value(const std::string& value)
@@ -232,9 +324,15 @@ class PathType : public BaseType
 public:
     PathType(YAML::Node& data);
 
+    const std::string& get_value_as_type() const;
+    const std::string& get_default_as_type() const;
+
     std::string get_value_as_string() const final;
+
     void set_value(const YAML::Node& value) final;
+    void set_value(const boost::any& value) final;
     void set_value(const std::string& value);
+
     void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const final;
 
@@ -244,9 +342,24 @@ private:
     std::string _base_path;
 };
 
+inline const std::string& PathType::get_value_as_type() const
+{
+    return *boost::any_cast<std::string>(&_value);
+}
+
+inline const std::string& PathType::get_default_as_type() const
+{
+    return *boost::any_cast<std::string>(&default_);
+}
+
 inline std::string PathType::get_value_as_string() const
 {
-    return boost::any_cast<const std::string&>(_value);
+    return get_value_as_type();
+}
+
+inline void PathType::set_value(const boost::any& value)
+{
+    set_value(boost::any_cast<std::string>(value));
 }
 
 inline void PathType::set_value(const std::string& value)

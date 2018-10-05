@@ -148,20 +148,25 @@ void BaseType::add_defines(const std::string& plugin_id, const std::string& sett
 // ************************************************************************************************
 BoolType::BoolType(YAML::Node& data): BaseType(data)
 {
-    _default = data["default"].as<bool>();
+    default_ = data["default"].as<bool>();
     data.remove("default");
 
-    _value = _default;
+    _value = default_;
 }
 
 std::string BoolType::get_value_as_string() const
 {
-    return boost::any_cast<bool>(_value) ? "1" : "0";
+    return get_value_as_type() ? "1" : "0";
 }
 
 void BoolType::set_value(const YAML::Node& value)
 {
-    const std::string& b = boost::to_lower_copy(value.as<std::string>());
+    set_value(value.as<std::string>());
+}
+
+void BoolType::set_value(const std::string& value)
+{
+    const std::string& b = boost::to_lower_copy(value);
     if (b == "true" || b == "1")
         _value = true;
     else
@@ -174,18 +179,13 @@ EnumType::EnumType(YAML::Node& data): BaseType(data)
     _values = data["values"].as<std::vector<std::string>>();
     data.remove("values");
 
-    _default = data["default"].as<std::string>();
+    default_ = data["default"].as<std::string>();
     data.remove("default");
 
-    if (std::find(_values.begin(), _values.end(), _default) == _values.end())
-        throw std::runtime_error(std::string("Enum default not in enum values: ") + _default);
+    if (std::find(_values.begin(), _values.end(), get_default_as_type()) == _values.end())
+        throw std::runtime_error(std::string("Enum default not in enum values: ") + get_default_as_type());
 
-    _value = _default;
-}
-
-std::string EnumType::get_value_as_string() const
-{
-    return boost::any_cast<const std::string&>(_value);
+    _value = default_;
 }
 
 void EnumType::set_value(const YAML::Node& value)
@@ -230,8 +230,8 @@ SampleSequenceType::SampleSequenceType(YAML::Node& data): BaseType(data)
     data.remove("default");
 
     const auto& sequences = get_sequences();
-    if (std::find(sequences.begin(), sequences.end(), default_) == sequences.end())
-        throw std::runtime_error("Not a valid sequence: " + default_);
+    if (std::find(sequences.begin(), sequences.end(), get_default_as_type()) == sequences.end())
+        throw std::runtime_error("Not a valid sequence: " + get_default_as_type());
 
     _value = default_;
 }
