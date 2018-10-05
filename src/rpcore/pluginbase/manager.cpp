@@ -627,11 +627,7 @@ void PluginManager::set_plugin_enabled(const std::string& plugin_id, bool enable
 void PluginManager::reset_plugin_settings(const std::string& plugin_id)
 {
     for (auto&& setting_id_handle : impl_->settings_.at(plugin_id).get<1>())
-    {
-        // TODO
-    }
-
-    error("Not implemented.");
+        setting_id_handle.value->set_value(setting_id_handle.value->get_default());
 }
 
 bool PluginManager::is_plugin_enabled(const std::string& plugin_id) const
