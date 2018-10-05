@@ -115,12 +115,12 @@ void DirectFrame::update_text()
             if (text.empty())
             {
                 // Destroy component
-                boost::any_cast<OnscreenText&>(get_component(component_name)).destroy();
+                boost::any_cast<OnscreenText>(&get_component(component_name))->destroy();
                 remove_component(component_name);
             }
             else
             {
-                boost::any_cast<OnscreenText&>(get_component(component_name)).set_text(text);
+                boost::any_cast<OnscreenText>(&get_component(component_name))->set_text(text);
             }
         }
         else

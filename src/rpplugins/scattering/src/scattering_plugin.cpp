@@ -88,7 +88,7 @@ void ScatteringPlugin::on_stage_setup()
     }
 
     // Load scattering method
-    const std::string method(boost::any_cast<const std::string&>(get_setting("scattering_method")));
+    const std::string method(*boost::any_cast<std::string>(&get_setting("scattering_method")));
 
     debug(std::string("Loading scattering method for '") + method + "'");
 
