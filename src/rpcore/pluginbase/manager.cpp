@@ -75,6 +75,9 @@ public:
     /** Internal method to load a plugin. */
     std::unique_ptr<BasePlugin> load_plugin(const std::string& plugin_id);
 
+    void save_overrides(const Filename& override_path);
+    void save_daytime_overrides(const Filename& override_path);
+
     void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
 
     void load_setting_overrides(const Filename& override_path);
@@ -228,6 +231,63 @@ std::unique_ptr<BasePlugin> PluginManager::Impl::load_plugin(const std::string& 
         self_.error(fmt::format("Plugin error message: {}", err.what()));
         return nullptr;
     }
+}
+
+void PluginManager::Impl::save_overrides(const Filename& override_path)
+{
+    std::string output =
+        "\n# Render Pipeline Plugin Configuration\n"
+         "# Instead of editing this file, prefer to use the Plugin Configurator\n"
+         "# Any formatting and comments will be lost\n\n"
+         "enabled:\n";
+
+    std::vector<std::string> enabled_plugin_ids;
+    std::vector<std::string> plugin_ids;
+
+    enabled_plugin_ids.reserve(settings_.size());
+    plugin_ids.reserve(settings_.size());
+
+    for (const auto& setting: settings_)
+    {
+        bool found = enabled_plugins_.find(setting.first) != enabled_plugins_.end();
+        enabled_plugin_ids.push_back((found ? "A" : "B") + setting.first);
+        plugin_ids.push_back(setting.first);
+    }
+
+    std::sort(enabled_plugin_ids.begin(), enabled_plugin_ids.end());
+    std::sort(plugin_ids.begin(), plugin_ids.end());
+
+    for (const auto& tag: enabled_plugin_ids)
+    {
+        bool found = tag[0] == 'A';
+        const std::string& id = tag.substr(1);
+        output += fmt::format("   {}- {}\n", found ? " " : " # ", id);
+    }
+
+    output += "\n\noverrides:\n";
+
+    for (const auto& id : plugin_ids)
+    {
+        output += std::string(4, ' ') + id + ":\n";
+        for (const auto& setting_id_handle : settings_.at(id).get<1>())
+            output += std::string(8, ' ') + fmt::format("{}: {}\n", setting_id_handle.key, setting_id_handle.value->get_value_as_string());
+        output += "\n";
+    }
+
+    try
+    {
+        (*rppanda::open_write_file(override_path, false, true)) << output;
+    }
+    catch (const std::exception& err)
+    {
+        self_.error(std::string("Error writing plugin setting file: ") + err.what());
+    }
+}
+
+void PluginManager::Impl::save_daytime_overrides(const Filename& override_path)
+{
+    // TODO
+    self_.error("Not implemented.");
 }
 
 void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth)
@@ -544,6 +604,34 @@ void PluginManager::load_daytime_overrides(const Filename& override_path)
             found->value->set_control_points(control_points);
         }
     }
+}
+
+void PluginManager::save_overrides(const Filename& override_path)
+{
+    impl_->save_overrides(override_path);
+}
+
+void PluginManager::save_daytime_overrides(const Filename& override_path)
+{
+    impl_->save_daytime_overrides(override_path);
+}
+
+void PluginManager::set_plugin_enabled(const std::string& plugin_id, bool enabled)
+{
+    if (enabled)
+        impl_->enabled_plugins_.insert(plugin_id);
+    else
+        impl_->enabled_plugins_.erase(plugin_id);
+}
+
+void PluginManager::reset_plugin_settings(const std::string& plugin_id)
+{
+    for (auto&& setting_id_handle : impl_->settings_.at(plugin_id).get<1>())
+    {
+        // TODO
+    }
+
+    error("Not implemented.");
 }
 
 bool PluginManager::is_plugin_enabled(const std::string& plugin_id) const

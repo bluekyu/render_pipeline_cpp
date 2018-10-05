@@ -105,6 +105,21 @@ public:
      */
     void load_daytime_overrides(const Filename& override_path);
 
+    /** Saves all overrides to the given file. */
+    void save_overrides(const Filename& override_path);
+
+    /** Saves all time of day overrides to the given file. */
+    void save_daytime_overrides(const Filename& override_path);
+
+    /**
+     * Sets whether a plugin is enabled or not, thus should be loaded when
+     * the pipeline starts or not.
+     */
+    void set_plugin_enabled(const std::string& plugin_id, bool enabled);
+
+    /** Resets all settings of a given plugin. */
+    void reset_plugin_settings(const std::string& plugin_id);
+
     /** Returns whether a plugin is currently enabled and loaded. */
     bool is_plugin_enabled(const std::string& plugin_id) const;
 
