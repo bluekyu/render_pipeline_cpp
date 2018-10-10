@@ -15,7 +15,7 @@ steps:
 - task: CMake@1
   inputs:
     #workingDirectory: 'build'
-    cmakeArgs: .. -G '$(cmakeGenerator)' -Wno-dev -Thost=x64 -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+    cmakeArgs: .. -G "$(cmakeGenerator)" -Wno-dev -Thost=x64 -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
 
 - task: CMake@1
   inputs:
