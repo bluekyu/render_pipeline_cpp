@@ -1,0 +1,130 @@
+variables:
+  REPO_NAME: 'render_pipeline_cpp'
+
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'VS2017-Win2016'
+
+  strategy:
+    matrix:
+      vc140-release:
+        BUILD_TOOLSET_VERSION: '140'
+        BUILD_CONFIGURATION: 'release'
+      vc141-debug:
+        BUILD_TOOLSET_VERSION: '141'
+        BUILD_CONFIGURATION: 'debug'
+      vc141-release:
+        BUILD_TOOLSET_VERSION: '141'
+        BUILD_CONFIGURATION: 'release'
+
+  variables:
+    CMAKE_GENERATOR: 'Visual Studio 15 2017 Win64'
+    VCPKG_ROOT: '$(Build.BinariesDirectory)/vcpkg'
+
+  steps:
+  # initialize vcpkg
+  - script: git clone https://bluekyu@dev.azure.com/bluekyu/rpcpp-devops/_git/vcpkg
+    displayName: 'Clone vcpkg'
+    workingDirectory: '$(Build.BinariesDirectory)'
+
+  # download artifacts
+  - task: DownloadBuildArtifacts@0
+    displayName: Download vcpkg
+    inputs:
+      buildType: 'specific'
+      project: rpcpp-devops
+      pipeline: vcpkg
+      specificBuildWithTriggering: true
+      downloadType: 'single'
+      artifactName: 'vcpkg-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
+      downloadPath: '$(Build.BinariesDirectory)'
+
+  # extract vcpkg cache
+  - task: ExtractFiles@1
+    displayName: Restore vcpkg cache
+    inputs:
+      archiveFilePatterns: '$(Build.BinariesDirectory)/vcpkg-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)/vcpkg-installed.7z'
+      destinationFolder: '$(VCPKG_ROOT)'
+      cleanDestinationFolder: false
+
+  # download artifacts
+  - task: DownloadBuildArtifacts@0
+    displayName: Download panda3d-thirdparty
+    inputs:
+      buildType: 'specific'
+      project: rpcpp-devops
+      pipeline: panda3d-thirdparty
+      specificBuildWithTriggering: true
+      downloadType: 'single'
+      artifactName: 'panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
+      downloadPath: '$(Build.BinariesDirectory)'
+
+  # download artifacts
+  - task: DownloadBuildArtifacts@0
+    displayName: Download panda3d
+    inputs:
+      buildType: 'specific'
+      project: rpcpp-devops
+      pipeline: panda3d
+      specificBuildWithTriggering: true
+      downloadType: 'single'
+      artifactName: 'panda3d-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
+      downloadPath: '$(Build.BinariesDirectory)'
+
+  # extract artifacts
+  - task: ExtractFiles@1
+    displayName: Extract panda3d-thirdparty
+    inputs:
+      archiveFilePatterns: '$(Build.BinariesDirectory)/panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)/panda3d-thirdparty.7z'
+      destinationFolder: '$(Build.BinariesDirectory)'
+      cleanDestinationFolder: false
+
+  # extract artifacts
+  - task: ExtractFiles@1
+    displayName: Extract panda3d
+    inputs:
+      archiveFilePatterns: '$(Build.BinariesDirectory)/panda3d-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)/panda3d.7z'
+      destinationFolder: '$(Build.BinariesDirectory)'
+      cleanDestinationFolder: false
+
+  # configure & generate
+  - task: CMake@1
+    displayName: CMake Generate
+    env:
+      FREETYPE_DIR: $(Build.BinariesDirectory)\panda3d-thirdparty\win-libs-vc14-x64\freetype
+    inputs:
+      cmakeArgs: >-
+        .. -G "$(CMAKE_GENERATOR)" -Wno-dev -T "v$(BUILD_TOOLSET_VERSION),host=x64"
+        -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake"
+        -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+        -DVCPKG_TARGET_TRIPLET=x64-windows-v$(BUILD_TOOLSET_VERSION)
+        -DCMAKE_INSTALL_PREFIX="$(Build.BinariesDirectory)/$(REPO_NAME)"
+        -Dpanda3d_ROOT:PATH="$(Build.BinariesDirectory)/panda3d"
+
+  # build
+  - task: CMake@1
+    displayName: CMake Build
+    inputs:
+      cmakeArgs: --build . --config $(BUILD_CONFIGURATION)
+
+  # tests
+  #- script: ctest -C $(BUILD_CONFIGURATION) --output-on-failure
+
+  # install
+  - task: CMake@1
+    displayName: CMake Install
+    inputs:
+      cmakeArgs: --build . --config $(BUILD_CONFIGURATION) --target install
+
+  # packaging
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.BinariesDirectory)/$(REPO_NAME)'
+      archiveType: '7z'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(REPO_NAME).7z'
+
+  # publish
+  - task: PublishBuildArtifacts@1
+    inputs:
+      artifactName: '$(REPO_NAME)-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
