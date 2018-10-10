@@ -3,19 +3,21 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
-# CMake Guide:
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/cmake?view=vsts
-
 pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
-  solution: '**/*.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'release'
+  cmakeGenerator: 'Visual Studio 15 2017 Win64'
 
 steps:
 - task: CMake@1
   inputs:
     #workingDirectory: 'build'
-    cmakeArgs: -G "Visual Studio 15 2017 Win64"
+    cmakeArgs: .. -G '$(cmakeGenerator)' -Wno-dev -Thost=x64 -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+
+- task: CMake@1
+  inputs:
+    #workingDirectory: 'build'
+    cmakeArgs: --build . --config $(buildConfiguration)
