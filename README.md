@@ -5,15 +5,15 @@ This project is C++ ported version of [Render Pipeline](https://github.com/tobsp
 And I am developing the project and new features for CR Software Framework (...).
 
 #### Build Status
-| Build Status                 | About                      |
-| :--------------------------: | :------------------------: |
-| [![azure-rpcpp]][azure-link] | Visual Studio 2017         |
-| [![ci-badge]][ci-link]       | Visual Studio 2017 Preview |
+| Build Status                       | About                      |
+| :--------------------------------: | :------------------------: |
+| [![azure-badge]][azure-link]       | Visual Studio 2017         |
+| [![appveyor-badge]][appveyor-link] | Visual Studio 2017 Preview |
 
-[ci-badge]: https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true "AppVeyor build status"
-[ci-link]: https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master "AppVeyor build link"
-[azure-rpcpp]: https://dev.azure.com/bluekyu/rpcpp-devops/_apis/build/status/render_pipeline_cpp/render_pipeline_cpp "Azure Pipelines status"
-[azure-link]: https://dev.azure.com/bluekyu/rpcpp-devops/_build/latest?definitionId=4 "Azure Pipelines link"
+[azure-badge]: https://dev.azure.com/bluekyu/rpcpp-devops/_apis/build/status/render_pipeline_cpp/render_pipeline_cpp "Azure build status"
+[azure-link]: https://dev.azure.com/bluekyu/rpcpp-devops/_build/latest?definitionId=4 "Azure build link"
+[appveyor-badge]: https://ci.appveyor.com/api/projects/status/uo5j9rd751aux6l1/branch/master?svg=true "AppVeyor build status"
+[appveyor-link]: https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp/branch/master "AppVeyor build link"
 
 You can download built files from each Build Page.
 
