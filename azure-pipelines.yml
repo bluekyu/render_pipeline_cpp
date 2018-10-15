@@ -8,9 +8,6 @@ jobs:
 
   strategy:
     matrix:
-      vc140-release:
-        BUILD_TOOLSET_VERSION: '140'
-        BUILD_CONFIGURATION: 'release'
       vc141-debug:
         BUILD_TOOLSET_VERSION: '141'
         BUILD_CONFIGURATION: 'debug'

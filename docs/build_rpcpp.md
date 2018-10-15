@@ -4,6 +4,7 @@
 ## Requirements
 The **Versions** are used by a build system and does **NOT** need to match. You can use another versions.
 
+- C++14
 - Tools
   - CMake (build tool)
   - Windows
