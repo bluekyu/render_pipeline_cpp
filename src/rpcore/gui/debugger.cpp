@@ -337,7 +337,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         Image::REGISTERED_IMAGES.size(),
         tex_memory_count.second,
         RenderTarget::REGISTERED_TARGETS.size(),
-        pipeline->get_plugin_mgr()->get_enabled_plugins_count(),
+        pipeline->get_plugin_mgr()->get_enabled_plugins().size(),
         views,
         active_views
     ));

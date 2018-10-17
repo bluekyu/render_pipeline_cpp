@@ -126,7 +126,7 @@ public:
     /** Initializes all plugin settings as a define, so they can be queried in a shader. */
     void init_defines();
 
-    size_t get_enabled_plugins_count() const noexcept;
+    const std::unordered_set<std::string>& get_enabled_plugins() const;
 
     const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const noexcept;
     const SettingsDataType& get_setting(const std::string& setting_id) const;

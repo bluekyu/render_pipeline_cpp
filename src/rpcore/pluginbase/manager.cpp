@@ -659,9 +659,9 @@ BasePlugin* PluginManager::get_instance(const std::string& plugin_id) const
     return impl_->instances_.at(plugin_id).get();
 }
 
-size_t PluginManager::get_enabled_plugins_count() const noexcept
+const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() const
 {
-    return impl_->enabled_plugins_.size();
+    return impl_->enabled_plugins_;
 }
 
 const PluginManager::SettingsDataType& PluginManager::get_setting(const std::string& setting_id) const
