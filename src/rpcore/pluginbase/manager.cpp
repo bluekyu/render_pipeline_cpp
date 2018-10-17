@@ -22,7 +22,6 @@
 
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
 
-#include <unordered_set>
 #include <regex>
 
 #ifdef _WIN32
