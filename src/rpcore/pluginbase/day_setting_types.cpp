@@ -47,21 +47,19 @@ static const std::unordered_map<std::string, DayBaseTypeIndex> factory ={
  */
 static std::shared_ptr<DayBaseType> make_setting_from_factory(YAML::Node& data)
 {
-    try
-    {
-        factory.at(data["type"].as<std::string>());
-    }
-    catch (const std::out_of_range&)
+    const auto& setting_type = data["type"].as<std::string>();
+    const auto& found = factory.find(setting_type);
+    if (found == factory.end())
     {
         std::ostringstream s;
         s << data["type"];
-        throw std::out_of_range(std::string("Unkown setting type: ") + s.str());
+        throw std::runtime_error(std::string("Unknown setting type: ") + s.str());
     }
 
     std::shared_ptr<DayBaseType> instance = nullptr;
     try
     {
-        switch (factory.at(data["type"].as<std::string>()))
+        switch (found->second)
         {
         case DayBaseTypeIndex::ColorType:
             instance = std::make_shared<ColorType>(data);
@@ -73,8 +71,11 @@ static std::shared_ptr<DayBaseType> make_setting_from_factory(YAML::Node& data)
     }
     catch (const std::exception& err)
     {
-        std::cout << "Exception occured while parsing " << data;
-        throw err;
+        RPObject::global_error("DaySettingTypes", std::string("Parsing error: ") + err.what());
+
+        std::ostringstream s;
+        s << data;
+        throw std::runtime_error("Exception occured while parsing: " + s.str());
     }
 
     return instance;

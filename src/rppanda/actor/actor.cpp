@@ -703,14 +703,11 @@ void Actor::load_anims(const AnimsType& anims, const std::string& part_name, con
     bool first_load = true;
     if (!reload)
     {
-        try
+        const auto found = anim_control_dict_.find(lod_names[0]);
+        if (found != anim_control_dict_.end())
         {
-            anim_control_dict_.at(lod_names[0]).at(part_name);
-            first_load = false;
-        }
-        catch (...)
-        {
-            ;
+            if (found->second.find(part_name) != found->second.end())
+                first_load = false;
         }
     }
 

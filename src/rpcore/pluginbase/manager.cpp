@@ -326,10 +326,17 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
             const auto& key = key_val.first.as<std::string>();
 
             auto found = settings_map.find(key);
-            if (found == settings_map.end())
-                settings_map.insert({ key, make_setting_from_data(key_val.second) });
-            else
-                settings_map.replace(found, { key, make_setting_from_data(key_val.second) });
+            try
+            {
+                if (found == settings_map.end())
+                    settings_map.insert({ key, make_setting_from_data(key_val.second) });
+                else
+                    settings_map.replace(found, { key, make_setting_from_data(key_val.second) });
+            }
+            catch (const std::exception& err)
+            {
+                self_.error(err.what());
+            }
         }
     }
 
@@ -344,10 +351,17 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
                 const auto& key = key_val.first.as<std::string>();
 
                 auto found = day_settings_map.find(key);
-                if (found == day_settings_map.end())
-                    day_settings_map.insert({ key, make_daysetting_from_data(key_val.second) });
-                else
-                    day_settings_map.replace(found, { key, make_daysetting_from_data(key_val.second) });
+                try
+                {
+                    if (found == day_settings_map.end())
+                        day_settings_map.insert({ key, make_daysetting_from_data(key_val.second) });
+                    else
+                        day_settings_map.replace(found, { key, make_daysetting_from_data(key_val.second) });
+                }
+                catch (const std::exception& err)
+                {
+                    self_.error(err.what());
+                }
             }
         }
     }
