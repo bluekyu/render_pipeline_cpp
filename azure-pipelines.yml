@@ -54,7 +54,7 @@ jobs:
       pipeline: panda3d-thirdparty
       specificBuildWithTriggering: true
       downloadType: 'single'
-      artifactName: 'panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
+      artifactName: 'panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-x64-$(BUILD_CONFIGURATION)'
       downloadPath: '$(Build.BinariesDirectory)'
 
   # download artifacts
@@ -73,7 +73,7 @@ jobs:
   - task: ExtractFiles@1
     displayName: Extract panda3d-thirdparty
     inputs:
-      archiveFilePatterns: '$(Build.BinariesDirectory)/panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)/panda3d-thirdparty.7z'
+      archiveFilePatterns: '$(Build.BinariesDirectory)/panda3d-thirdparty-vc$(BUILD_TOOLSET_VERSION)-x64-$(BUILD_CONFIGURATION)/thirdparty.7z'
       destinationFolder: '$(Build.BinariesDirectory)'
       cleanDestinationFolder: false
 
@@ -89,7 +89,7 @@ jobs:
   - task: CMake@1
     displayName: CMake Generate
     env:
-      FREETYPE_DIR: $(Build.BinariesDirectory)\panda3d-thirdparty\win-libs-vc14-x64\freetype
+      FREETYPE_DIR: $(Build.BinariesDirectory)\thirdparty\win-libs-vc14-x64\freetype
     inputs:
       cmakeArgs: >-
         .. -G "$(CMAKE_GENERATOR)" -Wno-dev -T "v$(BUILD_TOOLSET_VERSION),host=x64"
