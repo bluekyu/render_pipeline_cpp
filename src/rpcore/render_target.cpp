@@ -87,6 +87,7 @@ public:
     int depth_bits_ = 0;
     int layers_ = 1;
     Texture::TextureType texture_type_ = Texture::TextureType::TT_2d_texture;
+    boost::optional<GraphicsOutput::RenderTextureMode> rtmode_;
     LVecBase2i size_ = LVecBase2i(-1);
     LVecBase2i size_constraint_ = LVecBase2i(-1);
 };
@@ -376,28 +377,30 @@ bool RenderTarget::Impl::create()
         return false;
     }
 
-    GraphicsOutput::RenderTextureMode rtmode = GraphicsOutput::RTM_bind_or_copy;
-    switch (texture_type_)
+    if (!rtmode_)
     {
-    case Texture::TextureType::TT_2d_texture_array:
-    case Texture::TextureType::TT_3d_texture:
-    case Texture::TextureType::TT_cube_map:
-        rtmode = GraphicsOutput::RTM_bind_layered;
-        break;
+        switch (texture_type_)
+        {
+        case Texture::TextureType::TT_2d_texture_array:
+        case Texture::TextureType::TT_3d_texture:
+        case Texture::TextureType::TT_cube_map:
+            rtmode_ = GraphicsOutput::RTM_bind_layered;
+            break;
 
-    default:
-        break;
+        default:
+            rtmode_ = GraphicsOutput::RTM_bind_or_copy;
+        }
     }
 
     if (depth_bits_)
     {
-        internal_buffer_->add_render_texture(self_.get_depth_tex(), rtmode,
+        internal_buffer_->add_render_texture(self_.get_depth_tex(), *rtmode_,
             GraphicsOutput::RTP_depth);
     }
 
     if (max_color_bits(color_bits_) > 0)
     {
-        internal_buffer_->add_render_texture(self_.get_color_tex(), rtmode,
+        internal_buffer_->add_render_texture(self_.get_color_tex(), *rtmode_,
             GraphicsOutput::RTP_color);
     }
 
@@ -408,7 +411,7 @@ bool RenderTarget::Impl::create()
     for (int k = 0; k < aux_count_; k++)
     {
         int target_mode = aux_prefix + k;
-        internal_buffer_->add_render_texture(self_.get_aux_tex(k), rtmode,
+        internal_buffer_->add_render_texture(self_.get_aux_tex(k), *rtmode_,
             DrawableRegion::RenderTexturePlane(target_mode));
     }
 
@@ -493,7 +496,12 @@ void RenderTarget::set_layers(int layers)
 
 void RenderTarget::set_texture_type(Texture::TextureType tex_type)
 {
-    impl_->texture_type_= tex_type;
+    impl_->texture_type_ = tex_type;
+}
+
+void RenderTarget::set_render_texture_mode(GraphicsOutput::RenderTextureMode rtmode)
+{
+    impl_->rtmode_ = rtmode;
 }
 
 void RenderTarget::set_size(int width, int height) noexcept

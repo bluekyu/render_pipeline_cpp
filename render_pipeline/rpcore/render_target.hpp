@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <graphicsOutput.h>
 #include <texture.h>
 
 #include <unordered_map>
@@ -64,6 +65,12 @@ public:
      * Set texture type for targets.
      */
     void set_texture_type(Texture::TextureType tex_type);
+
+    /**
+     * Set custom RenderTextureMode.
+     * If this is not specified, default is used depends on texture type.
+     */
+    void set_render_texture_mode(GraphicsOutput::RenderTextureMode rtmode);
 
     /**
      * Set layers for textures.
