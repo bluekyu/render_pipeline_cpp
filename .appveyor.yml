@@ -40,9 +40,7 @@ environment:
     # Visual Studio (default)
     CMAKE_PREFIX_PATH: C:\projects\_install;
     INSTALL_PREFIX: C:/projects/_install
-    BOOST_ROOT: C:\Libraries\boost_1_67_0
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
-    VCPKG_DEFAULT_TRIPLET: x64-windows
     VCPKG_ROOT: C:/tools/vcpkg
 
 
@@ -62,8 +60,8 @@ cache:
 install:
 # install packages
 - sh: sudo apt-get update
-- sh: sudo apt-get install --yes --no-install-recommends clang
-- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libyaml-cpp-dev libassimp-dev
+- sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
+- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libassimp-dev
 
 # checkout recent vcpkg
 - sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
@@ -79,8 +77,8 @@ install:
 - cmd: vcpkg version
 
 # install thirdparty libs in vcpkg
-- sh: $VCPKG_ROOT/vcpkg install boost-dll boost-any boost-multi-index fmt spdlog
-- cmd: vcpkg install fmt spdlog yaml-cpp assimp
+- sh: $VCPKG_ROOT/vcpkg install --triplet x64-linux boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp
+- cmd: vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp
 
 # download and install panda3d-thirdparty & panda3d
 - ps: mkdir $env:INSTALL_PREFIX
@@ -130,7 +128,7 @@ build_script:
 
 # Linux
 - sh: >-
-    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev -Thost=x64
+    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
@@ -204,15 +202,11 @@ for:
         only:
             - image: Ubuntu1804
     environment:
-        CC: /usr/bin/clang
-        CXX: /usr/bin/clang++
         CMAKE_GENERATOR: Unix Makefiles
         CMAKE_PREFIX_PATH: /home/appveyor/projects/_install;/home/appveyor/projects/_cache
         CACHE_PREFIX: /home/appveyor/projects/_cache
         INSTALL_PREFIX: /home/appveyor/projects/_install
-        BOOST_ROOT: ""
         FREETYPE_DIR: ""
-        VCPKG_DEFAULT_TRIPLET: x64-linux
         VCPKG_ROOT: /home/appveyor/projects/vcpkg
     cache:
         - /home/appveyor/projects/_cache/ -> .appveyor.yml
