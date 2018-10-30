@@ -61,7 +61,6 @@ install:
 # install packages
 - sh: sudo apt-get update
 - sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
-- sh: sudo update-alternatives --set g++ /usr/bin/g++-8
 - sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libassimp-dev
 
 # checkout recent vcpkg
@@ -129,7 +128,7 @@ build_script:
 
 # Linux
 - sh: >-
-    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev -Thost=x64
+    cmake .. -G "$CMAKE_GENERATOR" -Wno-dev
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
