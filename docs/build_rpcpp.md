@@ -127,7 +127,7 @@ If you want to build with plugins and samples, you can do it using the following
 
 ### 2. CMakeLists.txt File
 ```.cmake
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 project(render_pipeline_projects
     LANGUAGES NONE
 )

@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 
 get_filename_component(RPPLUGINS_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugins_${RPPLUGINS_ID}

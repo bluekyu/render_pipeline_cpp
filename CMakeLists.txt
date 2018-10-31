@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.10.2...3.12)
+cmake_minimum_required(VERSION 3.11.4...3.12)
 project(render_pipeline
     VERSION 0.7.0
     DESCRIPTION "Render Pipeline C++ project"
@@ -131,17 +131,10 @@ set(${PROJECT_NAME}_TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PACKAGE_NAME}")
 
 include(CMakePackageConfigHelpers)
-if(CMAKE_VERSION VERSION_LESS "3.11")
-    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
-        VERSION ${PACKAGE_VERSION}
-        COMPATIBILITY SameMajorVersion
-    )
-else()
-    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
-        VERSION ${PACKAGE_VERSION}
-        COMPATIBILITY SameMinorVersion
-    )
-endif()
+write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY SameMinorVersion
+)
 
 configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-config.cmake.in"
     ${PACKAGE_CONFIG_FILE}
