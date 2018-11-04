@@ -5,10 +5,10 @@ This project is C++ ported version of [Render Pipeline](https://github.com/tobsp
 And I am developing the project and new features for CR Software Framework (...).
 
 #### Build Status
-| Build Status                       | About                      |
-| :--------------------------------: | :------------------------: |
-| [![azure-badge]][azure-link]       | Visual Studio 2017         |
-| [![appveyor-badge]][appveyor-link] | Visual Studio 2017 Preview |
+| Build Status                       | About                                    |
+| :--------------------------------: | :--------------------------------------: |
+| [![azure-badge]][azure-link]       | Visual Studio 2017                       |
+| [![appveyor-badge]][appveyor-link] | Visual Studio 2017 Preview, Ubuntu 18.04 |
 
 [azure-badge]: https://dev.azure.com/bluekyu/rpcpp-devops/_apis/build/status/render_pipeline_cpp/render_pipeline_cpp "Azure build status"
 [azure-link]: https://dev.azure.com/bluekyu/rpcpp-devops/_build/latest?definitionId=4 "Azure build link"

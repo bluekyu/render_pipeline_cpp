@@ -47,8 +47,6 @@ environment:
 # this is how to allow failing jobs in the matrix
 matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
-    allow_failures:
-        - image: Ubuntu1804     # Sometimes, Ubuntu fails without any reason.
     exclude:
         - image: Ubuntu1804
           configuration: Debug
@@ -73,6 +71,7 @@ install:
 - git checkout -qf 56ea0dca4098754cee6dba7766c9e38d1fe40165
 - sh: ./bootstrap-vcpkg.sh > /dev/null
 - cmd: .\bootstrap-vcpkg.bat > nul
+- sh: if [ -d "$CACHE_ROOT/vcpkg_installed" ]; then mv "$CACHE_ROOT/vcpkg_installed" "$VCPKG_ROOT/installed"; fi
 - ps: popd
 
 # check vcpkg version
@@ -162,6 +161,7 @@ after_test:
 - sh: pushd "$INSTALL_PREFIX"
 - sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
 - sh: popd
+- sh: mv $VCPKG_ROOT/installed $CACHE_ROOT/vcpkg_installed
 
 # Visual Studio
 - cmd: cmake --build _build --config %CONFIGURATION% --target install
@@ -211,9 +211,9 @@ for:
         INSTALL_PREFIX: /home/appveyor/projects/_install
         FREETYPE_DIR: ""
         VCPKG_ROOT: /home/appveyor/projects/vcpkg
+        CACHE_ROOT: /home/appveyor/projects/_cache
     cache:
         - /home/appveyor/projects/_cache/ -> .appveyor.yml
-        - /home/appveyor/projects/vcpkg/installed/ -> .appveyor.yml
     artifacts:
         - path: render_pipeline_cpp.tar.xz
 
