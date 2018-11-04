@@ -49,6 +49,9 @@ matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
     allow_failures:
         - image: Ubuntu1804     # Sometimes, Ubuntu fails without any reason.
+    exclude:
+        - image: Ubuntu1804
+          configuration: Debug
 
 
 # build cache to preserve files/folders between builds
@@ -60,14 +63,14 @@ cache:
 install:
 # install packages
 - sh: sudo apt-get update
+- sh: sudo apt-get install --yes --no-install-recommends g++-8 libfreetype6-dev libassimp-dev
 - sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
-- sh: sudo apt-get install --yes --no-install-recommends libfreetype6-dev libassimp-dev
 
 # checkout recent vcpkg
 - sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
 - ps: pushd $env:VCPKG_ROOT
 - cmd: git pull --quiet
-- git checkout -qf d31c063fb92e936297e12fcc086550dcef8c31d8
+- git checkout -qf 56ea0dca4098754cee6dba7766c9e38d1fe40165
 - sh: ./bootstrap-vcpkg.sh > /dev/null
 - cmd: .\bootstrap-vcpkg.bat > nul
 - ps: popd
