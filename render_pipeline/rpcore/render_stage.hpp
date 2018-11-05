@@ -135,12 +135,12 @@ protected:
 
     virtual std::string get_plugin_id() const = 0;
 
+    PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post = false, bool use_post_gs = false) const;
+
     RenderPipeline& pipeline_;
     bool disabled_ = false;
 
 private:
-    PT(Shader) get_shader_handle(const Filename& path, const std::vector<Filename>& args, bool stereo_post, bool use_post_gs) const;
-
     std::unordered_map<std::string, std::unique_ptr<RenderTarget>> targets_;
     const std::string stage_id_;
     bool active_ = true;
