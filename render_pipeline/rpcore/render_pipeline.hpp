@@ -64,6 +64,8 @@ public:
         stereo = 3
     };
 
+    static constexpr const char* reload_shaders_event_name = "RP_reload_shaders";
+
 public:
     static const std::string& get_version();
     static bool get_version(int& major, int& minor, int& patch);

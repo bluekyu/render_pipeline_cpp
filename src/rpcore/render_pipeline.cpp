@@ -489,6 +489,8 @@ void RenderPipeline::Impl::reload_shaders()
     if (debugger_)
         debugger_->set_reload_hint_visible(false);
     apply_custom_shaders();
+
+    showbase_->get_messenger()->send(reload_shaders_event_name, false);
 }
 
 bool RenderPipeline::Impl::create(rppanda::ShowBase* base, PandaFramework* framework)
