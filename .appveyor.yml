@@ -161,6 +161,7 @@ after_test:
 - sh: pushd "$INSTALL_PREFIX"
 - sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
 - sh: popd
+- sh: if [ ! -d "$CACHE_ROOT" ]; then mkdir "$CACHE_ROOT"; fi
 - sh: mv $VCPKG_ROOT/installed $CACHE_ROOT/vcpkg_installed
 
 # Visual Studio
