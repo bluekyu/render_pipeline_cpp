@@ -31,11 +31,10 @@
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/render_stage.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_manager.hpp"
+#include "render_pipeline/rpcore/pluginbase/setting_types.hpp"
 #include "render_pipeline/rppanda/util/filesystem.hpp"
 
 #include "rplibs/yaml.hpp"
-
-#include "rpcore/pluginbase/setting_types.hpp"
 
 namespace rpcore {
 
@@ -93,7 +92,7 @@ void BasePlugin::add_stage(std::unique_ptr<RenderStage> stage)
 
 const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    return pipeline_.get_plugin_mgr()->get_setting(plugin_id.empty() ? plugin_id_ : plugin_id).get<1>().find(setting_id)->value->get_value();
+    return pipeline_.get_plugin_mgr()->get_setting_handle(plugin_id.empty() ? plugin_id_ : plugin_id, setting_id).get_value();
 }
 
 DayBaseType::ValueType BasePlugin::get_daytime_setting(const std::string& setting_id, const std::string& plugin_id) const
@@ -126,6 +125,13 @@ const BasePlugin::PluginInfo& BasePlugin::get_plugin_info() const
 const BasePlugin::PipelineInfo& BasePlugin::get_pipeline_info() const
 {
     return impl_->pipeline_info_;
+}
+
+void BasePlugin::on_setting_changed(const std::string& setting_id)
+{
+    auto found = setting_changed_callbacks_.find(setting_id);
+    if (found != setting_changed_callbacks_.end())
+        found->second();
 }
 
 boost::dll::shared_library* BasePlugin::load_shared_library(const Filename& path, boost::dll::load_mode::type mode)

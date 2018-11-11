@@ -37,12 +37,11 @@
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/stage_manager.hpp"
 #include "render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
+#include "render_pipeline/rpcore/pluginbase/setting_types.hpp"
 #include "render_pipeline/rppanda/stdpy/file.hpp"
 #include "render_pipeline/rppanda/util/filesystem.hpp"
 
 #include "rplibs/yaml.hpp"
-
-#include "rpcore/pluginbase/setting_types.hpp"
 
 namespace rpcore {
 
@@ -91,6 +90,8 @@ public:
     void on_shader_reload();
     void on_window_resized();
     void on_unload();
+
+    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value);
 
 public:
     static std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
@@ -485,6 +486,40 @@ void PluginManager::Impl::on_unload()
     }
 }
 
+void PluginManager::Impl::on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value)
+{
+    auto settings_found = settings_.find(plugin_id);
+    if (settings_found == settings_.end())
+    {
+        self_.warn(fmt::format("Got invalid plugin id: {} / {}", plugin_id, setting_id));
+        return;
+    }
+
+    auto& plugin_setting_map = settings_found->second.get<1>();
+    auto setting_found = plugin_setting_map.find(setting_id);
+    if (setting_found == plugin_setting_map.end())
+    {
+        self_.warn(fmt::format("Got invalid setting id: {} / {}", plugin_id, setting_id));
+        return;
+    }
+
+    const auto& setting = setting_found->value.get();
+    setting->set_value(value);
+
+    if (enabled_plugins_.find(plugin_id) == enabled_plugins_.end())
+        return;
+
+    if (setting->is_runtime() || setting->is_shader_runtime())
+        instances_.at(plugin_id)->on_setting_changed(setting_id);
+
+    if (setting->is_shader_runtime())
+    {
+        self_.init_defines();
+        pipeline_.get_stage_mgr()->write_autoconfig();
+        instances_.at(plugin_id)->reload_shaders();
+    }
+}
+
 // ************************************************************************************************
 
 void PluginManager::release_all_dll()
@@ -677,9 +712,9 @@ const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() cons
     return impl_->enabled_plugins_;
 }
 
-const PluginManager::SettingsDataType& PluginManager::get_setting(const std::string& setting_id) const
+const BaseType& PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const
 {
-    return impl_->settings_.at(setting_id);
+    return *impl_->settings_.at(plugin_id).get<1>().find(setting_id)->value;
 }
 
 const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const noexcept
@@ -713,5 +748,10 @@ void PluginManager::on_post_render_update() { impl_->on_post_render_update(); }
 void PluginManager::on_shader_reload() { impl_->on_shader_reload(); }
 void PluginManager::on_window_resized() { impl_->on_window_resized(); }
 void PluginManager::on_unload() { impl_->on_unload(); }
+
+void PluginManager::on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value)
+{
+    impl_->on_setting_changed(plugin_id, setting_id, value);
+}
 
 }

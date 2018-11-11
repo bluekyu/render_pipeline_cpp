@@ -20,12 +20,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "rpcore/pluginbase/setting_types.hpp"
+#include "render_pipeline/rpcore/pluginbase/setting_types.hpp"
 
 #include <typeindex>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
+
+#include "rplibs/yaml.hpp"
 
 namespace rpcore {
 
@@ -143,6 +145,45 @@ void BaseType::add_defines(const std::string& plugin_id, const std::string& sett
     StageManager::DefinesType& defines) const
 {
     defines[plugin_id + "_" + setting_id] = get_value_as_string();
+}
+
+// ************************************************************************************************
+template <>
+TemplatedType<int>::TemplatedType(YAML::Node& data): BaseType(data)
+{
+    default_ = data["default"].as<int>();
+    data.remove("default");
+    _value = default_;
+
+    const std::vector<int>& setting_range = data["range"].as<std::vector<int>>();
+    _minval = setting_range[0];
+    _maxval = setting_range[1];
+    data.remove("range");
+}
+
+template <>
+void TemplatedType<int>::set_value(const YAML::Node& value)
+{
+    set_value(value.as<int>());
+}
+
+template <>
+TemplatedType<float>::TemplatedType(YAML::Node& data): BaseType(data)
+{
+    default_ = data["default"].as<float>();
+    data.remove("default");
+    _value = default_;
+
+    const std::vector<float>& setting_range = data["range"].as<std::vector<float>>();
+    _minval = setting_range[0];
+    _maxval = setting_range[1];
+    data.remove("range");
+}
+
+template <>
+void TemplatedType<float>::set_value(const YAML::Node& value)
+{
+    set_value(value.as<float>());
 }
 
 // ************************************************************************************************

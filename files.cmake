@@ -105,6 +105,7 @@ set(header_rpcore_pluginbase
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_manager.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/day_setting_types.hpp"
     "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/manager.hpp"
+    "${PROJECT_SOURCE_DIR}/render_pipeline/rpcore/pluginbase/setting_types.hpp"
 )
 
 set(header_rpcore_stages
@@ -307,7 +308,6 @@ set(source_rpcore_pluginbase
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/day_setting_types.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/manager.cpp"
     "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.cpp"
-    "${PROJECT_SOURCE_DIR}/src/rpcore/pluginbase/setting_types.hpp"
 )
 
 set(source_rpcore_stages

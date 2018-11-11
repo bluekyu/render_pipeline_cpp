@@ -25,6 +25,8 @@
 #include <nodePath.h>
 
 #include <vector>
+#include <unordered_map>
+#include <functional>
 
 #include <boost/dll/shared_library_load_mode.hpp>
 
@@ -155,6 +157,8 @@ public:
     virtual void on_unload() {}
     ///@}
 
+    void on_setting_changed(const std::string& setting_id);
+
 protected:
     /**
      * Load a shared library and manage the handle.
@@ -171,6 +175,7 @@ protected:
 
     RenderPipeline& pipeline_;
     const std::string plugin_id_;
+    std::unordered_map<std::string, std::function<void()>> setting_changed_callbacks_;
 
 private:
     class Impl;

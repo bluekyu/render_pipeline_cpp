@@ -24,15 +24,18 @@
 
 #include <boost/any.hpp>
 
-#include "render_pipeline/rpcore/rpobject.hpp"
-#include "render_pipeline/rpcore/stage_manager.hpp"
-#include "rplibs/yaml.hpp"
+#include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
+
+namespace YAML {
+class Node;
+}
 
 namespace rpcore {
 
 // ************************************************************************************************
 /** This is the base setting type, all setting types derive from this. */
-class BaseType : public RPObject
+class RENDER_PIPELINE_DECL BaseType : public RPObject
 {
 public:
     BaseType(YAML::Node& data);
@@ -53,6 +56,9 @@ public:
     const std::string& get_description() const { return _description; }
     bool is_runtime() const { return _runtime; }
     bool is_shader_runtime() const { return _shader_runtime; }
+
+    virtual void* downcast() = 0;
+    virtual const void* downcast() const = 0;
 
 protected:
     boost::any default_;
@@ -84,23 +90,16 @@ public:
     void set_value(const boost::any& value) override;
     virtual void set_value(T value);
 
+    T get_min() const;
+    T get_max() const;
+
+    void* downcast() override { return this; }
+    const void* downcast() const override { return this; }
+
 protected:
     T _minval;
     T _maxval;
 };
-
-template <class T>
-TemplatedType<T>::TemplatedType(YAML::Node& data): BaseType(data)
-{
-    default_ = data["default"].as<T>();
-    data.remove("default");
-    _value = default_;
-
-    const std::vector<T>& setting_range = data["range"].as<std::vector<T>>();
-    _minval = setting_range[0];
-    _maxval = setting_range[1];
-    data.remove("range");
-}
 
 template <class T>
 T TemplatedType<T>::get_value_as_type() const
@@ -121,12 +120,6 @@ std::string TemplatedType<T>::get_value_as_string() const
 }
 
 template <class T>
-void TemplatedType<T>::set_value(const YAML::Node& value)
-{
-    set_value(value.as<T>());
-}
-
-template <class T>
 void TemplatedType<T>::set_value(const boost::any& value)
 {
     set_value(boost::any_cast<T>(value));
@@ -141,16 +134,32 @@ void TemplatedType<T>::set_value(T value)
         error(std::string("Invalid value: ") + std::to_string(value));
 }
 
+template <class T>
+T TemplatedType<T>::get_min() const
+{
+    return _minval;
+}
+
+template <class T>
+T TemplatedType<T>::get_max() const
+{
+    return _maxval;
+}
+
 // ************************************************************************************************
 /** Template instantiation of TemplatedType using int. */
 using IntType = TemplatedType<int>;
+template <> RENDER_PIPELINE_DECL TemplatedType<int>::TemplatedType(YAML::Node& data);
+template <> RENDER_PIPELINE_DECL void TemplatedType<int>::set_value(const YAML::Node& value);
 
 /** Template instantiation of TemplatedType using float. */
 using FloatType = TemplatedType<float>;
+template <> RENDER_PIPELINE_DECL TemplatedType<float>::TemplatedType(YAML::Node& data);
+template <> RENDER_PIPELINE_DECL void TemplatedType<float>::set_value(const YAML::Node& value);
 
 // ************************************************************************************************
 /** Type for any power of two resolution. */
-class PowerOfTwoType : public IntType
+class RENDER_PIPELINE_DECL PowerOfTwoType : public IntType
 {
 public:
     PowerOfTwoType(YAML::Node& data);
@@ -180,7 +189,7 @@ inline void PowerOfTwoType::set_value(int value)
 
 // ************************************************************************************************
 /** Boolean setting type. */
-class BoolType : public BaseType
+class RENDER_PIPELINE_DECL BoolType : public BaseType
 {
 public:
     BoolType(YAML::Node& data);
@@ -195,6 +204,9 @@ public:
     void set_value(const boost::any& value) final;
 
     void set_value(bool value) { _value = value; }
+
+    void* downcast() override { return this; }
+    const void* downcast() const override { return this; }
 
 private:
     void set_value(const std::string& value);
@@ -220,7 +232,7 @@ inline void BoolType::set_value(const boost::any& value)
 
 // ************************************************************************************************
 /** Enumeration setting type. */
-class EnumType : public BaseType
+class RENDER_PIPELINE_DECL EnumType : public BaseType
 {
 public:
     EnumType(YAML::Node& data);
@@ -236,6 +248,9 @@ public:
 
     void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const final;
+
+    void* downcast() override { return this; }
+    const void* downcast() const override { return this; }
 
 private:
     std::vector<std::string> _values;
@@ -263,7 +278,7 @@ inline void EnumType::set_value(const boost::any& value)
 
 // ************************************************************************************************
 /** Type for any 2D or 3D sample sequence. */
-class SampleSequenceType : public BaseType
+class RENDER_PIPELINE_DECL SampleSequenceType : public BaseType
 {
 public:
     static const std::vector<int> POISSON_2D_SIZES;
@@ -281,6 +296,9 @@ public:
     void set_value(const std::string& value);
 
     std::vector<std::string> get_sequences() const;
+
+    void* downcast() override { return this; }
+    const void* downcast() const override { return this; }
 
 private:
     int dimension_;
@@ -319,7 +337,7 @@ inline void SampleSequenceType::set_value(const std::string& value)
 
 // ************************************************************************************************
 /** Path type to specify paths to files. */
-class PathType : public BaseType
+class RENDER_PIPELINE_DECL PathType : public BaseType
 {
 public:
     PathType(YAML::Node& data);
@@ -335,6 +353,9 @@ public:
 
     void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const final;
+
+    void* downcast() override { return this; }
+    const void* downcast() const override { return this; }
 
 private:
     std::string _default;
