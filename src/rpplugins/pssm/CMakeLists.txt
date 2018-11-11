@@ -40,3 +40,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE rpplugins::scattering rpplugins::v
 # === install ======================================================================================
 include("../rpplugins_install.cmake")
 # ==================================================================================================
+
+# ==================================================================================================
+render_pipeline_find_plugins("imgui;rpstat")
+if((TARGET rpplugins::imgui) AND (TARGET rpplugins::rpstat))
+    add_subdirectory("tools/gui")
+endif()
+# ==================================================================================================

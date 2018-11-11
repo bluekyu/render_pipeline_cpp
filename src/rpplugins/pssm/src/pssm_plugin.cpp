@@ -234,6 +234,9 @@ void PSSMPlugin::on_pipeline_created()
         stage->set_shader_input(ShaderInput("pssm_mvps", impl_->camera_rig_->get_mvp_array()));
         stage->set_shader_input(ShaderInput("pssm_nearfar", impl_->camera_rig_->get_nearfar_array()));
     }
+
+    // setup callback
+    setting_changed_callbacks_.emplace("max_distance", [this]() { impl_->camera_rig_->set_pssm_distance(boost::any_cast<float>(get_setting("max_distance"))); });
 }
 
 void PSSMPlugin::on_pre_render_update()
