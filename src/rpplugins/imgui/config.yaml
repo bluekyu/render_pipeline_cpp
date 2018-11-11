@@ -1,0 +1,43 @@
+information:
+    category: rendering
+    name: ImGui Plugin
+    author: Younguk Kim <bluekyu.dev@gmail.com>
+    version: 0.1
+    description: >
+        A plugin to support ImGui
+
+settings: !!omap
+
+    - style:
+        type: enum
+        values: ["dark", "classic", "light"]
+        default: dark
+        shader_runtime: false
+        label: Style
+        description: >
+            This sets the style of ImGui.
+
+    - default_font_path:
+        type: path
+        default: "/$$rp/data/font/Roboto-Bold.ttf"
+        runtime: false
+        label: Default Font Path
+        description: >
+            This sets path of default font used in ImGui.
+
+    - default_font_size:
+        type: float
+        range: [1.0, 72.0]
+        default: 16.0
+        runtime: false
+        label: Default Font Size
+        description: >
+            This sets size of default font used in ImGui.
+
+    - os_file_drop:
+        type: bool
+        default: true
+        runtime: false
+        label: OS File Drop
+        description: >
+            This enables file drop of OS level. (Only Windows)

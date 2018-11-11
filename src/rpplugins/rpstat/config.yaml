@@ -1,0 +1,9 @@
+information:
+    category: gui
+    name: RPStat Plugin
+    author: Younguk Kim <bluekyu.dev@gmail.com>
+    version: 0.1
+    description: >
+        A plugin to support RPStat
+
+settings: !!omap
