@@ -91,7 +91,8 @@ public:
     void on_window_resized();
     void on_unload();
 
-    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value);
+    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id);
+    void on_setting_changed(const std::unordered_map<std::string, std::unordered_set<std::string>>& settings_map);
 
 public:
     static std::unordered_map<std::string, std::function<PluginCreatorType>> plugin_creators_;
@@ -486,25 +487,14 @@ void PluginManager::Impl::on_unload()
     }
 }
 
-void PluginManager::Impl::on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value)
+void PluginManager::Impl::on_setting_changed(const std::string& plugin_id, const std::string& setting_id)
 {
-    auto settings_found = settings_.find(plugin_id);
-    if (settings_found == settings_.end())
+    auto setting = self_.get_setting_handle(plugin_id, setting_id);
+    if (!setting)
     {
-        self_.warn(fmt::format("Got invalid plugin id: {} / {}", plugin_id, setting_id));
+        self_.warn(fmt::format("Got invalid setting value: {} / {}", plugin_id, setting_id));
         return;
     }
-
-    auto& plugin_setting_map = settings_found->second.get<1>();
-    auto setting_found = plugin_setting_map.find(setting_id);
-    if (setting_found == plugin_setting_map.end())
-    {
-        self_.warn(fmt::format("Got invalid setting id: {} / {}", plugin_id, setting_id));
-        return;
-    }
-
-    const auto& setting = setting_found->value.get();
-    setting->set_value(value);
 
     if (enabled_plugins_.find(plugin_id) == enabled_plugins_.end())
         return;
@@ -517,6 +507,51 @@ void PluginManager::Impl::on_setting_changed(const std::string& plugin_id, const
         self_.init_defines();
         pipeline_.get_stage_mgr()->write_autoconfig();
         instances_.at(plugin_id)->reload_shaders();
+    }
+}
+
+void PluginManager::Impl::on_setting_changed(const std::unordered_map<std::string, std::unordered_set<std::string>>& settings_map)
+{
+    bool at_least_shader_runtime = false;
+    for (const auto& plugin_id_settings: settings_map)
+    {
+        const auto& plugin_id = plugin_id_settings.first;
+
+        if (enabled_plugins_.find(plugin_id) == enabled_plugins_.end())
+            continue;
+
+        auto settings_found = settings_.find(plugin_id);
+        if (settings_found == settings_.end())
+            continue;
+
+        auto& plugin_setting_map = settings_found->second.get<1>();
+        auto& plugin_instance = instances_.at(plugin_id);
+
+        for (const auto& setting_id: plugin_id_settings.second)
+        {
+            auto setting_found = plugin_setting_map.find(setting_id);
+            if (setting_found == plugin_setting_map.end())
+                continue;
+
+            const auto is_runtime = setting_found->value->is_runtime();
+            const auto is_shader_runtime = setting_found->value->is_shader_runtime();
+
+            if (is_runtime || is_shader_runtime)
+                plugin_instance->on_setting_changed(setting_id);
+
+            at_least_shader_runtime |= is_shader_runtime;
+        }
+    }
+
+    if (at_least_shader_runtime)
+    {
+        self_.init_defines();
+        pipeline_.get_stage_mgr()->write_autoconfig();
+
+        if (settings_map.size() > 1)
+            pipeline_.reload_shaders();
+        else
+            instances_.at(settings_map.begin()->first)->reload_shaders();
     }
 }
 
@@ -712,9 +747,32 @@ const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() cons
     return impl_->enabled_plugins_;
 }
 
-const BaseType& PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const
+BaseType* PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id)
 {
-    return *impl_->settings_.at(plugin_id).get<1>().find(setting_id)->value;
+    auto settings_found = impl_->settings_.find(plugin_id);
+    if (settings_found == impl_->settings_.end())
+        return nullptr;
+
+    auto& plugin_setting_map = settings_found->second.get<1>();
+    auto setting_found = plugin_setting_map.find(setting_id);
+    if (setting_found == plugin_setting_map.end())
+        return nullptr;
+
+    return setting_found->value.get();
+}
+
+const BaseType* PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const
+{
+    auto settings_found = impl_->settings_.find(plugin_id);
+    if (settings_found == impl_->settings_.end())
+        return nullptr;
+
+    auto& plugin_setting_map = settings_found->second.get<1>();
+    auto setting_found = plugin_setting_map.find(setting_id);
+    if (setting_found == plugin_setting_map.end())
+        return nullptr;
+
+    return setting_found->value.get();
 }
 
 const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& plugin_id) const noexcept
@@ -749,9 +807,14 @@ void PluginManager::on_shader_reload() { impl_->on_shader_reload(); }
 void PluginManager::on_window_resized() { impl_->on_window_resized(); }
 void PluginManager::on_unload() { impl_->on_unload(); }
 
-void PluginManager::on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value)
+void PluginManager::on_setting_changed(const std::string& plugin_id, const std::string& setting_id)
 {
-    impl_->on_setting_changed(plugin_id, setting_id, value);
+    impl_->on_setting_changed(plugin_id, setting_id);
+}
+
+void PluginManager::on_setting_changed(const std::unordered_map<std::string, std::unordered_set<std::string>>& settings_map)
+{
+    impl_->on_setting_changed(settings_map);
 }
 
 }

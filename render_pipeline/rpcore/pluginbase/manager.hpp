@@ -130,7 +130,8 @@ public:
     const std::unordered_set<std::string>& get_enabled_plugins() const;
 
     const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const noexcept;
-    const BaseType& get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const;
+    BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id);
+    const BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const;
     const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings() const;
 
     /** Get plugin instance. */
@@ -149,7 +150,17 @@ public:
     void on_window_resized();
     void on_unload();
 
-    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id, const boost::any& value);
+    /**
+     * Update single setting value after changing.
+     */
+    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id);
+
+    /**
+     * Update multiple setting values after changing.
+     *
+     * @param[in]   { { plugin_id, { setting_id, ... } }, ... } map
+     */
+    void on_setting_changed(const std::unordered_map<std::string, std::unordered_set<std::string>>& settings_map);
     ///@}
 
 private:

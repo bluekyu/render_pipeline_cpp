@@ -92,7 +92,7 @@ void BasePlugin::add_stage(std::unique_ptr<RenderStage> stage)
 
 const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    return pipeline_.get_plugin_mgr()->get_setting_handle(plugin_id.empty() ? plugin_id_ : plugin_id, setting_id).get_value();
+    return pipeline_.get_plugin_mgr()->get_setting_handle(plugin_id.empty() ? plugin_id_ : plugin_id, setting_id)->get_value();
 }
 
 DayBaseType::ValueType BasePlugin::get_daytime_setting(const std::string& setting_id, const std::string& plugin_id) const

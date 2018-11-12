@@ -48,7 +48,7 @@ private:
     PSSMPlugin* plugin_;
 
     bool is_open_ = false;
-    const rpcore::FloatType* max_distance_;
+    rpcore::FloatType* max_distance_;
 };
 
 // ************************************************************************************************
@@ -58,7 +58,7 @@ PluginGUI::PluginGUI(rpcore::RenderPipeline& pipeline): GUIInterface(pipeline, R
     plugin_mgr_ = pipeline_.get_plugin_mgr();
     plugin_ = static_cast<decltype(plugin_)>(plugin_mgr_->get_instance(RPPLUGINS_GUI_ID_STRING)->downcast());
 
-    max_distance_ = static_cast<const rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "max_distance").downcast());
+    max_distance_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "max_distance")->downcast());
 }
 
 void PluginGUI::on_draw_menu()
@@ -80,7 +80,10 @@ void PluginGUI::on_draw_new_frame()
 
     float max_distance = boost::any_cast<float>(max_distance_->get_value());
     if (ImGui::InputFloat(max_distance_->get_label().c_str(), &max_distance, 0, 0, 3, ImGuiInputTextFlags_EnterReturnsTrue))
-        plugin_mgr_->on_setting_changed(RPPLUGINS_GUI_ID_STRING, "max_distance", max_distance);
+    {
+        max_distance_->set_value(max_distance);
+        plugin_mgr_->on_setting_changed(RPPLUGINS_GUI_ID_STRING, "max_distance");
+    }
 
     ImGui::End();
 }
