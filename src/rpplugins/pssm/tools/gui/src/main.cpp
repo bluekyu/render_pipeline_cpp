@@ -27,7 +27,6 @@
 #include <render_pipeline/rpcore/pluginbase/setting_types.hpp>
 
 #include <rpplugins/rpstat/gui_interface.hpp>
-#include <rpplugins/rpstat/plugin.hpp>
 
 #include <pssm_plugin.hpp>
 
@@ -44,10 +43,9 @@ public:
 
 private:
     rpcore::PluginManager* plugin_mgr_;
-    const rpcore::PluginManager::SettingsDataType::nth_index<1>::type* settings_map_;
     PSSMPlugin* plugin_;
-
     bool is_open_ = false;
+
     rpcore::FloatType* max_distance_;
 };
 
@@ -73,10 +71,7 @@ void PluginGUI::on_draw_new_frame()
         return;
 
     if (!ImGui::Begin("PSSM Plugin", &is_open_))
-    {
-        ImGui::End();
-        return;
-    }
+        return ImGui::End();
 
     float max_distance = boost::any_cast<float>(max_distance_->get_value());
     if (ImGui::InputFloat(max_distance_->get_label().c_str(), &max_distance, 0, 0, 3, ImGuiInputTextFlags_EnterReturnsTrue))

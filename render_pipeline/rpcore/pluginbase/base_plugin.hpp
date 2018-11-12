@@ -63,6 +63,7 @@ namespace rpcore {
 
 class RenderPipeline;
 class RenderStage;
+class BaseType;
 
 class RENDER_PIPELINE_DECL BasePlugin : public RPObject
 {
@@ -118,6 +119,8 @@ public:
     void add_stage(std::unique_ptr<RenderStage> stage);
 
     const boost::any& get_setting(const std::string& setting_id, const std::string& plugin_id="") const;
+    BaseType* get_setting_handle(const std::string& setting_id, const std::string& plugin_id = "");
+    const BaseType* get_setting_handle(const std::string& setting_id, const std::string& plugin_id = "") const;
 
     DayBaseType::ValueType get_daytime_setting(const std::string& setting_id, const std::string& plugin_id="") const;
 
