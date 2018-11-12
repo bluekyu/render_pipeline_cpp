@@ -199,6 +199,9 @@ void RPStatPlugin::on_imgui_new_frame()
 
     for (const auto& window : windows_)
         window->draw();
+
+    for (auto&& instance : gui_instances_)
+        instance.second.second->on_draw_new_frame();
 }
 
 void RPStatPlugin::draw_main_menu_bar()
@@ -213,11 +216,11 @@ void RPStatPlugin::draw_main_menu_bar()
 
     if (ImGui::BeginMenu("Tools"))
     {
-        if (ImGui::BeginMenu("RPStat"))
+        if (ImGui::BeginMenu("Windows"))
         {
             for (const auto& window_title: {"Scenegraph", "NodePath", "Actor", "Material", "Texture", "Day Manager"})
             {
-                if (ImGui::MenuItem((window_title + std::string(" Window")).c_str()))
+                if (ImGui::MenuItem(window_title))
                 {
                     WindowInterface::send_show_event(std::string("###") + window_title);
                 }
@@ -225,7 +228,15 @@ void RPStatPlugin::draw_main_menu_bar()
             ImGui::EndMenu();
         }
 
-        rppanda::Messenger::get_global_instance()->send("rpstat-menu-tools");
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Plugins"))
+    {
+        for (auto&& instance: gui_instances_)
+            instance.second.second->on_draw_menu();
+
+        rppanda::Messenger::get_global_instance()->send(MENU_PLUGINS_EVENT_NAME);
 
         ImGui::EndMenu();
     }

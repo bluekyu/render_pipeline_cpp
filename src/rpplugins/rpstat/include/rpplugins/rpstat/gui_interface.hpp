@@ -47,7 +47,8 @@ public:
     GUIInterface(rpcore::RenderPipeline& pipeline, const std::string& plugin_id);
     virtual ~GUIInterface() = default;
 
-    virtual void on_imgui_new_frame() = 0;
+    virtual void on_draw_menu() {}
+    virtual void on_draw_new_frame() = 0;
 
 protected:
     rpcore::RenderPipeline& pipeline_;
@@ -60,7 +61,6 @@ inline GUIInterface::GUIInterface(rpcore::RenderPipeline& pipeline, const std::s
 {
     auto imgui_plugin = static_cast<ImGuiPlugin*>(pipeline_.get_plugin_mgr()->get_instance("imgui")->downcast());
     ImGui::SetCurrentContext(imgui_plugin->get_context());
-    accept(ImGuiPlugin::NEW_FRAME_EVENT_NAME, [this](auto) { on_imgui_new_frame(); });
 }
 
 }

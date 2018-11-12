@@ -39,6 +39,9 @@ class ScenegraphWindow;
 class RPStatPlugin : public rpcore::BasePlugin, public rppanda::DirectObject
 {
 public:
+    static constexpr const char* MENU_PLUGINS_EVENT_NAME = "rpstat-menu-plugins";
+
+public:
     RPStatPlugin(rpcore::RenderPipeline& pipeline);
     
     virtual ~RPStatPlugin();
@@ -75,7 +78,7 @@ private:
     static RequrieType require_plugins_;
 
     ImGuiPlugin* imgui_plugin_;
-    std::unordered_map<std::string, std::pair<std::function<GUICreatorType>, std::unique_ptr<GUIInterface>>> gui_instances_;
+    std::map<std::string, std::pair<std::function<GUICreatorType>, std::unique_ptr<GUIInterface>>> gui_instances_;
 
     std::list<std::unique_ptr<WindowInterface>> windows_;
     ScenegraphWindow* scenegraph_window_;

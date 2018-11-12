@@ -27,6 +27,7 @@
 #include <render_pipeline/rpcore/pluginbase/setting_types.hpp>
 
 #include <rpplugins/rpstat/gui_interface.hpp>
+#include <rpplugins/rpstat/plugin.hpp>
 
 #include <pssm_plugin.hpp>
 
@@ -38,13 +39,15 @@ public:
     PluginGUI(rpcore::RenderPipeline& pipeline);
     virtual ~PluginGUI() = default;
 
-    void on_imgui_new_frame() override;
+    void on_draw_menu() override;
+    void on_draw_new_frame() override;
 
 private:
     rpcore::PluginManager* plugin_mgr_;
     const rpcore::PluginManager::SettingsDataType::nth_index<1>::type* settings_map_;
     PSSMPlugin* plugin_;
 
+    bool is_open_ = false;
     const rpcore::FloatType* max_distance_;
 };
 
@@ -58,9 +61,22 @@ PluginGUI::PluginGUI(rpcore::RenderPipeline& pipeline): GUIInterface(pipeline, R
     max_distance_ = static_cast<const rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "max_distance").downcast());
 }
 
-void PluginGUI::on_imgui_new_frame()
+void PluginGUI::on_draw_menu()
 {
-    ImGui::Begin("PSSM Plugin");
+    if (ImGui::MenuItem("PSSM"))
+        is_open_ = true;
+}
+
+void PluginGUI::on_draw_new_frame()
+{
+    if (!is_open_)
+        return;
+
+    if (!ImGui::Begin("PSSM Plugin", &is_open_))
+    {
+        ImGui::End();
+        return;
+    }
 
     float max_distance = boost::any_cast<float>(max_distance_->get_value());
     if (ImGui::InputFloat(max_distance_->get_label().c_str(), &max_distance, 0, 0, 3, ImGuiInputTextFlags_EnterReturnsTrue))
