@@ -56,6 +56,8 @@ NodePathWindow::NodePathWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pip
     );
 }
 
+NodePathWindow::~NodePathWindow() = default;
+
 void NodePathWindow::draw_contents()
 {
     enum class MenuID : int

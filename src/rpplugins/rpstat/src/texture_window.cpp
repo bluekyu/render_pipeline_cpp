@@ -53,6 +53,8 @@ TextureWindow::TextureWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipel
         texture_format_cache_list_.push_back(Texture::format_format(Texture::Format(k)));
 }
 
+TextureWindow::~TextureWindow() = default;
+
 void TextureWindow::draw_contents()
 {
     if (!np_)

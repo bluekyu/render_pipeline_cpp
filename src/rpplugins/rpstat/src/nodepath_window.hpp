@@ -38,6 +38,7 @@ class NodePathWindow : public WindowInterface
 {
 public:
     NodePathWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
+    virtual ~NodePathWindow();
 
     void draw_contents() final;
 

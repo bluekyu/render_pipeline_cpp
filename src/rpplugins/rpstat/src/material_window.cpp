@@ -55,6 +55,8 @@ MaterialWindow::MaterialWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pip
     );
 }
 
+MaterialWindow::~MaterialWindow() = default;
+
 void MaterialWindow::set_nodepath(NodePath np)
 {
     np_ = np;

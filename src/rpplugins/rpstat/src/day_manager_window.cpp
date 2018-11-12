@@ -38,6 +38,8 @@ DayManagerWindow::DayManagerWindow(RPStatPlugin& plugin, rpcore::RenderPipeline&
     formatted_time_[std::extent<decltype(formatted_time_)>::value - 1] = '\0';
 }
 
+DayManagerWindow::~DayManagerWindow() = default;
+
 void DayManagerWindow::draw_contents()
 {
     static bool invalid_ft = false;

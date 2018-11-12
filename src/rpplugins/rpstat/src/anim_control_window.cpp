@@ -67,6 +67,8 @@ AnimControlWindow::AnimControlWindow(RPStatPlugin& plugin, rpcore::RenderPipelin
     reset();
 }
 
+AnimControlWindow::~AnimControlWindow() = default;
+
 void AnimControlWindow::draw()
 {
     is_open_ = true;

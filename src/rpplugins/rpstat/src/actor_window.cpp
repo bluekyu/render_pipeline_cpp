@@ -84,6 +84,8 @@ ActorWindow::ActorWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline)
     );
 }
 
+ActorWindow::~ActorWindow() = default;
+
 void ActorWindow::draw_contents()
 {
     enum class MenuID : int

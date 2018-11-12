@@ -37,6 +37,7 @@ public:
 
 public:
     TextureWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
+    virtual ~TextureWindow();
 
     void draw_contents() final;
 

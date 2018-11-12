@@ -37,6 +37,8 @@ public:
     static void remove_window(AnimControlWindow* window);
 
 public:
+    virtual ~AnimControlWindow();
+
     void draw() final;
     void draw_contents() final;
 
