@@ -17,6 +17,7 @@
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (조건부): Panda3D 가 Eigen3 를 사용하지만 없을 경우
 - Assimp (선택사항): rpassimp 플러그인 사용 시 필요
+- ImGUI (선택사항): imgui 또는 rpstat 플러그인 사용 시 필요
 
 
 
@@ -41,7 +42,7 @@ CMake 에서 configure 를 하는 동안 라이브러리를 자동으로 찾는�
   vcpkg install --triplet x64-windows eigen3
 
   # optional
-  vcpkg install --triplet x64-windows assimp
+  vcpkg install --triplet x64-windows assimp imgui
   ```
 
 - Ubuntu

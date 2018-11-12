@@ -17,6 +17,7 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - [spdlog](https://github.com/gabime/spdlog)
 - Eigen3 (conditional): Panda3D does not have Eigen3 although Panda3D uses it
 - Assimp (optional): Required to build rpassimp plugin
+- ImGUI (optional): Required to build imgui or rpstat plugin
 
 
 
@@ -41,7 +42,7 @@ If you does not use `vcpkg`, then build and install those and setup proper value
   vcpkg install --triplet x64-windows eigen3
 
   # optional
-  vcpkg install --triplet x64-windows assimp
+  vcpkg install --triplet x64-windows assimp imgui
   ```
 
 - Ubuntu

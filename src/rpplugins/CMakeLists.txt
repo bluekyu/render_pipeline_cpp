@@ -12,7 +12,7 @@ set(render_pipeline_optional_PLUGINS
 )
 
 foreach(plugin_id ${render_pipeline_optional_PLUGINS})
-    option(rpcpp_plugins_BUILD_${plugin_id} "Enable to build '${plugin_id}'" OFF)
+    option(rpcpp_plugins_BUILD_${plugin_id} "Enable to build '${plugin_id}'" ON)
     if(rpcpp_plugins_BUILD_${plugin_id})
         add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${plugin_id}")
     endif()

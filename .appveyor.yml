@@ -79,8 +79,8 @@ install:
 - cmd: vcpkg version
 
 # install thirdparty libs in vcpkg
-- sh: $VCPKG_ROOT/vcpkg install --triplet x64-linux boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp
-- cmd: vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp
+- sh: $VCPKG_ROOT/vcpkg install --triplet x64-linux boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp imgui
+- cmd: vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp imgui
 
 # download and install panda3d-thirdparty & panda3d
 - ps: mkdir $env:INSTALL_PREFIX
