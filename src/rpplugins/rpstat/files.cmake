@@ -1,5 +1,6 @@
 # list header
 set(${PROJECT_NAME}_header_root
+    "${PROJECT_SOURCE_DIR}/include/rpplugins/rpstat/gui_helper.hpp"
     "${PROJECT_SOURCE_DIR}/include/rpplugins/rpstat/gui_interface.hpp"
     "${PROJECT_SOURCE_DIR}/include/rpplugins/rpstat/plugin.hpp"
 )
