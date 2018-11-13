@@ -24,9 +24,8 @@
 
 #include <boost/dll/alias.hpp>
 
-#include <render_pipeline/rpcore/pluginbase/setting_types.hpp>
-
 #include <rpplugins/rpstat/gui_interface.hpp>
+#include <rpplugins/rpstat/gui_helper.hpp>
 
 #include <pssm_plugin.hpp>
 
@@ -41,12 +40,21 @@ public:
     void on_draw_menu() override;
     void on_draw_new_frame() override;
 
+    void reset();
+
 private:
     rpcore::PluginManager* plugin_mgr_;
     PSSMPlugin* plugin_;
     bool is_open_ = false;
 
+    float max_distance_ui_;
     rpcore::FloatType* max_distance_;
+
+    float logarithmic_factor_ui_;
+    rpcore::FloatType* logarithmic_factor_;
+
+    float sun_distance_ui_;
+    rpcore::FloatType* sun_distance_;
 };
 
 // ************************************************************************************************
@@ -57,12 +65,17 @@ PluginGUI::PluginGUI(rpcore::RenderPipeline& pipeline): GUIInterface(pipeline, R
     plugin_ = static_cast<decltype(plugin_)>(plugin_mgr_->get_instance(RPPLUGINS_GUI_ID_STRING)->downcast());
 
     max_distance_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "max_distance")->downcast());
+    logarithmic_factor_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "logarithmic_factor")->downcast());
+    sun_distance_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "sun_distance")->downcast());
 }
 
 void PluginGUI::on_draw_menu()
 {
-    if (ImGui::MenuItem("PSSM"))
-        is_open_ = true;
+    if (!ImGui::MenuItem("PSSM"))
+        return;
+
+    is_open_ = true;
+    reset();
 }
 
 void PluginGUI::on_draw_new_frame()
@@ -73,14 +86,43 @@ void PluginGUI::on_draw_new_frame()
     if (!ImGui::Begin("PSSM Plugin", &is_open_))
         return ImGui::End();
 
-    float max_distance = boost::any_cast<float>(max_distance_->get_value());
-    if (ImGui::InputFloat(max_distance_->get_label().c_str(), &max_distance, 0, 0, 3, ImGuiInputTextFlags_EnterReturnsTrue))
+    draw_slider(max_distance_, max_distance_ui_);
+    draw_slider(logarithmic_factor_, logarithmic_factor_ui_);
+    draw_slider(sun_distance_, sun_distance_ui_);
+
+    if (ImGui::Button("Apply"))
     {
-        max_distance_->set_value(max_distance);
-        plugin_mgr_->on_setting_changed(RPPLUGINS_GUI_ID_STRING, "max_distance");
+        std::unordered_set<std::string> changed_settings;
+
+        if (max_distance_ui_ != boost::any_cast<float>(max_distance_->get_value()))
+        {
+            max_distance_->set_value(max_distance_ui_);
+            changed_settings.insert("max_distance");
+        }
+
+        if (logarithmic_factor_ui_ != boost::any_cast<float>(logarithmic_factor_->get_value()))
+        {
+            logarithmic_factor_->set_value(logarithmic_factor_ui_);
+            changed_settings.insert("logarithmic_factor");
+        }
+
+        if (sun_distance_ui_ != boost::any_cast<float>(sun_distance_->get_value()))
+        {
+            sun_distance_->set_value(sun_distance_ui_);
+            changed_settings.insert("sun_distance");
+        }
+
+        plugin_mgr_->on_setting_changed({ { RPPLUGINS_GUI_ID_STRING, changed_settings } });
     }
 
     ImGui::End();
+}
+
+void PluginGUI::reset()
+{
+    max_distance_ui_ = boost::any_cast<float>(max_distance_->get_default());
+    logarithmic_factor_ui_ = boost::any_cast<float>(logarithmic_factor_->get_default());
+    sun_distance_ui_ = boost::any_cast<float>(sun_distance_->get_value());
 }
 
 }
