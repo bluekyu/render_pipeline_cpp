@@ -105,6 +105,11 @@ void LoggerManager::create(const Filename& file_path)
 #else
     logger_->set_pattern("[%H:%M:%S.%e] [%t] [%l] %v");
 #endif
+
+#if _DEBUG
+    logger_->set_level(spdlog::level::debug);
+#endif
+
     logger_->flush_on(spdlog::level::err);
 
     if (!err_msg.empty())
