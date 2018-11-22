@@ -97,7 +97,7 @@ public:
      * @WARN    DO NOT use @p pipeline_version parameter.
      *          This parameter has used Render Pipeline information, automatically.
      */
-    BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id,
+    BasePlugin(RenderPipeline& pipeline, boost::string_view plugin_id,
         const PipelineInfo& pipeline_version = PipelineInfo{ RENDER_PIPELINE_VERSION, RENDER_PIPELINE_GIT_COMMIT });
     BasePlugin(const BasePlugin&) = delete;
     BasePlugin(BasePlugin&&) = delete;

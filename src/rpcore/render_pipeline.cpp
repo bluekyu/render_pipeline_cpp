@@ -40,6 +40,8 @@
 
 #include <boost/dll/runtime_symbol_info.hpp>
 
+#include <fmt/ostream.h>
+
 #include "render_pipeline/rpcore/version.hpp"
 #include "render_pipeline/rpcore/globals.hpp"
 #include "render_pipeline/rppanda/showbase/showbase.hpp"
@@ -567,7 +569,7 @@ void RenderPipeline::Impl::create_managers()
 void RenderPipeline::Impl::analyze_system()
 {
     self_.debug(fmt::format("Using C++ with architecture {}", PandaSystem::get_platform()));
-    self_.debug(fmt::format("Using Panda3D {} built on {}", PandaSystem::get_version_string(), PandaSystem::get_build_date()));
+    self_.info(fmt::format("Using Panda3D {} built on {}", PandaSystem::get_version_string(), PandaSystem::get_build_date()));
     if (!PandaSystem::get_git_commit().empty())
         self_.debug(fmt::format("Using git commit {}", PandaSystem::get_git_commit()));
     else
@@ -580,6 +582,9 @@ void RenderPipeline::Impl::analyze_system()
     //    "git version! Checkout https://github.com/panda3d/panda3d to "
     //    "compile panda from source, or get a recent buildbot build.")
     //}
+
+    self_.info(fmt::format("Using Render Pipeline C++ {} built on {}", get_version(), get_build_data()));
+    self_.debug(fmt::format("Using git commit {}", get_git_commit()));
 }
 
 void RenderPipeline::Impl::initialize_managers()
@@ -868,16 +873,17 @@ T RenderPipeline::Impl::get_setting(const std::string& setting_path, const T& fa
 
 // ************************************************************************************************
 
-const std::string& RenderPipeline::get_version(void)
+boost::string_view RenderPipeline::get_version()
 {
-    static const std::string version(RENDER_PIPELINE_VERSION);
+    static const boost::string_view version(RENDER_PIPELINE_VERSION);
     return version;
 }
 
 bool RenderPipeline::get_version(int& major, int& minor, int& patch)
 {
     std::smatch version_match;
-    if (std::regex_match(RenderPipeline::get_version(), version_match, std::regex("^(\\d+)\\.(\\d+)\\.(\\d+)$")))
+    const auto version_string(RenderPipeline::get_version().to_string());
+    if (std::regex_match(version_string, version_match, std::regex("^(\\d+)\\.(\\d+)\\.(\\d+)$")))
     {
         major = std::stoi(version_match[1].str());
         minor = std::stoi(version_match[2].str());
@@ -890,15 +896,15 @@ bool RenderPipeline::get_version(int& major, int& minor, int& patch)
     }
 }
 
-const std::string& RenderPipeline::get_build_data(void)
+boost::string_view RenderPipeline::get_build_data()
 {
-    static const std::string build_data(__DATE__ " " __TIME__);
+    static const boost::string_view build_data(__DATE__ " " __TIME__);
     return build_data;
 }
 
-const std::string& RenderPipeline::get_git_commit(void)
+boost::string_view RenderPipeline::get_git_commit()
 {
-    static const std::string git_commit(RENDER_PIPELINE_GIT_COMMIT);
+    static const boost::string_view git_commit(RENDER_PIPELINE_GIT_COMMIT);
     return git_commit;
 }
 

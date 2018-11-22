@@ -65,7 +65,7 @@ public:
     const std::vector<RenderStage*>& get_stages() const;
 
     /** Returns a handle to an instantiated stage. */
-    RenderStage* get_stage(const std::string& stage_id) const;
+    RenderStage* get_stage(boost::string_view stage_id) const;
 
     void add_input_blocks(const std::shared_ptr<SimpleInputBlock>& input_block);
     void add_input_blocks(const std::shared_ptr<GroupedInputBlock>& input_block);

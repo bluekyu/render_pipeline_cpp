@@ -47,9 +47,9 @@ public:
     std::vector<std::unique_ptr<boost::dll::shared_library>> shared_libs_;
 };
 
-BasePlugin::BasePlugin(RenderPipeline& pipeline, const std::string& plugin_id,
+BasePlugin::BasePlugin(RenderPipeline& pipeline, boost::string_view plugin_id,
     const PipelineInfo& pipeline_info):
-    RPObject(std::string("plugin:") + plugin_id), pipeline_(pipeline), plugin_id_(plugin_id),
+    RPObject(std::string("plugin:") + plugin_id.to_string()), pipeline_(pipeline), plugin_id_(plugin_id),
     impl_(std::make_unique<Impl>())
 {
     trace(fmt::format("Constructing '{}' plugin", plugin_id_));

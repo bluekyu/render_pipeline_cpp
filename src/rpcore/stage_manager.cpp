@@ -414,7 +414,7 @@ void StageManager::remove_stage(RenderStage* stage)
         impl_->stages_.erase(found);
 }
 
-RenderStage* StageManager::get_stage(const std::string& stage_id) const
+RenderStage* StageManager::get_stage(boost::string_view stage_id) const
 {
     for (const auto& stage: impl_->stages_)
         if (stage->get_stage_id() == stage_id)

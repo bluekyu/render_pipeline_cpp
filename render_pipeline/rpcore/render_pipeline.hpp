@@ -67,10 +67,10 @@ public:
     static constexpr const char* reload_shaders_event_name = "RP_reload_shaders";
 
 public:
-    static const std::string& get_version();
+    static boost::string_view get_version();
     static bool get_version(int& major, int& minor, int& patch);
-    static const std::string& get_build_data();
-    static const std::string& get_git_commit();
+    static boost::string_view get_build_data();
+    static boost::string_view get_git_commit();
 
     /** Initialize RenderPipeline. */
     RenderPipeline();
