@@ -107,7 +107,7 @@ const BaseType* BasePlugin::get_setting_handle(const std::string& setting_id, co
 
 DayBaseType::ValueType BasePlugin::get_daytime_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    const auto& handle = pipeline_.get_plugin_mgr()->get_day_settings().at(plugin_id.empty() ? plugin_id_ : plugin_id).get<1>().find(setting_id)->value;
+    const auto& handle = pipeline_.get_plugin_mgr()->get_day_settings(plugin_id.empty() ? plugin_id_ : plugin_id)->get<1>().find(setting_id)->value;
     return handle->get_scaled_value_at(pipeline_.get_daytime_mgr()->get_time());
 }
 
