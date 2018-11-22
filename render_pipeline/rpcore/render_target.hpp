@@ -47,7 +47,7 @@ public:
     static std::vector<RenderTarget*> REGISTERED_TARGETS;
     static int CURRENT_SORT;
 
-    RenderTarget(const std::string& name);
+    RenderTarget(boost::string_view name);
     RenderTarget(const RenderTarget&) = delete;
 
     ~RenderTarget();

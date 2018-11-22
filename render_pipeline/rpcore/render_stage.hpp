@@ -65,7 +65,7 @@ public:
         std::shared_ptr<GroupedInputBlock>>>;
     using DefinesType = std::unordered_map<std::string, std::string>;
 
-    RenderStage(RenderPipeline& pipeline, const std::string& stage_id);
+    RenderStage(RenderPipeline& pipeline, boost::string_view stage_id);
     RenderStage(const RenderStage&) = delete;
     RenderStage(RenderStage&&);
 
@@ -104,7 +104,7 @@ public:
     /**
      * Create target and store it to RenderStage::targets.
      */
-    RenderTarget* create_target(const std::string& name);
+    RenderTarget* create_target(boost::string_view name);
 
     /**
      * Removes a previously registered target. This unregisters the

@@ -24,6 +24,9 @@
 
 #include <graphicsWindow.h>
 
+#include <fmt/format.h>
+#include <fmt/ostream.h>
+
 #include "render_pipeline/rpcore/loader.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/render_pipeline.hpp"
@@ -37,7 +40,7 @@
 
 namespace rpcore {
 
-RenderStage::RenderStage(RenderPipeline& pipeline, const std::string& stage_id): RPObject(stage_id), pipeline_(pipeline), stage_id_(stage_id)
+RenderStage::RenderStage(RenderPipeline& pipeline, boost::string_view stage_id): RPObject(stage_id), pipeline_(pipeline), stage_id_(stage_id)
 {
 }
 
@@ -76,9 +79,9 @@ void RenderStage::set_active(bool state)
     }
 }
 
-RenderTarget* RenderStage::create_target(const std::string& name)
+RenderTarget* RenderStage::create_target(boost::string_view name)
 {
-    const std::string& target_name = get_plugin_id() + ":" + stage_id_ + ":" + name;
+    const std::string& target_name = fmt::format("{}:{}:{}", get_plugin_id(), stage_id_, name);
 
     if (targets_.find(target_name) != targets_.end())
     {
@@ -86,7 +89,7 @@ RenderTarget* RenderStage::create_target(const std::string& name)
         return nullptr;
     }
 
-    return targets_.insert_or_assign(target_name, std::make_unique<RenderTarget>(target_name)).first->second.get();
+    return targets_.emplace(target_name, std::make_unique<RenderTarget>(target_name)).first->second.get();
 }
 
 void RenderStage::remove_target(RenderTarget* target)

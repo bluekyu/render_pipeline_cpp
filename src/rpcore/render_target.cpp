@@ -437,7 +437,7 @@ bool RenderTarget::USE_R11G11B10 = true;
 std::vector<RenderTarget*> RenderTarget::REGISTERED_TARGETS;
 int RenderTarget::CURRENT_SORT = -300;
 
-RenderTarget::RenderTarget(const std::string& name): RPObject(name), impl_(std::make_unique<Impl>(*this))
+RenderTarget::RenderTarget(boost::string_view name): RPObject(name), impl_(std::make_unique<Impl>(*this))
 {
     impl_->initilize();
 }
@@ -453,13 +453,13 @@ void RenderTarget::prepare_render(const NodePath& camera_np) { impl_->prepare_re
 
 void RenderTarget::add_color_attachment(const LVecBase4i& bits)
 {
-    impl_->targets_["color"] = new Texture(get_debug_name() + "_color");
+    impl_->targets_.insert_or_assign("color", new Texture(get_debug_name() + "_color"));
     impl_->color_bits_ = bits;
 }
 
 void RenderTarget::add_depth_attachment(int bits)
 {
-    impl_->targets_["depth"] = new Texture(get_debug_name() + "_depth");
+    impl_->targets_.insert_or_assign("depth", new Texture(get_debug_name() + "_depth"));
     impl_->depth_bits_ = bits;
 }
 

@@ -24,6 +24,8 @@
 
 #include <string>
 
+#include <boost/utility/string_view.hpp>
+
 #include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
@@ -31,23 +33,23 @@ namespace rpcore {
 class RENDER_PIPELINE_DECL RPObject
 {
 public:
-    static void global_trace(const std::string& context, const std::string& message);
-    static void global_debug(const std::string& context, const std::string& message);
-    static void global_info(const std::string& context, const std::string& message);
-    static void global_warn(const std::string& context, const std::string& message);
-    static void global_error(const std::string& context, const std::string& message);
+    static void global_trace(boost::string_view context, boost::string_view message);
+    static void global_debug(boost::string_view context, boost::string_view message);
+    static void global_info(boost::string_view context, boost::string_view message);
+    static void global_warn(boost::string_view context, boost::string_view message);
+    static void global_error(boost::string_view context, boost::string_view message);
 
-    RPObject(const std::string& name);
+    RPObject(boost::string_view name);
 
     const std::string& get_debug_name() const;
-    void set_debug_name(const std::string& name);
+    void set_debug_name(boost::string_view name);
 
-    void trace(const std::string& message) const;
-    void debug(const std::string& message) const;
-    void info(const std::string& message) const;
-    void warn(const std::string& message) const;
-    void error(const std::string& message) const;
-    void fatal(const std::string& message) const;
+    void trace(boost::string_view message) const;
+    void debug(boost::string_view message) const;
+    void info(boost::string_view message) const;
+    void warn(boost::string_view message) const;
+    void error(boost::string_view message) const;
+    void fatal(boost::string_view message) const;
 
 protected:
     std::string debug_name_;
@@ -55,37 +57,41 @@ protected:
 
 // ************************************************************************************************
 
+inline RPObject::RPObject(boost::string_view name): debug_name_(name.empty() ? "RPObject" : name)
+{
+}
+
 inline const std::string& RPObject::get_debug_name() const
 {
     return debug_name_;
 }
 
-inline void RPObject::set_debug_name(const std::string& name)
+inline void RPObject::set_debug_name(boost::string_view name)
 {
-    debug_name_ = name;
+    debug_name_ = name.to_string();
 }
 
-inline void RPObject::trace(const std::string& message) const
+inline void RPObject::trace(boost::string_view message) const
 {
     global_trace(debug_name_, message);
 }
 
-inline void RPObject::debug(const std::string& message) const
+inline void RPObject::debug(boost::string_view message) const
 {
     global_debug(debug_name_, message);
 }
 
-inline void RPObject::info(const std::string& message) const
+inline void RPObject::info(boost::string_view message) const
 {
     global_info(debug_name_, message);
 }
 
-inline void RPObject::warn(const std::string& message) const
+inline void RPObject::warn(boost::string_view message) const
 {
     global_warn(debug_name_, message);
 }
 
-inline void RPObject::error(const std::string& message) const
+inline void RPObject::error(boost::string_view message) const
 {
     global_error(debug_name_, message);
 }
