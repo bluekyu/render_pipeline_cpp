@@ -66,6 +66,15 @@ static boost::filesystem::path get_canonical_path(const boost::filesystem::path&
 class PluginManager::Impl
 {
 public:
+    struct PluginDataType
+    {
+        std::unique_ptr<BasePlugin> instance;
+        BasePlugin::PluginInfo plugin_info;
+        SettingsDataType settings;
+        DaySettingsDataType day_settings;
+    };
+
+public:
     Impl(PluginManager& self, RenderPipeline& pipeline);
 
     void unload();
@@ -103,17 +112,10 @@ public:
 
     bool requires_daytime_settings_;
 
-    std::unordered_map<std::string, std::unique_ptr<BasePlugin>> instances_;
-
     std::unordered_set<std::string> enabled_plugins_;
 
-    std::unordered_map<std::string, BasePlugin::PluginInfo> plugin_info_map_;
-
-    ///< { plugin-id, SettingsType }
-    std::unordered_map<std::string, SettingsDataType> settings_;
-
-    ///< { plugin-id, DaySettingsType }
-    std::unordered_map<std::string, DaySettingsDataType> day_settings_;
+    ///< { plguin-id, PluginDataType }
+    std::unordered_map<std::string, PluginDataType> plugin_data_map_;
 };
 
 std::unordered_map<std::string, std::function<PluginManager::PluginCreatorType>> PluginManager::Impl::plugin_creators_;
@@ -126,19 +128,17 @@ PluginManager::Impl::Impl(PluginManager& self, RenderPipeline& pipeline): self_(
 
 void PluginManager::Impl::unload()
 {
-    self_.debug(fmt::format("Unloading all plugins: {}", instances_.size()));
+    self_.debug(fmt::format("Clear plugins data: {}", plugin_data_map_.size()));
 
     self_.on_unload();
 
-    for (auto&& id_handle: instances_)
+    for (auto&& id_data: plugin_data_map_)
     {
         // delete plugin instance.
-        id_handle.second.reset();
+        id_data.second.instance.reset();
     }
-    instances_.clear();
+    plugin_data_map_.clear();
 
-    settings_.clear();
-    day_settings_.clear();
     enabled_plugins_.clear();
 
     // NOTE: DLLs are not unloaded, yet.
@@ -245,14 +245,14 @@ void PluginManager::Impl::save_overrides(const Filename& override_path)
     std::vector<std::string> enabled_plugin_ids;
     std::vector<std::string> plugin_ids;
 
-    enabled_plugin_ids.reserve(settings_.size());
-    plugin_ids.reserve(settings_.size());
+    enabled_plugin_ids.reserve(plugin_data_map_.size());
+    plugin_ids.reserve(plugin_data_map_.size());
 
-    for (const auto& setting: settings_)
+    for (const auto& id_data: plugin_data_map_)
     {
-        bool found = enabled_plugins_.find(setting.first) != enabled_plugins_.end();
-        enabled_plugin_ids.push_back((found ? "A" : "B") + setting.first);
-        plugin_ids.push_back(setting.first);
+        bool found = enabled_plugins_.find(id_data.first) != enabled_plugins_.end();
+        enabled_plugin_ids.push_back((found ? "A" : "B") + id_data.first);
+        plugin_ids.push_back(id_data.first);
     }
 
     std::sort(enabled_plugin_ids.begin(), enabled_plugin_ids.end());
@@ -270,7 +270,7 @@ void PluginManager::Impl::save_overrides(const Filename& override_path)
     for (const auto& id : plugin_ids)
     {
         output += std::string(4, ' ') + id + ":\n";
-        for (const auto& setting_id_handle : settings_.at(id).get<1>())
+        for (const auto& setting_id_handle : plugin_data_map_.at(id).settings.get<1>())
             output += std::string(8, ' ') + fmt::format("{}: {}\n", setting_id_handle.key, setting_id_handle.value->get_value_as_string());
         output += "\n";
     }
@@ -308,18 +308,20 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
         return;
     }
 
+    auto& plugin_data = plugin_data_map_[plugin_id];
+
     const auto& info_node = config["information"];
-    plugin_info_map_.insert_or_assign(plugin_id, BasePlugin::PluginInfo{
+    plugin_data.plugin_info = BasePlugin::PluginInfo{
         info_node["category"].as<std::string>("empty_category"),
         info_node["name"].as<std::string>("empty_name"),
         info_node["author"].as<std::string>("empty_author"),
         info_node["version"].as<std::string>(""),
-        info_node["description"].as<std::string>("empty_description") });
+        info_node["description"].as<std::string>("empty_description") };
 
     if (config["settings"] && config["settings"].size() != 0 && !config["settings"].IsSequence())
         self_.fatal("Invalid plugin configuration, did you miss '!!omap' in 'settings'?");
 
-    auto& settings_map = settings_[plugin_id].get<1>();
+    auto& settings_map = plugin_data.settings.get<1>();
     for (auto settings_node: config["settings"])
     {
         // XXX: omap of yaml-cpp is list.
@@ -344,7 +346,7 @@ void PluginManager::Impl::load_plugin_settings(const std::string& plugin_id, con
 
     if (requires_daytime_settings_)
     {
-        auto& day_settings_map = day_settings_[plugin_id].get<1>();
+        auto& day_settings_map = plugin_data.day_settings.get<1>();
         for (auto daytime_settings_node: config["daytime_settings"])
         {
             // XXX: omap of yaml-cpp is list.
@@ -388,7 +390,7 @@ void PluginManager::Impl::load_setting_overrides(const Filename& override_path)
     for (const auto& id_settings: overrides["overrides"])
     {
         const std::string plugin_id(id_settings.first.as<std::string>());
-        if (settings_.find(plugin_id) == settings_.end())
+        if (plugin_data_map_.find(plugin_id) == plugin_data_map_.end())
         {
             self_.warn(fmt::format("Unknown plugin in plugin ({}) config.", plugin_id));
             continue;
@@ -397,7 +399,7 @@ void PluginManager::Impl::load_setting_overrides(const Filename& override_path)
         for (const auto& id_val: id_settings.second)
         {
             const std::string setting_id(id_val.first.as<std::string>());
-            auto& plugin_setting_map = settings_.at(plugin_id).get<1>();
+            auto& plugin_setting_map = plugin_data_map_.at(plugin_id).settings.get<1>();
             auto found = plugin_setting_map.find(setting_id);
             if (found == plugin_setting_map.end())
             {
@@ -414,7 +416,7 @@ void PluginManager::Impl::on_load()
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_load() in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_load();
+        plugin_data_map_.at(plugin_id).instance->on_load();
     }
 }
 
@@ -423,7 +425,7 @@ void PluginManager::Impl::on_stage_setup()
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_stage_setup() in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_stage_setup();
+        plugin_data_map_.at(plugin_id).instance->on_stage_setup();
     }
 }
 
@@ -432,7 +434,7 @@ void PluginManager::Impl::on_post_stage_setup()
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_post_stage_setup() in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_post_stage_setup();
+        plugin_data_map_.at(plugin_id).instance->on_post_stage_setup();
     }
 }
 
@@ -441,7 +443,7 @@ void PluginManager::Impl::on_pipeline_created()
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_pipeline_created() in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_pipeline_created();
+        plugin_data_map_.at(plugin_id).instance->on_pipeline_created();
     }
 }
 
@@ -450,32 +452,38 @@ void PluginManager::Impl::on_prepare_scene(NodePath scene)
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_prepare_scene(NodePath) in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_prepare_scene(scene);
+        plugin_data_map_.at(plugin_id).instance->on_prepare_scene(scene);
     }
 }
 
 void PluginManager::Impl::on_pre_render_update()
 {
     for (const auto& plugin_id: enabled_plugins_)
-        instances_.at(plugin_id)->on_pre_render_update();
+        plugin_data_map_.at(plugin_id).instance->on_pre_render_update();
 }
 
 void PluginManager::Impl::on_post_render_update()
 {
     for (const auto& plugin_id: enabled_plugins_)
-        instances_.at(plugin_id)->on_post_render_update();
+        plugin_data_map_.at(plugin_id).instance->on_post_render_update();
 }
 
 void PluginManager::Impl::on_shader_reload()
 {
     for (const auto& plugin_id: enabled_plugins_)
-        instances_.at(plugin_id)->on_shader_reload();
+    {
+        self_.trace(fmt::format("Call on_shader_reload() in plugin ({}).", plugin_id));
+        plugin_data_map_.at(plugin_id).instance->on_shader_reload();
+    }
 }
 
 void PluginManager::Impl::on_window_resized()
 {
     for (const auto& plugin_id: enabled_plugins_)
-        instances_.at(plugin_id)->on_window_resized();
+    {
+        self_.trace(fmt::format("Call on_window_resized() in plugin ({}).", plugin_id));
+        plugin_data_map_.at(plugin_id).instance->on_window_resized();
+    }
 }
 
 void PluginManager::Impl::on_unload()
@@ -483,7 +491,7 @@ void PluginManager::Impl::on_unload()
     for (const auto& plugin_id: enabled_plugins_)
     {
         self_.trace(fmt::format("Call on_unload() in plugin ({}).", plugin_id));
-        instances_.at(plugin_id)->on_unload();
+        plugin_data_map_.at(plugin_id).instance->on_unload();
     }
 }
 
@@ -500,13 +508,13 @@ void PluginManager::Impl::on_setting_changed(const std::string& plugin_id, const
         return;
 
     if (setting->is_runtime() || setting->is_shader_runtime())
-        instances_.at(plugin_id)->on_setting_changed(setting_id);
+        plugin_data_map_.at(plugin_id).instance->on_setting_changed(setting_id);
 
     if (setting->is_shader_runtime())
     {
         self_.init_defines();
         pipeline_.get_stage_mgr()->write_autoconfig();
-        instances_.at(plugin_id)->reload_shaders();
+        plugin_data_map_.at(plugin_id).instance->reload_shaders();
     }
 }
 
@@ -520,12 +528,12 @@ void PluginManager::Impl::on_setting_changed(const std::unordered_map<std::strin
         if (enabled_plugins_.find(plugin_id) == enabled_plugins_.end())
             continue;
 
-        auto settings_found = settings_.find(plugin_id);
-        if (settings_found == settings_.end())
+        auto plugin_data_found = plugin_data_map_.find(plugin_id);
+        if (plugin_data_found == plugin_data_map_.end())
             continue;
 
-        auto& plugin_setting_map = settings_found->second.get<1>();
-        auto& plugin_instance = instances_.at(plugin_id);
+        auto& plugin_setting_map = plugin_data_found->second.settings.get<1>();
+        auto& plugin_instance = plugin_data_map_.at(plugin_id).instance;
 
         for (const auto& setting_id: plugin_id_settings.second)
         {
@@ -551,7 +559,7 @@ void PluginManager::Impl::on_setting_changed(const std::unordered_map<std::strin
         if (settings_map.size() > 1)
             pipeline_.reload_shaders();
         else
-            instances_.at(settings_map.begin()->first)->reload_shaders();
+            plugin_data_map_.at(settings_map.begin()->first).instance->reload_shaders();
     }
 }
 
@@ -584,10 +592,12 @@ void PluginManager::load()
     if (impl_->requires_daytime_settings_)
         load_daytime_overrides("/$$rpconfig/daytime.yaml");
 
+    trace(fmt::format("Found {} plugin settings.", impl_->plugin_data_map_.size()));
+
     debug("Creating plugin instances ..");
     for (const auto& plugin_id: impl_->enabled_plugins_)
     {
-        if (impl_->settings_.find(plugin_id) == impl_->settings_.end())
+        if (impl_->plugin_data_map_.find(plugin_id) == impl_->plugin_data_map_.end())
         {
             error(fmt::format("Cannot find plugin ({}) in plugin directory.", plugin_id));
             disable_plugin(plugin_id);
@@ -597,7 +607,7 @@ void PluginManager::load()
         auto handle = impl_->load_plugin(plugin_id);
 
         if (handle)
-            impl_->instances_[plugin_id] = std::move(handle);
+            impl_->plugin_data_map_.at(plugin_id).instance.swap(handle);
         else
             disable_plugin(plugin_id);
     }
@@ -609,11 +619,11 @@ void PluginManager::disable_plugin(const std::string& plugin_id)
     if (impl_->enabled_plugins_.find(plugin_id) != impl_->enabled_plugins_.end())
         impl_->enabled_plugins_.erase(plugin_id);
 
-    for (const auto& id_handle: impl_->instances_)
+    for (const auto& id_data: impl_->plugin_data_map_)
     {
-        const auto& plugins = id_handle.second->get_required_plugins();
+        const auto& plugins = id_data.second.instance->get_required_plugins();
         if (std::find(plugins.begin(), plugins.end(), plugin_id) != plugins.end())
-            disable_plugin(id_handle.second->get_plugin_id());
+            disable_plugin(id_data.first);
     }
 }
 
@@ -664,7 +674,7 @@ void PluginManager::load_daytime_overrides(const Filename& override_path)
         for (const auto& id_points: key_val.second)
         {
             const std::string setting_id(id_points.first.as<std::string>());
-            const auto& plugin_day_setting_map = impl_->day_settings_.at(plugin_id).get<1>();
+            const auto& plugin_day_setting_map = impl_->plugin_data_map_.at(plugin_id).day_settings.get<1>();
 
             auto found = plugin_day_setting_map.find(setting_id);
             if (found == plugin_day_setting_map.end())
@@ -709,7 +719,7 @@ void PluginManager::set_plugin_enabled(const std::string& plugin_id, bool enable
 
 void PluginManager::reset_plugin_settings(const std::string& plugin_id)
 {
-    for (auto&& setting_id_handle : impl_->settings_.at(plugin_id).get<1>())
+    for (auto&& setting_id_handle : impl_->plugin_data_map_.at(plugin_id).settings.get<1>())
         setting_id_handle.value->set_value(setting_id_handle.value->get_default());
 }
 
@@ -722,7 +732,7 @@ void PluginManager::init_defines()
 {
     for (const auto& plugin_id: impl_->enabled_plugins_)
     {
-        const auto& pluginsettings_vector = impl_->settings_.at(plugin_id).get<0>();
+        const auto& pluginsettings_vector = impl_->plugin_data_map_.at(plugin_id).settings.get<0>();
         auto& defines = impl_->pipeline_.get_stage_mgr()->get_defines();
         defines["HAVE_PLUGIN_" + plugin_id] = std::string("1");
         for (const auto& id_setting: pluginsettings_vector)
@@ -739,7 +749,7 @@ void PluginManager::init_defines()
 
 BasePlugin* PluginManager::get_instance(const std::string& plugin_id) const
 {
-    return impl_->instances_.at(plugin_id).get();
+    return impl_->plugin_data_map_.at(plugin_id).instance.get();
 }
 
 const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() const
@@ -749,11 +759,11 @@ const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() cons
 
 BaseType* PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id)
 {
-    auto settings_found = impl_->settings_.find(plugin_id);
-    if (settings_found == impl_->settings_.end())
+    auto plugin_data_found = impl_->plugin_data_map_.find(plugin_id);
+    if (plugin_data_found == impl_->plugin_data_map_.end())
         return nullptr;
 
-    auto& plugin_setting_map = settings_found->second.get<1>();
+    auto& plugin_setting_map = plugin_data_found->second.settings.get<1>();
     auto setting_found = plugin_setting_map.find(setting_id);
     if (setting_found == plugin_setting_map.end())
         return nullptr;
@@ -763,11 +773,11 @@ BaseType* PluginManager::get_setting_handle(const std::string& plugin_id, const 
 
 const BaseType* PluginManager::get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const
 {
-    auto settings_found = impl_->settings_.find(plugin_id);
-    if (settings_found == impl_->settings_.end())
+    auto plugin_data_found = impl_->plugin_data_map_.find(plugin_id);
+    if (plugin_data_found == impl_->plugin_data_map_.end())
         return nullptr;
 
-    auto& plugin_setting_map = settings_found->second.get<1>();
+    auto& plugin_setting_map = plugin_data_found->second.settings.get<1>();
     auto setting_found = plugin_setting_map.find(setting_id);
     if (setting_found == plugin_setting_map.end())
         return nullptr;
@@ -779,7 +789,7 @@ const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& 
 {
     try
     {
-        return impl_->plugin_info_map_.at(plugin_id);
+        return impl_->plugin_data_map_.at(plugin_id).plugin_info;
     }
     catch (...)
     {
@@ -789,9 +799,13 @@ const BasePlugin::PluginInfo& PluginManager::get_plugin_info(const std::string& 
     }
 }
 
-const std::unordered_map<std::string, PluginManager::DaySettingsDataType>& PluginManager::get_day_settings() const
+const PluginManager::DaySettingsDataType* PluginManager::get_day_settings(const std::string& plugin_id) const
 {
-    return impl_->day_settings_;
+    auto found = impl_->plugin_data_map_.find(plugin_id);
+    if (found == impl_->plugin_data_map_.end())
+        return nullptr;
+    else
+        return &found->second.day_settings;
 }
 
 void PluginManager::unload() { impl_->unload(); }

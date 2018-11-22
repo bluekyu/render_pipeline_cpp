@@ -95,12 +95,10 @@ std::string DayTimeManager::get_formatted_time() const
 
 void DayTimeManager::load_settings()
 {
-    const auto& day_settings = impl_->pipeline_.get_plugin_mgr()->get_day_settings();
-    for (const auto& id_settings: day_settings)
+    auto plugin_mgr = impl_->pipeline_.get_plugin_mgr();
+    for (const auto& plugin_id: plugin_mgr->get_enabled_plugins())
     {
-        const std::string& plugin_id = id_settings.first;
-
-        for (const auto& setting_handle: id_settings.second.get<0>())
+        for (const auto& setting_handle: plugin_mgr->get_day_settings(plugin_id)->get<0>())
         {
             const std::string setting_id = plugin_id + "." + setting_handle.key;
             impl_->input_ubo_->register_pta(setting_id, setting_handle.value->get_glsl_type());

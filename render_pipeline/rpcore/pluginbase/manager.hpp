@@ -132,7 +132,7 @@ public:
     const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const noexcept;
     BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id);
     const BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const;
-    const std::unordered_map<std::string, DaySettingsDataType>& get_day_settings() const;
+    const DaySettingsDataType* get_day_settings(const std::string& plugin_id) const;
 
     /** Get plugin instance. */
     BasePlugin* get_instance(const std::string& plugin_id) const;
