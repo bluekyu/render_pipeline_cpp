@@ -142,7 +142,7 @@ const Image::ComponentFormatType& Image::convert_texture_format(const std::strin
     }
 }
 
-Image::Image(const std::string& name): RPObject(name), texture_(new Texture(name))
+Image::Image(const std::string& name): texture_(new Texture(name))
 {
     Image::REGISTERED_IMAGES.push_back(this);
     texture_->set_clear_color(0);

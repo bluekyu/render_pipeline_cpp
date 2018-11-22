@@ -27,7 +27,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/config.hpp>
 
 namespace rpcore {
 
@@ -37,7 +37,7 @@ namespace rpcore {
  * the memory used. This is used by all classes instead of pandas builtin
  * Texture class.
  */
-class RENDER_PIPELINE_DECL Image : public RPObject
+class RENDER_PIPELINE_DECL Image
 {
 public:
     using ComponentFormatType = std::pair<Texture::ComponentType, Texture::Format>;
