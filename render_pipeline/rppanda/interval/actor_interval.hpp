@@ -59,7 +59,7 @@ public:
         double play_rate=1.0, const boost::optional<std::string> name=boost::none, bool force_update=false,
         const std::vector<std::string>& part_name={}, const boost::optional<std::string>& lod_name=boost::none);
 
-    virtual ~ActorInterval();
+    ~ActorInterval() override;
 
     void priv_step(double t) override;
     void priv_finalize() override;

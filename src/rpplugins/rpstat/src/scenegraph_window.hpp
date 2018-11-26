@@ -45,7 +45,7 @@ public:
 
 public:
     ScenegraphWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
-    virtual ~ScenegraphWindow();
+    ~ScenegraphWindow() override;
 
     void draw() final;
     void draw_contents() final;

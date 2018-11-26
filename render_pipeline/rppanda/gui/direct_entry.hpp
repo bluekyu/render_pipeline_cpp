@@ -88,7 +88,7 @@ public:
 
 public:
     DirectEntry(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    virtual ~DirectEntry();
+    ~DirectEntry() override;
 
     ALLOC_DELETED_CHAIN(DirectEntry);
 

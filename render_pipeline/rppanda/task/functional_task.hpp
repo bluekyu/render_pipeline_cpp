@@ -45,7 +45,7 @@ public:
 
     ALLOC_DELETED_CHAIN(FunctionalTask);
 
-    virtual ~FunctionalTask();
+    ~FunctionalTask() override;
 
     void set_function(const TaskFunc& func);
     void set_function(TaskFunc&& func);

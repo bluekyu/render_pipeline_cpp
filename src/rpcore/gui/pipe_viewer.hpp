@@ -40,7 +40,7 @@ class PipeViewer : public DraggableWindow
 {
 public:
     PipeViewer(RenderPipeline* pipeline, NodePath parent);
-    virtual ~PipeViewer();
+    ~PipeViewer() override;
 
     void toggle();
 

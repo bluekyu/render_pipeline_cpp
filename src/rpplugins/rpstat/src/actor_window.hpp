@@ -41,7 +41,7 @@ class ActorWindow : public WindowInterface
 {
 public:
     ActorWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
-    virtual ~ActorWindow();
+    ~ActorWindow() override;
 
     void draw_contents() final;
 

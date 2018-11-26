@@ -88,7 +88,7 @@ public:
     ShowBase(const ShowBase&) = delete;
     ShowBase(ShowBase&&);
 
-    virtual ~ShowBase();
+    ~ShowBase();
 
     ShowBase& operator=(const ShowBase&) = delete;
     ShowBase& operator=(ShowBase&&);

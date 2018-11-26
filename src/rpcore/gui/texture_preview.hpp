@@ -34,7 +34,7 @@ class TexturePreview : public DraggableWindow
 {
 public:
     TexturePreview(NodePath parent);
-    virtual ~TexturePreview();
+    ~TexturePreview() override;
 
     /** "Presents" a given texture and shows the window. */
     void present(Texture* tex);

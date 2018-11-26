@@ -31,7 +31,7 @@ class PSSMPlugin : public rpcore::BasePlugin
 public:
     PSSMPlugin(rpcore::RenderPipeline& pipeline);
 
-    virtual ~PSSMPlugin();
+    ~PSSMPlugin() override;
 
     RequrieType& get_required_plugins() const final;
 

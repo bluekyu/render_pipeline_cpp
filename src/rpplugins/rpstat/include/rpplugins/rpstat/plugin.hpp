@@ -44,7 +44,7 @@ public:
 public:
     RPStatPlugin(rpcore::RenderPipeline& pipeline);
     
-    virtual ~RPStatPlugin();
+    ~RPStatPlugin() override;
 
     RequrieType& get_required_plugins(void) const override;
 

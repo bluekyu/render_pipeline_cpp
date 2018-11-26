@@ -60,7 +60,7 @@ public:
     DirectObject(const DirectObject&) = delete;
     DirectObject(DirectObject&&) = default;
 
-    virtual ~DirectObject();
+    ~DirectObject();
 
     DirectObject& operator=(const DirectObject&) = delete;
     DirectObject& operator=(DirectObject&&) = default;
@@ -117,7 +117,7 @@ private:
     {
     public:
         TaskContainer(DirectObject* owner, AsyncTask* task);
-        virtual ~TaskContainer();
+        ~TaskContainer() override;
 
         void wp_callback(void*) final;
 

@@ -38,7 +38,7 @@ public:
 
 public:
     MaterialWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
-    virtual ~MaterialWindow();
+    ~MaterialWindow() override;
 
     void draw_contents() final;
 

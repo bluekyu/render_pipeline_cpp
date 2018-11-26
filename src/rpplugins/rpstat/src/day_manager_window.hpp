@@ -38,7 +38,7 @@ class DayManagerWindow : public WindowInterface
 {
 public:
     DayManagerWindow(RPStatPlugin& plugin, rpcore::RenderPipeline& pipeline);
-    virtual ~DayManagerWindow();
+    ~DayManagerWindow() override;
 
     void draw_contents() final;
 

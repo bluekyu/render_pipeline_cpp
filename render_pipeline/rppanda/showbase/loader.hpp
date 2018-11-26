@@ -98,7 +98,7 @@ public:
     Loader(const Loader&) = delete;
     Loader(Loader&&);
 
-    virtual ~Loader();
+    ~Loader();
 
     Loader& operator=(const Loader&) = delete;
     Loader& operator=(Loader&&);

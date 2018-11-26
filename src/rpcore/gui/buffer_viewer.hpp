@@ -48,7 +48,7 @@ public:
     using EntryType = std::pair<void*, EntryID>;
 
     BufferViewer(NodePath parent);
-    virtual ~BufferViewer();
+    ~BufferViewer() override;
 
     void toggle();
 

@@ -63,7 +63,7 @@ public:
 
 public:
     DirectScrolledFrame(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    virtual ~DirectScrolledFrame();
+    ~DirectScrolledFrame() override;
 
     ALLOC_DELETED_CHAIN(DirectScrolledFrame);
 

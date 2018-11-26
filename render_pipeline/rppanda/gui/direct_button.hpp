@@ -71,7 +71,7 @@ public:
 
 public:
     DirectButton(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    virtual ~DirectButton();
+    ~DirectButton() override;
 
     ALLOC_DELETED_CHAIN(DirectButton);
 

@@ -152,7 +152,7 @@ public:
     Actor(const Actor&) = delete;
     Actor(Actor&&) = default;
 
-    virtual ~Actor();
+    ~Actor() override;
 
     Actor& operator=(const Actor&) = delete;
     Actor& operator=(Actor&&) = default;

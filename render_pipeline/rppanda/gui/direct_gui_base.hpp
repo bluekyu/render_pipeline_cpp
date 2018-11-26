@@ -156,7 +156,7 @@ public:
      * @param[in]   parent  Parent of PGItem.
      */
     DirectGuiWidget(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    virtual ~DirectGuiWidget();
+    ~DirectGuiWidget() override;
 
     ALLOC_DELETED_CHAIN(DirectGuiWidget);
 

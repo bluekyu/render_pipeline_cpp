@@ -64,7 +64,7 @@ public:
 
 public:
     DirectCheckBox(NodePath parent={}, const std::shared_ptr<Options>& options=std::make_shared<Options>());
-    virtual ~DirectCheckBox();
+    ~DirectCheckBox() override;
 
     ALLOC_DELETED_CHAIN(DirectCheckBox);
 
