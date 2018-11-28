@@ -221,23 +221,20 @@ bool StageManager::Impl::bind_inputs_to_stage(RenderStage* stage)
 
     for (const auto& input_binding: common_inputs)
     {
-        if (inputs_.find(input_binding) == inputs_.end() && input_blocks_.find(input_binding) == input_blocks_.end())
-        {
-            self_.error(fmt::format("Input {} is missing for {}", input_binding, stage->get_debug_name()));
-            continue;
-        }
+        decltype(input_blocks_)::iterator input_blocks_found;
 
-        if (inputs_.find(input_binding) != inputs_.end())
+        auto input_found = inputs_.find(input_binding);
+        if (input_found != inputs_.end())
         {
-            stage->set_shader_input(inputs_.at(input_binding));
+            stage->set_shader_input(input_found->second);
         }
-        else if (input_blocks_.find(input_binding) != input_blocks_.end())
+        else if ((input_blocks_found = input_blocks_.find(input_binding)) != input_blocks_.end())
         {
-            boost::apply_visitor([&](const auto& block){ block->bind_to(stage); }, input_blocks_.at(input_binding));
+            boost::apply_visitor([&](const auto& block){ block->bind_to(stage); }, input_blocks_found->second);
         }
         else
         {
-            assert(false && "Input binding not in inputs and not in blocks!");
+            self_.error(fmt::format("Input {} is missing for {}", input_binding, stage->get_debug_name()));
         }
     }
 

@@ -64,11 +64,10 @@ void main() {
     // Prevent a way too dark horizon by clamping the view vector
 #if STEREO_MODE
     bool m_is_in_skybox = is_skybox(m, gl_Layer);
-    if (m_is_in_skybox) {
 #else
     bool m_is_in_skybox = is_skybox(m);
-    if (m_is_in_skybox) {
 #endif
+    if (m_is_in_skybox) {
         view_vector.z = max(view_vector.z, 0.05);
     }
 
