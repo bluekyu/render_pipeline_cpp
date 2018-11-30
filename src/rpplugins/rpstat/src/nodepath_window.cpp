@@ -224,7 +224,7 @@ void NodePathWindow::ui_transform()
 
         // TODO: implement Scenegraph drag & drop
         ImGui::RadioButton(
-            fmt::format("Other{}###OtherRadioButton", selected_other ? " : " + selected_other.get_name() : "").c_str(),
+            fmt::format("Other{}###OtherRadioButton", selected_other ? " : " + selected_other.node()->get_name() : "").c_str(),
             &transform_mode,
             TransformMode::OTHER);
 

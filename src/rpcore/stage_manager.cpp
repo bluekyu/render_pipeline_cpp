@@ -428,7 +428,7 @@ void StageManager::setup()
     for (const auto& block: impl_->input_block_list_)
     {
         boost::apply_visitor([this](const auto& block) {
-            std::string block_name = block->get_name();
+            const auto& block_name = block->get_name();
             impl_->input_blocks_.insert_or_assign(block_name, std::move(block));
         }, block);
     }

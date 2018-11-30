@@ -107,6 +107,7 @@ void PipeViewer::populate_content()
     std::vector<std::string> current_pipes;
     const int pipe_pixel_size = 3;
     const int pipe_height = 100;
+    std::string output_pipe_name;
 
     // Generate stages
     const auto& stages = _pipeline->get_stage_mgr()->get_stages();
@@ -126,7 +127,7 @@ void PipeViewer::populate_content()
         }
 
         std::string stage_name(stage->get_debug_name());
-        const std::string key("Stage");
+        static const std::string key("Stage");
         stage_name.replace(stage_name.find(key), key.length(), "");
 
         Text stage_text(stage_name, node, 20, 25, 15);
@@ -137,24 +138,23 @@ void PipeViewer::populate_content()
             const std::shared_ptr<SimpleInputBlock>* simple_input_data = nullptr;
             const std::shared_ptr<GroupedInputBlock>* group_input_data = nullptr;
 
-            std::string output_pipe;
             if ((shader_input_data = boost::get<ShaderInput>(&pipe_tex)))
-                output_pipe = shader_input_data->get_name()->get_name();
+                output_pipe_name = shader_input_data->get_name()->get_name();
             else if ((simple_input_data = boost::get<std::shared_ptr<SimpleInputBlock>>(&pipe_tex)))
-                output_pipe = (*simple_input_data)->get_name();
+                output_pipe_name = (*simple_input_data)->get_name();
             else if ((group_input_data = boost::get<std::shared_ptr<GroupedInputBlock>>(&pipe_tex)))
-                output_pipe = (*group_input_data)->get_name();
+                output_pipe_name = (*group_input_data)->get_name();
 
             long long pipe_idx = 0;
-            const LVecBase3f& rgb = rgb_from_string(output_pipe);
-            auto pipe_iter = std::find(current_pipes.begin(), current_pipes.end(), output_pipe);
+            const LVecBase3f& rgb = rgb_from_string(output_pipe_name);
+            auto pipe_iter = std::find(current_pipes.begin(), current_pipes.end(), output_pipe_name);
             if (pipe_iter != current_pipes.end())
             {
                 pipe_idx = std::distance(current_pipes.begin(), pipe_iter);
             }
             else
             {
-                current_pipes.push_back(output_pipe);
+                current_pipes.push_back(output_pipe_name);
                 pipe_idx = current_pipes.size() - 1;
 
                 auto df_options = std::make_shared<rppanda::DirectFrame::Options>();
