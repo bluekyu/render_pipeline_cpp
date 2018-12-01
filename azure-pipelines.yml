@@ -21,7 +21,7 @@ jobs:
 
   steps:
   # initialize vcpkg
-  - script: git clone https://bluekyu@dev.azure.com/bluekyu/rpcpp-devops/_git/vcpkg
+  - script: git clone --depth 1 https://github.com/bluekyu/vcpkg.git
     displayName: 'Clone vcpkg'
     workingDirectory: '$(Build.BinariesDirectory)'
 
@@ -34,7 +34,7 @@ jobs:
       pipeline: vcpkg
       specificBuildWithTriggering: true
       buildVersionToDownload: 'latestFromBranch'
-      branchName: 'refs/heads/master'
+      branchName: 'refs/heads/rpcpp-devops'
       downloadType: 'single'
       artifactName: 'vcpkg-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
       downloadPath: '$(Build.BinariesDirectory)'
@@ -101,7 +101,7 @@ jobs:
         .. -G "$(CMAKE_GENERATOR)" -Wno-dev -T "v$(BUILD_TOOLSET_VERSION),host=x64"
         -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake"
         -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
-        -DVCPKG_TARGET_TRIPLET=x64-windows-v$(BUILD_TOOLSET_VERSION)
+        -DVCPKG_TARGET_TRIPLET=x64-windows-vc$(BUILD_TOOLSET_VERSION)
         -DCMAKE_INSTALL_PREFIX="$(Build.BinariesDirectory)/$(REPO_NAME)"
         -Dpanda3d_ROOT:PATH="$(Build.BinariesDirectory)/panda3d"
 
