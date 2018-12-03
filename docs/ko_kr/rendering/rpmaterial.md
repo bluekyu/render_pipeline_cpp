@@ -43,6 +43,21 @@ Transparent shading 일 경우에 사용되며, 알파 값을 지정하고 [0, 1
 
 알파 텍스처를 사용할 경우에는 Panda3D 에서 RGBA 텍스처로 변환하여 위의 형태로 사용하게 된다.
 
+### 텍스처 적용
+```cpp
+rpcore::RPRenderState state(MODEL_NODEPATH.get_state());
+
+PT(Texture) t = rpcore::RPLoader::load_texture(BASE_COLOR_PATH);
+t->set_format(Texture::Format::F_srgb);         // NOTE: use if the texture is sRGB format.
+
+state.set_basecolor_texture(t)
+     .set_normal_texture(rpcore::RPLoader::load_texture(NORMAL_PATH))
+     .set_specular_texture(rpcore::RPLoader::load_texture(SPECULAR_PATH))
+     .set_roughness_texture(rpcore::RPLoader::load_texture(ROUGHNESS_PATH));
+
+MODEL_NODEPATH.set_state(state.get_state());
+```
+
 
 
 ## Shading Model
