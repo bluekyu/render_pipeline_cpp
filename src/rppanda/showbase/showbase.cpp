@@ -46,6 +46,8 @@
 #include <pgTop.h>
 #include <orthographicLens.h>
 #include <audioManager.h>
+#include <inputDeviceNode.h>
+#include <buttonThrower.h>
 
 #include "render_pipeline/rppanda/showbase/sfx_player.hpp"
 #include "render_pipeline/rppanda/showbase/loader.hpp"
@@ -68,6 +70,9 @@ public:
     void setup_render_2dp(ShowBase* self);
     void setup_render_2d(ShowBase* self);
 
+    void attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix);
+    void detach_input_device(InputDevice* device);
+
     void add_sfx_manager(AudioManager* extra_sfx_manager);
     void create_base_audio_managers();
     void enable_music(bool enable);
@@ -88,6 +93,11 @@ public:
     Messenger* messenger_ = nullptr;
     TaskManager* task_mgr_ = nullptr;
     GraphicsEngine* graphics_engine_ = nullptr;
+
+    PT(GenericAsyncTask) task_data_loop_;
+    InputDeviceManager* devices_;
+    std::unordered_map<InputDevice*, NodePath> input_device_nodes_;
+    std::vector<NodePath> device_button_throwers_;
 
     std::unique_ptr<SfxPlayer> sfx_player_;
     PT(AudioManager) sfx_manager_;
@@ -186,7 +196,7 @@ AsyncTask::DoneStatus ShowBase::Impl::audio_loop()
         music_manager_->update();
     }
 
-    for (auto&& x: sfx_manager_list_)
+    for (auto&& x : sfx_manager_list_)
         x->update();
 
     return AsyncTask::DS_cont;
@@ -269,6 +279,11 @@ void ShowBase::Impl::initailize(ShowBase* self)
 
     messenger_ = Messenger::get_global_instance();
     task_mgr_ = TaskManager::get_global_instance();
+
+    // This is the global input device manager, which keeps track of
+    // connected input devices.
+    devices_ = InputDeviceManager::get_global_ptr();
+    task_data_loop_ = new GenericAsyncTask("data_loop", data_loop, self);
 
     app_has_audio_focus_ = true;
 
@@ -437,6 +452,51 @@ void ShowBase::Impl::setup_render_2d(ShowBase* self)
     a2d_bottom_right_ns_.set_pos(a2d_right_, 0, a2d_bottom_);
 
     // pixel2d is created in WindowFramework.
+}
+
+void ShowBase::Impl::attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix)
+{
+    if (input_device_nodes_.find(device) != input_device_nodes_.end())
+    {
+        rppanda_showbase_cat.error() << "Device '" << *device << "' is already attached." << std::endl;
+        return;
+    }
+
+    auto idn = self.get_data_root().attach_new_node(new InputDeviceNode(device, device->get_name()));
+
+    // Setup the button thrower to generate events for the device.
+    auto bt = idn.attach_new_node(new ButtonThrower(device->get_name()));
+    if (!prefix.empty())
+        DCAST(ButtonThrower, bt.node())->set_prefix(prefix + "-");
+
+    rppanda_showbase_cat.debug() << "Attached input device " << *device << " with prefix " << prefix << std::endl;
+    input_device_nodes_[device] = idn;
+    device_button_throwers_.push_back(bt);
+}
+
+void ShowBase::Impl::detach_input_device(InputDevice* device)
+{
+    if (input_device_nodes_.find(device) == input_device_nodes_.end())
+    {
+        rppanda_showbase_cat.error() << "Device '" << *device << "' does not exist" << std::endl;
+        return;
+    }
+
+    rppanda_showbase_cat.debug() << "Detached device " << *device << std::endl;
+
+    // Remove the ButtonThrower from the deviceButtonThrowers list.
+    auto idn = input_device_nodes_.at(device);
+    for (auto iter = device_button_throwers_.begin(), iter_end = device_button_throwers_.end(); iter != iter_end; ++iter)
+    {
+        if (idn.is_ancestor_of(*iter))
+        {
+            device_button_throwers_.erase(iter);
+            break;
+        }
+    }
+
+    idn.remove_node();
+    input_device_nodes_.erase(device);
 }
 
 void ShowBase::Impl::add_sfx_manager(AudioManager* extra_sfx_manager)
@@ -653,6 +713,17 @@ ShowBase* ShowBase::get_global_ptr()
     return Impl::global_ptr;
 }
 
+AsyncTask::DoneStatus ShowBase::data_loop(GenericAsyncTask* task, void* data)
+{
+    auto self = static_cast<ShowBase*>(data);
+
+    // Check if there were newly connected devices.
+    self->impl_->devices_->update();
+
+    auto panda_framework = self->get_panda_framework();
+    return panda_framework->task_data_loop(task, panda_framework);
+}
+
 ShowBase::ShowBase(bool lazy_initialize) : impl_(std::make_unique<Impl>())
 {
     if (!lazy_initialize)
@@ -677,6 +748,8 @@ void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
 void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
 void ShowBase::setup_mouse() { impl_->setup_mouse(this); }
 void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(); }
+void ShowBase::attach_input_device(InputDevice* device, const std::string& prefix) { impl_->attach_input_device(*this, device, prefix); }
+void ShowBase::detach_input_device(InputDevice* device) { impl_->detach_input_device(device); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
 
@@ -765,6 +838,11 @@ GraphicsEngine* ShowBase::get_graphics_engine() const
 GraphicsWindow* ShowBase::get_win() const
 {
     return impl_->window_framework_->get_graphics_window();
+}
+
+InputDeviceManager* ShowBase::get_devices() const
+{
+    return impl_->devices_;
 }
 
 const std::vector<PT(AudioManager)>& ShowBase::get_sfx_manager_list() const
@@ -1081,6 +1159,12 @@ void ShowBase::restart()
 
     shutdown();
 
+    // give the dataLoop task a reasonably "early" sort,
+    // so that it will get run before most tasks
+    add_task(impl_->task_data_loop_, "data_loop", -50);
+
+    // spawn the ivalLoop with a later sort, so that it will
+    // run after most tasks, but before igLoop.
     add_task(std::bind(&Impl::ival_loop, impl_.get()), "ival_loop", 20);
 
     // the audioLoop updates the positions of 3D sounds.
@@ -1092,6 +1176,7 @@ void ShowBase::shutdown()
 {
     rppanda_showbase_cat.debug() << "Shutdown ShowBase ..." << std::endl;
 
+    impl_->task_mgr_->remove("data_loop");
     impl_->task_mgr_->remove("audio_loop");
     impl_->task_mgr_->remove("ival_loop");
 }

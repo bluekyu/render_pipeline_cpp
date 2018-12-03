@@ -406,7 +406,7 @@ void ImGuiPlugin::update_imgui()
     auto window = rpcore::Globals::base->get_win();
     if (window && window->is_of_type(GraphicsWindow::get_class_type()))
     {
-        const MouseData& mouse = window->get_pointer(MOUSE_DEVICE_INDEX);
+        const auto& mouse = window->get_pointer(MOUSE_DEVICE_INDEX);
         if (mouse.get_in_window())
         {
             if (io.WantSetMousePos)
