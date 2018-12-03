@@ -2,14 +2,12 @@
 **Languages**: [한국어](ko_kr/build_rpcpp.md)
 
 ## Requirements
-The **Versions** are used by a build system and does **NOT** need to match. You can use another versions.
-
 - C++14
 - Tools
   - CMake (build tool)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended): 56ea0dca4098754cee6dba7766c9e38d1fe40165
-- [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (optional, but recommended)
+- [Panda3D](https://github.com/panda3d/panda3d)
 - FreeType2: 2.5.2 (included in Panda3D third-party)
 - Boost: above 1.65.0
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
@@ -19,7 +17,12 @@ The **Versions** are used by a build system and does **NOT** need to match. You 
 - Assimp (optional): Required to build rpassimp plugin
 - ImGUI (optional): Required to build imgui or rpstat plugin
 
+### Versions in DevOps
+- vcpkg: https://github.com/bluekyu/vcpkg/tree/rpcpp-devops
+- Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
+- Panda3D: https://github.com/bluekyu/panda3d
 
+You can see the build pipeline: https://github.com/bluekyu/render_pipeline_cpp/blob/master/azure-pipelines.yml
 
 ### CMake
 Render Pipeline C++ uses CMake build system.

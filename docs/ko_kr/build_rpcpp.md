@@ -2,13 +2,11 @@
 **Languages**: [English](../build_rpcpp.md)
 
 ## 요구사항
-명시된 **버전** 은 빌드 시스템에서 사용되는 것이며, 일치할 필요는 없다.
-
 - C++14
 - 도구
   - CMake (빌드 도구)
   - Windows
-    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장): 56ea0dca4098754cee6dba7766c9e38d1fe40165
+    - [vcpkg](https://github.com/Microsoft/vcpkg) (선택사항이지만 권장)
 - [(Patched) Panda3D](https://github.com/bluekyu/panda3d): master branch
 - FreeType2: 2.5.2 (Panda3D third-party 포함된 버전)
 - Boost: 1.65.0 이상
@@ -19,7 +17,12 @@
 - Assimp (선택사항): rpassimp 플러그인 사용 시 필요
 - ImGUI (선택사항): imgui 또는 rpstat 플러그인 사용 시 필요
 
+### DevOps 에서의 버전
+- vcpkg: https://github.com/bluekyu/vcpkg/tree/rpcpp-devops
+- Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
+- Panda3D: https://github.com/bluekyu/panda3d
 
+빌드 파이프라인은 다음 파일에서 볼 수 있음: https://github.com/bluekyu/render_pipeline_cpp/blob/master/azure-pipelines.yml
 
 ### CMake
 Render Pipeline C++ 에서는 CMake 빌드 시스템을 사용한다.
@@ -157,4 +160,4 @@ vcpkg 에 설치된 toolchain 파일(vcpkg.cmake)을 선택.
 명령줄에서는 `-DCMAKE_TOOLCHAIN_FILE=.....\vcpkg\scripts\buildsystems\vcpkg.cmake` 옵션을
 사용해서 CMake 프로젝트 생성.
 
-`vcpkg` 를 사용하지 않으며, 바로 CMake 실행.
+`vcpkg` 를 사용하지 않으면, 바로 CMake 실행.
