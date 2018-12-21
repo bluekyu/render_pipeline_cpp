@@ -36,6 +36,7 @@
 #include <render_pipeline/rppanda/actor/actor.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/rpgeomnode.hpp>
+#include <render_pipeline/rpcore/util/primitives.hpp>
 
 #include "ImGuizmo/ImGuizmo.h"
 #include "imgui/imgui_stl.h"
@@ -94,6 +95,23 @@ void ScenegraphWindow::draw_contents()
 
             if (ImGui::MenuItem("Import Actor"))
                 import_actor_dialog_->open();
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Tools"))
+        {
+            if (ImGui::MenuItem("Create Empty Node"))
+                rpcore::Globals::render.attach_new_node(new PandaNode("New-Node"));
+
+            if (ImGui::MenuItem("Create Plane"))
+                rpcore::create_plane("Plane").reparent_to(rpcore::Globals::render);
+
+            if (ImGui::MenuItem("Create Cube"))
+                rpcore::create_cube("Cube").reparent_to(rpcore::Globals::render);
+
+            if (ImGui::MenuItem("Create Sphere"))
+                rpcore::create_sphere("Sphere", 36, 72).reparent_to(rpcore::Globals::render);
 
             ImGui::EndMenu();
         }
