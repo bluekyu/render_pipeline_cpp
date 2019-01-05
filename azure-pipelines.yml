@@ -36,14 +36,14 @@ jobs:
       buildVersionToDownload: 'latestFromBranch'
       branchName: 'refs/heads/rpcpp-devops'
       downloadType: 'single'
-      artifactName: 'vcpkg-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)'
+      artifactName: 'vcpkg-vc$(BUILD_TOOLSET_VERSION)'
       downloadPath: '$(Build.BinariesDirectory)'
 
   # extract vcpkg cache
   - task: ExtractFiles@1
     displayName: Restore vcpkg cache
     inputs:
-      archiveFilePatterns: '$(Build.BinariesDirectory)/vcpkg-vc$(BUILD_TOOLSET_VERSION)-$(BUILD_CONFIGURATION)/vcpkg-installed.7z'
+      archiveFilePatterns: '$(Build.BinariesDirectory)/vcpkg-vc$(BUILD_TOOLSET_VERSION)/vcpkg-installed.7z'
       destinationFolder: '$(VCPKG_ROOT)'
       cleanDestinationFolder: false
 

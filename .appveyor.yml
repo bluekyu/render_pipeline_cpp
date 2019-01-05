@@ -41,7 +41,6 @@ environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
     INSTALL_PREFIX: C:/projects/_install
     FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
-    VCPKG_ROOT: C:/tools/vcpkg
 
 
 # this is how to allow failing jobs in the matrix
@@ -53,8 +52,7 @@ matrix:
 
 
 # build cache to preserve files/folders between builds
-cache:
-    - c:\tools\vcpkg\installed\ -> .appveyor.yml
+#cache:
 
 
 # scripts that run after cloning repository
@@ -64,27 +62,27 @@ install:
 - sh: sudo apt-get install --yes --no-install-recommends g++-8 libfreetype6-dev libassimp-dev
 - sh: sudo update-alternatives --set gcc /usr/bin/gcc-8
 
-# checkout recent vcpkg
-- sh: git clone -q https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
-- ps: pushd $env:VCPKG_ROOT
-- cmd: git pull --quiet
-- git checkout -qf 56ea0dca4098754cee6dba7766c9e38d1fe40165
-- sh: ./bootstrap-vcpkg.sh > /dev/null
-- cmd: .\bootstrap-vcpkg.bat > nul
-- sh: if [ -d "$CACHE_ROOT/vcpkg_installed" ]; then mv "$CACHE_ROOT/vcpkg_installed" "$VCPKG_ROOT/installed"; fi
-- ps: popd
-
-# check vcpkg version
-- sh: $VCPKG_ROOT/vcpkg version
-- cmd: vcpkg version
-
-# install thirdparty libs in vcpkg
-- sh: $VCPKG_ROOT/vcpkg install --triplet x64-linux boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp imgui
-- cmd: vcpkg install --triplet x64-windows boost-dll boost-any boost-multi-index fmt spdlog yaml-cpp assimp imgui
-
-# download and install panda3d-thirdparty & panda3d
 - ps: mkdir $env:INSTALL_PREFIX
 - ps: pushd $env:INSTALL_PREFIX
+
+# initialize vcpkg
+- git clone -q --branch rpcpp-devops --depth 1 https://github.com/bluekyu/vcpkg.git
+- ps: pushd vcpkg
+
+# download vcpkg artifacts
+- ps: >-
+    if ($isWindows) {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/vcpkg/artifacts/vcpkg.7z?branch=rpcpp-devops&job=Image%3A+Visual+Studio+2017+Preview'
+    } else {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/vcpkg/artifacts/vcpkg.tar.xz?branch=rpcpp-devops&job=Image%3A+Ubuntu1804'
+    }
+
+# extract vcpkg cache
+- sh: tar xf vcpkg.tar.xz
+- cmd: 7z x -y vcpkg.7z > nul
+- ps: popd
+
+# download and extract panda3d-thirdparty
 - ps: >-
     if ($isWindows) {
         if ($env:CONFIGURATION -eq "Debug") {
@@ -94,6 +92,8 @@ install:
         }
     }
 - cmd: 7z x -y panda3d-thirdparty.7z > nul
+
+# download and extract panda3d
 - ps: >-
     if ($isLinux) {
         Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.tar.xz?branch=master&job=Image%3A+Ubuntu1804%3B+Configuration%3A+' + "$env:CONFIGURATION")
@@ -131,8 +131,9 @@ build_script:
 # Linux
 - sh: >-
     cmake .. -G "$CMAKE_GENERATOR" -Wno-dev
-    -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+    -DCMAKE_TOOLCHAIN_FILE="$INSTALL_PREFIX/vcpkg/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+    -DVCPKG_TARGET_TRIPLET=x64-linux
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="$INSTALL_PREFIX/panda3d"
 - sh: cmake --build . --config $CONFIGURATION
@@ -140,8 +141,9 @@ build_script:
 # Visual Studio
 - cmd: >-
     cmake .. -G "%CMAKE_GENERATOR%" -Wno-dev -Thost=x64
-    -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
+    -DCMAKE_TOOLCHAIN_FILE="%INSTALL_PREFIX%/vcpkg/scripts/buildsystems/vcpkg.cmake"
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
+    -DVCPKG_TARGET_TRIPLET=x64-windows-vc%BUILD_TOOLSET_VERSION%
     -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/render_pipeline_cpp"
     -Dpanda3d_ROOT:PATH="%INSTALL_PREFIX%/panda3d"
 - cmd: cmake --build . --config %CONFIGURATION%
@@ -161,8 +163,6 @@ after_test:
 - sh: pushd "$INSTALL_PREFIX"
 - sh: tar cJf "$APPVEYOR_BUILD_FOLDER/render_pipeline_cpp.tar.xz" "render_pipeline_cpp"
 - sh: popd
-- sh: if [ ! -d "$CACHE_ROOT" ]; then mkdir "$CACHE_ROOT"; fi
-- sh: mv $VCPKG_ROOT/installed $CACHE_ROOT/vcpkg_installed
 
 # Visual Studio
 - cmd: cmake --build _build --config %CONFIGURATION% --target install
@@ -211,10 +211,6 @@ for:
         CACHE_PREFIX: /home/appveyor/projects/_cache
         INSTALL_PREFIX: /home/appveyor/projects/_install
         FREETYPE_DIR: ""
-        VCPKG_ROOT: /home/appveyor/projects/vcpkg
-        CACHE_ROOT: /home/appveyor/projects/_cache
-    cache:
-        - /home/appveyor/projects/_cache/ -> .appveyor.yml
     artifacts:
         - path: render_pipeline_cpp.tar.xz
 
@@ -223,4 +219,5 @@ for:
         only:
             - image: Visual Studio 2017 Preview
     environment:
+        BUILD_TOOLSET_VERSION: 141
         CMAKE_GENERATOR: Visual Studio 15 2017 Win64
