@@ -1,9 +1,10 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.11.4...3.12)
+cmake_minimum_required(VERSION 3.12)
 project(render_pipeline
     VERSION 0.7.0
     DESCRIPTION "Render Pipeline C++ project"
+    HOMEPAGE_URL "https://github.com/bluekyu/render_pipeline_cpp"
     LANGUAGES CXX
 )
 
