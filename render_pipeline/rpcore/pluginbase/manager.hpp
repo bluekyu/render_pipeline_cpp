@@ -47,8 +47,9 @@ class DayBaseType;
 class RENDER_PIPELINE_DECL PluginManager : public RPObject
 {
 public:
-    using SettingsDataType = rplibs::OrderedMap<std::string, std::shared_ptr<BaseType>>;
-    using DaySettingsDataType = rplibs::OrderedMap<std::string, std::shared_ptr<DayBaseType>>;
+    using PluginIDType = std::string;
+    using SettingsDataType = rplibs::OrderedMap<PluginIDType, std::shared_ptr<BaseType>>;
+    using DaySettingsDataType = rplibs::OrderedMap<PluginIDType, std::shared_ptr<DayBaseType>>;
 
     typedef std::unique_ptr<BasePlugin> (PluginCreatorType)(RenderPipeline&);
 
@@ -74,7 +75,7 @@ public:
      * Disables a plugin, given its plugin_id. This will remove it from
      * the list of enabled plugins, if it ever was there.
      */
-    void disable_plugin(const std::string& plugin_id);
+    void disable_plugin(const PluginIDType& plugin_id);
 
     /** Unloads all plugins. */
     void unload();
@@ -92,7 +93,7 @@ public:
      * Internal method to load all settings of a plugin, given its plugin
      * id and path to the plugin base directory.
      */
-    void load_plugin_settings(const std::string& plugin_id, const Filename& plugin_pth);
+    void load_plugin_settings(const PluginIDType& plugin_id, const Filename& plugin_pth);
 
     /**
      * Loads an override file for the settings, which contains values to
@@ -116,13 +117,13 @@ public:
      * Sets whether a plugin is enabled or not, thus should be loaded when
      * the pipeline starts or not.
      */
-    void set_plugin_enabled(const std::string& plugin_id, bool enabled);
+    void set_plugin_enabled(const PluginIDType& plugin_id, bool enabled);
 
     /** Resets all settings of a given plugin. */
-    void reset_plugin_settings(const std::string& plugin_id);
+    void reset_plugin_settings(const PluginIDType& plugin_id);
 
     /** Returns whether a plugin is currently enabled and loaded. */
-    bool is_plugin_enabled(const std::string& plugin_id) const;
+    bool is_plugin_enabled(const PluginIDType& plugin_id) const;
 
     /** Initializes all plugin settings as a define, so they can be queried in a shader. */
     void init_defines();
@@ -130,20 +131,20 @@ public:
     /**
      * @return  Sorted list of plugin ID regardless of enabling.
      */
-    const std::vector<std::string>& get_plugin_ids() const;
+    const std::vector<PluginIDType>& get_plugin_ids() const;
 
     /**
      * @return  Enabled plugin list.
      */
-    const std::unordered_set<std::string>& get_enabled_plugins() const;
+    const std::unordered_set<PluginIDType>& get_enabled_plugins() const;
 
-    const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const noexcept;
-    BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id);
-    const BaseType* get_setting_handle(const std::string& plugin_id, const std::string& setting_id) const;
-    const DaySettingsDataType* get_day_settings(const std::string& plugin_id) const;
+    const BasePlugin::PluginInfo& get_plugin_info(const PluginIDType& plugin_id) const noexcept;
+    BaseType* get_setting_handle(const PluginIDType& plugin_id, const std::string& setting_id);
+    const BaseType* get_setting_handle(const PluginIDType& plugin_id, const std::string& setting_id) const;
+    const DaySettingsDataType* get_day_settings(const PluginIDType& plugin_id) const;
 
     /** Get plugin instance. */
-    BasePlugin* get_instance(const std::string& plugin_id) const;
+    BasePlugin* get_instance(const PluginIDType& plugin_id) const;
 
     /** Trigger hook. */
     ///@{
@@ -161,14 +162,14 @@ public:
     /**
      * Update single setting value after changing.
      */
-    void on_setting_changed(const std::string& plugin_id, const std::string& setting_id);
+    void on_setting_changed(const PluginIDType& plugin_id, const std::string& setting_id);
 
     /**
      * Update multiple setting values after changing.
      *
      * @param[in]   { { plugin_id, { setting_id, ... } }, ... } map
      */
-    void on_setting_changed(const std::unordered_map<std::string, std::unordered_set<std::string>>& settings_map);
+    void on_setting_changed(const std::unordered_map<PluginIDType, std::unordered_set<std::string>>& settings_map);
     ///@}
 
 private:
