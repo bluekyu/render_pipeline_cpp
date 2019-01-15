@@ -127,6 +127,14 @@ public:
     /** Initializes all plugin settings as a define, so they can be queried in a shader. */
     void init_defines();
 
+    /**
+     * @return  Sorted list of plugin ID regardless of enabling.
+     */
+    const std::vector<std::string>& get_plugin_ids() const;
+
+    /**
+     * @return  Enabled plugin list.
+     */
     const std::unordered_set<std::string>& get_enabled_plugins() const;
 
     const BasePlugin::PluginInfo& get_plugin_info(const std::string& plugin_id) const noexcept;

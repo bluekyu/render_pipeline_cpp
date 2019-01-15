@@ -26,7 +26,6 @@ target_link_libraries(${PROJECT_NAME}
 
     rpplugins::imgui
     rpplugins::rpstat
-    ${RPPLUGINS_ID}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

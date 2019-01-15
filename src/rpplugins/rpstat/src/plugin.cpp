@@ -104,7 +104,7 @@ void RPStatPlugin::on_pipeline_created()
     imgui_plugin_ = static_cast<ImGuiPlugin*>(pipeline_.get_plugin_mgr()->get_instance("imgui")->downcast());
     accept(ImGuiPlugin::DROPFILES_EVENT_NAME, [this](auto) { file_dropped_ = true; });
 
-    for (const auto& plugin_id: plugin_mgr->get_enabled_plugins())
+    for (const auto& plugin_id: plugin_mgr->get_plugin_ids())
         load_plugin_gui(plugin_id);
 }
 
@@ -153,18 +153,19 @@ void RPStatPlugin::load_plugin_gui(const std::string& plugin_id)
         return;
     }
 
-    const auto plugin = pipeline_.get_plugin_mgr()->get_instance(plugin_id);
-
 #if defined(RENDER_PIPELINE_BUILD_CFG_POSTFIX)
-    const auto plugin_panda_path = plugin->get_base_path() / ("rpplugins_gui_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);
+    const auto plugin_panda_path = Filename("/$$rp/rpplugins") / plugin_id / ("rpplugins_gui_" + plugin_id + RENDER_PIPELINE_BUILD_CFG_POSTFIX);
 #else
-    const auto plugin_panda_path = plugin->get_base_path() / ("rpplugins_gui_" + plugin_id);
+    const auto plugin_panda_path = Filename("/$$rp/rpplugins") / plugin_id / ("rpplugins_gui_" + plugin_id);
 #endif
 
     const auto plugin_path = rppanda::convert_path(plugin_panda_path);
 
     if (!boost::filesystem::exists(boost::filesystem::path(plugin_path).operator+=(boost::dll::shared_library::suffix())))
+    {
+        trace(fmt::format("Plugin ({}) GUI does not exist in {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
         return;
+    }
 
     trace(fmt::format("Importing shared library file ({}) from {}{}", plugin_id, plugin_path.string(), boost::dll::shared_library::suffix().string()));
 

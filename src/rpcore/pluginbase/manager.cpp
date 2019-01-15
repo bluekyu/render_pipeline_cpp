@@ -112,6 +112,7 @@ public:
 
     bool requires_daytime_settings_;
 
+    std::vector<std::string> plugin_ids_;
     std::unordered_set<std::string> enabled_plugins_;
 
     ///< { plguin-id, PluginDataType }
@@ -243,20 +244,16 @@ void PluginManager::Impl::save_overrides(const Filename& override_path)
          "enabled:\n";
 
     std::vector<std::string> enabled_plugin_ids;
-    std::vector<std::string> plugin_ids;
 
     enabled_plugin_ids.reserve(plugin_data_map_.size());
-    plugin_ids.reserve(plugin_data_map_.size());
 
     for (const auto& id_data: plugin_data_map_)
     {
         bool found = enabled_plugins_.find(id_data.first) != enabled_plugins_.end();
         enabled_plugin_ids.push_back((found ? "A" : "B") + id_data.first);
-        plugin_ids.push_back(id_data.first);
     }
 
     std::sort(enabled_plugin_ids.begin(), enabled_plugin_ids.end());
-    std::sort(plugin_ids.begin(), plugin_ids.end());
 
     for (const auto& tag: enabled_plugin_ids)
     {
@@ -267,7 +264,7 @@ void PluginManager::Impl::save_overrides(const Filename& override_path)
 
     output += "\n\noverrides:\n";
 
-    for (const auto& id : plugin_ids)
+    for (const auto& id : plugin_ids_)
     {
         output += std::string(4, ' ') + id + ":\n";
         for (const auto& setting_id_handle : plugin_data_map_.at(id).settings.get<1>())
@@ -592,6 +589,12 @@ void PluginManager::load()
     if (impl_->requires_daytime_settings_)
         load_daytime_overrides("/$$rpconfig/daytime.yaml");
 
+    // cache IDs
+    impl_->plugin_ids_.reserve(impl_->plugin_data_map_.size());
+    for (const auto& id_data : impl_->plugin_data_map_)
+        impl_->plugin_ids_.push_back(id_data.first);
+    std::sort(impl_->plugin_ids_.begin(), impl_->plugin_ids_.end());
+
     trace(fmt::format("Found {} plugin settings.", impl_->plugin_data_map_.size()));
 
     debug("Creating plugin instances ..");
@@ -750,6 +753,11 @@ void PluginManager::init_defines()
 BasePlugin* PluginManager::get_instance(const std::string& plugin_id) const
 {
     return impl_->plugin_data_map_.at(plugin_id).instance.get();
+}
+
+const std::vector<std::string>& PluginManager::get_plugin_ids() const
+{
+    return impl_->plugin_ids_;
 }
 
 const std::unordered_set<std::string>& PluginManager::get_enabled_plugins() const

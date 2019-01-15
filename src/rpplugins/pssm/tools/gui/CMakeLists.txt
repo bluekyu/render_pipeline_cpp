@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.11.4)
+cmake_minimum_required(VERSION 3.12)
 
 project(rpplugins_gui_${RPPLUGINS_ID}
     VERSION 0.1.0

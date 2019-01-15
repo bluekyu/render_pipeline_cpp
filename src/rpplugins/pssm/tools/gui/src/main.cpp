@@ -27,8 +27,6 @@
 #include <rpplugins/rpstat/gui_interface.hpp>
 #include <rpplugins/rpstat/gui_helper.hpp>
 
-#include <pssm_plugin.hpp>
-
 namespace rpplugins {
 
 class PluginGUI : public GUIInterface
@@ -44,7 +42,6 @@ public:
 
 private:
     rpcore::PluginManager* plugin_mgr_;
-    PSSMPlugin* plugin_;
     bool is_open_ = false;
 
     float max_distance_ui_;
@@ -62,7 +59,6 @@ private:
 PluginGUI::PluginGUI(rpcore::RenderPipeline& pipeline): GUIInterface(pipeline, RPPLUGINS_GUI_ID_STRING)
 {
     plugin_mgr_ = pipeline_.get_plugin_mgr();
-    plugin_ = static_cast<decltype(plugin_)>(plugin_mgr_->get_instance(RPPLUGINS_GUI_ID_STRING)->downcast());
 
     max_distance_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "max_distance")->downcast());
     logarithmic_factor_ = static_cast<rpcore::FloatType*>(plugin_mgr_->get_setting_handle(RPPLUGINS_GUI_ID_STRING, "logarithmic_factor")->downcast());
