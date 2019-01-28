@@ -57,6 +57,8 @@ public:
     bool is_runtime() const { return _runtime; }
     bool is_shader_runtime() const { return _shader_runtime; }
 
+    const std::unordered_map<std::string, std::string>& get_display_conditions() const;
+
     virtual void* downcast() = 0;
     virtual const void* downcast() const = 0;
 
@@ -68,8 +70,13 @@ protected:
     std::string _description;
     bool _runtime;
     bool _shader_runtime;
-    std::unordered_map<std::string, std::string> _display_conditions;
+    std::unordered_map<std::string, std::string> display_conditions_;
 };
+
+inline const std::unordered_map<std::string, std::string>& BaseType::get_display_conditions() const
+{
+    return display_conditions_;
+}
 
 // ************************************************************************************************
 /**

@@ -133,8 +133,17 @@ BaseType::BaseType(YAML::Node& data): RPObject("BaseType")
         _shader_runtime = false;
     }
 
-    for (auto key_val: data["display_if"])
-        _display_conditions.insert_or_assign(key_val.first.as<std::string>(), key_val.second.as<std::string>());
+    for (auto key_val : data["display_if"])
+    {
+        auto value = key_val.second.as<std::string>();
+        const auto lower_value = boost::to_lower_copy(value);
+        if (lower_value == "true")
+            value = "1";
+        else if (lower_value == "false")
+            value = "0";
+
+        display_conditions_.insert_or_assign(key_val.first.as<std::string>(), value);
+    }
 
     data.remove("display_if");
 
