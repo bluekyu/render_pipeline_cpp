@@ -30,6 +30,8 @@
 
 #include <imgui.h>
 
+#include "gui_interface.hpp"
+
 namespace rpplugins {
 
 inline void draw_help_marker(const char* desc)
@@ -45,8 +47,15 @@ inline void draw_help_marker(const char* desc)
     }
 }
 
-inline bool draw_slider(rpcore::FloatType* base_type, float& value)
+inline bool draw_slider(GUIInterface* gui_interface, rpcore::FloatType* base_type, float& value)
 {
+    const auto mgr = gui_interface->get_plugin_mgr();
+    bool is_shown = true;
+    for (const auto& key_value : base_type->get_display_conditions())
+        is_shown = is_shown && (mgr->get_setting_handle(gui_interface->get_plugin_id(), key_value.first)->get_value_as_string() == key_value.second);
+    if (!is_shown)
+        return false;
+
     bool changed = ImGui::SliderFloat(base_type->get_label().c_str(), &value, base_type->get_min(), base_type->get_max());
     if (ImGui::BeginPopupContextItem())
     {
@@ -60,8 +69,15 @@ inline bool draw_slider(rpcore::FloatType* base_type, float& value)
     return changed;
 }
 
-inline bool draw_slider(rpcore::IntType* base_type, int& value)
+inline bool draw_slider(GUIInterface* gui_interface, rpcore::IntType* base_type, int& value)
 {
+    const auto mgr = gui_interface->get_plugin_mgr();
+    bool is_shown = true;
+    for (const auto& key_value : base_type->get_display_conditions())
+        is_shown = is_shown && (mgr->get_setting_handle(gui_interface->get_plugin_id(), key_value.first)->get_value_as_string() == key_value.second);
+    if (!is_shown)
+        return false;
+
     bool changed = ImGui::SliderInt(base_type->get_label().c_str(), &value, base_type->get_min(), base_type->get_max());
     if (ImGui::BeginPopupContextItem())
     {
@@ -73,6 +89,16 @@ inline bool draw_slider(rpcore::IntType* base_type, int& value)
     ImGui::SameLine();
     draw_help_marker(fmt::format("{}\nDefault: {}", base_type->get_description(), base_type->get_default_as_type()).c_str());
     return changed;
+}
+
+template <class T>
+inline void check_setting_changed(std::unordered_set<std::string>& settings, const std::string& id, rpcore::TemplatedType<T>* base_type, T value)
+{
+    if (value != base_type->get_value_as_type())
+    {
+        base_type->set_value(value);
+        settings.insert(id);
+    }
 }
 
 }

@@ -50,8 +50,14 @@ public:
     virtual void on_draw_menu() {}
     virtual void on_draw_new_frame() = 0;
 
+    rpcore::PluginManager* get_plugin_mgr() const;
+    const std::string& get_plugin_id() const;
+
+    rpcore::BaseType* get_setting_handle(const std::string& setting_id) const;
+
 protected:
     rpcore::RenderPipeline& pipeline_;
+    rpcore::PluginManager* plugin_mgr_;
     const std::string plugin_id_;
 };
 
@@ -59,8 +65,23 @@ protected:
 
 inline GUIInterface::GUIInterface(rpcore::RenderPipeline& pipeline, const std::string& plugin_id): pipeline_(pipeline), plugin_id_(plugin_id)
 {
-    auto imgui_plugin = static_cast<ImGuiPlugin*>(pipeline_.get_plugin_mgr()->get_instance("imgui")->downcast());
-    ImGui::SetCurrentContext(imgui_plugin->get_context());
+    plugin_mgr_ = pipeline_.get_plugin_mgr();
+    ImGui::SetCurrentContext(static_cast<ImGuiPlugin*>(plugin_mgr_->get_instance("imgui")->downcast())->get_context());
+}
+
+inline rpcore::PluginManager* GUIInterface::get_plugin_mgr() const
+{
+    return plugin_mgr_;
+}
+
+inline const std::string& GUIInterface::get_plugin_id() const
+{
+    return plugin_id_;
+}
+
+inline rpcore::BaseType* GUIInterface::get_setting_handle(const std::string& setting_id) const
+{
+    return plugin_mgr_->get_setting_handle(plugin_id_, setting_id);
 }
 
 }
