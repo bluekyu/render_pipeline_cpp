@@ -685,14 +685,14 @@ void PluginManager::load_daytime_overrides(const Filename& override_path)
                 continue;
             }
 
-            std::vector<std::vector<LVecBase2f>> control_points;
+            std::vector<std::vector<LVecBase2>> control_points;
             for (const auto& curve_index_points: id_points.second)
             {
                 control_points.push_back({});
                 auto& current_points = control_points.back();
                 for (const auto& points: curve_index_points)
                 {
-                    current_points.push_back(LVecBase2f(points[0].as<float>(), points[1].as<float>()));
+                    current_points.push_back(LVecBase2(points[0].as<PN_stdfloat>(), points[1].as<PN_stdfloat>()));
                 }
             }
 

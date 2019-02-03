@@ -863,7 +863,7 @@ NodePath Actor::expose_joint(NodePath node, const std::string& part_name, const 
     return node;
 }
 
-boost::optional<LMatrix4f> Actor::get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name) const
+boost::optional<LMatrix4> Actor::get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name) const
 {
     auto bundle = get_part_bundle(part_name, lod_name);
     if (!bundle)
@@ -992,7 +992,7 @@ NodePath Actor::control_all_joints(NodePath root, const std::string& part_name, 
 }
 
 void Actor::freeze_joint(const std::string& part_name, const std::string& joint_name, CPT(TransformState) transform,
-    const LVecBase3f& pos, const LVecBase3f& hpr, const LVecBase3f& scale)
+    const LVecBase3& pos, const LVecBase3& hpr, const LVecBase3& scale)
 {
     if (!transform)
         transform = TransformState::make_pos_hpr_scale(pos, hpr, scale);

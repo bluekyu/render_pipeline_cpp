@@ -43,7 +43,7 @@ class SmoothConnectedCurve;
 class DayBaseType : public RPObject
 {
 public:
-    using ValueType = std::pair<LVecBase3f, int>;
+    using ValueType = std::pair<LVecBase3, int>;
 
 public:
     DayBaseType(YAML::Node& data, const std::string& id="DayBaseType");
@@ -56,19 +56,19 @@ public:
     const std::string& get_description() const { return _description; }
 
     /** Returns the unscaled value at the given day time offset. */
-    ValueType get_value_at(float offset) const;
+    ValueType get_value_at(PN_stdfloat offset) const;
 
     /** Returns the scaled value at a given day time offset. */
-    ValueType get_scaled_value_at(float offset) const;
+    ValueType get_scaled_value_at(PN_stdfloat offset) const;
 
     /** Returns the scaled value from a given normalized value. */
     virtual ValueType get_scaled_value(const ValueType& values) const = 0;
 
     /** Returns the appropriate value for shader input. */
-    virtual ValueType get_shader_input_value(float offset) const = 0;
+    virtual ValueType get_shader_input_value(PN_stdfloat offset) const = 0;
 
     /** Sets the control points on the curves. */
-    void set_control_points(const std::vector<std::vector<LVecBase2f>>& control_points);
+    void set_control_points(const std::vector<std::vector<LVecBase2>>& control_points);
 
     /** Serializes the setting to a yaml string. */
     std::string serialize() const;
@@ -92,22 +92,22 @@ public:
     /** Scales a linear value. */
     ValueType get_scaled_value(const ValueType& values) const final;
 
-    ValueType get_shader_input_value(float offset) const final;
+    ValueType get_shader_input_value(PN_stdfloat offset) const final;
 
     /** Linearizes a scaled value. */
-    float get_linear_value(float scaled_value);
+    PN_stdfloat get_linear_value(PN_stdfloat scaled_value);
 
 private:
     static const std::string GLSL_TYPE;
 
     std::string _unit;
-    float _minvalue;
-    float _maxvalue;
-    float _logarithmic_factor;
-    float _default;
+    PN_stdfloat _minvalue;
+    PN_stdfloat _maxvalue;
+    PN_stdfloat _logarithmic_factor;
+    PN_stdfloat _default;
 };
 
-inline DayBaseType::ValueType ScalarType::get_shader_input_value(float offset) const
+inline DayBaseType::ValueType ScalarType::get_shader_input_value(PN_stdfloat offset) const
 {
     return get_scaled_value_at(offset);
 }
@@ -122,17 +122,17 @@ public:
 
     ValueType get_scaled_value(const ValueType& values) const final;
 
-    ValueType get_shader_input_value(float offset) const final;
+    ValueType get_shader_input_value(PN_stdfloat offset) const final;
 
-    std::vector<float> get_linear_value(const std::vector<float>& scaled_value);
+    std::vector<PN_stdfloat> get_linear_value(const std::vector<PN_stdfloat>& scaled_value);
 
 private:
     static const std::string GLSL_TYPE;
 
-    std::vector<float> _default;
+    std::vector<PN_stdfloat> _default;
 };
 
-inline DayBaseType::ValueType ColorType::get_shader_input_value(float offset) const
+inline DayBaseType::ValueType ColorType::get_shader_input_value(PN_stdfloat offset) const
 {
     return get_value_at(offset);
 }

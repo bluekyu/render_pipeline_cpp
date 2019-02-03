@@ -109,12 +109,12 @@ DayBaseType::~DayBaseType()
         delete c;
 }
 
-DayBaseType::ValueType DayBaseType::get_value_at(float offset) const
+DayBaseType::ValueType DayBaseType::get_value_at(PN_stdfloat offset) const
 {
     if (_curves[1] == nullptr)
-        return { LVecBase3f(_curves[0]->get_value(offset), 0, 0), 1 } ;
+        return { LVecBase3(_curves[0]->get_value(offset), 0, 0), 1 } ;
 
-    LVecBase3f result(
+    LVecBase3 result(
         _curves[0]->get_value(offset),
         _curves[1]->get_value(offset),
         _curves[2]->get_value(offset));
@@ -122,12 +122,12 @@ DayBaseType::ValueType DayBaseType::get_value_at(float offset) const
     return { result, 3 };
 }
 
-DayBaseType::ValueType DayBaseType::get_scaled_value_at(float offset) const
+DayBaseType::ValueType DayBaseType::get_scaled_value_at(PN_stdfloat offset) const
 {
     return get_scaled_value(get_value_at(offset));
 }
 
-void DayBaseType::set_control_points(const std::vector<std::vector<LVecBase2f>>& control_points)
+void DayBaseType::set_control_points(const std::vector<std::vector<LVecBase2>>& control_points)
 {
     for (size_t index=0, index_end=control_points.size(); index < index_end; ++index)
         _curves[index]->set_control_points(control_points[index]);
@@ -155,18 +155,18 @@ ScalarType::ScalarType(YAML::Node& data): DayBaseType(data, "ScalarType")
     _unit = data["unit"].as<std::string>("none");
     data.remove("unit");
 
-    const std::vector<float>& setting_range = data["range"].as<std::vector<float>>();
+    const std::vector<PN_stdfloat>& setting_range = data["range"].as<std::vector<PN_stdfloat>>();
     _minvalue = setting_range[0];
     _maxvalue = setting_range[1];
     data.remove("range");
 
-    _logarithmic_factor = data["logarithmic_factor"].as<float>(1.0f);
+    _logarithmic_factor = data["logarithmic_factor"].as<PN_stdfloat>(1.0f);
 
     static const std::vector<std::string> unit_list = { "degree", "meter", "percent", "klux", "none" };
     if (std::find(unit_list.begin(), unit_list.end(), _unit) == unit_list.end())
         throw std::runtime_error(std::string("Invalid unit type: ") + _unit);
 
-    _default = get_linear_value(data["default"].as<float>());
+    _default = get_linear_value(data["default"].as<PN_stdfloat>());
 
     _curves[0] = new SmoothConnectedCurve;
     _curves[0]->set_single_value(_default);
@@ -176,23 +176,23 @@ ScalarType::ValueType ScalarType::get_scaled_value(const ValueType& values) cons
 {
     if (_logarithmic_factor != 1.0)
     {
-        float exp_mult = std::exp(_logarithmic_factor * values.first[0] * 4.0f) - 1.0f;
-        float exp_div = std::exp(_logarithmic_factor * 4.0f) - 1.0f;
-        return { LVecBase3f(exp_mult / exp_div * (_maxvalue - _minvalue) + _minvalue, 0, 0), 1 };
+        PN_stdfloat exp_mult = std::exp(_logarithmic_factor * values.first[0] * 4) - 1;
+        PN_stdfloat exp_div = std::exp(_logarithmic_factor * 4) - 1;
+        return { LVecBase3(exp_mult / exp_div * (_maxvalue - _minvalue) + _minvalue, 0, 0), 1 };
     }
     else
     {
-        return { LVecBase3f(values.first[0] * (_maxvalue - _minvalue) + _minvalue, 0, 0), 1 };
+        return { LVecBase3(values.first[0] * (_maxvalue - _minvalue) + _minvalue, 0, 0), 1 };
     }
 }
 
-float ScalarType::get_linear_value(float scaled_value)
+PN_stdfloat ScalarType::get_linear_value(PN_stdfloat scaled_value)
 {
-    float result = (scaled_value - _minvalue) / (_maxvalue - _minvalue);
+    PN_stdfloat result = (scaled_value - _minvalue) / (_maxvalue - _minvalue);
     if (_logarithmic_factor != 1.0)
     {
-        result *= std::exp(_logarithmic_factor * 4.0f) - 1.0f;
-        result = std::log(result + 1.0f) / (4.0f * _logarithmic_factor);
+        result *= std::exp(_logarithmic_factor * 4) - 1;
+        result = std::log(result + 1) / (4 * _logarithmic_factor);
     }
     return result;
 }
@@ -202,10 +202,10 @@ const std::string ColorType::GLSL_TYPE = "vec3";
 
 ColorType::ColorType(YAML::Node& data): DayBaseType(data, "ColorType")
 {
-    _default = get_linear_value(data["default"].as<std::vector<float>>());
+    _default = get_linear_value(data["default"].as<std::vector<PN_stdfloat>>());
 
-    std::vector<LVecBase3f> colors = {
-        LVecBase3f(255, 0, 0), LVecBase3f(0, 255, 0), LVecBase3f(0, 0, 255)
+    std::vector<LVecBase3> colors = {
+        LVecBase3(255, 0, 0), LVecBase3(0, 255, 0), LVecBase3(0, 0, 255)
     };
 
     for (int i = 0; i < 3; ++i)
@@ -220,19 +220,19 @@ ColorType::ColorType(YAML::Node& data): DayBaseType(data, "ColorType")
 ColorType::ValueType ColorType::get_scaled_value(const ValueType& values) const
 {
     return {
-        LVecBase3f(
-            values.first[0] * 255.0f,
-            values.first[1] * 255.0f,
-            values.first[2] * 255.0f),
+        LVecBase3(
+            values.first[0] * 255,
+            values.first[1] * 255,
+            values.first[2] * 255),
         3,
     };
 }
 
-std::vector<float> ColorType::get_linear_value(const std::vector<float>& scaled_value)
+std::vector<PN_stdfloat> ColorType::get_linear_value(const std::vector<PN_stdfloat>& scaled_value)
 {
-    std::vector<float> v;
-    for (float f: scaled_value)
-        v.push_back(f * 255.0f);
+    std::vector<PN_stdfloat> v;
+    for (PN_stdfloat f: scaled_value)
+        v.push_back(f * 255);
     return v;
 }
 

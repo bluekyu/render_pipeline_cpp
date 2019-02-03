@@ -46,7 +46,7 @@ public:
     void add_warning(const std::string& msg);
 
     /** Internal method to add a new text to the output. */
-    void add_text(const std::string& text, const LVecBase3f& color);
+    void add_text(const std::string& text, const LVecBase3& color);
 
     /** Clears all messages / removes them. */
     void clear_messages();

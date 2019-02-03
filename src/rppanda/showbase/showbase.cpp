@@ -936,8 +936,8 @@ void ShowBase::setup_render()
     impl_->wireframe_enabled_ = render.get_render_mode() == RenderModeAttrib::M_wireframe;
 }
 
-NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4f& display_region,
-    const LVecBase4f& coords, Lens* lens, const std::string& camera_name)
+NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4& display_region,
+    const LVecBase4& coords, Lens* lens, const std::string& camera_name)
 {
     rppanda_showbase_cat.debug() << "Making 2D camera ..." << std::endl;
 
@@ -956,10 +956,10 @@ NodePath ShowBase::make_camera2dp(GraphicsWindow* win, int sort, const LVecBase4
     else
         cam2d_node = new Camera(std::string("cam2dp_") + camera_name);
 
-    const float left = coords.get_x();
-    const float right = coords.get_y();
-    const float bottom = coords.get_z();
-    const float top = coords.get_w();
+    const auto left = coords.get_x();
+    const auto right = coords.get_y();
+    const auto bottom = coords.get_z();
+    const auto top = coords.get_w();
 
     if (!lens)
     {

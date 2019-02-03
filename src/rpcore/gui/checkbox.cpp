@@ -58,8 +58,8 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
     }
 
     auto node_options = std::make_shared<rppanda::DirectCheckBox::Options>();
-    node_options->pos = LVecBase3f(x+11, 1, -y-8);
-    node_options->scale = LVecBase3f(10 / 2.0f, 1.0f, 10 / 2.0f);
+    node_options->pos = LVecBase3(x+11, 1, -y-8);
+    node_options->scale = LVecBase3(10 / 2.0f, 1.0f, 10 / 2.0f);
     node_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     node_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
     node_options->image = { std::make_shared<rppanda::ImageInput>(unchecked_img) };

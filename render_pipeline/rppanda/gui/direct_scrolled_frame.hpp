@@ -52,10 +52,10 @@ public:
     {
         Options();
 
-        LVecBase4f canvas_size = LVecBase4f(-1, 1, -1, 1);
+        LVecBase4 canvas_size = LVecBase4(-1, 1, -1, 1);
         bool manage_scroll_bars = true;
         bool auto_hide_scroll_bars = true;
-        float scroll_bar_width = 0.08f;
+        PN_stdfloat scroll_bar_width = 0.08f;
 
         std::shared_ptr<DirectScrollBar::Options> vertical_scroll_options;
         std::shared_ptr<DirectScrollBar::Options> horizontal_scroll_options;
@@ -73,11 +73,11 @@ public:
     DirectScrollBar* get_vertical_scroll() const;
     DirectScrollBar* get_horizontal_scroll() const;
 
-    const LVecBase4f& get_canvas_size() const;
+    const LVecBase4& get_canvas_size() const;
     bool get_manage_scroll_bars() const;
     bool get_auto_hide_scroll_bars() const;
 
-    void set_canvas_size(const LVecBase4f& canvas_size);
+    void set_canvas_size(const LVecBase4& canvas_size);
     void set_manage_scroll_bars(bool manage_scroll_bars);
     void set_auto_hide_scroll_bars(bool auto_hide_scroll_bars);
 
@@ -121,7 +121,7 @@ inline DirectScrollBar* DirectScrolledFrame::get_horizontal_scroll() const
     return _horizontal_scroll;
 }
 
-inline const LVecBase4f& DirectScrolledFrame::get_canvas_size() const
+inline const LVecBase4& DirectScrolledFrame::get_canvas_size() const
 {
     return static_cast<Options*>(options_.get())->canvas_size;
 }

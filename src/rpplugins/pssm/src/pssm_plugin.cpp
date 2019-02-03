@@ -244,12 +244,12 @@ void PSSMPlugin::on_pre_render_update()
     impl_->on_pre_render_update();
 }
 
-void PSSMPlugin::request_focus(const LVecBase3f& focus_point, float focus_size)
+void PSSMPlugin::request_focus(const LVecBase3& focus_point, PN_stdfloat focus_size)
 {
     impl_->scene_shadow_stage_->request_focus(focus_point, focus_size);
 }
 
-bool PSSMPlugin::get_last_focus(LVecBase3f& focus_point, float& focus_size) const
+bool PSSMPlugin::get_last_focus(LVecBase3& focus_point, PN_stdfloat& focus_size) const
 {
     const auto& last_focus = impl_->scene_shadow_stage_->get_last_focus();
     if (last_focus)

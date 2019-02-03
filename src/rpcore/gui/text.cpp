@@ -31,11 +31,11 @@
 
 namespace rpcore {
 
-const float Text::Default::size = 10;
+const PN_stdfloat Text::Default::size = 10;
 const std::string Text::Default::align("left");
 const LVecBase3 Text::Default::color(1);
 
-Text::Text(const std::string& text, NodePath parent, float x, float y, float size,
+Text::Text(const std::string& text, NodePath parent, PN_stdfloat x, PN_stdfloat y, PN_stdfloat size,
     const std::string& align, const LVecBase3& color, bool may_change, TextFont* font): RPObject("Text")
 {
     ::TextNode::Alignment align_mode = ::TextNode::Alignment::A_left;
@@ -51,10 +51,10 @@ Text::Text(const std::string& text, NodePath parent, float x, float y, float siz
         assert(font);
     }
 
-    initial_pos_ = LVecBase2f(x, -y);
+    initial_pos_ = LVecBase2(x, -y);
 
     node_ = rppanda::OnscreenText(text, rppanda::OnscreenText::Default::style, initial_pos_, 0.0f,
-        LVecBase2f(size), LColorf(color, 1.0f), {}, {}, rppanda::OnscreenText::Default::shadow_offset,
+        LVecBase2(size), LColor(color, 1), {}, {}, rppanda::OnscreenText::Default::shadow_offset,
         {}, align_mode, {}, {}, false, font, parent, 0, may_change);
 }
 

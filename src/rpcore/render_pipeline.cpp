@@ -1112,7 +1112,7 @@ void RenderPipeline::prepare_scene(const NodePath& scene)
         rp_light->set_casts_shadows(light_node->is_shadow_caster());
         rp_light->set_shadow_map_resolution(light_node->get_shadow_buffer_size().get_x());
         rp_light->set_fov(light_node->get_exponent() / MathNumbers::pi * 180.0f);
-        LVecBase3f lpoint = light.get_mat(Globals::base->get_render()).xform_vec(LVecBase3f(0, 0, -1));
+        LVecBase3 lpoint = light.get_mat(Globals::base->get_render()).xform_vec(LVecBase3(0, 0, -1));
         rp_light->set_direction(lpoint);
 
         add_light(rp_light);

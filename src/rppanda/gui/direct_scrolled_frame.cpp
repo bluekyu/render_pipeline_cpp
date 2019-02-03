@@ -47,8 +47,8 @@ TypeHandle DirectScrolledFrame::type_handle_;
 
 DirectScrolledFrame::Options::Options()
 {
-    frame_size = LVecBase4f(-0.5f, 0.5f, -0.5f, 0.5f);
-    border_width = LVecBase2f(0.01f, 0.01f);
+    frame_size = LVecBase4(-0.5f, 0.5f, -0.5f, 0.5f);
+    border_width = LVecBase2(0.01f, 0.01f);
 
     vertical_scroll_options = std::make_shared<DirectScrollBar::Options>();
     horizontal_scroll_options = std::make_shared<DirectScrollBar::Options>();
@@ -61,16 +61,16 @@ DirectScrolledFrame::DirectScrolledFrame(NodePath parent, const std::shared_ptr<
 DirectScrolledFrame::DirectScrolledFrame(PGItem* gui_item, NodePath parent, const std::shared_ptr<Options>& options, const TypeHandle& type_handle):
     DirectFrame(gui_item, parent, define_options(options), type_handle)
 {
-    float w = options->scroll_bar_width;
+    auto w = options->scroll_bar_width;
 
     options->vertical_scroll_options->border_width = options->border_width;
-    options->vertical_scroll_options->frame_size = LVecBase4f(-w / 2.0f, w / 2.0f, -1, 1);
+    options->vertical_scroll_options->frame_size = LVecBase4(-w / 2.0f, w / 2.0f, -1, 1);
     options->vertical_scroll_options->orientation = DGG_VERTICAL;
     _vertical_scroll = new DirectScrollBar(*this, options->vertical_scroll_options);
     create_component("verticalScroll", boost::any(_vertical_scroll));
 
     options->horizontal_scroll_options->border_width = options->border_width;
-    options->horizontal_scroll_options->frame_size = LVecBase4f(-1, 1, -w / 2.0f, w / 2.0f);
+    options->horizontal_scroll_options->frame_size = LVecBase4(-1, 1, -w / 2.0f, w / 2.0f);
     options->horizontal_scroll_options->orientation = DGG_HORIZONTAL;
     _horizontal_scroll = new DirectScrollBar(*this, options->horizontal_scroll_options);
     create_component("horizontalScroll", boost::any(_horizontal_scroll));
@@ -96,7 +96,7 @@ PGScrollFrame* DirectScrolledFrame::get_gui_item() const
     return DCAST(PGScrollFrame, _gui_item);
 }
 
-void DirectScrolledFrame::set_canvas_size(const LVecBase4f& canvas_size)
+void DirectScrolledFrame::set_canvas_size(const LVecBase4& canvas_size)
 {
     get_gui_item()->set_virtual_frame(static_cast<Options*>(options_.get())->canvas_size=canvas_size);
 }

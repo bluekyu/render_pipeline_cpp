@@ -215,8 +215,8 @@ public:
     void setup_render_2d();
 
     NodePath make_camera2dp(GraphicsWindow* win, int sort=20,
-        const LVecBase4f& display_region=LVecBase4f(0, 1, 0, 1),
-        const LVecBase4f& coords=LVecBase4f(-1, 1, -1, 1),
+        const LVecBase4& display_region=LVecBase4(0, 1, 0, 1),
+        const LVecBase4& coords=LVecBase4(-1, 1, -1, 1),
         Lens* lens=nullptr, const std::string& camera_name="");
 
     void setup_data_graph();

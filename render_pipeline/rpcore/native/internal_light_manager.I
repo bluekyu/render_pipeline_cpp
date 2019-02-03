@@ -120,7 +120,7 @@ inline void InternalLightManager::set_command_list(GPUCommandList *cmd_list) {
  *
  * @param mat View projection mat
  */
-inline void InternalLightManager::set_camera_pos(const LPoint3f& pos) {
+inline void InternalLightManager::set_camera_pos(const LPoint3& pos) {
   _camera_pos = pos;
 }
 
@@ -132,7 +132,7 @@ inline void InternalLightManager::set_camera_pos(const LPoint3f& pos) {
  *
  * @param dist Distance in world space units
  */
-inline void InternalLightManager::set_shadow_update_distance(float dist) {
+inline void InternalLightManager::set_shadow_update_distance(PN_stdfloat dist) {
   _shadow_update_distance = dist;
 }
 

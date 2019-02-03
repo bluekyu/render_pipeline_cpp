@@ -74,7 +74,7 @@ class RENDER_PIPELINE_DECL PSSMCameraRig
         inline void set_logarithmic_factor(float factor);
         inline void set_border_bias(float bias);
 
-        void update(NodePath cam_node, const LVecBase3f &light_vector);
+        void update(NodePath cam_node, const LVecBase3& light_vector);
         inline void reset_film_size_cache();
 
         inline NodePath get_camera(size_t index);
@@ -94,12 +94,12 @@ class RENDER_PIPELINE_DECL PSSMCameraRig
 
     protected:
         void init_cam_nodes();
-        void compute_pssm_splits(const LMatrix4f& transform, float max_distance,
-                                 const LVecBase3f &light_vector);
+        void compute_pssm_splits(const LMatrix4& transform, float max_distance,
+                                 const LVecBase3& light_vector);
         inline float get_split_start(size_t split_index);
-        LMatrix4f compute_mvp(size_t cam_index);
-        inline LPoint3f get_interpolated_point(CoordinateOrigin origin, float depth);
-        LVecBase3f get_snap_offset(const LMatrix4f& mat, size_t resolution);
+        LMatrix4 compute_mvp(size_t cam_index);
+        inline LPoint3 get_interpolated_point(CoordinateOrigin origin, float depth);
+        LVecBase3 get_snap_offset(const LMatrix4& mat, size_t resolution);
 
         std::vector<NodePath> _cam_nodes;
         std::vector<Camera*> _cameras;
@@ -107,8 +107,8 @@ class RENDER_PIPELINE_DECL PSSMCameraRig
 
         // Current near and far points
         // Order: UL, UR, LL, LR (See CoordinateOrigin)
-        LPoint3f _curr_near_points[4];
-        LPoint3f _curr_far_points[4];
+        LPoint3 _curr_near_points[4];
+        LPoint3 _curr_far_points[4];
         float _pssm_distance;
         float _sun_distance;
         float _logarithmic_factor;

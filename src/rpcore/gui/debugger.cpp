@@ -110,7 +110,7 @@ void Debugger::create_components()
     }
 
     fps_node = fullscreen_node.attach_new_node("FPSChart");
-    fps_node.set_pos(LVecBase3f(21, 1, -108 - 40));
+    fps_node.set_pos(LVecBase3(21, 1, -108 - 40));
     fps_widget_ = std::make_unique<FPSChart>(fps_node);
 
     pixel_widget_ = std::make_unique<PixelInspector>(pipeline);
@@ -358,7 +358,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         analyzer_->get_num_vertices()
         ));
 
-    LVecBase3f sun_vector(0);
+    LVecBase3 sun_vector(0);
     if (pipeline->get_plugin_mgr()->is_plugin_enabled("scattering"))
     {
         sun_vector = static_cast<rpplugins::ScatteringPlugin*>(pipeline->get_plugin_mgr()->get_instance("scattering")->downcast())->get_sun_vector();
@@ -387,8 +387,8 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
     {
         BasePlugin* pssm_plugin = pipeline->get_plugin_mgr()->get_instance("pssm");
 
-        LVecBase3f focus_point;
-        float focus_size;
+        LVecBase3 focus_point;
+        PN_stdfloat focus_size;
         bool exist = static_cast<rpplugins::PSSMPlugin*>(pssm_plugin->downcast())->get_last_focus(focus_point, focus_size);
 
         if (exist)

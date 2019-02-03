@@ -351,7 +351,7 @@ public:
      */
     NodePath expose_joint(NodePath node, const std::string& part_name, const std::string& joint_name, const std::string& lod_name=Default::lod_name, bool local_transform=false);
 
-    boost::optional<LMatrix4f> get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
+    boost::optional<LMatrix4> get_joint_transform(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
 
     CPT(TransformState) get_joint_transform_state(const std::string& part_name, const std::string& joint_name, const std::string& lod_name = Default::lod_name) const;
 
@@ -401,7 +401,7 @@ public:
      * Actor.
      */
     void freeze_joint(const std::string& part_name, const std::string& joint_name, CPT(TransformState) transform = nullptr,
-        const LVecBase3f& pos = LVecBase3f(0), const LVecBase3f& hpr = LVecBase3f(0), const LVecBase3f& scale = LVecBase3f(1));
+        const LVecBase3& pos = LVecBase3(0), const LVecBase3& hpr = LVecBase3(0), const LVecBase3& scale = LVecBase3(1));
 
     /**
      * Undoes a previous call to control_joint() or freeze_joint()

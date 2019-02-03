@@ -30,8 +30,8 @@ namespace rpcore {
 
 SmoothConnectedCurve::SmoothConnectedCurve()
 {
-    _cv_points = std::vector<LVecBase2f>(
-        { LVecBase2f(0, 0), LVecBase2f(0.5, 0), LVecBase2f(1.0, 0) }
+    _cv_points = std::vector<LVecBase2>(
+        { LVecBase2(0, 0), LVecBase2(0.5, 0), LVecBase2(1.0, 0) }
     );
     build_curve();
 }
@@ -39,11 +39,11 @@ SmoothConnectedCurve::SmoothConnectedCurve()
 void SmoothConnectedCurve::build_curve()
 {
     auto sorted_points = _cv_points;
-    std::sort(sorted_points.begin(), sorted_points.end(), [](const LVecBase2f& lhs, const LVecBase2f& rhs){
+    std::sort(sorted_points.begin(), sorted_points.end(), [](const LVecBase2& lhs, const LVecBase2& rhs){
         return lhs[0] < rhs[0];
     });
 
-    const LVecBase2f& first_point = sorted_points[0];
+    const LVecBase2& first_point = sorted_points[0];
     CurveFitter fitter;
 
     // Duplicate curve at the beginning
@@ -51,16 +51,16 @@ void SmoothConnectedCurve::build_curve()
     {
         // TODO: what mean?
         //end_point = _cv_points[(-i + _border_points - 1) % _cv_points.size()];
-        LVecBase2f end_point = first_point;
-        fitter.add_xyz(0.0, LVecBase3f(0, end_point[1], 0));
+        LVecBase2 end_point = first_point;
+        fitter.add_xyz(0.0, LVecBase3(0, end_point[1], 0));
     }
 
     // Append the actual points
     for (const auto& point: _cv_points)
     {
         // Clamp point x position to avoid artifacts at the beginning
-        float point_t = (std::max)(0.01f, point[0]);
-        fitter.add_xyz(point_t, LVecBase3f(point_t, point[1], 0));
+        PN_stdfloat point_t = (std::max)(0.01f, point[0]);
+        fitter.add_xyz(point_t, LVecBase3(point_t, point[1], 0));
     }
 
     // Duplicate curve at the end
@@ -68,8 +68,8 @@ void SmoothConnectedCurve::build_curve()
     {
         // TODO: what mean?
         //start_point = self._cv_points[i % len(self._cv_points)]
-        LVecBase2f start_point = first_point;
-        fitter.add_xyz(1.0f, LVecBase3f(1, start_point[1], 0));
+        LVecBase2 start_point = first_point;
+        fitter.add_xyz(1.0f, LVecBase3(1, start_point[1], 0));
     }
 
     fitter.sort_points();

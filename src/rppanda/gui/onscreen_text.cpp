@@ -42,16 +42,16 @@
 
 namespace rppanda {
 
-static const float MARGIN = 0.1f;
+static const PN_stdfloat MARGIN = 0.1f;
 
 const LVecBase2 OnscreenText::Default::shadow_offset(0.04f, 0.04f);
 const OnscreenText::Style OnscreenText::Default::style = Style::plain;
 
 OnscreenText::OnscreenText(const std::string& text, Style style,
-    const LVecBase2& pos, float roll, boost::optional<LVecBase2> scale,
+    const LVecBase2& pos, PN_stdfloat roll, boost::optional<LVecBase2> scale,
     boost::optional<LColor> fg, boost::optional<LColor> bg, boost::optional<LColor> shadow,
     const LVecBase2& shadow_offset, boost::optional<LColor> frame,
-    boost::optional<TextNode::Alignment> align, boost::optional<float> wordwrap,
+    boost::optional<TextNode::Alignment> align, boost::optional<PN_stdfloat> wordwrap,
     boost::optional<int> draw_order, bool decal, TextFont* font,
     NodePath parent, int sort, bool may_change,
     boost::optional<TextProperties::Direction> direction)
@@ -68,47 +68,47 @@ OnscreenText::OnscreenText(const std::string& text, Style style,
     {
     case Style::plain:
         scale_ = scale.value_or(0.07f);
-        fg = fg.value_or(LColorf(0, 0, 0, 1));
-        bg = bg.value_or(LColorf(0, 0, 0, 0));
-        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
-        frame = frame.value_or(LColorf(0, 0, 0, 0));
+        fg = fg.value_or(LColor(0, 0, 0, 1));
+        bg = bg.value_or(LColor(0, 0, 0, 0));
+        shadow = shadow.value_or(LColor(0, 0, 0, 0));
+        frame = frame.value_or(LColor(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::screen_title:
         scale_ = scale.value_or(0.15f);
-        fg = fg.value_or(LColorf(1.0f, 0.2f, 0.2f, 1.0f));
-        bg = bg.value_or(LColorf(0, 0, 0, 0));
-        shadow = shadow.value_or(LColorf(0, 0, 0, 1));
-        frame = frame.value_or(LColorf(0, 0, 0, 0));
+        fg = fg.value_or(LColor(1.0f, 0.2f, 0.2f, 1.0f));
+        bg = bg.value_or(LColor(0, 0, 0, 0));
+        shadow = shadow.value_or(LColor(0, 0, 0, 1));
+        frame = frame.value_or(LColor(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::screen_prompt:
         scale_ = scale.value_or(0.1f);
-        fg = fg.value_or(LColorf(1, 1, 0, 1));
-        bg = bg.value_or(LColorf(0, 0, 0, 0));
-        shadow = shadow.value_or(LColorf(0, 0, 0, 1));
-        frame = frame.value_or(LColorf(0, 0, 0, 0));
+        fg = fg.value_or(LColor(1, 1, 0, 1));
+        bg = bg.value_or(LColor(0, 0, 0, 0));
+        shadow = shadow.value_or(LColor(0, 0, 0, 1));
+        frame = frame.value_or(LColor(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
     case Style::name_confirm:
         scale_ = scale.value_or(0.1f);
-        fg = fg.value_or(LColorf(0, 1, 0, 1));
-        bg = bg.value_or(LColorf(0, 0, 0, 0));
-        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
-        frame = frame.value_or(LColorf(0, 0, 0, 0));
+        fg = fg.value_or(LColor(0, 1, 0, 1));
+        bg = bg.value_or(LColor(0, 0, 0, 0));
+        shadow = shadow.value_or(LColor(0, 0, 0, 0));
+        frame = frame.value_or(LColor(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
 
     case Style::black_on_white:
         scale_ = scale.value_or(0.1f);
-        fg = fg.value_or(LColorf(0, 0, 0, 1));
-        bg = bg.value_or(LColorf(1, 1, 1, 0));
-        shadow = shadow.value_or(LColorf(0, 0, 0, 0));
-        frame = frame.value_or(LColorf(0, 0, 0, 0));
+        fg = fg.value_or(LColor(0, 0, 0, 1));
+        bg = bg.value_or(LColor(1, 1, 1, 0));
+        shadow = shadow.value_or(LColor(0, 0, 0, 0));
+        frame = frame.value_or(LColor(0, 0, 0, 0));
         if (!align)
             align = TextNode::A_center;
         break;
@@ -245,27 +245,27 @@ std::string OnscreenText::get_text() const
 
 // Position the onscreen text in 2d screen space.
 // pos: the x, y position of the text on the screen.
-void OnscreenText::set_pos(const LVecBase2f& pos)
+void OnscreenText::set_pos(const LVecBase2& pos)
 {
     pos_ = pos;
     update_transform_mat();
 }
 
 // Rotate the onscreen text around the screen's normal
-void OnscreenText::set_roll(float roll)
+void OnscreenText::set_roll(PN_stdfloat roll)
 {
     roll_ = roll;
     update_transform_mat();
 }
 
-void OnscreenText::set_scale(const LVecBase2f& scale)
+void OnscreenText::set_scale(const LVecBase2& scale)
 {
     scale_ = scale;
     update_transform_mat();
 }
 
 // Returns the scale of the text in 2d space.
-const LVecBase2f& OnscreenText::get_scale() const
+const LVecBase2& OnscreenText::get_scale() const
 {
     return scale_;
 }
@@ -274,12 +274,12 @@ const LVecBase2f& OnscreenText::get_scale() const
 // Reimplementation of TextNode::set_wordwrap.
 // wordwrap: either the width to wordwrap the text at, or 0
 //           to specify no automatic word wrapping.
-void OnscreenText::set_wordwrap(float wordwrap)
+void OnscreenText::set_wordwrap(PN_stdfloat wordwrap)
 {
     wordwrap_ = wordwrap;
-    if (wordwrap != 0)
+    if (wordwrap_ != 0)
     {
-        DCAST(TextNode, text_node_)->set_wordwrap(wordwrap);
+        DCAST(TextNode, text_node_)->set_wordwrap(wordwrap_);
     }
     else
     {

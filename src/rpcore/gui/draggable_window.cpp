@@ -66,33 +66,33 @@ void DraggableWindow::create_components()
     const LVecBase4f border_frame_size(-border_px, width_ + border_px, border_px, -height_ - border_px);
 
     auto border_frame_options = std::make_shared<rppanda::DirectFrame::Options>();
-    border_frame_options->pos = LVecBase3f(0, 1, 0);
+    border_frame_options->pos = LVecBase3(0, 1, 0);
     border_frame_options->frame_size = border_frame_size;
     border_frame_options->frame_color = LColorf(24 / 255.0, 131 / 255.0, 215 / 255.0, 1);
     border_frame_options->state = rppanda::DGG_NORMAL;
     border_frame_ = new rppanda::DirectFrame(node_, border_frame_options);
 
     auto background_options = std::make_shared<rppanda::DirectFrame::Options>();
-    background_options->pos = LVecBase3f(0, 1, 0);
+    background_options->pos = LVecBase3(0, 1, 0);
     background_options->frame_size = LVecBase4f(0, width_, 0, -height_);
     background_options->frame_color = LColorf(0.1f, 0.1f, 0.1f, 1.0f);
     background_ = new rppanda::DirectFrame(node_, background_options);
 
     auto title_bar_options = std::make_shared<rppanda::DirectFrame::Options>();
-    title_bar_options->pos = LVecBase3f(0, 1, 0);
+    title_bar_options->pos = LVecBase3(0, 1, 0);
     title_bar_options->frame_size = LVecBase4f(0, width_, 0, -25);
     title_bar_options->frame_color = LColorf(1, 1, 1, 1);
     title_bar_options->state = rppanda::DGG_NORMAL;
     title_bar_ = new rppanda::DirectFrame(node_, title_bar_options);
 
-    window_title_ = std::make_unique<Text>(title_, node_, 8.0f, 17.0f, 13.0f, "left", LVecBase3f(0.15f), true);
+    window_title_ = std::make_unique<Text>(title_, node_, 8.0f, 17.0f, 13.0f, "left", LVecBase3(0.15f), true);
 
     auto btn_close_options = std::make_shared<rppanda::DirectButton::Options>();
     btn_close_options->relief = rppanda::DGG_FLAT;
     btn_close_options->press_effect = true;
-    btn_close_options->pos = LVecBase3f(width_ - 22, 1, -12);
+    btn_close_options->pos = LVecBase3(width_ - 22, 1, -12);
     btn_close_options->frame_color = LColorf(1.0f, 0.2f, 0.2f, 0.5f);
-    btn_close_options->scale = LVecBase3f(45 / 2.0f, 1.0f, 24 / 2.0f);
+    btn_close_options->scale = LVecBase3(45 / 2.0f, 1.0f, 24 / 2.0f);
     btn_close_options->image = { std::make_shared<rppanda::ImageInput>(std::string("/$$rp/data/gui/close_window.png")) };
     btn_close_ = new rppanda::DirectButton(node_, btn_close_options);
 

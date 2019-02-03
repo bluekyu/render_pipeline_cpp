@@ -26,26 +26,26 @@
 
 namespace rpcore {
 
-Sprite::Sprite(Texture* image, int w, int h, NodePath parent, float x, float y,
+Sprite::Sprite(Texture* image, int w, int h, NodePath parent, PN_stdfloat x, PN_stdfloat y,
     bool transparent, bool near_filter, bool any_filter): RPObject("Sprite")
 {
     init(image, w, h, parent, x, y, transparent, near_filter, any_filter);
 }
 
-Sprite::Sprite(const Filename& image_path, int w, int h, NodePath parent, float x, float y,
+Sprite::Sprite(const Filename& image_path, int w, int h, NodePath parent, PN_stdfloat x, PN_stdfloat y,
     bool transparent, bool near_filter, bool any_filter):
     Sprite(RPLoader::load_texture(image_path), w, h, parent, x, y, transparent, near_filter, any_filter)
 {
 }
 
-Sprite::Sprite(const Filename& image_path, NodePath parent, float x, float y,
+Sprite::Sprite(const Filename& image_path, NodePath parent, PN_stdfloat x, PN_stdfloat y,
     bool transparent, bool near_filter, bool any_filter): RPObject("Sprite")
 {
     Texture* tex = RPLoader::load_texture(image_path);
     init(tex, tex->get_x_size(), tex->get_y_size(), parent, x, y, transparent, near_filter, any_filter);
 }
 
-void Sprite::init(Texture* image, int w, int h, NodePath parent, float x, float y,
+void Sprite::init(Texture* image, int w, int h, NodePath parent, PN_stdfloat x, PN_stdfloat y,
     bool transparent, bool near_filter, bool any_filter)
 {
     _width = w;

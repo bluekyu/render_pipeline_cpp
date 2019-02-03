@@ -37,7 +37,7 @@ public:
     static const Effect::SourceType sphere_point_effect_source;
 
 public:
-    PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius = 1.0f,
+    PointsNode(const std::string& name, const std::vector<LPoint3>& positions, float radius = 1.0f,
         GeomEnums::UsageHint buffer_hint = GeomEnums::UH_static);
 
     PointsNode(const PointsNode&) = delete;
@@ -55,15 +55,15 @@ public:
     void set_sphere_point_effect(RenderPipeline& pipeline) const;
 
     /** Get position. */
-    const LPoint3f& get_position(int point_index) const;
+    const LPoint3& get_position(int point_index) const;
 
     /** Get positions. */
-    const std::vector<LPoint3f>& get_positions() const;
+    const std::vector<LPoint3>& get_positions() const;
 
-    std::vector<LPoint3f>& modify_positions();
+    std::vector<LPoint3>& modify_positions();
 
     /** Set the position on the point_index-th point. */
-    void set_position(const LPoint3f& positions, int point_index);
+    void set_position(const LPoint3& positions, int point_index);
 
     /**
      * Set the positions.
@@ -71,7 +71,7 @@ public:
      * If the size is different with the original size,
      * then re-create the vertex memory and the index memory.
      */
-    void set_positions(const std::vector<LPoint3f>& positions);
+    void set_positions(const std::vector<LPoint3>& positions);
 
     /** Upload transform buffer texture to GPU. */
     void upload_positions();

@@ -80,7 +80,7 @@ DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_
     // Now apply the scale.
     if (!press_effect_np.is_empty())
     {
-        const LVecBase4f& bounds = get_bounds();
+        const LVecBase4& bounds = get_bounds();
         float center_x = (bounds[0] + bounds[1]) / 2.0f;
         float center_y = (bounds[2] + bounds[3]) / 2.0f;
 

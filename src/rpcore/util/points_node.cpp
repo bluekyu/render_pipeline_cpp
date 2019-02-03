@@ -39,13 +39,13 @@ static_assert(sizeof(LMatrix4f) == sizeof(float)*16, "sizeof(LMatrix4f) == sizeo
 class PointsNode::Impl
 {
 public:
-    void initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+    void initialize(const std::string& name, const std::vector<LPoint3>& positions, float radius,
         GeomEnums::UsageHint buffer_hint);
 
     int get_active_point_count() const;
 
-    void set_position(const LPoint3f& position, int point_index);
-    void set_positions(const std::vector<LPoint3f>& positions);
+    void set_position(const LPoint3& position, int point_index);
+    void set_positions(const std::vector<LPoint3>& positions);
 
     void set_radius(float radius);
 
@@ -56,10 +56,10 @@ public:
 public:
     bool dirty_ = true;
     NodePath points_np_;
-    std::vector<LPoint3f> positions_;
+    std::vector<LPoint3> positions_;
 };
 
-void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+void PointsNode::Impl::initialize(const std::string& name, const std::vector<LPoint3>& positions, float radius,
     GeomEnums::UsageHint buffer_hint)
 {
     set_positions(positions);
@@ -99,13 +99,13 @@ int PointsNode::Impl::get_active_point_count() const
     return DCAST(GeomNode, points_np_.node())->get_geom(0)->get_primitive(0)->get_num_vertices();
 }
 
-void PointsNode::Impl::set_position(const LPoint3f& position, int point_index)
+void PointsNode::Impl::set_position(const LPoint3& position, int point_index)
 {
     dirty_ = true;
     positions_[point_index] = position;
 }
 
-void PointsNode::Impl::set_positions(const std::vector<LPoint3f>& positions)
+void PointsNode::Impl::set_positions(const std::vector<LPoint3>& positions)
 {
     if (positions.size() > (std::numeric_limits<int>::max)())
     {
@@ -169,7 +169,7 @@ const Effect::SourceType PointsNode::square_point_effect_source = { "/$$rp/effec
 const Effect::SourceType PointsNode::disk_point_effect_source = { "/$$rp/effects/disk_point.yaml", {} };
 const Effect::SourceType PointsNode::sphere_point_effect_source = { "/$$rp/effects/sphere_point.yaml", {} };
 
-PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3f>& positions, float radius,
+PointsNode::PointsNode(const std::string& name, const std::vector<LPoint3>& positions, float radius,
     GeomEnums::UsageHint buffer_hint): impl_(std::make_unique<Impl>())
 {
     impl_->initialize(name, positions, radius, buffer_hint);
@@ -216,23 +216,23 @@ void PointsNode::set_sphere_point_effect(RenderPipeline& pipeline) const
     pipeline.set_effect(impl_->points_np_, sphere_point_effect_source);
 }
 
-const LPoint3f& PointsNode::get_position(int point_index) const
+const LPoint3& PointsNode::get_position(int point_index) const
 {
     return impl_->positions_[point_index];
 }
 
-const std::vector<LPoint3f>& PointsNode::get_positions() const
+const std::vector<LPoint3>& PointsNode::get_positions() const
 {
     return impl_->positions_;
 }
 
-std::vector<LPoint3f>& PointsNode::modify_positions()
+std::vector<LPoint3>& PointsNode::modify_positions()
 {
     impl_->dirty_ = true;
     return impl_->positions_;
 }
 
-void PointsNode::set_position(const LPoint3f& position, int point_index)
+void PointsNode::set_position(const LPoint3& position, int point_index)
 {
     if (point_index >= static_cast<int>(impl_->positions_.size()))
     {
@@ -243,7 +243,7 @@ void PointsNode::set_position(const LPoint3f& position, int point_index)
     impl_->set_position(position, point_index);
 }
 
-void PointsNode::set_positions(const std::vector<LPoint3f>& positions)
+void PointsNode::set_positions(const std::vector<LPoint3>& positions)
 {
     impl_->set_positions(positions);
 }

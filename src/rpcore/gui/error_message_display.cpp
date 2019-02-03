@@ -67,15 +67,15 @@ void ErrorMessageDisplay::update()
 
 void ErrorMessageDisplay::add_error(const std::string& msg)
 {
-    add_text(msg, LVecBase3f(1.0f, 0.2f, 0.2f));
+    add_text(msg, LVecBase3(1.0f, 0.2f, 0.2f));
 }
 
 void ErrorMessageDisplay::add_warning(const std::string& msg)
 {
-    add_text(msg, LVecBase3f(1.0f, 1.0f, 0.2f));
+    add_text(msg, LVecBase3(1.0f, 1.0f, 0.2f));
 }
 
-void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3f& color)
+void ErrorMessageDisplay::add_text(const std::string& text, const LVecBase3& color)
 {
     Text error_text(boost::trim_copy(text), error_node_, Globals::native_resolution.get_x()-30,
         num_errors_ * 23, 12.0f, "right", color);

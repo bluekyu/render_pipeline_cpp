@@ -135,7 +135,7 @@ void BufferViewer::create_components()
     content_frame_options->horizontal_scroll_options->thumb_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->inc_button_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->dec_button_options->relief = PGFrameStyle::Type(0);
-    content_frame_options->pos = LVecBase3f(0, 1, -height_);
+    content_frame_options->pos = LVecBase3(0, 1, -height_);
     _content_frame = new rppanda::DirectScrolledFrame(node_, content_frame_options);
 
     _content_node = _content_frame->get_canvas().attach_new_node("BufferComponents");
@@ -144,7 +144,7 @@ void BufferViewer::create_components()
 
     _chb_show_images = std::make_unique<LabeledCheckbox>(node_, 10, 43,
         std::bind(&BufferViewer::set_show_images, this, std::placeholders::_1),
-        false, "Display image resources", 16, false, LVecBase3f(0.4f), 330);
+        false, "Display image resources", 16, false, LVecBase3(0.4f), 330);
 }
 
 void BufferViewer::set_show_images(bool arg)
@@ -256,9 +256,9 @@ void BufferViewer::render_stages()
         node.set_sz(-1);
         node.set_pos(10 + xoffs * (entry_width - 14), 1, yoffs * (entry_height - 14 + 10));
 
-        LVecBase3f rgb(0.2f);
+        LVecBase3 rgb(0.2f);
         if (stage_tex_id.second == EntryID::TEXTURE)
-            rgb = LVecBase3f(0.2f, 0.4f, 0.6f);
+            rgb = LVecBase3(0.2f, 0.4f, 0.6f);
 
         static const std::string internal_name("render_pipeline_internal:");
         auto pos = stage_name.find(internal_name);
@@ -287,7 +287,7 @@ void BufferViewer::render_stages()
         frame_hover->bind(rppanda::DGG_EXIT, [frame_hover_raw, this](const Event*) { on_texture_blurred(frame_hover_raw); });
         frame_hover->bind(rppanda::DGG_B1PRESS, [stage_tex, this](const Event*) { on_texture_clicked(stage_tex); });
 
-        Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3f(0.8f));
+        Text stage_text(stage_name, node, 15, 29, 12, "left", LVecBase3(0.8f));
 
         // Scale image so it always fits
         int w = stage_tex->get_x_size();

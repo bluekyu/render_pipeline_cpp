@@ -118,8 +118,8 @@ void PSSMCameraRig::reparent_to(NodePath parent) {
  * @param split_index Index of the split
  * @return view-projection matrix of the split
  */
-LMatrix4f PSSMCameraRig::compute_mvp(size_t split_index) {
-    const LMatrix4f& transform = _parent.get_transform(_cam_nodes[split_index])->get_mat();
+LMatrix4 PSSMCameraRig::compute_mvp(size_t split_index) {
+    const LMatrix4& transform = _parent.get_transform(_cam_nodes[split_index])->get_mat();
     return transform * _cameras[split_index]->get_lens()->get_projection_mat();
 }
 
@@ -138,9 +138,9 @@ LMatrix4f PSSMCameraRig::compute_mvp(size_t split_index) {
  *
  * @return Offset to add to the camera position to achieve stable snapping
  */
-LVecBase3f PSSMCameraRig::get_snap_offset(const LMatrix4f& mat, size_t resolution) {
+LVecBase3 PSSMCameraRig::get_snap_offset(const LMatrix4& mat, size_t resolution) {
     // Transform origin to camera space
-    const LPoint4f& base_point = mat.get_row(3) * 0.5 + 0.5;
+    const LPoint4& base_point = mat.get_row(3) * 0.5 + 0.5;
 
     // Compute the snap offset
     float texel_size = 1.0 / static_cast<float>(resolution);
@@ -148,9 +148,9 @@ LVecBase3f PSSMCameraRig::get_snap_offset(const LMatrix4f& mat, size_t resolutio
     float offset_y = fmod(base_point.get_y(), texel_size);
 
     // Reproject the offset back, for that we need the inverse MVP
-    LMatrix4f inv_mat(mat);
+    LMatrix4 inv_mat(mat);
     inv_mat.invert_in_place();
-    LVecBase3f new_base_point = inv_mat.xform_point(LVecBase3f(
+    LVecBase3 new_base_point = inv_mat.xform_point(LVecBase3(
             (base_point.get_x() - offset_x) * 2.0 - 1.0,
             (base_point.get_y() - offset_y) * 2.0 - 1.0,
             base_point.get_z() * 2.0 - 1.0
@@ -171,8 +171,8 @@ LVecBase3f PSSMCameraRig::get_snap_offset(const LMatrix4f& mat, size_t resolutio
  * @param ends Second array of points
  * @return Average of points
  */
-LPoint3f get_average_of_points(LVecBase3f const (&starts)[4], LVecBase3f const (&ends)[4]) {
-    LPoint3f mid_point(0, 0, 0);
+LPoint3 get_average_of_points(LVecBase3 const (&starts)[4], LVecBase3 const (&ends)[4]) {
+    LPoint3 mid_point(0, 0, 0);
     for (size_t k = 0; k < 4; ++k) {
         mid_point += starts[k];
         mid_point += ends[k];
@@ -192,17 +192,17 @@ LPoint3f get_average_of_points(LVecBase3f const (&starts)[4], LVecBase3f const (
  * @param proj_points The array of points to project
  * @param cam The camera to be used to project the points
  */
-void find_min_max_extents(LVecBase3f &min_extent, LVecBase3f &max_extent, const LMatrix4f &transform, LVecBase3f const (&proj_points)[8], Camera *cam) {
+void find_min_max_extents(LVecBase3 &min_extent, LVecBase3 &max_extent, const LMatrix4 &transform, LVecBase3 const (&proj_points)[8], Camera *cam) {
     min_extent.fill(1e10);
     max_extent.fill(-1e10);
-    LPoint2f screen_points[8];
+    LPoint2 screen_points[8];
 
     // Now project all points to the screen space of the current camera and also
     // find the minimum and maximum extents
     for (size_t k = 0; k < 8; ++k) {
-        LVecBase4f point(proj_points[k], 1);
-        LPoint4f proj_point = transform.xform(point);
-        LPoint3f proj_point_3d(proj_point.get_x(), proj_point.get_y(), proj_point.get_z());
+        LVecBase4 point(proj_points[k], 1);
+        LPoint4 proj_point = transform.xform(point);
+        LPoint3 proj_point_3d(proj_point.get_x(), proj_point.get_y(), proj_point.get_z());
         cam->get_lens()->project(proj_point_3d, screen_points[k]);
 
         // Find min / max extents
@@ -228,11 +228,11 @@ void find_min_max_extents(LVecBase3f &min_extent, LVecBase3f &max_extent, const 
  * @param min_extent Minimum extent
  * @param max_extent Maximum extent
  */
-inline void get_film_properties(LVecBase2f &film_size, LVecBase2f &film_offset, const LVecBase3f &min_extent, const LVecBase3f &max_extent) {
-    float x_center = (min_extent.get_x() + max_extent.get_x()) * 0.5;
-    float y_center = (min_extent.get_y() + max_extent.get_y()) * 0.5;
-    float x_size = max_extent.get_x() - x_center;
-    float y_size = max_extent.get_y() - y_center;
+inline void get_film_properties(LVecBase2 &film_size, LVecBase2 &film_offset, const LVecBase3 &min_extent, const LVecBase3 &max_extent) {
+    PN_stdfloat x_center = (min_extent.get_x() + max_extent.get_x()) * 0.5;
+    PN_stdfloat y_center = (min_extent.get_y() + max_extent.get_y()) * 0.5;
+    PN_stdfloat x_size = max_extent.get_x() - x_center;
+    PN_stdfloat y_size = max_extent.get_y() - y_center;
     film_size.set(x_size, y_size);
     film_offset.set(x_center * 0.5, y_center * 0.5);
 }
@@ -264,7 +264,7 @@ inline void merge_points_interleaved(LVecBase3f (&dest)[8], LVecBase3f const (&a
  * @param max_distance Maximum pssm distance, relative to the camera far plane
  * @param light_vector Sun-Vector
  */
-void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_distance, const LVecBase3f& light_vector) {
+void PSSMCameraRig::compute_pssm_splits(const LMatrix4& transform, float max_distance, const LVecBase3& light_vector) {
     nassertv(!_parent.is_empty());
 
     // PSSM Distance should never be smaller than camera far plane.
@@ -277,9 +277,9 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
         float split_start = get_split_start(i) * max_distance;
         float split_end = get_split_start(i + 1) * max_distance;
 
-        LVecBase3f start_points[4];
-        LVecBase3f end_points[4];
-        LVecBase3f proj_points[8];
+        LVecBase3 start_points[4];
+        LVecBase3 end_points[4];
+        LVecBase3 proj_points[8];
 
         // Get split bounding box, and collect all points which define the frustum
         for (size_t k = 0; k < 4; ++k) {
@@ -290,8 +290,8 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
         }
 
         // Compute approximate split mid point
-        LPoint3f split_mid = get_average_of_points(start_points, end_points);
-        LPoint3f cam_start = split_mid + light_vector * _sun_distance;
+        LPoint3 split_mid = get_average_of_points(start_points, end_points);
+        LPoint3 cam_start = split_mid + light_vector * _sun_distance;
 
         // Reset the film size, offset and far-plane
         Camera* cam = DCAST(Camera, _cam_nodes[i].node());
@@ -304,14 +304,14 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
         _cam_nodes[i].set_pos(cam_start);
         _cam_nodes[i].look_at(split_mid);
 
-        LVecBase3f best_min_extent, best_max_extent;
+        LVecBase3 best_min_extent, best_max_extent;
 
         // Find minimum and maximum extents of the points
-        const LMatrix4f& merged_transform = _parent.get_transform(_cam_nodes[i])->get_mat();
+        const LMatrix4& merged_transform = _parent.get_transform(_cam_nodes[i])->get_mat();
         find_min_max_extents(best_min_extent, best_max_extent, merged_transform, proj_points, cam);
 
         // Find the film size to cover all points
-        LVecBase2f film_size, film_offset;
+        LVecBase2 film_size, film_offset;
         get_film_properties(film_size, film_offset, best_min_extent, best_max_extent);
 
         if (_use_fixed_film_size) {
@@ -330,14 +330,14 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
         // Compute new film offset
         cam_lens->set_film_offset(film_offset);
         cam_lens->set_near_far(10, best_max_extent.get_z());
-        _camera_nearfar[i] = LVecBase2f(10, best_max_extent.get_z());
+        _camera_nearfar[i] = LVecBase2(10, best_max_extent.get_z());
 
         // Compute the camera MVP
-        LMatrix4f mvp = compute_mvp(i);
+        LMatrix4 mvp = compute_mvp(i);
 
         // Stable CSM Snapping
         if (_use_stable_csm) {
-            LPoint3f snap_offset = get_snap_offset(mvp, _resolution);
+            LPoint3 snap_offset = get_snap_offset(mvp, _resolution);
             _cam_nodes[i].set_pos(_cam_nodes[i].get_pos() + snap_offset);
 
             // Compute the new mvp, since we changed the snap offset
@@ -361,12 +361,12 @@ void PSSMCameraRig::compute_pssm_splits(const LMatrix4f& transform, float max_di
  * @param cam_node Target camera node
  * @param light_vector The vector from the light to any point
  */
-void PSSMCameraRig::update(NodePath cam_node, const LVecBase3f &light_vector) {
+void PSSMCameraRig::update(NodePath cam_node, const LVecBase3& light_vector) {
     nassertv(!cam_node.is_empty());
     _update_collector.start();
 
     // Get camera node transform
-    const LMatrix4f& transform = cam_node.get_transform(Globals::render)->get_mat();
+    const LMatrix4& transform = cam_node.get_transform(Globals::render)->get_mat();
 
     // Get Camera and Lens pointers
     Camera* cam = DCAST(Camera, cam_node.node());
@@ -374,18 +374,18 @@ void PSSMCameraRig::update(NodePath cam_node, const LVecBase3f &light_vector) {
     Lens* lens = cam->get_lens();
 
     // Extract near and far points:
-    lens->extrude(LPoint2f(-1, 1),  _curr_near_points[UpperLeft],  _curr_far_points[UpperLeft]);
-    lens->extrude(LPoint2f(1, 1),   _curr_near_points[UpperRight], _curr_far_points[UpperRight]);
-    lens->extrude(LPoint2f(-1, -1), _curr_near_points[LowerLeft],  _curr_far_points[LowerLeft]);
-    lens->extrude(LPoint2f(1, -1),  _curr_near_points[LowerRight], _curr_far_points[LowerRight]);
+    lens->extrude(LPoint2(-1, 1),  _curr_near_points[UpperLeft],  _curr_far_points[UpperLeft]);
+    lens->extrude(LPoint2(1, 1),   _curr_near_points[UpperRight], _curr_far_points[UpperRight]);
+    lens->extrude(LPoint2(-1, -1), _curr_near_points[LowerLeft],  _curr_far_points[LowerLeft]);
+    lens->extrude(LPoint2(1, -1),  _curr_near_points[LowerRight], _curr_far_points[LowerRight]);
 
     // Construct MVP to project points to world space
-    const LMatrix4f& mvp = transform * lens->get_view_mat();
+    const LMatrix4& mvp = transform * lens->get_view_mat();
 
     // Project all points to world space
     for (size_t i = 0; i < 4; ++i) {
-        LPoint4f ws_near = mvp.xform(_curr_near_points[i]);
-        LPoint4f ws_far = mvp.xform(_curr_far_points[i]);
+        LPoint4 ws_near = mvp.xform(_curr_near_points[i]);
+        LPoint4 ws_far = mvp.xform(_curr_far_points[i]);
         _curr_near_points[i].set(ws_near.get_x(), ws_near.get_y(), ws_near.get_z());
         _curr_far_points[i].set(ws_far.get_x(), ws_far.get_y(), ws_far.get_z());
     }

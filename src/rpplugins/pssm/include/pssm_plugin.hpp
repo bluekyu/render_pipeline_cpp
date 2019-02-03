@@ -41,8 +41,8 @@ public:
     void on_pipeline_created() final;
     void on_pre_render_update() final;
 
-    virtual void request_focus(const LVecBase3f& focus_point, float focus_size);
-    virtual bool get_last_focus(LVecBase3f& focus_point, float& focus_size) const;
+    virtual void request_focus(const LVecBase3& focus_point, PN_stdfloat focus_size);
+    virtual bool get_last_focus(LVecBase3& focus_point, PN_stdfloat& focus_size) const;
 
 private:
     class Impl;

@@ -59,8 +59,8 @@ class InternalLightManager {
         void remove_light(PT(RPLight) light);
 
         void update();
-        inline void set_camera_pos(const LPoint3f& pos);
-        inline void set_shadow_update_distance(float dist);
+        inline void set_camera_pos(const LPoint3& pos);
+        inline void set_shadow_update_distance(PN_stdfloat dist);
 
         inline int get_max_light_index() const;
         MAKE_PROPERTY(max_light_index, get_max_light_index);
@@ -95,8 +95,8 @@ class InternalLightManager {
         PointerSlotStorage<RPLight*, MAX_LIGHT_COUNT> _lights;
         PointerSlotStorage<ShadowSource*, MAX_SHADOW_SOURCES> _shadow_sources;
 
-        LPoint3f _camera_pos;
-        float _shadow_update_distance;
+        LPoint3 _camera_pos;
+        PN_stdfloat _shadow_update_distance;
 };
 
 }

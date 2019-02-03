@@ -89,7 +89,7 @@ void CommonResources::update()
         };
 
         // Matrix for stereo view space to stereo NDC.
-        LMatrix4f stereo_proj_mat[2] ={
+        LMatrix4 stereo_proj_mat[2] ={
             cam_lens->get_projection_mat(Lens::StereoChannel::SC_left),
             cam_lens->get_projection_mat(Lens::StereoChannel::SC_right),
         };
@@ -110,26 +110,26 @@ void CommonResources::update()
         }
 
         // Get the current transform matrix of the camera
-        const LMatrix4f view_mat[2] = {
+        const LMatrix4 view_mat[2] = {
             Globals::render.get_transform(eye_path[0])->get_mat(),
             Globals::render.get_transform(eye_path[1])->get_mat(),
         };
 
         // Compute the view matrix, but with a z-up coordinate system
-        const LMatrix4f& zup_conversion = LMatrix4f::z_to_y_up_mat();
+        const LMatrix4& zup_conversion = LMatrix4::z_to_y_up_mat();
         input_ubo_->update_input("stereo_view_mat_z_up", view_mat[0] * zup_conversion, 0);
         input_ubo_->update_input("stereo_view_mat_z_up", view_mat[1] * zup_conversion, 1);
 
         // Compute the view matrix without the camera rotation
-        LMatrix4f view_mat_billboard[2] = { view_mat[0], view_mat[1] };
+        LMatrix4 view_mat_billboard[2] = { view_mat[0], view_mat[1] };
 
-        view_mat_billboard[0].set_row(0, LVecBase3f(1, 0, 0));
-        view_mat_billboard[0].set_row(1, LVecBase3f(0, 1, 0));
-        view_mat_billboard[0].set_row(2, LVecBase3f(0, 0, 1));
+        view_mat_billboard[0].set_row(0, LVecBase3(1, 0, 0));
+        view_mat_billboard[0].set_row(1, LVecBase3(0, 1, 0));
+        view_mat_billboard[0].set_row(2, LVecBase3(0, 0, 1));
 
-        view_mat_billboard[1].set_row(0, LVecBase3f(1, 0, 0));
-        view_mat_billboard[1].set_row(1, LVecBase3f(0, 1, 0));
-        view_mat_billboard[1].set_row(2, LVecBase3f(0, 0, 1));
+        view_mat_billboard[1].set_row(0, LVecBase3(1, 0, 0));
+        view_mat_billboard[1].set_row(1, LVecBase3(0, 1, 0));
+        view_mat_billboard[1].set_row(2, LVecBase3(0, 0, 1));
 
         input_ubo_->update_input("stereo_view_mat_billboard", view_mat_billboard[0], 0);
         input_ubo_->update_input("stereo_view_mat_billboard", view_mat_billboard[1], 1);
@@ -155,12 +155,12 @@ void CommonResources::update()
             input_ubo_->update_input("stereo_last_inv_view_proj_mat_no_jitter", curr_inv_vp, 1);
         }
 
-        const LMatrix4f stereo_proj_mat_z_up[2] ={
-            LMatrix4f::y_to_z_up_mat() * stereo_proj_mat[0],
-            LMatrix4f::y_to_z_up_mat() * stereo_proj_mat[1],
+        const LMatrix4 stereo_proj_mat_z_up[2] ={
+            LMatrix4::y_to_z_up_mat() * stereo_proj_mat[0],
+            LMatrix4::y_to_z_up_mat() * stereo_proj_mat[1],
         };
 
-        const LMatrix4f stereo_view_proj_mat[2] = {
+        const LMatrix4 stereo_view_proj_mat[2] = {
             view_mat[0] * stereo_proj_mat[0],
             view_mat[1] * stereo_proj_mat[1]
         };
@@ -184,7 +184,7 @@ void CommonResources::update()
         input_ubo_->update_input("stereo_inv_proj_mat", invert(stereo_proj_mat_z_up[0]), 0);
         input_ubo_->update_input("stereo_inv_proj_mat", invert(stereo_proj_mat_z_up[1]), 1);
 
-        LMatrix4f stereo_view_mat_inv[2] = { view_mat[0], view_mat[1] };
+        LMatrix4 stereo_view_mat_inv[2] = { view_mat[0], view_mat[1] };
         stereo_view_mat_inv[0].invert_in_place();
         stereo_view_mat_inv[1].invert_in_place();
 
@@ -204,34 +204,34 @@ void CommonResources::update()
     else
     {
         // Get the current transform matrix of the camera
-        const LMatrix4f& view_mat = Globals::render.get_transform(showbase_->get_cam())->get_mat();
+        const LMatrix4& view_mat = Globals::render.get_transform(showbase_->get_cam())->get_mat();
 
         // Compute the view matrix, but with a z-up coordinate system
-        const LMatrix4f& zup_conversion = LMatrix4f::z_to_y_up_mat();
+        const LMatrix4& zup_conversion = LMatrix4::z_to_y_up_mat();
         input_ubo_->update_input("view_mat_z_up", view_mat * zup_conversion);
 
         // Compute the view matrix without the camera rotation
-        LMatrix4f view_mat_billboard(view_mat);
-        view_mat_billboard.set_row(0, LVecBase3f(1, 0, 0));
-        view_mat_billboard.set_row(1, LVecBase3f(0, 1, 0));
-        view_mat_billboard.set_row(2, LVecBase3f(0, 0, 1));
+        LMatrix4 view_mat_billboard(view_mat);
+        view_mat_billboard.set_row(0, LVecBase3(1, 0, 0));
+        view_mat_billboard.set_row(1, LVecBase3(0, 1, 0));
+        view_mat_billboard.set_row(2, LVecBase3(0, 0, 1));
         input_ubo_->update_input("view_mat_billboard", view_mat_billboard);
 
         input_ubo_->update_input("camera_pos", showbase_->get_cam().get_pos(Globals::render));
 
         // Compute last view projection mat
-        const LMatrix4f& curr_vp_value = boost::get<const PTA_LMatrix4f&>(input_ubo_->get_input("view_proj_mat_no_jitter"))[0];
+        const LMatrix4& curr_vp_value = boost::get<const PTA_LMatrix4f&>(input_ubo_->get_input("view_proj_mat_no_jitter"))[0];
         input_ubo_->update_input("last_view_proj_mat_no_jitter", curr_vp_value);
-        LMatrix4f curr_vp = curr_vp_value;
+        LMatrix4 curr_vp = curr_vp_value;
         curr_vp.invert_in_place();
-        const LMatrix4f curr_inv_vp = curr_vp;
+        const LMatrix4 curr_inv_vp = curr_vp;
         input_ubo_->update_input("last_inv_view_proj_mat_no_jitter", curr_inv_vp);
 
-        LMatrix4f proj_mat = showbase_->get_cam_lens()->get_projection_mat();
+        LMatrix4 proj_mat = showbase_->get_cam_lens()->get_projection_mat();
 
         // Set the projection matrix as an input, but convert it to the correct
         // coordinate system before.
-        const LMatrix4f& proj_mat_zup = LMatrix4f::y_to_z_up_mat() * proj_mat;
+        const LMatrix4& proj_mat_zup = LMatrix4::y_to_z_up_mat() * proj_mat;
         input_ubo_->update_input("proj_mat", proj_mat_zup);
 
         // Set the inverse projection matrix
@@ -243,18 +243,18 @@ void CommonResources::update()
         input_ubo_->update_input("view_proj_mat_no_jitter", view_mat * proj_mat);
 
         // Compute frustum corners in the order BL, BR, TL, TR
-        LMatrix4f ws_frustum_directions;
-        LMatrix4f vs_frustum_directions;
-        const LMatrix4f& inv_proj_mat = Globals::base->get_cam_lens()->get_projection_mat_inv();
-        LMatrix4f view_mat_inv(view_mat);
+        LMatrix4 ws_frustum_directions;
+        LMatrix4 vs_frustum_directions;
+        const LMatrix4& inv_proj_mat = Globals::base->get_cam_lens()->get_projection_mat_inv();
+        LMatrix4 view_mat_inv(view_mat);
         view_mat_inv.invert_in_place();
 
         for (size_t i = 0; i < std::extent<decltype(points)>::value; ++i)
         {
-            const LVecBase4f& result = inv_proj_mat.xform(LVecBase4f(points[i][0], points[i][1], 1.0, 1.0));
-            const LVecBase3f& vs_dir = (zup_conversion.xform(result)).get_xyz().normalized();
-            vs_frustum_directions.set_row(i, LVecBase4f(vs_dir, 1));
-            const LVecBase4f& ws_dir = view_mat_inv.xform(LVecBase4f(result.get_xyz(), 0));
+            const LVecBase4& result = inv_proj_mat.xform(LVecBase4(points[i][0], points[i][1], 1.0, 1.0));
+            const LVecBase3& vs_dir = (zup_conversion.xform(result)).get_xyz().normalized();
+            vs_frustum_directions.set_row(i, LVecBase4(vs_dir, 1));
+            const LVecBase4& ws_dir = view_mat_inv.xform(LVecBase4(result.get_xyz(), 0));
             ws_frustum_directions.set_row(i, ws_dir);
         }
 
@@ -405,7 +405,7 @@ void CommonResources::setup_inputs()
     }
 
     // Set the correct frame rate interval
-    Globals::clock->set_average_frame_rate_interval(3.0f);
+    Globals::clock->set_average_frame_rate_interval(3.0);
 }
 
 }

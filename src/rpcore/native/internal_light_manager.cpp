@@ -337,8 +337,8 @@ bool InternalLightManager::compare_shadow_sources(const ShadowSource* a, const S
     }
 
     // Compare sources based on their distance to the camera
-    float dist_a = (_camera_pos - a->get_bounds().get_center()).length_squared();
-    float dist_b = (_camera_pos - a->get_bounds().get_center()).length_squared();
+    PN_stdfloat dist_a = (_camera_pos - a->get_bounds().get_center()).length_squared();
+    PN_stdfloat dist_b = (_camera_pos - a->get_bounds().get_center()).length_squared();
 
     // XXX: Should also compare based on source size, so that huge sources recieve
     // more updates
@@ -362,7 +362,7 @@ void InternalLightManager::update_shadow_sources() {
             const BoundingSphere& bounds = source->get_bounds();
 
             // Check if source is in range
-            float distance_to_camera = (_camera_pos - bounds.get_center()).length() - bounds.get_radius();
+            PN_stdfloat distance_to_camera = (_camera_pos - bounds.get_center()).length() - bounds.get_radius();
             if (distance_to_camera < _shadow_update_distance) {
                 if (source->get_needs_update()) {
                     sources_to_update.push_back(source);

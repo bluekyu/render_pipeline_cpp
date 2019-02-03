@@ -56,8 +56,8 @@ void PixelInspector::update()
         const auto& mouse = win->get_pointer(0);
         if (mouse.get_in_window())
         {
-            LVecBase3f pos(mouse.get_x(), 1, -mouse.get_y());
-            LVecBase2f rel_mouse_pos(mouse.get_x(), Globals::native_resolution.get_y() - mouse.get_y());
+            LVecBase3 pos(mouse.get_x(), 1, -mouse.get_y());
+            LVecBase2 rel_mouse_pos(mouse.get_x(), Globals::native_resolution.get_y() - mouse.get_y());
             _node.set_pos(pos);
             _zoomer.set_shader_input("mousePos", rel_mouse_pos);
             _zoomer.set_shader_input("nativeScreenSize", LVecBase2(Globals::native_resolution[0], Globals::native_resolution[1]));

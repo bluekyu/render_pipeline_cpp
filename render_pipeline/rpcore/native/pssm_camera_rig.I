@@ -210,8 +210,8 @@ inline float PSSMCameraRig::get_split_start(size_t split_index) {
  *
  * @return interpolated point in world space
  */
-inline LPoint3f PSSMCameraRig::get_interpolated_point(CoordinateOrigin origin, float depth) {
-    nassertr(depth >= 0.0 && depth <= 1.0, LPoint3f());
+inline LPoint3 PSSMCameraRig::get_interpolated_point(CoordinateOrigin origin, float depth) {
+    nassertr(depth >= 0.0 && depth <= 1.0, LPoint3());
     return _curr_near_points[origin] * (1.0 - depth) + _curr_far_points[origin] * depth;
 }
 

@@ -287,8 +287,8 @@ void MovementController::setup()
 
 void MovementController::print_position()
 {
-    const LVecBase3f& pos = impl_->showbase_->get_cam().get_pos(impl_->showbase_->get_render());
-    const LVecBase3f& hpr = impl_->showbase_->get_cam().get_hpr(impl_->showbase_->get_render());
+    const LVecBase3& pos = impl_->showbase_->get_cam().get_pos(impl_->showbase_->get_render());
+    const LVecBase3& hpr = impl_->showbase_->get_cam().get_hpr(impl_->showbase_->get_render());
     printf("(Vec3(%f, %f, %f), Vec3(%f, %f, %f))\n", pos.get_x(), pos.get_y(), pos.get_z(), hpr.get_x(), hpr.get_y(), hpr.get_z());
 }
 

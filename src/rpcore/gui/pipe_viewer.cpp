@@ -82,14 +82,14 @@ void PipeViewer::create_components()
     DraggableWindow::create_components();
 
     auto content_frame_options = std::make_shared<rppanda::DirectScrolledFrame::Options>();
-    content_frame_options->frame_size = LVecBase4f(0, width_ - 40, 0, height_ - 80);
-    content_frame_options->canvas_size = LVecBase4f(0, _scroll_width, 0, _scroll_height);
+    content_frame_options->frame_size = LVecBase4(0, width_ - 40, 0, height_ - 80);
+    content_frame_options->canvas_size = LVecBase4(0, _scroll_width, 0, _scroll_height);
     content_frame_options->auto_hide_scroll_bars = false;
     content_frame_options->scroll_bar_width = 20.0f;
-    content_frame_options->frame_color = LColorf(0);
+    content_frame_options->frame_color = LColor(0);
     content_frame_options->vertical_scroll_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->relief = PGFrameStyle::Type(0);
-    content_frame_options->pos = LVecBase3f(20, 1, -height_ + 20);
+    content_frame_options->pos = LVecBase3(20, 1, -height_ + 20);
     _content_frame = new rppanda::DirectScrolledFrame(node_, content_frame_options);
 
     _content_node = _content_frame->get_canvas().attach_new_node("PipeComponents");
@@ -146,7 +146,7 @@ void PipeViewer::populate_content()
                 output_pipe_name = (*group_input_data)->get_name();
 
             long long pipe_idx = 0;
-            const LVecBase3f& rgb = rgb_from_string(output_pipe_name);
+            const LVecBase3& rgb = rgb_from_string(output_pipe_name);
             auto pipe_iter = std::find(current_pipes.begin(), current_pipes.end(), output_pipe_name);
             if (pipe_iter != current_pipes.end())
             {
@@ -222,7 +222,7 @@ void PipeViewer::populate_content()
                 }
 
                 Text tex_desc_text(tex_desc, node, 55+48/2.0f, 130+pipe_idx*pipe_height,
-                    12, "center", LVecBase3f(0.2f));
+                    12, "center", LVecBase3(0.2f));
             }
         }
 
@@ -268,7 +268,7 @@ void PipeViewer::populate_content()
         rppanda::DirectFrame pipe_desc_df(_pipe_descriptions, df_options);
 
         Text pipe_text(current_pipes[idx], _pipe_descriptions, 42, 121 + idx * pipe_height,
-            15, "left", LVecBase3f(0.1));
+            15, "left", LVecBase3(0.1));
 
         Sprite("/$$rp/data/gui/icon_pipe.png", _pipe_descriptions, 9, 103 + idx * pipe_height, true, false);
     }

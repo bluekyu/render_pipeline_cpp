@@ -41,17 +41,17 @@ public:
      * all.This enables you to display existing textures, otherwise the
      * texture would get a near filter in the 3D View, too.
      */
-    Sprite(Texture* image, int w, int h, NodePath parent={}, float x=0.0f, float y=0.0f,
+    Sprite(Texture* image, int w, int h, NodePath parent={}, PN_stdfloat x=0.0f, PN_stdfloat y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(Texture* image, NodePath parent={}, float x=0.0f, float y=0.0f,
+    Sprite(Texture* image, NodePath parent={}, PN_stdfloat x=0.0f, PN_stdfloat y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const Filename& image_path, int w, int h, NodePath parent={}, float x=0.0f,
-        float y=0.0f, bool transparent=true, bool near_filter=true, bool any_filter=true);
-    Sprite(const Filename& image_path, NodePath parent={}, float x=0.0f, float y=0.0f,
+    Sprite(const Filename& image_path, int w, int h, NodePath parent={}, PN_stdfloat x=0.0f,
+        PN_stdfloat y=0.0f, bool transparent=true, bool near_filter=true, bool any_filter=true);
+    Sprite(const Filename& image_path, NodePath parent={}, PN_stdfloat x=0.0f, PN_stdfloat y=0.0f,
         bool transparent=true, bool near_filter=true, bool any_filter=true);
 
     /** Returns a pos interval, this is a wrapper around NodePath.posInterval. */
-    const LVecBase3f& get_initial_pos() const;
+    const LVecBase3& get_initial_pos() const;
 
     /** Returns the width of the image in pixels. */
     int get_width() const;
@@ -60,7 +60,7 @@ public:
     int get_height() const;
 
     /** Sets the position. */
-    void set_pos(float x, float y);
+    void set_pos(PN_stdfloat x, PN_stdfloat y);
 
     /** Sets a shader to be used for rendering the image. */
     void set_shader(const Shader* shader, int priority=0);
@@ -80,30 +80,30 @@ public:
     rppanda::OnscreenImage* get_node() const;
 
 private:
-    void init(Texture* image, int w, int h, NodePath parent, float x, float y,
+    void init(Texture* image, int w, int h, NodePath parent, PN_stdfloat x, PN_stdfloat y,
         bool transparent, bool near_filter, bool any_filter);
-    LVecBase3f translate_pos(float x, float y) const;
+    LVecBase3 translate_pos(PN_stdfloat x, PN_stdfloat y) const;
 
     int _width;
     int _height;
-    LVecBase3f _initial_pos;
+    LVecBase3 _initial_pos;
 
     PT(rppanda::OnscreenImage) node_;
 };
 
 // ************************************************************************************************
-inline Sprite::Sprite(Texture* image, NodePath parent, float x, float y,
+inline Sprite::Sprite(Texture* image, NodePath parent, PN_stdfloat x, PN_stdfloat y,
     bool transparent, bool near_filter, bool any_filter):
     Sprite(image, 10, 10, parent, x, y, transparent, near_filter, any_filter)
 {
 }
 
-inline LVecBase3f Sprite::translate_pos(float x, float y) const
+inline LVecBase3 Sprite::translate_pos(PN_stdfloat x, PN_stdfloat y) const
 {
-    return LVecBase3f(x + _width / 2.0f, 1, -y - _height / 2.0f);
+    return LVecBase3(x + _width / 2.0f, 1, -y - _height / 2.0f);
 }
 
-inline const LVecBase3f& Sprite::get_initial_pos() const
+inline const LVecBase3& Sprite::get_initial_pos() const
 {
     return _initial_pos;
 }
@@ -118,7 +118,7 @@ inline int Sprite::get_height() const
     return _height;
 }
 
-inline void Sprite::set_pos(float x, float y)
+inline void Sprite::set_pos(PN_stdfloat x, PN_stdfloat y)
 {
     node_->set_pos(translate_pos(x, y));
 }

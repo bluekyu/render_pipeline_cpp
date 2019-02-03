@@ -184,8 +184,8 @@ public:
     void set_frame_size(const LVecBase4& frame_size);
 
     virtual LVecBase4 get_bounds(int state = 0);
-    float get_width() const;
-    float get_height() const;
+    PN_stdfloat get_width() const;
+    PN_stdfloat get_height() const;
     LVecBase2 get_center() const;
 
     PGFrameStyle::Type get_frame_type(int state=0);
@@ -226,7 +226,7 @@ private:
     const std::shared_ptr<Options>& define_options(const std::shared_ptr<Options>& options);
 
     static bool _snap_to_grid;
-    static float _grid_spacing;
+    static PN_stdfloat _grid_spacing;
 
     std::vector<PGFrameStyle> _frame_style;
 
@@ -275,12 +275,12 @@ inline const LVecBase2& DirectGuiWidget::get_border_width() const
     return options_->border_width;
 }
 
-inline float DirectGuiWidget::get_width() const
+inline PN_stdfloat DirectGuiWidget::get_width() const
 {
     return bounds_[1] - bounds_[0];
 }
 
-inline float DirectGuiWidget::get_height() const
+inline PN_stdfloat DirectGuiWidget::get_height() const
 {
     return bounds_[3] - bounds_[2];
 }

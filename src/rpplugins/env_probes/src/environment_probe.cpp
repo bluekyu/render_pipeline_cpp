@@ -27,7 +27,7 @@ namespace rpplugins {
 EnvironmentProbe::EnvironmentProbe(): RPObject("EnvironmentProbe")
 {
     _transform = TransformState::make_identity();
-    _bounds = new BoundingSphere(LPoint3f(0), 1.0f);
+    _bounds = new BoundingSphere(LPoint3(0), 1.0f);
 }
 
 void EnvironmentProbe::write_to_buffer(PTA_uchar& buffer_ptr)

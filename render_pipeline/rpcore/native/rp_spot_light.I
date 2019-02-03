@@ -26,51 +26,51 @@
 
  namespace rpcore {
 
-inline void RPSpotLight::set_radius(float radius) {
+inline void RPSpotLight::set_radius(PN_stdfloat radius) {
     _radius = radius;
     set_needs_update(true);
     invalidate_shadows();
 }
 
-inline float RPSpotLight::get_radius() const {
+inline PN_stdfloat RPSpotLight::get_radius() const {
     return _radius;
 }
 
 
-inline void RPSpotLight::set_fov(float fov) {
+inline void RPSpotLight::set_fov(PN_stdfloat fov) {
     _fov = fov;
     set_needs_update(true);
     invalidate_shadows();
 }
 
-inline float RPSpotLight::get_fov() const {
+inline PN_stdfloat RPSpotLight::get_fov() const {
     return _fov;
 }
 
-inline void RPSpotLight::set_direction(LVecBase3f direction) {
+inline void RPSpotLight::set_direction(const LVecBase3& direction) {
     _direction = direction;
     _direction.normalize();
     set_needs_update(true);
     invalidate_shadows();
 }
 
-inline void RPSpotLight::set_direction(float dx, float dy, float dz) {
+inline void RPSpotLight::set_direction(PN_stdfloat dx, PN_stdfloat dy, PN_stdfloat dz) {
     _direction.set(dx, dy, dz);
     _direction.normalize();
     set_needs_update(true);
     invalidate_shadows();
 }
 
-inline const LVecBase3f& RPSpotLight::get_direction() const {
+inline const LVecBase3& RPSpotLight::get_direction() const {
     return _direction;
 }
 
-inline void RPSpotLight::look_at(LVecBase3f point) {
+inline void RPSpotLight::look_at(const LVecBase3& point) {
     set_direction(point - _position);
 }
 
-inline void RPSpotLight::look_at(float x, float y, float z) {
-    set_direction(LVecBase3f(x, y, z) - _position);
+inline void RPSpotLight::look_at(PN_stdfloat x, PN_stdfloat y, PN_stdfloat z) {
+    set_direction(LVecBase3(x, y, z) - _position);
 }
 
 }

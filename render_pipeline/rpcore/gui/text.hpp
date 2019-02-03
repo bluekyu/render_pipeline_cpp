@@ -35,7 +35,7 @@ class RENDER_PIPELINE_DECL Text : public RPObject
 public:
     struct RENDER_PIPELINE_DECL Default
     {
-        static const float size;
+        static const PN_stdfloat size;
         static const std::string align;
         static const LVecBase3 color;
     };
@@ -45,7 +45,7 @@ public:
      * Constructs a new text. The parameters are almost equal to the
      * parameters of OnscreenText.
      */
-    Text(const std::string& text={}, NodePath parent={}, float x=0, float y=0, float size=Default::size,
+    Text(const std::string& text={}, NodePath parent={}, PN_stdfloat x=0, PN_stdfloat y=0, PN_stdfloat size=Default::size,
         const std::string& align=Default::align, const LVecBase3& color=Default::color,
         bool may_change=false, TextFont* font=nullptr);
 

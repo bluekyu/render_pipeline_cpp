@@ -85,10 +85,10 @@ public:
      *                     many parameters.
      */
     OnscreenText(const std::string& text = "", Style style = Default::style,
-        const LVecBase2& pos = LVecBase2(0), float roll = 0, boost::optional<LVecBase2> scale = boost::none,
+        const LVecBase2& pos = LVecBase2(0), PN_stdfloat roll = 0, boost::optional<LVecBase2> scale = boost::none,
         boost::optional<LColor> fg = boost::none, boost::optional<LColor> bg = boost::none, boost::optional<LColor> shadow = boost::none,
         const LVecBase2& shadow_offset = Default::shadow_offset, boost::optional<LColor> frame = boost::none,
-        boost::optional<TextNode::Alignment> align = boost::none, boost::optional<float> wordwrap = boost::none,
+        boost::optional<TextNode::Alignment> align = boost::none, boost::optional<PN_stdfloat> wordwrap = boost::none,
         boost::optional<int> draw_order = boost::none, bool decal = false, TextFont* font = nullptr,
         NodePath parent = {}, int sort = 0, bool may_change = true,
         boost::optional<TextProperties::Direction> direction = boost::none);
@@ -117,31 +117,31 @@ public:
     std::string get_text() const;
 
     /** Position the onscreen text on the x-axis. */
-    void set_x(float x);
+    void set_x(PN_stdfloat x);
     /** Position the onscreen text on the y-axis. */
-    void set_y(float y);
+    void set_y(PN_stdfloat y);
     /** Position the onscreen text in 2d screen space. */
-    void set_pos(float x, float y);
-    void set_pos(const LVecBase2f& pos);
-    const LVecBase2f& get_pos() const;
+    void set_pos(PN_stdfloat x, PN_stdfloat y);
+    void set_pos(const LVecBase2& pos);
+    const LVecBase2& get_pos() const;
 
-    void set_roll(float roll);
-    float get_roll() const;
+    void set_roll(PN_stdfloat roll);
+    PN_stdfloat get_roll() const;
 
-    void set_scale(float scale);
-    void set_scale(float scaleX, float scaleY);
+    void set_scale(PN_stdfloat scale);
+    void set_scale(PN_stdfloat scaleX, PN_stdfloat scaleY);
 
     /**
      * Scale the text in 2d space.  You may specify either a single
      * uniform scale, or two scales, or a tuple of two scales.
      */
-    void set_scale(const LVecBase2f& scale);
+    void set_scale(const LVecBase2& scale);
 
     void update_transform_mat();
-    const LVecBase2f& get_scale() const;
+    const LVecBase2& get_scale() const;
 
-    void set_wordwrap(float wordwarp);
-    float get_wordwrap() const;
+    void set_wordwrap(PN_stdfloat wordwarp);
+    PN_stdfloat get_wordwrap() const;
 
     void set_fg(const LColor& fg);
     void set_bg(const LColor& bg);
@@ -152,10 +152,10 @@ public:
     void set_align(TextNode::Alignment align);
 
 private:
-    LVecBase2f scale_;
-    LVecBase2f pos_;
-    float roll_;
-    float wordwrap_;
+    LVecBase2 scale_;
+    LVecBase2 pos_;
+    PN_stdfloat roll_;
+    PN_stdfloat wordwrap_;
     bool may_change_;
     bool is_clean_;
 
@@ -169,52 +169,52 @@ inline PandaNode* OnscreenText::get_text_node() const
     return text_node_;
 }
 
-inline void OnscreenText::set_x(float x)
+inline void OnscreenText::set_x(PN_stdfloat x)
 {
-    set_pos(LVecBase2f(x, pos_[1]));
+    set_pos(LVecBase2(x, pos_[1]));
 }
 
-inline void OnscreenText::set_y(float y)
+inline void OnscreenText::set_y(PN_stdfloat y)
 {
     set_pos(pos_[0], y);
 }
 
-inline void OnscreenText::set_pos(float x, float y)
+inline void OnscreenText::set_pos(PN_stdfloat x, PN_stdfloat y)
 {
-    set_pos(LVecBase2f(x, y));
+    set_pos(LVecBase2(x, y));
 }
 
-inline const LVecBase2f& OnscreenText::get_pos() const
+inline const LVecBase2& OnscreenText::get_pos() const
 {
     return pos_;
 }
 
-inline float OnscreenText::get_roll() const
+inline PN_stdfloat OnscreenText::get_roll() const
 {
     return roll_;
 }
 
-inline void OnscreenText::set_scale(float scale)
+inline void OnscreenText::set_scale(PN_stdfloat scale)
 {
-    set_scale(LVecBase2f(scale, scale));
+    set_scale(LVecBase2(scale, scale));
 }
 
-inline void OnscreenText::set_scale(float scaleX, float scaleY)
+inline void OnscreenText::set_scale(PN_stdfloat scaleX, PN_stdfloat scaleY)
 {
-    set_scale(LVecBase2f(scaleX, scaleY));
+    set_scale(LVecBase2(scaleX, scaleY));
 }
 
-inline float OnscreenText::get_wordwrap() const
+inline PN_stdfloat OnscreenText::get_wordwrap() const
 {
     return wordwrap_;
 }
 
 inline void OnscreenText::update_transform_mat()
 {
-    const LMatrix4f& mat =
-        LMatrix4f::scale_mat(scale_.get_x(), 1, scale_.get_y()) *
-        LMatrix4f::rotate_mat(roll_, LVector3f::back()) *
-        LMatrix4f::translate_mat(pos_.get_x(), 0, pos_.get_y());
+    const LMatrix4& mat =
+        LMatrix4::scale_mat(scale_.get_x(), 1, scale_.get_y()) *
+        LMatrix4::rotate_mat(roll_, LVector3::back()) *
+        LMatrix4::translate_mat(pos_.get_x(), 0, pos_.get_y());
     DCAST(TextNode, text_node_)->set_transform(mat);
 }
 

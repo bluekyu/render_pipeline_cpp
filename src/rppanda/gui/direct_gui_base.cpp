@@ -114,7 +114,7 @@ void DirectGuiBase::unbind(const std::string& ev_name)
 TypeHandle DirectGuiWidget::type_handle_;
 
 bool DirectGuiWidget::_snap_to_grid = false;
-float DirectGuiWidget::_grid_spacing = 0.05f;
+PN_stdfloat DirectGuiWidget::_grid_spacing = 0.05f;
 bool DirectGuiWidget::gui_edit = ConfigVariableBool("direct-gui-edit", false).get_value();
 std::string DirectGuiWidget::inactive_init_state = gui_edit ? DGG_NORMAL : DGG_DISABLED;
 
@@ -219,8 +219,8 @@ void DirectGuiWidget::edit_start()
     //ShowBase* base = ShowBase::get_global_ptr();
 
     //dgw->remove_task("guiEditTask");
-    //const LPoint3f& widget2_render2d = dgw->get_pos(base->get_render_2d());
-    //LPoint3f mouse2_render2d(
+    //const LPoint3& widget2_render2d = dgw->get_pos(base->get_render_2d());
+    //LPoint3 mouse2_render2d(
 }
 
 void DirectGuiWidget::edit_stop()
@@ -308,8 +308,8 @@ LVecBase4 DirectGuiWidget::get_bounds(int state)
     PN_stdfloat right = vec_right.dot(ur_);
     PN_stdfloat bottom = vec_up.dot(ll_);
     PN_stdfloat top = vec_up.dot(ur_);
-    ll_ = LPoint3(left, 0.0f, bottom);
-    ur_ = LPoint3(right, 0.0f, top);
+    ll_ = LPoint3(left, 0, bottom);
+    ur_ = LPoint3(right, 0, top);
     bounds_ = LVecBase4(
         ll_[0] - options_->pad[0],
         ur_[0] + options_->pad[0],
@@ -461,7 +461,7 @@ void DirectGuiWidget::print_config(int indent)
 const std::shared_ptr<DirectGuiWidget::Options>& DirectGuiWidget::define_options(const std::shared_ptr<Options>& options)
 {
     if (!options->frame_visible_scale)
-        options->frame_visible_scale = LVecBase2f(1.0f);
+        options->frame_visible_scale = LVecBase2(1);
 
     return options;
 }

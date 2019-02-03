@@ -37,22 +37,22 @@ public:
     SmoothConnectedCurve();
 
     /** Returns a list of all controll points. */
-    const std::vector<LVecBase2f>& get_control_points() const;
+    const std::vector<LVecBase2>& get_control_points() const;
 
     /** Sets the cv points to the given list of points. */
-    void set_control_points(const std::vector<LVecBase2f>& points);
+    void set_control_points(const std::vector<LVecBase2>& points);
 
     /** Returns the display color of the curve. */
-    const LVecBase3f& get_color() const;
+    const LVecBase3& get_color() const;
 
     /** Sets the display color of the curve. */
-    void set_color(const LVecBase3f& rgb);
+    void set_color(const LVecBase3& rgb);
 
     /** Sets the curve to be linear, and only use a single value. */
-    void set_single_value(float val);
+    void set_single_value(PN_stdfloat val);
 
     /** Appends a new cv and returns the index of the attached cv. */
-    size_t append_cv(float x, float y);
+    size_t append_cv(PN_stdfloat x, PN_stdfloat y);
 
     /**
      * Attempts to remove the cv at the given index, does nothing if only
@@ -64,14 +64,14 @@ public:
     void build_curve();
 
     /** Updates the cv point at the given index. */
-    void set_cv_value(size_t index, float x_value, float y_value);
+    void set_cv_value(size_t index, PN_stdfloat x_value, PN_stdfloat y_value);
 
     /**
      * Returns the value on the curve ranging whereas the offset should be
      * from 0 to 1 (0 denotes the start of the curve). The returned value will
      * be a value from 0 to 1 as well.
      */
-    float get_value(float offset) const;
+    PN_stdfloat get_value(PN_stdfloat offset) const;
 
     /** Returns the value of the curve as yaml list. */
     std::string serialize() const;
@@ -79,42 +79,42 @@ public:
 private:
     bool _modified = false;
     int _border_points = 1;
-    LVecBase3f _color = LVecBase3f(0, 0, 0);
-    std::vector<LVecBase2f> _cv_points;
+    LVecBase3 _color = LVecBase3(0, 0, 0);
+    std::vector<LVecBase2> _cv_points;
     PT(ParametricCurveCollection) _curve;
 };
 
 // ************************************************************************************************
-inline const std::vector<LVecBase2f>& SmoothConnectedCurve::get_control_points() const
+inline const std::vector<LVecBase2>& SmoothConnectedCurve::get_control_points() const
 {
     return _cv_points;
 }
 
-inline void SmoothConnectedCurve::set_control_points(const std::vector<LVecBase2f>& points)
+inline void SmoothConnectedCurve::set_control_points(const std::vector<LVecBase2>& points)
 {
     _cv_points = points;
     _modified = true;
     build_curve();
 }
 
-inline const LVecBase3f& SmoothConnectedCurve::get_color() const
+inline const LVecBase3& SmoothConnectedCurve::get_color() const
 {
     return _color;
 }
 
-inline void SmoothConnectedCurve::set_color(const LVecBase3f& rgb)
+inline void SmoothConnectedCurve::set_color(const LVecBase3& rgb)
 {
     _color = rgb;
 }
 
-inline void SmoothConnectedCurve::set_single_value(float val)
+inline void SmoothConnectedCurve::set_single_value(PN_stdfloat val)
 {
     _modified = false;
     _cv_points = { {0.5f, val} };
     build_curve();
 }
 
-inline size_t SmoothConnectedCurve::append_cv(float x, float y)
+inline size_t SmoothConnectedCurve::append_cv(PN_stdfloat x, PN_stdfloat y)
 {
     _cv_points.push_back({x, y});
     build_curve();
@@ -130,17 +130,17 @@ inline void SmoothConnectedCurve::remove_cv(size_t index)
     build_curve();
 }
 
-inline void SmoothConnectedCurve::set_cv_value(size_t index, float x_value, float y_value)
+inline void SmoothConnectedCurve::set_cv_value(size_t index, PN_stdfloat x_value, PN_stdfloat y_value)
 {
-    _cv_points[index] = LVecBase2f(x_value, y_value);
+    _cv_points[index] = LVecBase2(x_value, y_value);
     _modified = true;
 }
 
-inline float SmoothConnectedCurve::get_value(float offset) const
+inline PN_stdfloat SmoothConnectedCurve::get_value(PN_stdfloat offset) const
 {
-    LVecBase3f point(0);
+    LVecBase3 point(0);
     _curve->evaluate_xyz(offset, point);
-    const float y = point.get_y();
+    const PN_stdfloat y = point.get_y();
     return (std::max)(0.0f, (std::min)(1.0f, y));
 }
 

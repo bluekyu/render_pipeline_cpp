@@ -73,8 +73,8 @@ void FPSChart::create_components()
 
 AsyncTask::DoneStatus FPSChart::late_init(rppanda::FunctionalTask* task)
 {
-    display_txt_ = std::make_unique<Text>("40 ms", node_, 20, 25, 13, "left", LVecBase3f(1), true);
-    display_txt_bottom_ = std::make_unique<Text>("0 ms", node_, 20, 120, 13, "left", LVecBase3f(1), true);
+    display_txt_ = std::make_unique<Text>("40 ms", node_, 20, 25, 13, "left", LVecBase3(1), true);
+    display_txt_bottom_ = std::make_unique<Text>("0 ms", node_, 20, 120, 13, "left", LVecBase3(1), true);
 
     // Create the shader which generates the visualization texture
     cshader_node_ = new ComputeNode("FPSChart");

@@ -43,19 +43,19 @@ class RENDER_PIPELINE_DECL RPSpotLight  : public RPLight
     PUBLISHED:
         RPSpotLight();
 
-        inline void set_radius(float radius);
-        inline float get_radius() const;
+        inline void set_radius(PN_stdfloat radius);
+        inline PN_stdfloat get_radius() const;
         MAKE_PROPERTY(radius, get_radius, set_radius);
 
-        inline void set_fov(float fov);
-        inline float get_fov() const;
+        inline void set_fov(PN_stdfloat fov);
+        inline PN_stdfloat get_fov() const;
         MAKE_PROPERTY(fov, get_fov, set_fov);
 
-        inline void set_direction(LVecBase3f direction);
-        inline void set_direction(float dx, float dy, float dz);
-        inline const LVecBase3f& get_direction() const;
-        inline void look_at(LVecBase3f point);
-        inline void look_at(float x, float y, float z);
+        inline void set_direction(const LVecBase3& direction);
+        inline void set_direction(PN_stdfloat dx, PN_stdfloat dy, PN_stdfloat dz);
+        inline const LVecBase3& get_direction() const;
+        inline void look_at(const LVecBase3& point);
+        inline void look_at(PN_stdfloat x, PN_stdfloat y, PN_stdfloat z);
         MAKE_PROPERTY(direction, get_direction, set_direction);
 
     public:
@@ -64,9 +64,9 @@ class RENDER_PIPELINE_DECL RPSpotLight  : public RPLight
         virtual void update_shadow_sources();
 
     protected:
-        float _radius;
-        float _fov;
-        LVecBase3f _direction;
+        PN_stdfloat _radius;
+        PN_stdfloat _fov;
+        LVecBase3 _direction;
 };
 
 }

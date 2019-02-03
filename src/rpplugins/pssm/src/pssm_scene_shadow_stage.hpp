@@ -55,15 +55,15 @@ public:
 
     SamplerState make_pcf_state() const;
 
-    void request_focus(const LVecBase3f& focus_point, float focus_size);
+    void request_focus(const LVecBase3& focus_point, PN_stdfloat focus_size);
 
     LMatrix4f get_mvp() const;
 
     void set_resolution(int resolution);
-    void set_sun_vector(const LVecBase3f& sun_vector);
-    void set_sun_distance(float sun_distance);
+    void set_sun_vector(const LVecBase3& sun_vector);
+    void set_sun_distance(PN_stdfloat sun_distance);
 
-    const boost::optional<std::pair<LVecBase3f, float>>& get_last_focus() const;
+    const boost::optional<std::pair<LVecBase3, PN_stdfloat>>& get_last_focus() const;
 
 private:
     std::string get_plugin_id() const final;
@@ -72,11 +72,11 @@ private:
     static RequireType required_pipes;
 
     int _resolution = 2048;
-    LVecBase3f _sun_vector = LVecBase3f(0, 0, 1);
-    float _sun_distance = 10.0f;
+    LVecBase3 _sun_vector = LVecBase3(0, 0, 1);
+    PN_stdfloat _sun_distance = 10.0f;
     PTA_LMatrix4f _pta_mvp;
-    boost::optional<std::pair<LVecBase3f, float>> _focus;
-    boost::optional<std::pair<LVecBase3f, float>> _last_focus;
+    boost::optional<std::pair<LVecBase3, PN_stdfloat>> _focus;
+    boost::optional<std::pair<LVecBase3, PN_stdfloat>> _last_focus;
 
     PT(Camera) _camera;
     PT(OrthographicLens) _cam_lens;
@@ -90,17 +90,17 @@ inline void PSSMSceneShadowStage::set_resolution(int resolution)
     _resolution = resolution;
 }
 
-inline void PSSMSceneShadowStage::set_sun_vector(const LVecBase3f& sun_vector)
+inline void PSSMSceneShadowStage::set_sun_vector(const LVecBase3& sun_vector)
 {
     _sun_vector = sun_vector;
 }
 
-inline void PSSMSceneShadowStage::set_sun_distance(float sun_distance)
+inline void PSSMSceneShadowStage::set_sun_distance(PN_stdfloat sun_distance)
 {
     _sun_distance = sun_distance;
 }
 
-inline const boost::optional<std::pair<LVecBase3f, float>>& PSSMSceneShadowStage::get_last_focus() const
+inline const boost::optional<std::pair<LVecBase3, PN_stdfloat>>& PSSMSceneShadowStage::get_last_focus() const
 {
     return _last_focus;
 }

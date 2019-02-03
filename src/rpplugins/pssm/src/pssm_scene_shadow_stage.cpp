@@ -67,7 +67,7 @@ SamplerState PSSMSceneShadowStage::make_pcf_state() const
     return state;
 }
 
-void PSSMSceneShadowStage::request_focus(const LVecBase3f& focus_point, float focus_size)
+void PSSMSceneShadowStage::request_focus(const LVecBase3& focus_point, PN_stdfloat focus_size)
 {
     _focus = std::make_pair(focus_point, focus_size);
     _last_focus = _focus;
@@ -107,8 +107,8 @@ void PSSMSceneShadowStage::update()
         }
         else
         {
-            const LVecBase3f& focus_point = _focus.value().first;
-            const float focus_size = _focus.value().second;
+            const LVecBase3& focus_point = _focus.value().first;
+            const auto focus_size = _focus.value().second;
 
             _cam_lens->set_near_far(0.0f, 2.0f * (focus_size + _sun_distance));
             _cam_lens->set_film_size(2 * focus_size, 2 * focus_size);

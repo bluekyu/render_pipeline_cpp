@@ -109,7 +109,7 @@ void RenderModeSelector::populate_content()
 
         auto box = std::make_unique<LabeledCheckbox>(debugger_content, offs_x, offs_y,
             std::bind(&RenderModeSelector::set_render_mode, this, mode_id, special, std::placeholders::_1),
-            (mode_id == selected_mode_), boost::to_upper_copy(mode), 14, true, LVecBase3f(0.4f), 230, enabled);
+            (mode_id == selected_mode_), boost::to_upper_copy(mode), 14, true, LVecBase3(0.4f), 230, enabled);
         collection_->add(box->get_checkbox());
         boxes_.push_back(std::move(box));
     }
