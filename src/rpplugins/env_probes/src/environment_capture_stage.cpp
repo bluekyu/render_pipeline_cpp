@@ -65,9 +65,9 @@ void EnvironmentCaptureStage::create()
 
 void EnvironmentCaptureStage::setup_camera_rig()
 {
-    const LVecBase3f directions[6] = {
-        LVecBase3f(1, 0, 0), LVecBase3f(-1, 0, 0), LVecBase3f(0, 1, 0),
-        LVecBase3f(0, -1, 0), LVecBase3f(0, 0, 1), LVecBase3f(0, 0, -1),};
+    const LVecBase3 directions[6] = {
+        LVecBase3(1, 0, 0), LVecBase3(-1, 0, 0), LVecBase3(0, 1, 0),
+        LVecBase3(0, -1, 0), LVecBase3(0, 0, 1), LVecBase3(0, 0, -1),};
 
     // Prepare the display regions
     for (size_t i = 0; i < std::extent<decltype(directions)>::value; ++i)
@@ -82,7 +82,7 @@ void EnvironmentCaptureStage::setup_camera_rig()
         region->set_clear_depth_active(true);
         region->set_clear_depth(1.0f);
         region->set_clear_color_active(true);
-        region->set_clear_color(LColorf(0));
+        region->set_clear_color(LColor(0));
 
         PT(PerspectiveLens) lens = new PerspectiveLens;
         lens->set_fov(90.0f);

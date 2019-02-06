@@ -62,7 +62,7 @@ void AutoExposureStage::create()
         _tex_exposure = rpcore::Image::create_buffer("ExposureStorage", 2, "R16");
     else
         _tex_exposure = rpcore::Image::create_buffer("ExposureStorage", 1, "R16");
-    _tex_exposure->set_clear_color(LVecBase4f(0.5f));
+    _tex_exposure->set_clear_color(LVecBase4(0.5f));
     _tex_exposure->clear_image();
 
     // Create the target which extracts the exposure from the average brightness

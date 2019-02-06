@@ -46,7 +46,7 @@ public:
     void on_pre_render_update() final;
     void on_shader_reload() final;
 
-    virtual LVecBase3f get_sun_vector() const;
+    virtual LVecBase3 get_sun_vector() const;
 
     virtual ScatteringStage* get_display_stage() const;
     virtual ScatteringEnvmapStage* get_envmap_stage() const;

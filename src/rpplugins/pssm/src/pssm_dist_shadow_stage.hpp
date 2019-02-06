@@ -48,12 +48,12 @@ public:
 
     void set_shader_input(const ShaderInput& inp) final;
 
-    LMatrix4f get_mvp() const;
+    LMatrix4 get_mvp() const;
 
     void set_resolution(int resolution);
     void set_clip_size(float clip_size);
     void set_sun_distance(float sun_distance);
-    void set_sun_vector(const LVecBase3f& sun_vector);
+    void set_sun_vector(const LVecBase3& sun_vector);
 
 private:
     std::string get_plugin_id() const final;
@@ -64,7 +64,7 @@ private:
     int _resolution = 2048;
     float _clip_size = 500.0f;
     float _sun_distance = 8000;
-    LVecBase3f _sun_vector = LVecBase3f(0, 0, 1);
+    LVecBase3 _sun_vector = LVecBase3(0, 0, 1);
     PTA_LMatrix4f _pta_mvp;
 
     PT(Camera) _camera;
@@ -92,7 +92,7 @@ inline void PSSMDistShadowStage::set_sun_distance(float sun_distance)
     _sun_distance = sun_distance;
 }
 
-inline void PSSMDistShadowStage::set_sun_vector(const LVecBase3f& sun_vector)
+inline void PSSMDistShadowStage::set_sun_vector(const LVecBase3& sun_vector)
 {
     _sun_vector = sun_vector;
 }

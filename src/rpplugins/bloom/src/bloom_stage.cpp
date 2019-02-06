@@ -60,7 +60,7 @@ void BloomStage::create()
     _scene_target_img->set_magfilter(SamplerState::FT_linear);
     _scene_target_img->set_wrap_u(SamplerState::WM_clamp);
     _scene_target_img->set_wrap_v(SamplerState::WM_clamp);
-    _scene_target_img->set_clear_color(LColorf(0.1f, 0.0f, 0.0f, 1.0f));
+    _scene_target_img->set_clear_color(LColor(0.1f, 0.0f, 0.0f, 1.0f));
     _scene_target_img->clear_image();
 
     _target_extract = create_target("ExtractBrightSpots");

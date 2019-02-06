@@ -78,7 +78,7 @@ public:
                 HDROP hdrop = (HDROP)wparam;
                 POINT pt;
                 DragQueryPoint(hdrop, &pt);
-                plugin_.dropped_point_ = LVecBase2f(static_cast<float>(pt.x), static_cast<float>(pt.y));
+                plugin_.dropped_point_ = LVecBase2(static_cast<PN_stdfloat>(pt.x), static_cast<PN_stdfloat>(pt.y));
 
                 const UINT file_count = DragQueryFileW(hdrop, 0xFFFFFFFF, NULL, 0);
 

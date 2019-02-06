@@ -54,7 +54,7 @@ PSSMDistShadowStage::PSSMDistShadowStage(rpcore::RenderPipeline& pipeline): Rend
     _pta_mvp = PTA_LMatrix4f::empty_array(1);
 }
 
-LMatrix4f PSSMDistShadowStage::get_mvp() const
+LMatrix4 PSSMDistShadowStage::get_mvp() const
 {
     return rpcore::Globals::base->get_render().get_transform(_cam_node)->get_mat() * _cam_lens->get_projection_mat();
 }

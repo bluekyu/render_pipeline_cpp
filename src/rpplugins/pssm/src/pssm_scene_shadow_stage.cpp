@@ -73,7 +73,7 @@ void PSSMSceneShadowStage::request_focus(const LVecBase3& focus_point, PN_stdflo
     _last_focus = _focus;
 }
 
-LMatrix4f PSSMSceneShadowStage::get_mvp() const
+LMatrix4 PSSMSceneShadowStage::get_mvp() const
 {
     return rpcore::Globals::base->get_render().get_transform(_cam_node)->get_mat() * _cam_lens->get_projection_mat();
 }

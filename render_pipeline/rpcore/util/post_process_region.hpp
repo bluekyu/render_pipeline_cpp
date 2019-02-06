@@ -39,11 +39,11 @@ class RENDER_PIPELINE_DECL PostProcessRegion
 {
 public:
     static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, bool use_point = false);
-    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point = false);
+    static std::unique_ptr<PostProcessRegion> make(GraphicsOutput* internal_buffer, const LVecBase4& dimensions, bool use_point = false);
 
 public:
     PostProcessRegion(GraphicsOutput* internal_buffer, bool use_point);
-    PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point);
+    PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4& dimensions, bool use_point);
 
     void set_shader_input(const ShaderInput& inp, bool override_input=false);
 

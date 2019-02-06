@@ -48,7 +48,7 @@ void PSSMStage::create()
     if (stereo_mode_)
         _target_shadows->set_layers(2);
     _target_shadows->prepare_buffer();
-    _target_shadows->get_color_tex()->set_clear_color(LColorf(0));
+    _target_shadows->get_color_tex()->set_clear_color(LColor(0));
 
     _target = create_target("ApplyPSSMShadows");
     _target->add_color_attachment(LVecBase4i(16));

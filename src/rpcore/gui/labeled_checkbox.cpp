@@ -58,13 +58,13 @@ LabeledCheckbox::~LabeledCheckbox() = default;
 
 void LabeledCheckbox::on_node_enter()
 {
-    text_->get_node().set_fg(LColorf(text_color_[0] + 0.1f, text_color_[1] + 0.1f,
+    text_->get_node().set_fg(LColor(text_color_[0] + 0.1f, text_color_[1] + 0.1f,
         text_color_[2] + 0.1f, 1.0f));
 }
 
 void LabeledCheckbox::on_node_leave()
 {
-    text_->get_node().set_fg(LColorf(text_color_[0], text_color_[1], text_color_[2], 1.0f));
+    text_->get_node().set_fg(LColor(text_color_[0], text_color_[1], text_color_[2], 1.0f));
 }
 
 }

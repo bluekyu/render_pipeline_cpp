@@ -66,7 +66,7 @@ TextNode::TextNode(
     PT(::TextNode) node = new ::TextNode("FTN");
     node->set_text(text);
     node->set_align(text_align_map.at(align));
-    node->set_text_color(LColorf(color, 1.0f));
+    node->set_text_color(LColor(color, 1.0f));
 
     if (parent.is_empty())
         parent = Globals::base->get_aspect_2d();

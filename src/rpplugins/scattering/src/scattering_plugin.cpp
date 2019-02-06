@@ -118,14 +118,14 @@ void ScatteringPlugin::on_shader_reload()
 
 LVecBase3f ScatteringPlugin::get_sun_vector() const
 {
-    float sun_altitude = get_daytime_setting("sun_altitude").first[0];
-    float sun_azimuth = get_daytime_setting("sun_azimuth").first[0];
+    auto sun_altitude = get_daytime_setting("sun_altitude").first[0];
+    auto sun_azimuth = get_daytime_setting("sun_azimuth").first[0];
 
-    static const float pi = std::acos(-1);
-    const float theta = (90.0f - sun_altitude) / 180.0f * pi;
-    const float phi = sun_azimuth / 180.0f * pi;
-    const float sin_theta = std::sin(theta);
-    return LVecBase3f(
+    static const PN_stdfloat pi = std::acos(-1);
+    const PN_stdfloat theta = (90.0f - sun_altitude) / 180.0f * pi;
+    const PN_stdfloat phi = sun_azimuth / 180.0f * pi;
+    const PN_stdfloat sin_theta = std::sin(theta);
+    return LVecBase3(
         sin_theta * std::cos(phi),
         sin_theta * std::sin(phi),
         std::cos(theta));

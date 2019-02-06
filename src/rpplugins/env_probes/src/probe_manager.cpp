@@ -42,17 +42,17 @@ void ProbeManager::init()
     _cubemap_storage = rpcore::Image::create_cube_array("EnvmapStorage", _resolution, _max_probes, "RGBA16");
     _cubemap_storage->set_minfilter(SamplerState::FT_linear_mipmap_linear);
     _cubemap_storage->set_magfilter(SamplerState::FT_linear);
-    _cubemap_storage->set_clear_color(LColorf(1.0f, 0.0f, 0.1f, 1.0f));
+    _cubemap_storage->set_clear_color(LColor(1.0f, 0.0f, 0.1f, 1.0f));
     _cubemap_storage->clear_image();
 
     // Storage for the diffuse component
     _diffuse_storage = rpcore::Image::create_cube_array("EnvmapDiffStorage", _diffuse_resolution, _max_probes, "RGBA16");
-    _diffuse_storage->set_clear_color(LColorf(1.0f, 0.0f, 0.2f, 1.0f));
+    _diffuse_storage->set_clear_color(LColor(1.0f, 0.0f, 0.2f, 1.0f));
     _diffuse_storage->clear_image();
 
     // Data-storage to store all cubemap properties
     _dataset_storage = rpcore::Image::create_buffer("EnvmapData", _max_probes * 5, "RGBA32");
-    _dataset_storage->set_clear_color(LColorf(0));
+    _dataset_storage->set_clear_color(LColor(0));
     _dataset_storage->clear_image();
 }
 

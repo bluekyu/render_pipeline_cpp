@@ -68,8 +68,8 @@ Checkbox::Checkbox(NodePath parent, float x, float y, const std::function<void(b
     node_options->checkbox_command = std::bind(&Checkbox::update_status, this, std::placeholders::_1);
 
     node_ = new rppanda::DirectCheckBox(parent, node_options);
-    node_->set_frame_color(LColorf(0));
-    node_->set_frame_size(LVecBase4f(-2.6f, 2.0f + expand_width / 7.5f, -2.35f, 2.5f));
+    node_->set_frame_color(LColor(0));
+    node_->set_frame_size(LVecBase4(-2.6f, 2.0f + expand_width / 7.5f, -2.35f, 2.5f));
     node_->set_transparency(TransparencyAttrib::M_alpha);
 
     callback_ = callback;

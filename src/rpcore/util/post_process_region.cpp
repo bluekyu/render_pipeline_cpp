@@ -36,7 +36,7 @@ std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* inter
     return std::make_unique<PostProcessRegion>(internal_buffer, use_point);
 }
 
-std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point)
+std::unique_ptr<PostProcessRegion> PostProcessRegion::make(GraphicsOutput* internal_buffer, const LVecBase4& dimensions, bool use_point)
 {
     return std::make_unique<PostProcessRegion>(internal_buffer, dimensions, use_point);
 }
@@ -54,7 +54,7 @@ PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, bool use_p
     init_function_pointers();
 }
 
-PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4f& dimensions, bool use_point)
+PostProcessRegion::PostProcessRegion(GraphicsOutput* internal_buffer, const LVecBase4& dimensions, bool use_point)
 {
     region_ = internal_buffer->make_display_region(dimensions);
     node = NodePath("RTRoot");

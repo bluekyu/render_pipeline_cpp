@@ -80,14 +80,14 @@ DirectButton::DirectButton(PGItem* gui_item, NodePath parent, const std::shared_
     // Now apply the scale.
     if (!press_effect_np.is_empty())
     {
-        const LVecBase4& bounds = get_bounds();
-        float center_x = (bounds[0] + bounds[1]) / 2.0f;
-        float center_y = (bounds[2] + bounds[3]) / 2.0f;
+        const auto& bounds = get_bounds();
+        const auto center_x = (bounds[0] + bounds[1]) / 2.0f;
+        const auto center_y = (bounds[2] + bounds[3]) / 2.0f;
 
         // Make a matrix that scales about the point
-        const LMatrix4f& mat = LMatrix4f::translate_mat(-center_x, 0, -center_y) *
-            LMatrix4f::scale_mat(0.98f) *
-            LMatrix4f::translate_mat(center_x, 0, center_y);
+        const auto& mat = LMatrix4::translate_mat(-center_x, 0, -center_y) *
+            LMatrix4::scale_mat(0.98f) *
+            LMatrix4::translate_mat(center_x, 0, center_y);
         press_effect_np.set_mat(mat);
     }
 }

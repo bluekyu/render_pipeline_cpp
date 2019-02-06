@@ -57,7 +57,7 @@ public:
 
     void request_focus(const LVecBase3& focus_point, PN_stdfloat focus_size);
 
-    LMatrix4f get_mvp() const;
+    LMatrix4 get_mvp() const;
 
     void set_resolution(int resolution);
     void set_sun_vector(const LVecBase3& sun_vector);

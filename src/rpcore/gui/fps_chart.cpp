@@ -48,7 +48,7 @@ void FPSChart::create_components()
 {
     // Create the buffer which stores the last FPS values
     storage_buffer_ = Image::create_buffer("FPSValues", 250, "R16");
-    storage_buffer_->set_clear_color(LColorf(0));
+    storage_buffer_->set_clear_color(LColor(0));
     storage_buffer_->clear_image();
 
     store_index_ = PTA_int::empty_array(1);
@@ -62,7 +62,7 @@ void FPSChart::create_components()
 
     // Create the texture where the gui component is rendered inside
     display_tex_ = Image::create_2d("FPSChartRender", 250, 120, "RGBA8");
-    display_tex_->set_clear_color(LColorf(0));
+    display_tex_->set_clear_color(LColor(0));
     display_tex_->clear_image();
 
     display_img_ = std::make_unique<Sprite>(display_tex_->get_texture(), 250, 120, node_, 10, 10);

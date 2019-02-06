@@ -59,22 +59,22 @@ public:
     void set_border_smoothness(float border_smoothness);
 
     /** Sets the probe position. */
-    void set_pos(const LVecBase3f& pos);
+    void set_pos(const LVecBase3& pos);
 
     /** Sets the probe rotation. */
-    void set_hpr(const LVecBase3f& hpr);
+    void set_hpr(const LVecBase3& hpr);
 
     /** Sets the probe scale. */
-    void set_scale(const LVecBase3f& scale);
+    void set_scale(const LVecBase3& scale);
 
     /** Sets the probes matrix, overrides all other transforms. */
-    void set_mat(const LMatrix4f& matrix);
+    void set_mat(const LMatrix4& matrix);
 
     /** Updates the spheres bounds. */
     void update_bounds();
 
     /** Returns the matrix of the probe. */
-    const LMatrix4f& get_matrix() const;
+    const LMatrix4& get_matrix() const;
 
     /** Writes the probe to a given byte buffer. */
     void write_to_buffer(PTA_uchar& buffer_ptr);
@@ -89,25 +89,25 @@ private:
     float _border_smoothness = 0.1f;
 };
 
-inline void EnvironmentProbe::set_pos(const LVecBase3f& pos)
+inline void EnvironmentProbe::set_pos(const LVecBase3& pos)
 {
     _transform = _transform->set_pos(pos);
     update_bounds();
 }
 
-inline void EnvironmentProbe::set_hpr(const LVecBase3f& hpr)
+inline void EnvironmentProbe::set_hpr(const LVecBase3& hpr)
 {
     _transform = _transform->set_hpr(hpr);
     update_bounds();
 }
 
-inline void EnvironmentProbe::set_scale(const LVecBase3f& scale)
+inline void EnvironmentProbe::set_scale(const LVecBase3& scale)
 {
     _transform = _transform->set_scale(scale);
     update_bounds();
 }
 
-inline void EnvironmentProbe::set_mat(const LMatrix4f& matrix)
+inline void EnvironmentProbe::set_mat(const LMatrix4& matrix)
 {
     _transform = TransformState::make_mat(matrix);
     update_bounds();
@@ -116,14 +116,14 @@ inline void EnvironmentProbe::set_mat(const LMatrix4f& matrix)
 inline void EnvironmentProbe::update_bounds()
 {
     const auto& mat = _transform->get_mat();
-    const LVecBase3f& mid_point = mat.xform_point(LVecBase3f(0, 0, 0));
-    const LVecBase3f& max_point = mat.xform_point(LVecBase3f(1, 1, 1));
-    float radius = (mid_point - max_point).length();
+    const LVecBase3& mid_point = mat.xform_point(LVecBase3(0, 0, 0));
+    const LVecBase3& max_point = mat.xform_point(LVecBase3(1, 1, 1));
+    auto radius = (mid_point - max_point).length();
     _bounds = new BoundingSphere(mid_point, radius);
     _modified = true;
 }
 
-inline const LMatrix4f& EnvironmentProbe::get_matrix() const
+inline const LMatrix4& EnvironmentProbe::get_matrix() const
 {
     return _transform->get_mat();
 }

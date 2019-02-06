@@ -85,7 +85,7 @@ public:
      * Get child matrix relative to other with instancing transform.
      * child.get_mat(instanced_node) * get_transform(instance_index) * instanced_node.get_mat(other)
      */
-    LMatrix4f get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const;
+    LMatrix4 get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const;
 
 private:
     class Impl;

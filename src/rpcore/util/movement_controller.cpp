@@ -114,7 +114,7 @@ AsyncTask::DoneStatus MovementController::Impl::update(MovementController* self)
     const LVecBase3& movement_direction = LVecBase3(movement_[1], movement_[0], 0.0f) * speed_ * delta * 100.0f;
 
     // transform by the camera direction
-    const LQuaternionf camera_quaternion(camera.get_quat(showbase_->get_render()));
+    const LQuaternion camera_quaternion(camera.get_quat(showbase_->get_render()));
     LVecBase3 translated_direction(camera_quaternion.xform(movement_direction));
 
     // z-force is inddpendent of camera direction

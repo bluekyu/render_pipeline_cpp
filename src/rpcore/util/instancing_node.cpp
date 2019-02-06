@@ -107,7 +107,7 @@ void InstancingNode::Impl::upload_transforms()
     }
 
     auto ram_image = buffer_texture_->modify_ram_image();
-    memcpy(ram_image.p(), &transforms_[0], instance_count * sizeof(LMatrix4f));
+    std::memcpy(ram_image.p(), &transforms_[0], instance_count * sizeof(LMatrix4f));
 
     dirty_ = false;
 }
@@ -204,7 +204,7 @@ void InstancingNode::upload_transforms()
     impl_->upload_transforms();
 }
 
-LMatrix4f InstancingNode::get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const
+LMatrix4 InstancingNode::get_matrix_of_child(const NodePath& child, int instance_index, const NodePath& other) const
 {
     return child.get_mat(impl_->instanced_np_) * get_transform(instance_index) * impl_->instanced_np_.get_mat(other);
 }

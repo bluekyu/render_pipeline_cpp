@@ -117,21 +117,21 @@ void BufferViewer::create_components()
     DraggableWindow::create_components();
 
     auto content_frame_options = std::make_shared<rppanda::DirectScrolledFrame::Options>();
-    content_frame_options->frame_size = LVecBase4f(0, width_ - 15, 0, height_ - 70);
-    content_frame_options->canvas_size = LVecBase4f(0, width_ - 80, 0, _scroll_height);
+    content_frame_options->frame_size = LVecBase4(0, width_ - 15, 0, height_ - 70);
+    content_frame_options->canvas_size = LVecBase4(0, width_ - 80, 0, _scroll_height);
     content_frame_options->auto_hide_scroll_bars = false;
     content_frame_options->scroll_bar_width = 12.0f;
-    content_frame_options->frame_color = LColorf(0, 0, 0, 0);
+    content_frame_options->frame_color = LColor(0, 0, 0, 0);
     content_frame_options->vertical_scroll_options->relief = rppanda::DGG_FLAT;
     content_frame_options->vertical_scroll_options->inc_button_options->relief = rppanda::DGG_FLAT;
     content_frame_options->vertical_scroll_options->dec_button_options->relief = rppanda::DGG_FLAT;
     content_frame_options->vertical_scroll_options->thumb_options->relief = rppanda::DGG_FLAT;
-    content_frame_options->vertical_scroll_options->frame_color = LColorf(0.05, 0.05, 0.05, 1);
-    content_frame_options->vertical_scroll_options->thumb_options->frame_color = LColorf(0.8, 0.8, 0.8, 1);
-    content_frame_options->vertical_scroll_options->inc_button_options->frame_color = LColorf(0.6, 0.6, 0.6, 1);
-    content_frame_options->vertical_scroll_options->dec_button_options->frame_color = LColorf(0.6, 0.6, 0.6, 1);
+    content_frame_options->vertical_scroll_options->frame_color = LColor(0.05, 0.05, 0.05, 1);
+    content_frame_options->vertical_scroll_options->thumb_options->frame_color = LColor(0.8, 0.8, 0.8, 1);
+    content_frame_options->vertical_scroll_options->inc_button_options->frame_color = LColor(0.6, 0.6, 0.6, 1);
+    content_frame_options->vertical_scroll_options->dec_button_options->frame_color = LColor(0.6, 0.6, 0.6, 1);
     content_frame_options->horizontal_scroll_options->relief = PGFrameStyle::Type(0);
-    content_frame_options->horizontal_scroll_options->frame_color = LColorf(0);
+    content_frame_options->horizontal_scroll_options->frame_color = LColor(0);
     content_frame_options->horizontal_scroll_options->thumb_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->inc_button_options->relief = PGFrameStyle::Type(0);
     content_frame_options->horizontal_scroll_options->dec_button_options->relief = PGFrameStyle::Type(0);
@@ -156,7 +156,7 @@ void BufferViewer::set_show_images(bool arg)
 void BufferViewer::set_scroll_height(int height)
 {
     _scroll_height = height;
-    _content_frame->set_canvas_size(LVecBase4f(0, width_ - 80.0f, 0, _scroll_height));
+    _content_frame->set_canvas_size(LVecBase4(0, width_ - 80.0f, 0, _scroll_height));
     _content_node.set_z(_scroll_height);
 }
 
@@ -212,12 +212,12 @@ void BufferViewer::perform_update()
 
 void BufferViewer::on_texture_hovered(rppanda::DirectFrame* hover_frame)
 {
-    hover_frame->set_frame_color(LColorf(0, 0, 0, 0.1f));
+    hover_frame->set_frame_color(LColor(0, 0, 0, 0.1f));
 }
 
 void BufferViewer::on_texture_blurred(rppanda::DirectFrame* hover_frame)
 {
-    hover_frame->set_frame_color(LColorf(0, 0, 0, 0.0f));
+    hover_frame->set_frame_color(LColor(0, 0, 0, 0.0f));
 }
 
 void BufferViewer::on_texture_clicked(Texture* tex_handle)
@@ -270,8 +270,8 @@ void BufferViewer::render_stages()
         stage_name = parts.back();
 
         auto df_options = std::make_shared<rppanda::DirectFrame::Options>();
-        df_options->frame_size = LVecBase4f(7, entry_width - 17, -7, -entry_height + 17);
-        df_options->frame_color = LColorf(rgb, 1.0f);
+        df_options->frame_size = LVecBase4(7, entry_width - 17, -7, -entry_height + 17);
+        df_options->frame_color = LColor(rgb, 1.0f);
         df_options->pos = LVecBase3(0, 0, 0);
         PT(rppanda::DirectFrame) df = new rppanda::DirectFrame(node, df_options);
 

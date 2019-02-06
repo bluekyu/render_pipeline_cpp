@@ -63,7 +63,7 @@ public:
     const std::vector<Filename>& get_dropped_files() const;
 
     /** Get mouse position when files are dropped. */
-    const LVecBase2f& get_dropped_point() const;
+    const LVecBase2& get_dropped_point() const;
 
 private:
     void on_load() override;
@@ -89,7 +89,7 @@ private:
     std::unique_ptr<WindowProc> window_proc_;
     bool enable_file_drop_ = false;
     std::vector<Filename> dropped_files_;
-    LVecBase2f dropped_point_;
+    LVecBase2 dropped_point_;
 
     ImGuiContext* context_ = nullptr;
 
@@ -126,7 +126,7 @@ inline const std::vector<Filename>& ImGuiPlugin::get_dropped_files() const
     return dropped_files_;
 }
 
-inline const LVecBase2f& ImGuiPlugin::get_dropped_point() const
+inline const LVecBase2& ImGuiPlugin::get_dropped_point() const
 {
     return dropped_point_;
 }
