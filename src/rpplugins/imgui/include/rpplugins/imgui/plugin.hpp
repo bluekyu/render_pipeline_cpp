@@ -24,19 +24,12 @@
 
 #pragma once
 
-#include <asyncTask.h>
-
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-class Texture;
-class ButtonMap;
-
 struct ImGuiContext;
 
-namespace rppanda {
-class FunctionalTask;
-}
+class Panda3DImGui;
 
 namespace rpplugins {
 
@@ -56,14 +49,14 @@ public:
 
     RENDER_PIPELINE_PLUGIN_DOWNCAST();
 
-    ImGuiContext* get_context() const;
-    NodePath get_root() const;
+    virtual ImGuiContext* get_context() const;
+    virtual NodePath get_root() const;
 
     /** Get dropped files. */
-    const std::vector<Filename>& get_dropped_files() const;
+    virtual const std::vector<Filename>& get_dropped_files() const;
 
     /** Get mouse position when files are dropped. */
-    const LVecBase2& get_dropped_point() const;
+    virtual const LVecBase2& get_dropped_point() const;
 
 private:
     void on_load() override;
@@ -72,63 +65,11 @@ private:
 
     void setup_context(const Event* ev);
 
-    void setup_geom();
-    NodePath create_geomnode(const GeomVertexData* vdata);
-    void setup_font();
-    void setup_shader();
-    void setup_event();
-
-    AsyncTask::DoneStatus new_frame_imgui(rppanda::FunctionalTask* task);
-    void update_imgui();
-    AsyncTask::DoneStatus render_imgui(rppanda::FunctionalTask* task);
-
-    void on_button_down_or_up(const Event* ev, bool down);
-    void on_keystroke(const Event* ev);
-
-    class WindowProc;
-    std::unique_ptr<WindowProc> window_proc_;
-    bool enable_file_drop_ = false;
-    std::vector<Filename> dropped_files_;
-    LVecBase2 dropped_point_;
-
-    ImGuiContext* context_ = nullptr;
-
-    NodePath root_;
-    PT(Texture) font_texture_;
-    PT(ButtonMap) button_map_;
-
-    CPT(GeomVertexFormat) vformat_;
-
-    struct GeomList
-    {
-        PT(GeomVertexData) vdata;           // vertex data shared among the below GeomNodes
-        std::vector<NodePath> nodepaths;
-    };
-    std::vector<GeomList> geom_data_;
+    void setup_button();
 
     static RequrieType require_plugins_;
+
+    std::unique_ptr<Panda3DImGui> p3d_imgui_;
 };
-
-// ************************************************************************************************
-
-inline ImGuiContext* ImGuiPlugin::get_context() const
-{
-    return context_;
-}
-
-inline NodePath ImGuiPlugin::get_root() const
-{
-    return root_;
-}
-
-inline const std::vector<Filename>& ImGuiPlugin::get_dropped_files() const
-{
-    return dropped_files_;
-}
-
-inline const LVecBase2& ImGuiPlugin::get_dropped_point() const
-{
-    return dropped_point_;
-}
 
 }

@@ -32,6 +32,9 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # === target =======================================================================================
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 include("../rpplugins_build.cmake")
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${PROJECT_SOURCE_DIR}/thirdparty/panda3d_imgui/panda3d_imgui"
+)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem
