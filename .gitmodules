@@ -1,0 +1,3 @@
+[submodule "src/rpplugins/imgui/thirdparty/panda3d_imgui"]
+	path = src/rpplugins/imgui/thirdparty/panda3d_imgui
+	url = https://github.com/bluekyu/panda3d_imgui
