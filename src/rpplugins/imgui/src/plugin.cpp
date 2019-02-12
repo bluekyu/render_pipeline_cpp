@@ -166,8 +166,6 @@ void ImGuiPlugin::setup_context(const Event* ev)
 
 void ImGuiPlugin::setup_button()
 {
-    ImGuiIO& io = ImGui::GetIO();
-
     if (auto bt = rpcore::Globals::base->get_button_thrower())
     {
         ButtonThrower* bt_node = DCAST(ButtonThrower, bt.node());
