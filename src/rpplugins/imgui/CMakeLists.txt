@@ -44,4 +44,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 # === install ======================================================================================
 include("../rpplugins_install.cmake")
+
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/thirdparty/panda3d_imgui/panda3d_imgui/shader"
+    DESTINATION ${RPPLUGINS_INSTALL_DIR}
+)
 # ==================================================================================================

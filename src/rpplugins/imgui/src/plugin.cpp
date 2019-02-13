@@ -93,7 +93,7 @@ void ImGuiPlugin::on_load()
 
     p3d_imgui_->setup_geom();
 
-    p3d_imgui_->setup_shader(rpcore::RPLoader::load_shader({ get_shader_resource("imgui.vert.glsl"), get_shader_resource("imgui.frag.glsl") }));
+    p3d_imgui_->setup_shader(rpcore::RPLoader::load_shader({ get_shader_resource("panda3d_imgui.vert.glsl"), get_shader_resource("panda3d_imgui.frag.glsl") }));
 
     auto default_font_path = rppanda::convert_path(Filename(boost::any_cast<std::string>(get_setting("default_font_path"))));
     if (boost::filesystem::exists(default_font_path))
