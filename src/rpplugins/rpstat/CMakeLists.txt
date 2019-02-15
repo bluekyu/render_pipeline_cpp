@@ -38,6 +38,11 @@ include(${${PROJECT_NAME}_MACRO_CMAKE_FILE} OPTIONAL)
 # === target =======================================================================================
 include("${PROJECT_SOURCE_DIR}/files.cmake")
 include("../rpplugins_build.cmake")
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    # used for GUI plugin postfix.
+    $<$<CONFIG:Debug>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${render_pipeline_DEBUG_POSTFIX}">
+    $<$<CONFIG:RelWithDebInfo>:RENDER_PIPELINE_BUILD_CFG_POSTFIX="${render_pipeline_RELWITHDEBINFO_POSTFIX}">
+)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     $<$<NOT:$<BOOL:${Boost_USE_STATIC_LIBS}>>:Boost::dynamic_linking>
     Boost::filesystem
