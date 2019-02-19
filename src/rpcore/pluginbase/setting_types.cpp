@@ -160,11 +160,11 @@ void BaseType::add_defines(const std::string& plugin_id, const std::string& sett
 template <>
 TemplatedType<int>::TemplatedType(YAML::Node& data): BaseType(data)
 {
-    default_ = data["default"].as<int>();
+    default_ = data["default"].as<ValueType>();
     data.remove("default");
     _value = default_;
 
-    const std::vector<int>& setting_range = data["range"].as<std::vector<int>>();
+    const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
     _minval = setting_range[0];
     _maxval = setting_range[1];
     data.remove("range");
@@ -173,17 +173,17 @@ TemplatedType<int>::TemplatedType(YAML::Node& data): BaseType(data)
 template <>
 void TemplatedType<int>::set_value(const YAML::Node& value)
 {
-    set_value(value.as<int>());
+    set_value(value.as<ValueType>());
 }
 
 template <>
 TemplatedType<float>::TemplatedType(YAML::Node& data): BaseType(data)
 {
-    default_ = data["default"].as<float>();
+    default_ = data["default"].as<ValueType>();
     data.remove("default");
     _value = default_;
 
-    const std::vector<float>& setting_range = data["range"].as<std::vector<float>>();
+    const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
     _minval = setting_range[0];
     _maxval = setting_range[1];
     data.remove("range");
@@ -192,13 +192,13 @@ TemplatedType<float>::TemplatedType(YAML::Node& data): BaseType(data)
 template <>
 void TemplatedType<float>::set_value(const YAML::Node& value)
 {
-    set_value(value.as<float>());
+    set_value(value.as<ValueType>());
 }
 
 // ************************************************************************************************
 BoolType::BoolType(YAML::Node& data): BaseType(data)
 {
-    default_ = data["default"].as<bool>();
+    default_ = data["default"].as<ValueType>();
     data.remove("default");
 
     _value = default_;
@@ -226,10 +226,10 @@ void BoolType::set_value(const std::string& value)
 // ************************************************************************************************
 EnumType::EnumType(YAML::Node& data): BaseType(data)
 {
-    _values = data["values"].as<std::vector<std::string>>();
+    _values = data["values"].as<std::vector<ValueType>>();
     data.remove("values");
 
-    default_ = data["default"].as<std::string>();
+    default_ = data["default"].as<ValueType>();
     data.remove("default");
 
     if (std::find(_values.begin(), _values.end(), get_default_as_type()) == _values.end())
@@ -240,10 +240,10 @@ EnumType::EnumType(YAML::Node& data): BaseType(data)
 
 void EnumType::set_value(const YAML::Node& value)
 {
-    set_value(value.as<std::string>());
+    set_value(value.as<ValueType>());
 }
 
-void EnumType::set_value(const std::string& value)
+void EnumType::set_value(const ValueType& value)
 {
     if (std::find(_values.begin(), _values.end(), value) == _values.end())
     {
@@ -256,7 +256,7 @@ void EnumType::set_value(const std::string& value)
 void EnumType::add_defines(const std::string& plugin_id,
     const std::string& setting_id, StageManager::DefinesType& defines) const
 {
-    auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const std::string&>(_value)));
+    auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const ValueType&>(_value)));
     defines[plugin_id + "_" + setting_id] = std::to_string(1000 + index);
 
     for (size_t i=0, i_end=_values.size(); i < i_end; ++i)
@@ -291,9 +291,9 @@ void SampleSequenceType::set_value(const YAML::Node& value)
     set_value(value.as<std::string>());
 }
 
-std::vector<std::string> SampleSequenceType::get_sequences() const
+auto SampleSequenceType::get_sequences() const -> std::vector<ValueType>
 {
-    std::vector<std::string> result;
+    std::vector<ValueType> result;
     if (dimension_ == 2)
     {
         for (const auto& dim: POISSON_2D_SIZES)

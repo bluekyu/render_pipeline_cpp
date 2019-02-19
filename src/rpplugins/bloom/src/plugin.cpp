@@ -23,7 +23,6 @@
 #include "plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/image.hpp>
@@ -44,8 +43,8 @@ void Plugin::on_stage_setup()
     bloom_stage_ = bloom_stage.get();
     add_stage(std::move(bloom_stage));
 
-    bloom_stage_->set_num_mips(boost::any_cast<int>(get_setting("num_mipmaps")));
-    bloom_stage_->set_remove_fireflies(boost::any_cast<bool>(get_setting("remove_fireflies")));
+    bloom_stage_->set_num_mips(get_setting<rpcore::IntType>("num_mipmaps"));
+    bloom_stage_->set_remove_fireflies(get_setting<rpcore::BoolType>("remove_fireflies"));
 }
 
 void Plugin::on_pipeline_created()

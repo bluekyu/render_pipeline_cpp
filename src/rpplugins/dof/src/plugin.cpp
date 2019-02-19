@@ -23,7 +23,6 @@
 #include "plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/loader.hpp>
 

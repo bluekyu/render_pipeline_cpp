@@ -25,7 +25,6 @@
 #include <functional>
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
@@ -90,7 +89,7 @@ void VXGIPlugin::Impl::set_grid_pos()
     LPoint3 grid_pos = rpcore::Globals::base->get_cam().get_pos(rpcore::Globals::base->get_render());
 
     // Snap the voxel grid
-    const float voxel_size = 2.0 * boost::any_cast<float>(self_.get_setting("grid_ws_size")) / boost::any_cast<int>(self_.get_setting("grid_resolution"));
+    const float voxel_size = 2.0 * self_.get_setting<rpcore::FloatType>("grid_ws_size") / self_.get_setting<rpcore::IntType>("grid_resolution");
     const float snap_size = voxel_size * (2 * 2 * 2 * 2);
 
     for (int dimension = 0; dimension < 3; ++dimension)
@@ -142,8 +141,8 @@ void VXGIPlugin::on_stage_setup()
 
     add_stage(std::make_unique<VXGIStage>(pipeline_));
 
-    impl_->voxel_stage_->set_voxel_resolution(boost::any_cast<int>(get_setting("grid_resolution")));
-    impl_->voxel_stage_->set_voxel_world_size(boost::any_cast<float>(get_setting("grid_ws_size")));
+    impl_->voxel_stage_->set_voxel_resolution(get_setting<rpcore::IntType>("grid_resolution"));
+    impl_->voxel_stage_->set_voxel_world_size(get_setting<rpcore::FloatType>("grid_ws_size"));
 
     if (is_plugin_enabled("pssm"))
     {

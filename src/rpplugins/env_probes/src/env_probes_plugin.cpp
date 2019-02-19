@@ -23,7 +23,6 @@
 #include "rpplugins/env_probes/env_probes_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <displayRegion.h>
 #include <nodePathCollection.h>
@@ -89,9 +88,9 @@ EnvProbesPlugin::RequrieType& EnvProbesPlugin::get_required_plugins() const
 void EnvProbesPlugin::Impl::on_stage_setup()
 {
     probe_mgr_ = std::make_unique<ProbeManager>();
-    probe_mgr_->set_resolution(boost::any_cast<int>(self_.get_setting("probe_resolution")));
-    probe_mgr_->set_diffuse_resolution(boost::any_cast<int>(self_.get_setting("diffuse_probe_resolution")));
-    probe_mgr_->set_max_probes(boost::any_cast<int>(self_.get_setting("max_probes")));
+    probe_mgr_->set_resolution(self_.get_setting<rpcore::IntType>("probe_resolution"));
+    probe_mgr_->set_diffuse_resolution(self_.get_setting<rpcore::IntType>("diffuse_probe_resolution"));
+    probe_mgr_->set_max_probes(self_.get_setting<rpcore::IntType>("max_probes"));
     probe_mgr_->init();
 
     setup_stages();

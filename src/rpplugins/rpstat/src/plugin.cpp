@@ -26,7 +26,6 @@
 
 #include <boost/dll/alias.hpp>
 #include <boost/dll/import.hpp>
-#include <boost/any.hpp>
 
 #include <fmt/ostream.h>
 

@@ -23,7 +23,6 @@
 #include "smaa_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <lens.h>
 #include <texture.h>
@@ -77,7 +76,7 @@ void SMAAPlugin::Impl::on_pre_render_update()
     // Apply jitter for temporal aa
     if (smaa_stage_->use_reprojection())
     {
-        float jitter_scale = boost::any_cast<float>(self_.get_setting("jitter_amount"));
+        float jitter_scale = self_.get_setting<rpcore::FloatType>("jitter_amount");
         const LVecBase2 jitter = jitters_[jitter_index_] * jitter_scale;
 
         rpcore::Globals::base->get_cam_lens()->set_film_offset(jitter);
@@ -98,7 +97,7 @@ void SMAAPlugin::Impl::compute_jitters()
     // Reduce jittering to 35% to avoid flickering
     scale *= 0.35f;
 
-    for (const LVecBase2& xy: JITTERS.at(boost::any_cast<std::string>(self_.get_setting("jitter_pattern"))))
+    for (const LVecBase2& xy: JITTERS.at(self_.get_setting<rpcore::EnumType>("jitter_pattern")))
     {
         jitters_.push_back((xy * 2 - 1) * scale * 0.5f);
     }
@@ -123,7 +122,7 @@ void SMAAPlugin::Impl::load_textures()
 
 size_t SMAAPlugin::Impl::get_history_length() const
 {
-    if (boost::any_cast<bool>(self_.get_setting("use_reprojection")))
+    if (self_.get_setting<rpcore::BoolType>("use_reprojection"))
         return jitters_.size();
     return 1;
 }
@@ -146,7 +145,7 @@ SMAAPlugin::RequrieType& SMAAPlugin::get_required_plugins() const
 
 void SMAAPlugin::on_stage_setup()
 {
-    const bool use_reprojection = boost::any_cast<bool>(get_setting("use_reprojection"));
+    const bool use_reprojection = get_setting<rpcore::BoolType>("use_reprojection");
     if (use_reprojection)
         impl_->compute_jitters();
 

@@ -23,7 +23,6 @@
 #include "plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/image.hpp>
@@ -54,14 +53,14 @@ void Plugin::on_stage_setup()
     tonemapping_stage_ = tonemapping_stage.get();
     add_stage(std::move(tonemapping_stage));
 
-    if (boost::any_cast<bool>(get_setting("use_sharpen")))
+    if (get_setting<rpcore::BoolType>("use_sharpen"))
     {
         auto sharpen_stage = std::make_unique<SharpenStage>(pipeline_);
-        sharpen_stage->set_sharpen_twice(boost::any_cast<bool>(get_setting("sharpen_twice")));
+        sharpen_stage->set_sharpen_twice(get_setting<rpcore::BoolType>("sharpen_twice"));
         add_stage(std::move(sharpen_stage));
     }
 
-    if (boost::any_cast<bool>(get_setting("manual_camera_parameters")))
+    if (get_setting<rpcore::BoolType>("manual_camera_parameters"))
     {
         auto exposure_stage_manual = std::make_unique<ManualExposureStage>(pipeline_);
         add_stage(std::move(exposure_stage_manual));
@@ -75,7 +74,7 @@ void Plugin::on_stage_setup()
 
 void Plugin::load_lut()
 {
-    std::string lut_path = get_resource(boost::any_cast<const std::string&>(get_setting("color_lut")));
+    std::string lut_path = get_resource(get_setting<rpcore::PathType>("color_lut"));
     PT(Texture) lut = rpcore::RPLoader::load_sliced_3d_texture(lut_path, 64);
     lut->set_wrap_u(SamplerState::WM_clamp);
     lut->set_wrap_v(SamplerState::WM_clamp);

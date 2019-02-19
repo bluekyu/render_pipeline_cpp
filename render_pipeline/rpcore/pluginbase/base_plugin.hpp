@@ -32,6 +32,7 @@
 
 #include <render_pipeline/rpcore/version.hpp>
 #include <render_pipeline/rpcore/rpobject.hpp>
+#include <render_pipeline/rpcore/pluginbase/setting_types.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_setting_types.hpp>
 
 // ************************************************************************************************
@@ -51,8 +52,6 @@
 
 namespace boost {
 
-class any;
-
 namespace dll {
 class shared_library;
 }
@@ -63,7 +62,6 @@ namespace rpcore {
 
 class RenderPipeline;
 class RenderStage;
-class BaseType;
 
 class RENDER_PIPELINE_DECL BasePlugin : public RPObject
 {
@@ -118,7 +116,9 @@ public:
 
     void add_stage(std::unique_ptr<RenderStage> stage);
 
-    const boost::any& get_setting(const std::string& setting_id, const std::string& plugin_id="") const;
+    template <class T>
+    auto get_setting(const std::string& setting_id, const std::string& plugin_id = "") const;
+
     BaseType* get_setting_handle(const std::string& setting_id, const std::string& plugin_id = "");
     const BaseType* get_setting_handle(const std::string& setting_id, const std::string& plugin_id = "") const;
 
@@ -189,6 +189,12 @@ private:
 inline const std::string& BasePlugin::get_plugin_id() const
 {
     return plugin_id_;
+}
+
+template <class T>
+inline auto BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
+{
+    return static_cast<const T*>(get_setting_handle(setting_id, plugin_id)->downcast())->get_value_as_type();
 }
 
 }

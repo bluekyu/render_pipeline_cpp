@@ -90,11 +90,6 @@ void BasePlugin::add_stage(std::unique_ptr<RenderStage> stage)
     impl_->assigned_stages_.push_back(std::move(stage));
 }
 
-const boost::any& BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
-{
-    return get_setting_handle(setting_id, plugin_id)->get_value();
-}
-
 BaseType* BasePlugin::get_setting_handle(const std::string& setting_id, const std::string& plugin_id)
 {
     return pipeline_.get_plugin_mgr()->get_setting_handle(plugin_id.empty() ? plugin_id_ : plugin_id, setting_id);

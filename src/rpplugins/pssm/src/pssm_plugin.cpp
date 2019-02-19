@@ -23,7 +23,6 @@
 #include "../include/pssm_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <displayRegion.h>
 
@@ -96,7 +95,7 @@ void PSSMPlugin::Impl::on_pre_render_update()
         scene_shadow_stage_->set_active(false);
         pssm_stage_->set_render_shadows(false);
 
-        if (boost::any_cast<bool>(self_.get_setting("use_distant_shadows")))
+        if (self_.get_setting<rpcore::BoolType>("use_distant_shadows"))
             dist_shadow_stage_->set_active(false);
 
         // Return, no need to update the pssm splits
@@ -108,7 +107,7 @@ void PSSMPlugin::Impl::on_pre_render_update()
         scene_shadow_stage_->set_active(true);
         pssm_stage_->set_render_shadows(true);
 
-        if (boost::any_cast<bool>(self_.get_setting("use_distant_shadows")))
+        if (self_.get_setting<rpcore::BoolType>("use_distant_shadows"))
             dist_shadow_stage_->set_active(true);
     }
 
@@ -126,7 +125,7 @@ void PSSMPlugin::Impl::on_pre_render_update()
 
         scene_shadow_stage_->set_sun_vector(sun_vector);
 
-        if (boost::any_cast<bool>(self_.get_setting("use_distant_shadows")))
+        if (self_.get_setting<rpcore::BoolType>("use_distant_shadows"))
             dist_shadow_stage_->set_sun_vector(sun_vector);
     }
 }
@@ -158,22 +157,22 @@ void PSSMPlugin::on_stage_setup()
     impl_->pssm_stage_ = pssm_stage.get();
     add_stage(std::move(pssm_stage));
 
-    impl_->shadow_stage_->set_num_splits(boost::any_cast<int>(get_setting("split_count")));
-    impl_->shadow_stage_->set_split_resolution(boost::any_cast<int>(get_setting("resolution")));
+    impl_->shadow_stage_->set_num_splits(get_setting<rpcore::IntType>("split_count"));
+    impl_->shadow_stage_->set_split_resolution(get_setting<rpcore::IntType>("resolution"));
 
     auto scene_shadow_stage = std::make_unique<PSSMSceneShadowStage>(pipeline_);
     impl_->scene_shadow_stage_ = scene_shadow_stage.get();
     add_stage(std::move(scene_shadow_stage));
 
-    impl_->scene_shadow_stage_->set_resolution(boost::any_cast<int>(get_setting("scene_shadow_resolution")));
-    impl_->scene_shadow_stage_->set_sun_distance(boost::any_cast<float>(get_setting("scene_shadow_sundist")));
+    impl_->scene_shadow_stage_->set_resolution(get_setting<rpcore::IntType>("scene_shadow_resolution"));
+    impl_->scene_shadow_stage_->set_sun_distance(get_setting<rpcore::FloatType>("scene_shadow_sundist"));
 
-    if (boost::any_cast<bool>(get_setting("use_distant_shadows")))
+    if (get_setting<rpcore::BoolType>("use_distant_shadows"))
     {
         auto dist_shadow_stage = std::make_unique<PSSMDistShadowStage>(pipeline_);
-        dist_shadow_stage->set_resolution(boost::any_cast<int>(get_setting("dist_shadow_resolution")));
-        dist_shadow_stage->set_clip_size(boost::any_cast<float>(get_setting("dist_shadow_clipsize")));
-        dist_shadow_stage->set_sun_distance(boost::any_cast<float>(get_setting("dist_shadow_sundist")));
+        dist_shadow_stage->set_resolution(get_setting<rpcore::IntType>("dist_shadow_resolution"));
+        dist_shadow_stage->set_clip_size(get_setting<rpcore::FloatType>("dist_shadow_clipsize"));
+        dist_shadow_stage->set_sun_distance(get_setting<rpcore::FloatType>("dist_shadow_sundist"));
 
         impl_->dist_shadow_stage_ = dist_shadow_stage.get();
         add_stage(std::move(dist_shadow_stage));
@@ -191,17 +190,17 @@ void PSSMPlugin::on_pipeline_created()
     impl_->node_ = rpcore::Globals::base->get_render().attach_new_node("PSSMCameraRig");
     impl_->node_.hide();
 
-    const int split_count = boost::any_cast<int>(get_setting("split_count"));
+    const int split_count = get_setting<rpcore::IntType>("split_count");
 
     // Construct the actual PSSM rig
     impl_->camera_rig_ = std::make_unique<rpcore::PSSMCameraRig>(split_count);
-    impl_->camera_rig_->set_sun_distance(boost::any_cast<float>(get_setting("sun_distance")));
-    impl_->camera_rig_->set_pssm_distance(boost::any_cast<float>(get_setting("max_distance")));
-    impl_->camera_rig_->set_logarithmic_factor(boost::any_cast<float>(get_setting("logarithmic_factor")));
-    impl_->camera_rig_->set_border_bias(boost::any_cast<float>(get_setting("border_bias")));
+    impl_->camera_rig_->set_sun_distance(get_setting<rpcore::FloatType>("sun_distance"));
+    impl_->camera_rig_->set_pssm_distance(get_setting<rpcore::FloatType>("max_distance"));
+    impl_->camera_rig_->set_logarithmic_factor(get_setting<rpcore::FloatType>("logarithmic_factor"));
+    impl_->camera_rig_->set_border_bias(get_setting<rpcore::FloatType>("border_bias"));
     impl_->camera_rig_->set_use_stable_csm(true);
     impl_->camera_rig_->set_use_fixed_film_size(true);
-    impl_->camera_rig_->set_resolution(boost::any_cast<int>(get_setting("resolution")));
+    impl_->camera_rig_->set_resolution(get_setting<rpcore::IntType>("resolution"));
     impl_->camera_rig_->reparent_to(impl_->node_);
 
     // Attach the cameras to the shadow stage
@@ -236,7 +235,7 @@ void PSSMPlugin::on_pipeline_created()
     }
 
     // setup callback
-    setting_changed_callbacks_.emplace("max_distance", [this]() { impl_->camera_rig_->set_pssm_distance(boost::any_cast<float>(get_setting("max_distance"))); });
+    setting_changed_callbacks_.emplace("max_distance", [this]() { impl_->camera_rig_->set_pssm_distance(get_setting<rpcore::FloatType>("max_distance")); });
 }
 
 void PSSMPlugin::on_pre_render_update()

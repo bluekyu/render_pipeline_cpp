@@ -22,10 +22,10 @@
 
 #include "plugin.hpp"
 
-#include <boost/any.hpp>
 #include <boost/dll/alias.hpp>
 
 #include <render_pipeline/rpcore/stages/ambient_stage.hpp>
+#include <render_pipeline/rpcore/pluginbase/setting_types.hpp>
 
 RENDER_PIPELINE_PLUGIN_CREATOR(rpplugins::Plugin)
 
@@ -48,7 +48,7 @@ void Plugin::on_stage_setup()
 {
     auto stage = std::make_unique<AOStage>(pipeline_);
 
-    stage->set_quality(boost::any_cast<std::string>(get_setting("blur_quality")));
+    stage->set_quality(get_setting<rpcore::EnumType>("blur_quality"));
 
     add_stage(std::move(stage));
 

@@ -23,7 +23,6 @@
 #include "../include/volumetrics_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include "../include/volumetrics_stage.hpp"
 
@@ -56,9 +55,9 @@ void VolumentricsPlugin::on_stage_setup()
     impl_->stage_ = stage.get();
     add_stage(std::move(stage));
 
-    impl_->stage_->set_enable_volumetric_shadows(boost::any_cast<bool>(get_setting("enable_volumetric_shadows")));
+    impl_->stage_->set_enable_volumetric_shadows(get_setting<rpcore::BoolType>("enable_volumetric_shadows"));
 
-    if (boost::any_cast<bool>(get_plugin_instance("pssm")->get_setting("use_pcf")))
+    if (get_plugin_instance("pssm")->get_setting<rpcore::BoolType>("use_pcf"))
         impl_->stage_->get_required_pipes().push_back("PSSMShadowAtlasPCF");
     else
         impl_->stage_->get_required_pipes().push_back("PSSMShadowAtlas");

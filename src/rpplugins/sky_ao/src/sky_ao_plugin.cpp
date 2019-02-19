@@ -22,7 +22,6 @@
 
 #include "sky_ao_plugin.hpp"
 
-#include <boost/any.hpp>
 #include <boost/dll/alias.hpp>
 
 #include <render_pipeline/rpcore/stages/ambient_stage.hpp>
@@ -52,9 +51,9 @@ SkyAOPlugin::RequrieType& SkyAOPlugin::get_required_plugins() const
 void SkyAOPlugin::on_stage_setup()
 {
     auto capture_stage = std::make_unique<SkyAOCaptureStage>(pipeline_);
-    capture_stage->set_resolution(boost::any_cast<int>(get_setting("resolution")));
-    capture_stage->set_max_radius(boost::any_cast<float>(get_setting("max_radius")));
-    capture_stage->set_capture_height(boost::any_cast<float>(get_setting("capture_height")));
+    capture_stage->set_resolution(get_setting<rpcore::IntType>("resolution"));
+    capture_stage->set_max_radius(get_setting<rpcore::FloatType>("max_radius"));
+    capture_stage->set_capture_height(get_setting<rpcore::FloatType>("capture_height"));
     add_stage(std::move(capture_stage));
 
     add_stage(std::make_unique<SkyAOStage>(pipeline_));

@@ -23,7 +23,6 @@
 #include "../include/scattering_plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
@@ -82,13 +81,13 @@ void ScatteringPlugin::on_stage_setup()
     impl_->envmap_stage_ = envmap_stage.get();
     add_stage(std::move(envmap_stage));
 
-    if (boost::any_cast<bool>(get_setting("enable_godrays")))
+    if (get_setting<rpcore::BoolType>("enable_godrays"))
     {
         add_stage(std::make_unique<GodrayStage>(pipeline_));
     }
 
     // Load scattering method
-    const std::string method(*boost::any_cast<std::string>(&get_setting("scattering_method")));
+    const std::string method(get_setting<rpcore::EnumType>("scattering_method"));
 
     debug(std::string("Loading scattering method for '") + method + "'");
 

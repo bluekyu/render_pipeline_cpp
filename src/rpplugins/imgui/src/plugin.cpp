@@ -25,7 +25,6 @@
 #include "rpplugins/imgui/plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include <fmt/ostream.h>
@@ -83,7 +82,7 @@ void ImGuiPlugin::on_load()
 {
     p3d_imgui_ = std::make_unique<Panda3DImGui>(rpcore::Globals::base->get_win(), rpcore::Globals::base->get_pixel_2d());
 
-    const std::string style_setting = boost::any_cast<std::string>(get_setting("style"));
+    const std::string style_setting = get_setting<rpcore::EnumType>("style");
     if (style_setting == "classic")
         p3d_imgui_->setup_style(Panda3DImGui::Style::classic);
     else if (style_setting == "light")
@@ -95,10 +94,10 @@ void ImGuiPlugin::on_load()
 
     p3d_imgui_->setup_shader(rpcore::RPLoader::load_shader({ get_shader_resource("panda3d_imgui.vert.glsl"), get_shader_resource("panda3d_imgui.frag.glsl") }));
 
-    auto default_font_path = rppanda::convert_path(Filename(boost::any_cast<std::string>(get_setting("default_font_path"))));
+    auto default_font_path = rppanda::convert_path(Filename(get_setting<rpcore::PathType>("default_font_path")));
     if (boost::filesystem::exists(default_font_path))
     {
-        const float font_size = boost::any_cast<float>(get_setting("default_font_size"));
+        const float font_size = get_setting<rpcore::FloatType>("default_font_size");
         p3d_imgui_->setup_font(default_font_path.generic_string().c_str(), font_size);
     }
     else
@@ -119,7 +118,7 @@ void ImGuiPlugin::on_load()
     accept(SETUP_CONTEXT_EVENT_NAME, std::bind(&ImGuiPlugin::setup_context, this, std::placeholders::_1));
 
     // register file drop
-    if (boost::any_cast<bool>(get_setting("os_file_drop")))
+    if (get_setting<rpcore::BoolType>("os_file_drop"))
         p3d_imgui_->enable_file_drop();
 }
 

@@ -23,7 +23,6 @@
 #include "plugin.hpp"
 
 #include <boost/dll/alias.hpp>
-#include <boost/any.hpp>
 
 #include "motion_blur_stage.hpp"
 
@@ -40,8 +39,8 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, R
 void Plugin::on_stage_setup()
 {
     auto stage = std::make_unique<MotionBlurStage>(pipeline_);
-    stage->set_tile_size(boost::any_cast<int>(get_setting("tile_size")));
-    stage->set_per_object_blur(boost::any_cast<bool>(get_setting("enable_object_blur")));
+    stage->set_tile_size(get_setting<rpcore::IntType>("tile_size"));
+    stage->set_per_object_blur(get_setting<rpcore::BoolType>("enable_object_blur"));
 
     add_stage(std::move(stage));
 }
