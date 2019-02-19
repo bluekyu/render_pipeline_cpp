@@ -158,16 +158,17 @@ void BaseType::add_defines(const std::string& plugin_id, const std::string& sett
 
 // ************************************************************************************************
 template <>
-TemplatedType<int>::TemplatedType(YAML::Node& data): BaseType(data)
+TemplatedType<int>::TemplatedType(YAML::Node& data): BaseTypeContainer(data)
 {
     default_ = data["default"].as<ValueType>();
     data.remove("default");
-    _value = default_;
 
     const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
     _minval = setting_range[0];
     _maxval = setting_range[1];
     data.remove("range");
+
+    reset_to_default();
 }
 
 template <>
@@ -177,16 +178,17 @@ void TemplatedType<int>::set_value(const YAML::Node& value)
 }
 
 template <>
-TemplatedType<float>::TemplatedType(YAML::Node& data): BaseType(data)
+TemplatedType<float>::TemplatedType(YAML::Node& data): BaseTypeContainer(data)
 {
     default_ = data["default"].as<ValueType>();
     data.remove("default");
-    _value = default_;
 
     const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
     _minval = setting_range[0];
     _maxval = setting_range[1];
     data.remove("range");
+
+    reset_to_default();
 }
 
 template <>
@@ -196,12 +198,12 @@ void TemplatedType<float>::set_value(const YAML::Node& value)
 }
 
 // ************************************************************************************************
-BoolType::BoolType(YAML::Node& data): BaseType(data)
+BoolType::BoolType(YAML::Node& data): BaseTypeContainer(data)
 {
     default_ = data["default"].as<ValueType>();
     data.remove("default");
 
-    _value = default_;
+    reset_to_default();
 }
 
 std::string BoolType::get_value_as_string() const
@@ -218,13 +220,13 @@ void BoolType::set_value(const std::string& value)
 {
     const std::string& b = boost::to_lower_copy(value);
     if (b == "true" || b == "1")
-        _value = true;
+        value_ = true;
     else
-        _value = false;
+        value_ = false;
 }
 
 // ************************************************************************************************
-EnumType::EnumType(YAML::Node& data): BaseType(data)
+EnumType::EnumType(YAML::Node& data): BaseTypeContainer(data)
 {
     _values = data["values"].as<std::vector<ValueType>>();
     data.remove("values");
@@ -235,7 +237,7 @@ EnumType::EnumType(YAML::Node& data): BaseType(data)
     if (std::find(_values.begin(), _values.end(), get_default_as_type()) == _values.end())
         throw std::runtime_error(std::string("Enum default not in enum values: ") + get_default_as_type());
 
-    _value = default_;
+    reset_to_default();
 }
 
 void EnumType::set_value(const YAML::Node& value)
@@ -250,13 +252,13 @@ void EnumType::set_value(const ValueType& value)
         error("Value '" + value + "' not in enum values!");
         return;
     }
-    _value = value;
+    value_ = value;
 }
 
 void EnumType::add_defines(const std::string& plugin_id,
     const std::string& setting_id, StageManager::DefinesType& defines) const
 {
-    auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), boost::any_cast<const ValueType&>(_value)));
+    auto index = std::distance(_values.begin(), std::find(_values.begin(), _values.end(), value_));
     defines[plugin_id + "_" + setting_id] = std::to_string(1000 + index);
 
     for (size_t i=0, i_end=_values.size(); i < i_end; ++i)
@@ -268,7 +270,7 @@ const std::vector<int> SampleSequenceType::POISSON_2D_SIZES = {4, 8, 12, 16, 32,
 const std::vector<int> SampleSequenceType::POISSON_3D_SIZES = {16, 32, 64};
 const std::vector<int> SampleSequenceType::HALTON_SIZES = {4, 8, 16, 32, 64, 128};
 
-SampleSequenceType::SampleSequenceType(YAML::Node& data): BaseType(data)
+SampleSequenceType::SampleSequenceType(YAML::Node& data): BaseTypeContainer(data)
 {
     dimension_ = data["dimension"].as<int>();
     data.remove("dimension");
@@ -283,7 +285,7 @@ SampleSequenceType::SampleSequenceType(YAML::Node& data): BaseType(data)
     if (std::find(sequences.begin(), sequences.end(), get_default_as_type()) == sequences.end())
         throw std::runtime_error("Not a valid sequence: " + get_default_as_type());
 
-    _value = default_;
+    reset_to_default();
 }
 
 void SampleSequenceType::set_value(const YAML::Node& value)
@@ -312,23 +314,23 @@ auto SampleSequenceType::get_sequences() const -> std::vector<ValueType>
 }
 
 // ************************************************************************************************
-PathType::PathType(YAML::Node& data): BaseType(data)
+PathType::PathType(YAML::Node& data): BaseTypeContainer(data)
 {
-    _default = data["default"].as<std::string>("");
+    default_ = data["default"].as<std::string>("");
     data.remove("default");
-
-    _value = _default;
 
     _file_type = data["file_type"].as<std::string>("");
     data.remove("file_type");
 
     _base_path = data["base_path"].as<std::string>("");
     data.remove("base_path");
+
+    reset_to_default();
 }
 
 void PathType::set_value(const YAML::Node& value)
 {
-    _value = value.as<std::string>();
+    value_ = value.as<std::string>();
 }
 
 void PathType::add_defines(const std::string& plugin_id,

@@ -722,7 +722,7 @@ void PluginManager::set_plugin_enabled(const PluginIDType& plugin_id, bool enabl
 void PluginManager::reset_plugin_settings(const PluginIDType& plugin_id)
 {
     for (auto&& setting_id_handle : impl_->plugin_data_map_.at(plugin_id).settings.get<1>())
-        setting_id_handle.value->set_value(setting_id_handle.value->get_default());
+        setting_id_handle.value->reset_to_default();
 }
 
 bool PluginManager::is_plugin_enabled(const PluginIDType& plugin_id) const

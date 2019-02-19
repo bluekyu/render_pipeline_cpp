@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <boost/any.hpp>
-
 #include <render_pipeline/rpcore/rpobject.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
 
@@ -42,10 +40,10 @@ public:
     virtual ~BaseType() = default;
 
     virtual std::string get_value_as_string() const = 0;
-    const boost::any& get_default() const { return default_; }
+
+    virtual void reset_to_default() = 0;
 
     virtual void set_value(const YAML::Node& value) = 0;
-    virtual void set_value(const boost::any& value) = 0;
 
     virtual void add_defines(const std::string& plugin_id,
         const std::string& setting_id, StageManager::DefinesType& defines) const;
@@ -62,8 +60,6 @@ public:
     virtual const void* downcast() const = 0;
 
 protected:
-    boost::any default_;
-    boost::any _value;
     std::string _type;
     std::string _label;
     std::string _description;
@@ -78,25 +74,65 @@ inline const std::unordered_map<std::string, std::string>& BaseType::get_display
 }
 
 // ************************************************************************************************
+template <class T>
+class BaseTypeContainer : public BaseType
+{
+public:
+    using ValueType = typename T;
+
+public:
+    BaseTypeContainer(YAML::Node& data);
+
+    ValueType get_value_as_type() const;
+    ValueType get_default_as_type() const;
+
+    void reset_to_default() final;
+
+protected:
+    ValueType value_;
+    ValueType default_;
+};
+
+template <class T>
+BaseTypeContainer<T>::BaseTypeContainer(YAML::Node& data): BaseType(data)
+{
+}
+
+template <class T>
+auto BaseTypeContainer<T>::get_value_as_type() const -> ValueType
+{
+    return value_;
+}
+
+template <class T>
+auto BaseTypeContainer<T>::get_default_as_type() const -> ValueType
+{
+    return default_;
+}
+
+template <class T>
+void BaseTypeContainer<T>::reset_to_default()
+{
+    value_ = default_;
+}
+
+// ************************************************************************************************
 /**
  * This setting stores a single type including a minimum and maximum value.
  * It is shared between integer and floating point types.
  */
 template <class T>
-class TemplatedType : public BaseType
+class TemplatedType : public BaseTypeContainer<T>
 {
 public:
-    using ValueType = T;
+    using ValueType = BaseTypeContainer<T>::ValueType;
 
 public:
     TemplatedType(YAML::Node& data);
 
-    ValueType get_value_as_type() const;
-    ValueType get_default_as_type() const;
-
     std::string get_value_as_string() const override;
+
     void set_value(const YAML::Node& value) override;
-    void set_value(const boost::any& value) override;
     virtual void set_value(ValueType value);
 
     ValueType get_min() const;
@@ -111,36 +147,18 @@ protected:
 };
 
 template <class T>
-auto TemplatedType<T>::get_value_as_type() const -> ValueType
-{
-    return boost::any_cast<T>(_value);
-}
-
-template <class T>
-auto TemplatedType<T>::get_default_as_type() const -> ValueType
-{
-    return boost::any_cast<T>(default_);
-}
-
-template <class T>
 std::string TemplatedType<T>::get_value_as_string() const
 {
-    return std::to_string(get_value_as_type());
-}
-
-template <class T>
-void TemplatedType<T>::set_value(const boost::any& value)
-{
-    set_value(boost::any_cast<T>(value));
+    return std::to_string(BaseTypeContainer<T>::get_value_as_type());
 }
 
 template <class T>
 void TemplatedType<T>::set_value(ValueType value)
 {
     if (_minval <= value && value <= _maxval)
-        _value = value;
+        BaseTypeContainer<T>::value_ = value;
     else
-        error(std::string("Invalid value: ") + std::to_string(value));
+        BaseTypeContainer<T>::error(std::string("Invalid value: ") + std::to_string(value));
 }
 
 template <class T>
@@ -186,7 +204,7 @@ inline void PowerOfTwoType::set_value(ValueType value)
     {
         // check if value is power of two.
         if (value && !(value & (value - 1)))
-            _value = value;
+            value_ = value;
         else
             error("Not a power of two: " + std::to_string(value));
     }
@@ -198,24 +216,15 @@ inline void PowerOfTwoType::set_value(ValueType value)
 
 // ************************************************************************************************
 /** Boolean setting type. */
-class RENDER_PIPELINE_DECL BoolType : public BaseType
+class RENDER_PIPELINE_DECL BoolType : public BaseTypeContainer<bool>
 {
 public:
-    using ValueType = bool;
-
-public:
     BoolType(YAML::Node& data);
-
-    ValueType get_value_as_type() const;
-    ValueType get_default_as_type() const;
 
     std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
 
-    /** Accept bool or std::string */
-    void set_value(const boost::any& value) final;
-
-    void set_value(ValueType value) { _value = value; }
+    void set_value(ValueType value) { value_ = value; }
 
     void* downcast() override { return this; }
     const void* downcast() const override { return this; }
@@ -224,41 +233,16 @@ private:
     void set_value(const std::string& value);
 };
 
-inline auto BoolType::get_value_as_type() const -> ValueType
-{
-    return boost::any_cast<bool>(_value);
-}
-
-inline auto BoolType::get_default_as_type() const -> ValueType
-{
-    return boost::any_cast<bool>(default_);
-}
-
-inline void BoolType::set_value(const boost::any& value)
-{
-    if (auto v = boost::any_cast<bool>(&value))
-        _value = *v;
-    else if (auto v = boost::any_cast<std::string>(&value))
-        set_value(*v);
-}
-
 // ************************************************************************************************
 /** Enumeration setting type. */
-class RENDER_PIPELINE_DECL EnumType : public BaseType
+class RENDER_PIPELINE_DECL EnumType : public BaseTypeContainer<std::string>
 {
 public:
-    using ValueType = std::string;
-
-public:
     EnumType(YAML::Node& data);
-
-    const ValueType& get_value_as_type() const;
-    const ValueType& get_default_as_type() const;
 
     std::string get_value_as_string() const final;
 
     void set_value(const YAML::Node& value) final;
-    void set_value(const boost::any& value) final;
     void set_value(const ValueType& value);
 
     void add_defines(const std::string& plugin_id,
@@ -271,33 +255,15 @@ private:
     std::vector<ValueType> _values;
 };
 
-inline auto EnumType::get_value_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<std::string>(&_value);
-}
-
-inline auto EnumType::get_default_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<std::string>(&default_);
-}
-
 inline std::string EnumType::get_value_as_string() const
 {
     return get_value_as_type();
 }
 
-inline void EnumType::set_value(const boost::any& value)
-{
-    set_value(boost::any_cast<std::string>(value));
-}
-
 // ************************************************************************************************
 /** Type for any 2D or 3D sample sequence. */
-class RENDER_PIPELINE_DECL SampleSequenceType : public BaseType
+class RENDER_PIPELINE_DECL SampleSequenceType : public BaseTypeContainer<std::string>
 {
-public:
-    using ValueType = std::string;
-
 public:
     static const std::vector<int> POISSON_2D_SIZES;
     static const std::vector<int> POISSON_3D_SIZES;
@@ -305,12 +271,8 @@ public:
 
     SampleSequenceType(YAML::Node& data);
 
-    const ValueType& get_value_as_type() const;
-    const ValueType& get_default_as_type() const;
-
     std::string get_value_as_string() const final;
     void set_value(const YAML::Node& value) final;
-    void set_value(const boost::any& value) final;
     void set_value(const ValueType& value);
 
     std::vector<ValueType> get_sequences() const;
@@ -322,24 +284,9 @@ private:
     int dimension_;
 };
 
-inline auto SampleSequenceType::get_value_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<ValueType>(&_value);
-}
-
-inline auto SampleSequenceType::get_default_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<ValueType>(&default_);
-}
-
 inline std::string SampleSequenceType::get_value_as_string() const
 {
     return get_value_as_type();
-}
-
-inline void SampleSequenceType::set_value(const boost::any& value)
-{
-    set_value(boost::any_cast<ValueType>(value));
 }
 
 inline void SampleSequenceType::set_value(const ValueType& value)
@@ -350,26 +297,19 @@ inline void SampleSequenceType::set_value(const ValueType& value)
         error("Value '" + value + "' is not a valid sequence!");
         return;
     }
-    _value = value;
+    value_ = value;
 }
 
 // ************************************************************************************************
 /** Path type to specify paths to files. */
-class RENDER_PIPELINE_DECL PathType : public BaseType
+class RENDER_PIPELINE_DECL PathType : public BaseTypeContainer<std::string>
 {
 public:
-    using ValueType = std::string;
-
-public:
     PathType(YAML::Node& data);
-
-    const ValueType& get_value_as_type() const;
-    const ValueType& get_default_as_type() const;
 
     std::string get_value_as_string() const final;
 
     void set_value(const YAML::Node& value) final;
-    void set_value(const boost::any& value) final;
     void set_value(const ValueType& value);
 
     void add_defines(const std::string& plugin_id,
@@ -379,34 +319,18 @@ public:
     const void* downcast() const override { return this; }
 
 private:
-    ValueType _default;
     ValueType _file_type;
     ValueType _base_path;
 };
-
-inline auto PathType::get_value_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<ValueType>(&_value);
-}
-
-inline auto PathType::get_default_as_type() const -> const ValueType&
-{
-    return *boost::any_cast<ValueType>(&default_);
-}
 
 inline std::string PathType::get_value_as_string() const
 {
     return get_value_as_type();
 }
 
-inline void PathType::set_value(const boost::any& value)
-{
-    set_value(boost::any_cast<std::string>(value));
-}
-
 inline void PathType::set_value(const ValueType& value)
 {
-    _value = value;
+    value_ = value;
 }
 
 // ************************************************************************************************
