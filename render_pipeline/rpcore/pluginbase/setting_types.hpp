@@ -125,7 +125,7 @@ template <class T>
 class TemplatedType : public BaseTypeContainer<T>
 {
 public:
-    using ValueType = BaseTypeContainer<T>::ValueType;
+    using ValueType = typename BaseTypeContainer<T>::ValueType;
 
 public:
     TemplatedType(YAML::Node& data);
