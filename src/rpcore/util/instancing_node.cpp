@@ -55,7 +55,7 @@ void InstancingNode::Impl::initilize(RenderPipeline& pipeline, NodePath np, cons
 
     // Allocate storage for the matrices, each matrix has 16 elements,
     // but because one pixel has four components, we need amount * 4 pixels.
-    buffer_texture_ = new Texture;
+    buffer_texture_ = Texture::make_texture();
     buffer_texture_->setup_buffer_texture(4, Texture::T_float, Texture::F_rgba32, buffer_hint);
 
     // Load the effect

@@ -153,7 +153,7 @@ void PointsNode::Impl::upload_positions()
 
 void PointsNode::Impl::set_active_point_count(int count)
 {
-    if (count > positions_.size())
+    if (count > static_cast<int>(positions_.size()))
     {
         RPObject::global_warn("PointsNode",
             fmt::format("Given count ({}) is bigger than the count of stored points ({}).", count, positions_.size()));

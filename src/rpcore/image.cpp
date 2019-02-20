@@ -142,8 +142,10 @@ const Image::ComponentFormatType& Image::convert_texture_format(const std::strin
     }
 }
 
-Image::Image(const std::string& name): texture_(new Texture(name))
+Image::Image(const std::string& name): texture_(Texture::make_texture())
 {
+    texture_->set_name(name);
+
     Image::REGISTERED_IMAGES.push_back(this);
     texture_->set_clear_color(0);
     texture_->clear_image();

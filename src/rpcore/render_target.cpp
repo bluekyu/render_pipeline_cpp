@@ -241,7 +241,9 @@ void RenderTarget::Impl::setup_textures()
 {
     for (int k = 0; k < aux_count_; k++)
     {
-        targets_[std::string("aux_") + std::to_string(k)] = new Texture(self_.get_debug_name() + "_aux_" + std::to_string(k));
+        PT(Texture) tex = Texture::make_texture();
+        tex->set_name(self_.get_debug_name() + "_aux_" + std::to_string(k));
+        targets_[std::string("aux_") + std::to_string(k)] = tex;
     }
 
     for (const auto& tex: targets_)
@@ -453,13 +455,17 @@ void RenderTarget::prepare_render(const NodePath& camera_np) { impl_->prepare_re
 
 void RenderTarget::add_color_attachment(const LVecBase4i& bits)
 {
-    impl_->targets_.insert_or_assign("color", new Texture(get_debug_name() + "_color"));
+    PT(Texture) tex = Texture::make_texture();
+    tex->set_name(get_debug_name() + "_color");
+    impl_->targets_.insert_or_assign("color", tex);
     impl_->color_bits_ = bits;
 }
 
 void RenderTarget::add_depth_attachment(int bits)
 {
-    impl_->targets_.insert_or_assign("depth", new Texture(get_debug_name() + "_depth"));
+    PT(Texture) tex = Texture::make_texture();
+    tex->set_name(get_debug_name() + "_depth");
+    impl_->targets_.insert_or_assign("depth", tex);
     impl_->depth_bits_ = bits;
 }
 

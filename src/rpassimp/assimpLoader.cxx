@@ -222,7 +222,7 @@ void AssimpLoader::load_texture(size_t index)
 {
     const aiTexture &tex = *_scene->mTextures[index];
 
-    PT(Texture) ptex = new Texture;
+    PT(Texture) ptex = Texture::make_texture();
 
     if (tex.mHeight == 0)
     {
