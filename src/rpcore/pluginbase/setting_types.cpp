@@ -22,7 +22,6 @@
 
 #include "render_pipeline/rpcore/pluginbase/setting_types.hpp"
 
-#include <typeindex>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -133,7 +132,7 @@ BaseType::BaseType(YAML::Node& data): RPObject("BaseType")
         _shader_runtime = false;
     }
 
-    for (auto key_val : data["display_if"])
+    for (const auto& key_val : data["display_if"])
     {
         auto value = key_val.second.as<std::string>();
         const auto lower_value = boost::to_lower_copy(value);
@@ -164,8 +163,8 @@ TemplatedType<int>::TemplatedType(YAML::Node& data): BaseTypeContainer(data)
     data.remove("default");
 
     const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
-    _minval = setting_range[0];
-    _maxval = setting_range[1];
+    minval_ = setting_range[0];
+    maxval_ = setting_range[1];
     data.remove("range");
 
     reset_to_default();
@@ -184,8 +183,8 @@ TemplatedType<float>::TemplatedType(YAML::Node& data): BaseTypeContainer(data)
     data.remove("default");
 
     const std::vector<ValueType>& setting_range = data["range"].as<std::vector<ValueType>>();
-    _minval = setting_range[0];
-    _maxval = setting_range[1];
+    minval_ = setting_range[0];
+    maxval_ = setting_range[1];
     data.remove("range");
 
     reset_to_default();
@@ -208,7 +207,7 @@ BoolType::BoolType(YAML::Node& data): BaseTypeContainer(data)
 
 std::string BoolType::get_value_as_string() const
 {
-    return get_value_as_type() ? "1" : "0";
+    return get_value() ? "1" : "0";
 }
 
 void BoolType::set_value(const YAML::Node& value)
@@ -234,8 +233,8 @@ EnumType::EnumType(YAML::Node& data): BaseTypeContainer(data)
     default_ = data["default"].as<ValueType>();
     data.remove("default");
 
-    if (std::find(_values.begin(), _values.end(), get_default_as_type()) == _values.end())
-        throw std::runtime_error(std::string("Enum default not in enum values: ") + get_default_as_type());
+    if (std::find(_values.begin(), _values.end(), get_default()) == _values.end())
+        throw std::runtime_error(std::string("Enum default not in enum values: ") + get_default());
 
     reset_to_default();
 }
@@ -282,8 +281,8 @@ SampleSequenceType::SampleSequenceType(YAML::Node& data): BaseTypeContainer(data
     data.remove("default");
 
     const auto& sequences = get_sequences();
-    if (std::find(sequences.begin(), sequences.end(), get_default_as_type()) == sequences.end())
-        throw std::runtime_error("Not a valid sequence: " + get_default_as_type());
+    if (std::find(sequences.begin(), sequences.end(), get_default()) == sequences.end())
+        throw std::runtime_error("Not a valid sequence: " + get_default());
 
     reset_to_default();
 }

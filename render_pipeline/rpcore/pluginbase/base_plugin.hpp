@@ -194,7 +194,7 @@ inline const std::string& BasePlugin::get_plugin_id() const
 template <class T>
 inline auto BasePlugin::get_setting(const std::string& setting_id, const std::string& plugin_id) const
 {
-    return static_cast<const T*>(get_setting_handle(setting_id, plugin_id)->downcast())->get_value_as_type();
+    return static_cast<const T*>(get_setting_handle(setting_id, plugin_id)->downcast())->get_value();
 }
 
 }

@@ -53,7 +53,8 @@ public:
     rpcore::PluginManager* get_plugin_mgr() const;
     const std::string& get_plugin_id() const;
 
-    rpcore::BaseType* get_setting_handle(const std::string& setting_id) const;
+    template <class T>
+    T* get_setting_handle(const std::string& setting_id) const;
 
 protected:
     rpcore::RenderPipeline& pipeline_;
@@ -79,9 +80,10 @@ inline const std::string& GUIInterface::get_plugin_id() const
     return plugin_id_;
 }
 
-inline rpcore::BaseType* GUIInterface::get_setting_handle(const std::string& setting_id) const
+template <class T>
+T* GUIInterface::get_setting_handle(const std::string& setting_id) const
 {
-    return plugin_mgr_->get_setting_handle(plugin_id_, setting_id);
+    return static_cast<T*>(plugin_mgr_->get_setting_handle(plugin_id_, setting_id)->downcast());
 }
 
 }

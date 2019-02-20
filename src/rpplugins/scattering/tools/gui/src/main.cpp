@@ -57,9 +57,9 @@ private:
 
 PluginGUI::PluginGUI(rpcore::RenderPipeline& pipeline): GUIInterface(pipeline, RPPLUGINS_GUI_ID_STRING)
 {
-    ground_reflectance_ = static_cast<rpcore::FloatType*>(get_setting_handle("ground_reflectance")->downcast());
-    rayleigh_factor_ = static_cast<rpcore::FloatType*>(get_setting_handle("rayleigh_factor")->downcast());
-    rayleigh_height_scale_ = static_cast<rpcore::FloatType*>(get_setting_handle("rayleigh_height_scale")->downcast());
+    ground_reflectance_ = get_setting_handle<rpcore::FloatType>("ground_reflectance");
+    rayleigh_factor_ = get_setting_handle<rpcore::FloatType>("rayleigh_factor");
+    rayleigh_height_scale_ = get_setting_handle<rpcore::FloatType>("rayleigh_height_scale");
 }
 
 void PluginGUI::on_draw_menu()
@@ -99,9 +99,9 @@ void PluginGUI::on_draw_new_frame()
 
 void PluginGUI::reset()
 {
-    ground_reflectance_ui_ = ground_reflectance_->get_value_as_type();
-    rayleigh_factor_ui_ = rayleigh_factor_->get_value_as_type();
-    rayleigh_height_scale_ui_ = rayleigh_height_scale_->get_value_as_type();
+    ground_reflectance_ui_ = ground_reflectance_->get_value();
+    rayleigh_factor_ui_ = rayleigh_factor_->get_value();
+    rayleigh_height_scale_ui_ = rayleigh_height_scale_->get_value();
 }
 
 }

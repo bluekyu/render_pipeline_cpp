@@ -60,12 +60,12 @@ inline bool draw_slider(GUIInterface* gui_interface, rpcore::FloatType* base_typ
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::Selectable(fmt::format("Reset###{}", base_type->get_debug_name()).c_str()))
-            value = base_type->get_default_as_type();
+            value = base_type->get_default();
         ImGui::EndPopup();
     }
 
     ImGui::SameLine();
-    draw_help_marker(fmt::format("{}\nDefault: {}", base_type->get_description(), base_type->get_default_as_type()).c_str());
+    draw_help_marker(fmt::format("{}\nDefault: {}", base_type->get_description(), base_type->get_default()).c_str());
     return changed;
 }
 
@@ -82,19 +82,19 @@ inline bool draw_slider(GUIInterface* gui_interface, rpcore::IntType* base_type,
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::Selectable(fmt::format("Reset###{}", base_type->get_debug_name()).c_str()))
-            value = base_type->get_default_as_type();
+            value = base_type->get_default();
         ImGui::EndPopup();
     }
 
     ImGui::SameLine();
-    draw_help_marker(fmt::format("{}\nDefault: {}", base_type->get_description(), base_type->get_default_as_type()).c_str());
+    draw_help_marker(fmt::format("{}\nDefault: {}", base_type->get_description(), base_type->get_default()).c_str());
     return changed;
 }
 
 template <class T>
 inline void check_setting_changed(std::unordered_set<std::string>& settings, const std::string& id, rpcore::TemplatedType<T>* base_type, T value)
 {
-    if (value != base_type->get_value_as_type())
+    if (value != base_type->get_value())
     {
         base_type->set_value(value);
         settings.insert(id);

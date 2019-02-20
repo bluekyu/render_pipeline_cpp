@@ -83,8 +83,8 @@ public:
 public:
     BaseTypeContainer(YAML::Node& data);
 
-    ValueType get_value_as_type() const;
-    ValueType get_default_as_type() const;
+    ValueType get_value() const;
+    ValueType get_default() const;
 
     void reset_to_default() final;
 
@@ -99,13 +99,13 @@ BaseTypeContainer<T>::BaseTypeContainer(YAML::Node& data): BaseType(data)
 }
 
 template <class T>
-auto BaseTypeContainer<T>::get_value_as_type() const -> ValueType
+auto BaseTypeContainer<T>::get_value() const -> ValueType
 {
     return value_;
 }
 
 template <class T>
-auto BaseTypeContainer<T>::get_default_as_type() const -> ValueType
+auto BaseTypeContainer<T>::get_default() const -> ValueType
 {
     return default_;
 }
@@ -142,20 +142,20 @@ public:
     const void* downcast() const override { return this; }
 
 protected:
-    ValueType _minval;
-    ValueType _maxval;
+    ValueType minval_;
+    ValueType maxval_;
 };
 
 template <class T>
 std::string TemplatedType<T>::get_value_as_string() const
 {
-    return std::to_string(BaseTypeContainer<T>::get_value_as_type());
+    return std::to_string(BaseTypeContainer<T>::get_value());
 }
 
 template <class T>
 void TemplatedType<T>::set_value(ValueType value)
 {
-    if (_minval <= value && value <= _maxval)
+    if (minval_ <= value && value <= maxval_)
         BaseTypeContainer<T>::value_ = value;
     else
         BaseTypeContainer<T>::error(std::string("Invalid value: ") + std::to_string(value));
@@ -164,13 +164,13 @@ void TemplatedType<T>::set_value(ValueType value)
 template <class T>
 auto TemplatedType<T>::get_min() const -> ValueType
 {
-    return _minval;
+    return minval_;
 }
 
 template <class T>
 auto TemplatedType<T>::get_max() const -> ValueType
 {
-    return _maxval;
+    return maxval_;
 }
 
 // ************************************************************************************************
@@ -200,7 +200,7 @@ inline PowerOfTwoType::PowerOfTwoType(YAML::Node& data): IntType(data)
 
 inline void PowerOfTwoType::set_value(ValueType value)
 {
-    if (_minval <= value && value <= _maxval)
+    if (minval_ <= value && value <= maxval_)
     {
         // check if value is power of two.
         if (value && !(value & (value - 1)))
@@ -257,7 +257,7 @@ private:
 
 inline std::string EnumType::get_value_as_string() const
 {
-    return get_value_as_type();
+    return get_value();
 }
 
 // ************************************************************************************************
@@ -286,7 +286,7 @@ private:
 
 inline std::string SampleSequenceType::get_value_as_string() const
 {
-    return get_value_as_type();
+    return get_value();
 }
 
 inline void SampleSequenceType::set_value(const ValueType& value)
@@ -325,7 +325,7 @@ private:
 
 inline std::string PathType::get_value_as_string() const
 {
-    return get_value_as_type();
+    return get_value();
 }
 
 inline void PathType::set_value(const ValueType& value)
