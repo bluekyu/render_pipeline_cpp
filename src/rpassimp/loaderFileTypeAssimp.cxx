@@ -24,7 +24,7 @@ TypeHandle LoaderFileTypeAssimp::_type_handle;
 /**
  *
  */
-LoaderFileTypeAssimp::LoaderFileTypeAssimp() : _loader(nullptr)
+LoaderFileTypeAssimp::LoaderFileTypeAssimp()
 {
 }
 

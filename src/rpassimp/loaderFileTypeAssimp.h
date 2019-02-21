@@ -17,8 +17,6 @@
 
 namespace rpassimp {
 
-class AssimpLoader;
-
 /**
  * This defines the Loader interface that uses the Assimp library to load
  * various model formats.
@@ -36,9 +34,6 @@ public:
 
     virtual PT(PandaNode) load_file(const Filename &path, const LoaderOptions &options,
         BamCacheRecord *record) const;
-
-public:
-    AssimpLoader * _loader;
 
 public:
     static TypeHandle get_class_type()
