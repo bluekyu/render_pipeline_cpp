@@ -17,7 +17,7 @@
 - Assimp (optional): Required to build rpassimp plugin
 - ImGUI (optional): Required to build imgui or rpstat plugin
 
-### Versions in DevOps
+### Versions in Continuous Integration (CI)
 - vcpkg: https://github.com/bluekyu/vcpkg/tree/rpcpp-devops
 - Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
 - Panda3D: https://github.com/bluekyu/panda3d

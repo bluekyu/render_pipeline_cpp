@@ -48,13 +48,13 @@ class FPSChart;
 class PixelInspector;
 class RenderModeSelector;
 
-class Debugger : public RPObject
+class RENDER_PIPELINE_DECL Debugger : public RPObject
 {
 public:
     Debugger(RenderPipeline* pipeline);
     ~Debugger();
 
-    bool use_advanced_info() const;
+    bool is_advanced_info_used() const;
 
     /** Creates the gui components. */
     void create_components();
@@ -81,7 +81,8 @@ public:
     void init_keybindings();
 
     /** Shows / Hides the gui. */
-    void toggle_gui_visible();
+    bool is_gui_hidden() const;
+    void show_gui(bool show);
 
     /** Shows / Hides the keybindings gui. */
     void toggle_keybindings_visible();
@@ -117,6 +118,11 @@ private:
 
     std::vector<std::unique_ptr<rpcore::TextNode>> debug_lines_;
 };
+
+inline bool Debugger::is_gui_hidden() const
+{
+    return fullscreen_node.is_hidden();
+}
 
 inline ErrorMessageDisplay* Debugger::get_error_msg_handler() const
 {

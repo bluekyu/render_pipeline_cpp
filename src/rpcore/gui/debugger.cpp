@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "rpcore/gui/debugger.hpp"
+#include "render_pipeline/rpcore/gui/debugger.hpp"
 
 #include <graphicsBuffer.h>
 #include <textNode.h>
@@ -39,6 +39,7 @@
 #include "render_pipeline/rpcore/render_pipeline.hpp"
 #include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/gui/sprite.hpp"
+#include "render_pipeline/rpcore/gui/error_message_display.hpp"
 #include "render_pipeline/rpcore/render_target.hpp"
 #include "render_pipeline/rpcore/util/task_scheduler.hpp"
 #include "render_pipeline/rpcore/pluginbase/manager.hpp"
@@ -52,7 +53,6 @@
 #include "rpcore/gui/exposure_widget.hpp"
 #include "rpcore/gui/text_node.hpp"
 #include "rpcore/gui/buffer_viewer.hpp"
-#include "rpcore/gui/error_message_display.hpp"
 #include "rpcore/gui/fps_chart.hpp"
 #include "rpcore/gui/pipe_viewer.hpp"
 #include "rpcore/gui/pixel_inspector.hpp"
@@ -69,7 +69,7 @@ Debugger::Debugger(RenderPipeline* pipeline): RPObject("Debugger"), pipeline(pip
     create_components();
     init_keybindings();
 
-    if (use_advanced_info())
+    if (is_advanced_info_used())
     {
         Globals::base->do_method_later(0.5f, [this](rppanda::FunctionalTask* task) {
             return collect_scene_data(nullptr);
@@ -85,7 +85,7 @@ Debugger::~Debugger()
     trace("Destructing Debugger");
 }
 
-bool Debugger::use_advanced_info() const
+bool Debugger::is_advanced_info_used() const
 {
     return pipeline->get_setting<bool>("pipeline.advanced_debugging_info");
 }
@@ -103,7 +103,7 @@ void Debugger::create_components()
 
     pipeline_logo_ = std::make_unique<Sprite>("/$$rp/data/gui/pipeline_logo_text.png", fullscreen_node, 30, 30);
 
-    if (use_advanced_info())
+    if (is_advanced_info_used())
     {
         exposure_node = fullscreen_node.attach_new_node("ExposureWidget");
         exposure_widget_ = std::make_unique<ExposureWidget>(pipeline, exposure_node);
@@ -146,7 +146,7 @@ void Debugger::create_stats()
     overlay_node = Globals::base->get_aspect_2d().attach_new_node("Overlay");
     debug_lines_.clear();
 
-    const int num_lines = use_advanced_info() ? 6 : 1;
+    const int num_lines = is_advanced_info_used() ? 6 : 1;
     for (int k = 0; k < num_lines; ++k)
     {
         debug_lines_.push_back(std::make_unique<TextNode>(
@@ -197,7 +197,7 @@ void Debugger::handle_window_resize()
     gui_scale = (std::max)(0.65f, (std::min)(1.0f, Globals::native_resolution.get_x() / 1920.0f));
     fullscreen_node.set_scale(gui_scale);
 
-    if (use_advanced_info())
+    if (is_advanced_info_used())
     {
         exposure_node.set_pos(
             static_cast<int>(Globals::native_resolution.get_x() / gui_scale) - 200,
@@ -243,7 +243,7 @@ void Debugger::init_keybindings()
         rm_selector_->toggle();
     });
     Globals::base->accept("f5", [this](const Event* ev) {
-        toggle_gui_visible();
+        show_gui(is_gui_hidden());
     });
     Globals::base->accept("f6", [this](const Event* ev) {
         if (Globals::base->get_render_2d().is_hidden())
@@ -255,18 +255,21 @@ void Debugger::init_keybindings()
     });
 }
 
-void Debugger::toggle_gui_visible()
+void Debugger::show_gui(bool show)
 {
-    auto render_2d = Globals::base->get_render_2d();
-    if (render_2d.is_hidden())
+    if (show)
     {
-        if (use_advanced_info())
+        if (is_advanced_info_used())
             collect_scene_data(nullptr);
-        render_2d.show();
+        fullscreen_node.show();
+        overlay_node.show();
+        keybinding_text_->get_np().show();
     }
     else
     {
-        render_2d.hide();
+        fullscreen_node.hide();
+        overlay_node.hide();
+        keybinding_text_->get_np().hide();
     }
 }
 
@@ -292,7 +295,7 @@ AsyncTask::DoneStatus Debugger::update_stats(rppanda::FunctionalTask* task)
         (1000.0 / (std::max)(0.001, clock->get_average_frame_rate())),
         (clock->get_max_frame_duration() * 1000.0)));
 
-    if (!use_advanced_info())
+    if (!is_advanced_info_used())
         return task ? AsyncTask::DS_again : AsyncTask::DS_done;
 
     const auto& light_mgr = pipeline->get_light_mgr();

@@ -52,6 +52,7 @@ class RPLight;
 class DayTimeManager;
 class IESProfileLoader;
 class PluginManager;
+class Debugger;
 
 class RENDER_PIPELINE_DECL RenderPipeline : public RPObject
 {
@@ -216,6 +217,7 @@ public:
     PluginManager* get_plugin_mgr() const;
     TaskScheduler* get_task_scheduler() const;
     DayTimeManager* get_daytime_mgr() const;
+    Debugger* get_debugger() const;
 
 private:
     class Impl;

@@ -17,7 +17,7 @@
 - Assimp (선택사항): rpassimp 플러그인 사용 시 필요
 - ImGUI (선택사항): imgui 또는 rpstat 플러그인 사용 시 필요
 
-### DevOps 에서의 버전
+### Continuous Integration (CI) 에서의 버전
 - vcpkg: https://github.com/bluekyu/vcpkg/tree/rpcpp-devops
 - Panda3D Third-party: https://github.com/bluekyu/panda3d-thirdparty
 - Panda3D: https://github.com/bluekyu/panda3d

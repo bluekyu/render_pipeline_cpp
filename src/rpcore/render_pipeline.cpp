@@ -57,6 +57,9 @@
 #include "render_pipeline/rpcore/image.hpp"
 #include "render_pipeline/rpcore/logger_manager.hpp"
 
+#include "render_pipeline/rpcore/gui/debugger.hpp"
+#include "render_pipeline/rpcore/gui/error_message_display.hpp"
+
 #include "render_pipeline/rpcore/stages/ambient_stage.hpp"
 #include "render_pipeline/rpcore/stages/combine_velocity_stage.hpp"
 #include "render_pipeline/rpcore/stages/downscale_z_stage.hpp"
@@ -71,8 +74,6 @@
 #include "rpplugins/env_probes/include/rpplugins/env_probes/env_probes_plugin.hpp"
 
 #include "rpcore/common_resources.hpp"
-#include "rpcore/gui/debugger.hpp"
-#include "rpcore/gui/error_message_display.hpp"
 #include "rpcore/gui/loading_screen.hpp"
 #include "rpcore/util/ies_profile_loader.hpp"
 #include "rplibs/yaml.hpp"
@@ -1343,6 +1344,11 @@ TaskScheduler* RenderPipeline::get_task_scheduler() const
 DayTimeManager* RenderPipeline::get_daytime_mgr() const
 {
     return impl_->daytime_mgr_.get();
+}
+
+Debugger* RenderPipeline::get_debugger() const
+{
+    return impl_->debugger_.get();
 }
 
 }

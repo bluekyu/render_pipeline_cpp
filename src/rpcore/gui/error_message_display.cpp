@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "rpcore/gui/error_message_display.hpp"
+#include "render_pipeline/rpcore/gui/error_message_display.hpp"
 
 #include <lineStream.h>
 #include <pnotify.h>
