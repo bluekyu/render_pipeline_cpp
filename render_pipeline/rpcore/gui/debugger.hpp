@@ -81,8 +81,13 @@ public:
     void init_keybindings();
 
     /** Shows / Hides the gui. */
-    bool is_gui_hidden() const;
-    void show_gui(bool show);
+    bool is_gui_visible() const;
+    void show_gui();
+    void hide_gui();
+
+    bool is_buffer_viewer_visible() const;
+    void show_buffer_viewer();
+    void hide_buffer_viewer();
 
     /** Shows / Hides the keybindings gui. */
     void toggle_keybindings_visible();
@@ -119,9 +124,9 @@ private:
     std::vector<std::unique_ptr<rpcore::TextNode>> debug_lines_;
 };
 
-inline bool Debugger::is_gui_hidden() const
+inline bool Debugger::is_gui_visible() const
 {
-    return fullscreen_node.is_hidden();
+    return !fullscreen_node.is_hidden();
 }
 
 inline ErrorMessageDisplay* Debugger::get_error_msg_handler() const

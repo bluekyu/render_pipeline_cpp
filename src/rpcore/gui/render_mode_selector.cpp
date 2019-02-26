@@ -38,7 +38,7 @@ RenderModeSelector::RenderModeSelector(RenderPipeline* pipeline, NodePath parent
     DraggableWindow(690, 340, "Select render mode", parent), pipeline_(pipeline)
 {
     create_components();
-    hide();
+    DraggableWindow::hide();
 }
 
 RenderModeSelector::~RenderModeSelector() = default;
@@ -71,7 +71,7 @@ void RenderModeSelector::populate_content()
     try
     {
         // Read modes from configuration
-        for (auto&& mode: config["render_modes"])
+        for (const auto& mode: config["render_modes"])
         {
             render_modes.push_back({
                 mode["name"].as<std::string>(),

@@ -59,11 +59,16 @@ public:
     /** Sets the window title. */
     void set_title(const std::string& title);
 
+    bool is_visible() const;
+
     /** Shows the window. */
-    void show();
+    virtual void show();
 
     /** Hides the window. */
-    void hide();
+    virtual void hide();
+
+    /** Toggles the visibility of this windows. */
+    void toggle();
 
 protected:
     /** Creates the window components. */
@@ -121,6 +126,11 @@ private:
 
 // ************************************************************************************************
 
+inline bool DraggableWindow::is_visible() const
+{
+    return visible_;
+}
+
 inline void DraggableWindow::show()
 {
     visible_ = true;
@@ -133,6 +143,14 @@ inline void DraggableWindow::hide()
     visible_ = false;
     stop_drag();
     node_.hide();
+}
+
+inline void DraggableWindow::toggle()
+{
+    if (visible_)
+        hide();
+    else
+        show();
 }
 
 /** Moves the window to the specified position. */

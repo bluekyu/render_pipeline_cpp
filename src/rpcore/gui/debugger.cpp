@@ -230,24 +230,18 @@ void Debugger::handle_window_resize()
 void Debugger::init_keybindings()
 {
     Globals::base->accept("v", [this](const Event* ev) {
-        if (Globals::base->get_render_2d().is_hidden())
-            Globals::base->get_render_2d().show();
         buffer_viewer_->toggle();
     });
     Globals::base->accept("c", [this](const Event* ev) {
-        if (Globals::base->get_render_2d().is_hidden())
-            Globals::base->get_render_2d().show();
         pipe_viewer_->toggle();
     });
     Globals::base->accept("z", [this](const Event* ev) {
         rm_selector_->toggle();
     });
     Globals::base->accept("f5", [this](const Event* ev) {
-        show_gui(is_gui_hidden());
+        is_gui_visible() ? hide_gui() : show_gui();
     });
     Globals::base->accept("f6", [this](const Event* ev) {
-        if (Globals::base->get_render_2d().is_hidden())
-            Globals::base->get_render_2d().show();
         toggle_keybindings_visible();
     });
     Globals::base->accept("r", [this](const Event* ev) {
@@ -255,22 +249,35 @@ void Debugger::init_keybindings()
     });
 }
 
-void Debugger::show_gui(bool show)
+void Debugger::show_gui()
 {
-    if (show)
-    {
-        if (is_advanced_info_used())
-            collect_scene_data(nullptr);
-        fullscreen_node.show();
-        overlay_node.show();
-        keybinding_text_->get_np().show();
-    }
-    else
-    {
-        fullscreen_node.hide();
-        overlay_node.hide();
-        keybinding_text_->get_np().hide();
-    }
+    if (is_advanced_info_used())
+        collect_scene_data(nullptr);
+    fullscreen_node.show();
+    overlay_node.show();
+    keybinding_text_->get_np().show();
+}
+
+void Debugger::hide_gui()
+{
+    fullscreen_node.hide();
+    overlay_node.hide();
+    keybinding_text_->get_np().hide();
+}
+
+bool Debugger::is_buffer_viewer_visible() const
+{
+    return buffer_viewer_->is_visible();
+}
+
+void Debugger::show_buffer_viewer()
+{
+    buffer_viewer_->show();
+}
+
+void Debugger::hide_buffer_viewer()
+{
+    buffer_viewer_->hide();
 }
 
 void Debugger::toggle_keybindings_visible()

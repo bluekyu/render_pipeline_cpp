@@ -50,23 +50,21 @@ BufferViewer::BufferViewer(NodePath parent): DraggableWindow(1400, 800, "Buffer-
     _tex_preview = std::make_unique<TexturePreview>(parent);
     _tex_preview->hide();
 
-    hide();
+    DraggableWindow::hide();
 }
 
 BufferViewer::~BufferViewer() = default;
 
-void BufferViewer::toggle()
+void BufferViewer::show()
 {
-    if (visible_)
-    {
-        remove_components();
-        hide();
-    }
-    else
-    {
-        perform_update();
-        show();
-    }
+    perform_update();
+    DraggableWindow::show();
+}
+
+void BufferViewer::hide()
+{
+    remove_components();
+    DraggableWindow::hide();
 }
 
 std::vector<BufferViewer::EntryType> BufferViewer::get_entries() const

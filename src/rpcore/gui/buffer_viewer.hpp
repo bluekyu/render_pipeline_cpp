@@ -50,7 +50,8 @@ public:
     BufferViewer(NodePath parent);
     ~BufferViewer() override;
 
-    void toggle();
+    void show() override;
+    void hide() override;
 
     std::vector<EntryType> get_entries() const;
 

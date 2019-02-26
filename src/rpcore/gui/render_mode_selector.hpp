@@ -37,8 +37,8 @@ public:
     RenderModeSelector(RenderPipeline* pipeline, NodePath parent);
     ~RenderModeSelector() override;
 
-    /** Toggles the visibility of this windows. */
-    void toggle();
+    void show() override;
+    void hide() override;
 
 private:
     /** Internal method to init the components. */
@@ -57,17 +57,15 @@ private:
     std::vector<std::unique_ptr<LabeledCheckbox>> boxes_;
 };
 
-inline void RenderModeSelector::toggle()
+inline void RenderModeSelector::show()
 {
-    if (visible_)
-    {
-        hide();
-    }
-    else
-    {
-        populate_content();
-        show();
-    }
+    populate_content();
+    DraggableWindow::show();
+}
+
+inline void RenderModeSelector::hide()
+{
+    DraggableWindow::hide();
 }
 
 }

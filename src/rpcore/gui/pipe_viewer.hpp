@@ -42,7 +42,8 @@ public:
     PipeViewer(RenderPipeline* pipeline, NodePath parent);
     ~PipeViewer() override;
 
-    void toggle();
+    void show() override;
+    void hide() override;
 
 private:
     AsyncTask::DoneStatus update_task(rppanda::FunctionalTask* task);
@@ -65,7 +66,6 @@ private:
     NodePath _content_node;
     NodePath _pipe_node;
     NodePath _stage_node;
-
 
     NodePath _pipe_descriptions;
 };

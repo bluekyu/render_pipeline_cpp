@@ -40,33 +40,31 @@
 
 namespace rpcore {
 
+static const char* pipe_viewer_task_name = "RP_GUI_UpdatePipeViewer";
+
 PipeViewer::PipeViewer(RenderPipeline* pipeline, NodePath parent): DraggableWindow(1300, 900, "Pipeline Visualizer", parent), _pipeline(pipeline)
 {
     create_components();
-    hide();
+    DraggableWindow::hide();
 }
 
 PipeViewer::~PipeViewer() = default;
 
-void PipeViewer::toggle()
+void PipeViewer::show()
 {
-    static const std::string task_name("RP_GUI_UpdatePipeViewer");
+    Globals::base->get_task_mgr()->add(
+        std::bind(&PipeViewer::update_task, this, std::placeholders::_1),
+        pipe_viewer_task_name);
 
-    if (visible_)
-    {
-        Globals::base->get_task_mgr()->remove(task_name);
-        hide();
-    }
-    else
-    {
-        Globals::base->get_task_mgr()->add(
-            std::bind(&PipeViewer::update_task, this, std::placeholders::_1),
-            task_name);
+    if (!_created)
+        populate_content();
+    DraggableWindow::show();
+}
 
-        if (!_created)
-            populate_content();
-        show();
-    }
+void PipeViewer::hide()
+{
+    Globals::base->get_task_mgr()->remove(pipe_viewer_task_name);
+    DraggableWindow::hide();
 }
 
 AsyncTask::DoneStatus PipeViewer::update_task(rppanda::FunctionalTask* task)
