@@ -40,6 +40,7 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
+#include <render_pipeline/rpcore/gui/debugger.hpp>
 
 #include <rpplugins/imgui/plugin.hpp>
 
@@ -224,6 +225,29 @@ void RPStatPlugin::draw_main_menu_bar()
                 {
                     WindowInterface::send_show_event(std::string("###") + window_title);
                 }
+            }
+            ImGui::EndMenu();
+        }
+
+        auto debugger = pipeline_.get_debugger();
+        if (ImGui::BeginMenu("Debugger", debugger != nullptr))
+        {
+            bool gui_visible = debugger->is_gui_visible();
+            if (ImGui::MenuItem("Show", nullptr, &gui_visible))
+            {
+                if (gui_visible)
+                    debugger->show_gui();
+                else
+                    debugger->hide_gui();
+            }
+
+            bool buffer_viewer_visible = debugger->is_buffer_viewer_visible();
+            if (ImGui::MenuItem("Show Buffer Viewer", nullptr, &buffer_viewer_visible))
+            {
+                if (buffer_viewer_visible)
+                    debugger->show_buffer_viewer();
+                else
+                    debugger->hide_buffer_viewer();
             }
             ImGui::EndMenu();
         }
