@@ -89,6 +89,14 @@ public:
     void show_buffer_viewer();
     void hide_buffer_viewer();
 
+    bool is_pipe_viewer_visible() const;
+    void show_pipe_viewer();
+    void hide_pipe_viewer();
+
+    bool is_render_mode_selector_visible() const;
+    void show_render_mode_selector();
+    void hide_render_mode_selector();
+
     /** Shows / Hides the keybindings gui. */
     void toggle_keybindings_visible();
 

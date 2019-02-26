@@ -280,6 +280,36 @@ void Debugger::hide_buffer_viewer()
     buffer_viewer_->hide();
 }
 
+bool Debugger::is_pipe_viewer_visible() const
+{
+    return pipe_viewer_->is_visible();
+}
+
+void Debugger::show_pipe_viewer()
+{
+    pipe_viewer_->show();
+}
+
+void Debugger::hide_pipe_viewer()
+{
+    pipe_viewer_->hide();
+}
+
+bool Debugger::is_render_mode_selector_visible() const
+{
+    return rm_selector_->is_visible();
+}
+
+void Debugger::show_render_mode_selector()
+{
+    rm_selector_->show();
+}
+
+void Debugger::hide_render_mode_selector()
+{
+    rm_selector_->hide();
+}
+
 void Debugger::toggle_keybindings_visible()
 {
     if (keybinding_instructions_->is_hidden())

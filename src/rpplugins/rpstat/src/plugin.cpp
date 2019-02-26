@@ -249,6 +249,24 @@ void RPStatPlugin::draw_main_menu_bar()
                 else
                     debugger->hide_buffer_viewer();
             }
+
+            bool pipe_viewer_visible = debugger->is_pipe_viewer_visible();
+            if (ImGui::MenuItem("Show Pipe Viewer", nullptr, &pipe_viewer_visible))
+            {
+                if (pipe_viewer_visible)
+                    debugger->show_pipe_viewer();
+                else
+                    debugger->hide_pipe_viewer();
+            }
+
+            bool render_mode_selector_visible = debugger->is_render_mode_selector_visible();
+            if (ImGui::MenuItem("Show Render Mode Selector", nullptr, &render_mode_selector_visible))
+            {
+                if (render_mode_selector_visible)
+                    debugger->show_render_mode_selector();
+                else
+                    debugger->hide_render_mode_selector();
+            }
             ImGui::EndMenu();
         }
 
