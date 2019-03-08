@@ -23,6 +23,11 @@ if(NOT ASSIMP_LIBRARIES)
     )
 endif()
 
+if(TARGET assimp::assimp)
+    set(ASSIMP_INCLUDE_DIRS "")
+    set(ASSIMP_LIBRARIES assimp::assimp)
+endif()
+
 find_package(fmt CONFIG REQUIRED)
 if(TARGET fmt::fmt-header-only)
     set(FMT_TARGET fmt::fmt-header-only)
