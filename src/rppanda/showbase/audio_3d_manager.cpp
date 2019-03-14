@@ -66,12 +66,9 @@ Audio3DManager::~Audio3DManager()
     disable();
 }
 
-AudioSound* Audio3DManager::load_sfx(const Filename& name)
+PT(AudioSound) Audio3DManager::load_sfx(const Filename& name)
 {
-    if (name.exists())
-        return audio_manager_->get_sound(name, true);
-    else
-        return nullptr;
+    return audio_manager_->get_sound(name, true);
 }
 
 void Audio3DManager::set_distance_factor(PN_stdfloat factor) const

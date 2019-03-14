@@ -62,7 +62,7 @@ public:
     /**
      * Use Audio3DManager.loadSfx to load a sound with 3D positioning enabled.
      */
-    AudioSound* load_sfx(const Filename& name);
+    PT(AudioSound) load_sfx(const Filename& name);
 
     /**
      * Control the scale that sets the distance units for 3D spacialized audio.
