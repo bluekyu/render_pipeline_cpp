@@ -196,26 +196,26 @@ public:
 
     void unload_texture(Texture* texture);
 
-    PT(AudioSound) load_sfx(const std::string& sound_path, bool positional=false);
+    PT(AudioSound) load_sfx(const Filename& sound_path, bool positional=false);
 
-    std::vector<PT(AudioSound)> load_sfx(const std::vector<std::string>& sound_path, bool positional=false);
+    std::vector<PT(AudioSound)> load_sfx(const std::vector<Filename>& sound_path, bool positional=false);
 
-    PT(AudioSound) load_music(const std::string& sound_path, bool positional=false);
+    PT(AudioSound) load_music(const Filename& sound_path, bool positional=false);
 
-    std::vector<PT(AudioSound)> load_music(const std::vector<std::string>& sound_path, bool positional=false);
+    std::vector<PT(AudioSound)> load_music(const std::vector<Filename>& sound_path, bool positional=false);
 
     /**
      * Loads one sound files, specifying the particular
      * AudioManager that should be used to load them. @p sound_path is a single filename.
      */
-    PT(AudioSound) load_sound(AudioManager* manager, const std::string& sound_path, bool positional=false);
+    PT(AudioSound) load_sound(AudioManager* manager, const Filename& sound_path, bool positional=false);
 
     /**
      * Loads one more sound files, specifying the particular
      * AudioManager that should be used to load them. @p sound_path is a vector of filenames.
      */
     std::vector<PT(AudioSound)> load_sound(AudioManager* manager,
-        const std::vector<std::string>& sound_path, bool positional=false);
+        const std::vector<Filename>& sound_path, bool positional=false);
 
     void unload_sfx(AudioSound* sfx);
 

@@ -599,7 +599,7 @@ void Loader::unload_texture(Texture* texture)
     TexturePool::release_texture(texture);
 }
 
-PT(AudioSound) Loader::load_sfx(const std::string& sound_path, bool positional)
+PT(AudioSound) Loader::load_sfx(const Filename& sound_path, bool positional)
 {
     const auto& manager_list = impl_->base_.get_sfx_manager_list();
     if (!manager_list.empty())
@@ -608,7 +608,7 @@ PT(AudioSound) Loader::load_sfx(const std::string& sound_path, bool positional)
         return nullptr;
 }
 
-std::vector<PT(AudioSound)> Loader::load_sfx(const std::vector<std::string>& sound_path, bool positional)
+std::vector<PT(AudioSound)> Loader::load_sfx(const std::vector<Filename>& sound_path, bool positional)
 {
     const auto& manager_list = impl_->base_.get_sfx_manager_list();
     if (!manager_list.empty())
@@ -617,7 +617,7 @@ std::vector<PT(AudioSound)> Loader::load_sfx(const std::vector<std::string>& sou
         return {};
 }
 
-PT(AudioSound) Loader::load_music(const std::string& sound_path, bool positional)
+PT(AudioSound) Loader::load_music(const Filename& sound_path, bool positional)
 {
     if (auto music_manager = impl_->base_.get_music_manager())
         return load_sound(music_manager, sound_path, positional);
@@ -625,7 +625,7 @@ PT(AudioSound) Loader::load_music(const std::string& sound_path, bool positional
         return nullptr;
 }
 
-std::vector<PT(AudioSound)> Loader::load_music(const std::vector<std::string>& sound_path, bool positional)
+std::vector<PT(AudioSound)> Loader::load_music(const std::vector<Filename>& sound_path, bool positional)
 {
     if (auto music_manager = impl_->base_.get_music_manager())
         return load_sound(music_manager, sound_path, positional);
@@ -633,13 +633,13 @@ std::vector<PT(AudioSound)> Loader::load_music(const std::vector<std::string>& s
         return {};
 }
 
-PT(AudioSound) Loader::load_sound(AudioManager* manager, const std::string& sound_path, bool positional)
+PT(AudioSound) Loader::load_sound(AudioManager* manager, const Filename& sound_path, bool positional)
 {
     return manager->get_sound(sound_path, positional);
 }
 
 std::vector<PT(AudioSound)> Loader::load_sound(AudioManager* manager,
-    const std::vector<std::string>& sound_path, bool positional)
+    const std::vector<Filename>& sound_path, bool positional)
 {
     std::vector<PT(AudioSound)> result;
     result.reserve(sound_path.size());
