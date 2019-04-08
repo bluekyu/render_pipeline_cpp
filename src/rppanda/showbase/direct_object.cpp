@@ -49,12 +49,14 @@ DirectObject::TaskContainer::TaskContainer(DirectObject* owner, AsyncTask* task)
 
 DirectObject::TaskContainer::~TaskContainer()
 {
-    task_.remove_callback(this);
+    if (!deleting_)
+        task_.remove_callback(this);
 }
 
 void DirectObject::TaskContainer::wp_callback(void*)
 {
-    owner_->task_list_.erase(task_id_);
+    deleting_ = true;                       // to avoid dead lock
+    owner_->task_list_.erase(task_id_);     // will delete this
 }
 
 // ************************************************************************************************
@@ -133,7 +135,7 @@ void DirectObject::remove_task(const std::string& task_name)
 {
     for (const auto& task_container: task_list_)
     {
-        auto& task = task_container.second.task_;
+        auto& task = task_container.second->task_;
         if (task->get_name() == task_name)
             remove_task(task.p());
     }
@@ -150,7 +152,7 @@ void DirectObject::remove_all_tasks()
     std::vector<AsyncTask*> tasks;
     tasks.reserve(task_list_.size());
     for (const auto& task : task_list_)
-        tasks.push_back(task.second.task_.p());
+        tasks.push_back(task.second->task_.p());
 
     task_list_.clear();
 
@@ -161,7 +163,7 @@ void DirectObject::remove_all_tasks()
 void DirectObject::do_add_task(AsyncTask* task)
 {
     // task_id is unique
-    task_list_.emplace(task->get_task_id(), TaskContainer(this, task));
+    task_list_.emplace(task->get_task_id(), std::make_unique<TaskContainer>(this, task));
 }
 
 }
