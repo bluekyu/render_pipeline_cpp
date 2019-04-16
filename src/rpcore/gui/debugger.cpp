@@ -229,22 +229,22 @@ void Debugger::handle_window_resize()
 
 void Debugger::init_keybindings()
 {
-    Globals::base->accept("v", [this](const Event* ev) {
+    Globals::base->accept("v", [this](const Event*) {
         buffer_viewer_->toggle();
     });
-    Globals::base->accept("c", [this](const Event* ev) {
+    Globals::base->accept("c", [this](const Event*) {
         pipe_viewer_->toggle();
     });
-    Globals::base->accept("z", [this](const Event* ev) {
+    Globals::base->accept("z", [this](const Event*) {
         rm_selector_->toggle();
     });
-    Globals::base->accept("f5", [this](const Event* ev) {
+    Globals::base->accept("f5", [this](const Event*) {
         is_gui_visible() ? hide_gui() : show_gui();
     });
-    Globals::base->accept("f6", [this](const Event* ev) {
+    Globals::base->accept("f6", [this](const Event*) {
         toggle_keybindings_visible();
     });
-    Globals::base->accept("r", [this](const Event* ev) {
+    Globals::base->accept("r", [this](const Event*) {
         pipeline->reload_shaders();
     });
 }

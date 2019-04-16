@@ -96,11 +96,11 @@ DirectEntry::DirectEntry(PGItem* gui_item, NodePath parent, const std::shared_pt
     onscreen_text_.remove_node();
 
     // Bind command function
-    bind(DGG_ACCEPT, [this](const Event* ev) { command_func(); });
-    bind(DGG_ACCEPTFAILED, [this](const Event* ev) { failed_command_func(); });
+    bind(DGG_ACCEPT, [this](const Event*) { command_func(); });
+    bind(DGG_ACCEPTFAILED, [this](const Event*) { failed_command_func(); });
 
-    accept(get_gui_item()->get_focus_in_event(), [this](const Event* ev) { focus_in_command_func(); });
-    accept(get_gui_item()->get_focus_out_event(), [this](const Event* ev) { focus_out_command_func(); });
+    accept(get_gui_item()->get_focus_in_event(), [this](const Event*) { focus_in_command_func(); });
+    accept(get_gui_item()->get_focus_out_event(), [this](const Event*) { focus_out_command_func(); });
 
     // listen for auto - capitalize events on a separate object to prevent
     // clashing with other parts of the system

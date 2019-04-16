@@ -236,38 +236,38 @@ void MovementController::setup()
 
     // y
     showbase->accept("raw-a", [this](const Event*) { set_movement(1, -1); });
-    showbase->accept("raw-a-up", [this](const Event* ev) { set_movement(1, 0); });
-    showbase->accept("raw-d", [this](const Event* ev) { set_movement(1, 1); });
-    showbase->accept("raw-d-up", [this](const Event* ev) { set_movement(1, 0); });
+    showbase->accept("raw-a-up", [this](const Event*) { set_movement(1, 0); });
+    showbase->accept("raw-d", [this](const Event*) { set_movement(1, 1); });
+    showbase->accept("raw-d-up", [this](const Event*) { set_movement(1, 0); });
 
     // z
-    showbase->accept(KeyboardButton::space().get_name(), [this](const Event* ev) { set_movement(2, 1); });
-    showbase->accept(KeyboardButton::space().get_name() + "-up", [this](const Event* ev) { set_movement(2, 0); });
-    showbase->accept(KeyboardButton::shift().get_name(), [this](const Event* ev) { set_movement(2, -1); });
-    showbase->accept(KeyboardButton::shift().get_name() + "-up", [this](const Event* ev) { set_movement(2, 0); });
+    showbase->accept(KeyboardButton::space().get_name(), [this](const Event*) { set_movement(2, 1); });
+    showbase->accept(KeyboardButton::space().get_name() + "-up", [this](const Event*) { set_movement(2, 0); });
+    showbase->accept(KeyboardButton::shift().get_name(), [this](const Event*) { set_movement(2, -1); });
+    showbase->accept(KeyboardButton::shift().get_name() + "-up", [this](const Event*) { set_movement(2, 0); });
 
     // wireframe + debug + buffer viewer
-    showbase->accept(KeyboardButton::f3().get_name(), [this](const Event* ev) { impl_->showbase_->toggle_wireframe(); });
-    showbase->accept(KeyboardButton::f11().get_name(), [this](const Event* ev) { impl_->showbase_->get_win()->save_screenshot("screenshot.png"); });
-    showbase->accept("j", [this](const Event* ev) { print_position(); });
+    showbase->accept(KeyboardButton::f3().get_name(), [this](const Event*) { impl_->showbase_->toggle_wireframe(); });
+    showbase->accept(KeyboardButton::f11().get_name(), [this](const Event*) { impl_->showbase_->get_win()->save_screenshot("screenshot.png"); });
+    showbase->accept("j", [this](const Event*) { print_position(); });
 
     // mouse
-    showbase->accept(MouseButton::one().get_name(), [this](const Event* ev) { set_mouse_enabled(true); });
-    showbase->accept(MouseButton::one().get_name() + "-up", [this](const Event* ev) { set_mouse_enabled(false); });
+    showbase->accept(MouseButton::one().get_name(), [this](const Event*) { set_mouse_enabled(true); });
+    showbase->accept(MouseButton::one().get_name() + "-up", [this](const Event*) { set_mouse_enabled(false); });
 
     // arrow mouse navigation
-    showbase->accept(KeyboardButton::up().get_name(), [this](const Event* ev) { set_hpr_movement(1, 1); });
-    showbase->accept(KeyboardButton::up().get_name() + "-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
-    showbase->accept(KeyboardButton::down().get_name(), [this](const Event* ev) { set_hpr_movement(1, -1); });
-    showbase->accept(KeyboardButton::down().get_name() + "-up", [this](const Event* ev) { set_hpr_movement(1, 0); });
-    showbase->accept(KeyboardButton::left().get_name(), [this](const Event* ev) { set_hpr_movement(0, 1); });
-    showbase->accept(KeyboardButton::left().get_name() + "-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
-    showbase->accept(KeyboardButton::right().get_name(), [this](const Event* ev) { set_hpr_movement(0, -1); });
-    showbase->accept(KeyboardButton::right().get_name() + "-up", [this](const Event* ev) { set_hpr_movement(0, 0); });
+    showbase->accept(KeyboardButton::up().get_name(), [this](const Event*) { set_hpr_movement(1, 1); });
+    showbase->accept(KeyboardButton::up().get_name() + "-up", [this](const Event*) { set_hpr_movement(1, 0); });
+    showbase->accept(KeyboardButton::down().get_name(), [this](const Event*) { set_hpr_movement(1, -1); });
+    showbase->accept(KeyboardButton::down().get_name() + "-up", [this](const Event*) { set_hpr_movement(1, 0); });
+    showbase->accept(KeyboardButton::left().get_name(), [this](const Event*) { set_hpr_movement(0, 1); });
+    showbase->accept(KeyboardButton::left().get_name() + "-up", [this](const Event*) { set_hpr_movement(0, 0); });
+    showbase->accept(KeyboardButton::right().get_name(), [this](const Event*) { set_hpr_movement(0, -1); });
+    showbase->accept(KeyboardButton::right().get_name() + "-up", [this](const Event*) { set_hpr_movement(0, 0); });
 
     // increase / decrease speed
-    showbase->accept("+", [this](const Event* ev) { increase_speed(); });
-    showbase->accept("-", [this](const Event* ev) { decrease_speed(); });
+    showbase->accept("+", [this](const Event*) { increase_speed(); });
+    showbase->accept("-", [this](const Event*) { decrease_speed(); });
 
     // disable modifier buttons to be able to move while pressing shift for example
     showbase->get_mouse_watcher_node()->set_modifier_buttons(ModifierButtons());
@@ -282,8 +282,8 @@ void MovementController::setup()
     }, "RP_UpdateMovementController", -50);
 
     // Hotkeys to connect to pstats and reset the initial position
-    showbase->accept("1", [](const Event* ev) { PStatClient::connect(); });
-    showbase->accept("3", [this](const Event* ev) { reset_to_initial(); });
+    showbase->accept("1", [](const Event*) { PStatClient::connect(); });
+    showbase->accept("3", [this](const Event*) { reset_to_initial(); });
 }
 
 void MovementController::print_position()
