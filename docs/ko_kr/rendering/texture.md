@@ -13,7 +13,7 @@ tex->setup_2d_texture(WIDTH, HEIGHT, Texture::ComponentType::T_unsigned_byte, Te
 
 PTA_uchar ram_image = tex->make_ram_image();
 // NOTE: be careful the size
-std::memcpy(ram_image.p(), COLOR_DATA_PTR, BYTE_SIZE);
+std::memcpy(ram_image.p(), COLOR_DATA_PTR, ram_image.size());
 
 np.set_texture(tex);
 ```
@@ -25,7 +25,7 @@ PT(Texture) tex = ...
 PTA_uchar ram_image = tex->modify_ram_image();
 
 // NOTE: be careful the size
-std::memcpy(ram_image.p(), COLOR_DATA_PTR, BYTE_SIZE);
+std::memcpy(ram_image.p(), COLOR_DATA_PTR, ram_image.size());
 ```
 
 ## 주의 사항
