@@ -218,14 +218,38 @@ void ScenegraphWindow::draw_nodepath(NodePath np)
     }
 
     // drag & drop target
-    if (ImGui::BeginDragDropTarget())
     {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("NodePath"))
+        static NodePath dropped_np;
+        static NodePath dragged_np;
+        if (ImGui::BeginDragDropTarget())
         {
-            auto source_np = *reinterpret_cast<NodePath*>(payload->Data);
-            source_np.reparent_to(np);
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("NodePath"))
+            {
+                dropped_np = np;
+                dragged_np = *reinterpret_cast<NodePath*>(ImGui::GetDragDropPayload()->Data);
+                ImGui::OpenPopup("drop_nodepath");
+            }
+            ImGui::EndDragDropTarget();
         }
-        ImGui::EndDragDropTarget();
+
+        if (dropped_np == np && ImGui::BeginPopup("drop_nodepath"))
+        {
+            if (ImGui::Selectable("Reparent"))
+            {
+                dragged_np.reparent_to(dropped_np);
+                dragged_np.clear();
+                dropped_np.clear();
+            }
+
+            if (ImGui::Selectable("Reparent (wrt)"))
+            {
+                dragged_np.wrt_reparent_to(dropped_np);
+                dragged_np.clear();
+                dropped_np.clear();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 
     draw_nodepath_context_menu(np);
