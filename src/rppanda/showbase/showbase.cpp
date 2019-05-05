@@ -70,7 +70,7 @@ public:
     void setup_render_2dp(ShowBase* self);
     void setup_render_2d(ShowBase* self);
 
-    void attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix);
+    void attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix, bool gui);
     void detach_input_device(InputDevice* device);
 
     void add_sfx_manager(AudioManager* extra_sfx_manager);
@@ -454,7 +454,7 @@ void ShowBase::Impl::setup_render_2d(ShowBase* self)
     // pixel2d is created in WindowFramework.
 }
 
-void ShowBase::Impl::attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix)
+void ShowBase::Impl::attach_input_device(ShowBase& self, InputDevice* device, const std::string& prefix, bool gui)
 {
     if (input_device_nodes_.find(device) != input_device_nodes_.end())
     {
@@ -465,13 +465,19 @@ void ShowBase::Impl::attach_input_device(ShowBase& self, InputDevice* device, co
     auto idn = self.get_data_root().attach_new_node(new InputDeviceNode(device, device->get_name()));
 
     // Setup the button thrower to generate events for the device.
-    auto bt = idn.attach_new_node(new ButtonThrower(device->get_name()));
-    if (!prefix.empty())
-        DCAST(ButtonThrower, bt.node())->set_prefix(prefix + "-");
+    if (!prefix.empty() || !gui)
+    {
+        auto bt = idn.attach_new_node(new ButtonThrower(device->get_name()));
+        if (!prefix.empty())
+            DCAST(ButtonThrower, bt.node())->set_prefix(prefix + "-");
+        device_button_throwers_.push_back(bt);
+    }
 
     rppanda_showbase_cat.debug() << "Attached input device " << *device << " with prefix " << prefix << std::endl;
     input_device_nodes_[device] = idn;
-    device_button_throwers_.push_back(bt);
+
+    if (gui)
+        idn.node()->add_child(mouse_watcher_node_);
 }
 
 void ShowBase::Impl::detach_input_device(InputDevice* device)
@@ -748,7 +754,7 @@ void ShowBase::setup_render_2d() { impl_->setup_render_2d(this); }
 void ShowBase::setup_render_2dp() { impl_->setup_render_2dp(this); }
 void ShowBase::setup_mouse() { impl_->setup_mouse(this); }
 void ShowBase::create_base_audio_managers() { impl_->create_base_audio_managers(); }
-void ShowBase::attach_input_device(InputDevice* device, const std::string& prefix) { impl_->attach_input_device(*this, device, prefix); }
+void ShowBase::attach_input_device(InputDevice* device, const std::string& prefix, bool gui) { impl_->attach_input_device(*this, device, prefix, gui); }
 void ShowBase::detach_input_device(InputDevice* device) { impl_->detach_input_device(device); }
 void ShowBase::add_sfx_manager(AudioManager* extra_sfx_manager) { impl_->add_sfx_manager(extra_sfx_manager); }
 void ShowBase::enable_music(bool enable) { impl_->enable_music(enable); }
