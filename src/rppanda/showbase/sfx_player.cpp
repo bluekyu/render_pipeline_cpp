@@ -108,7 +108,10 @@ float SfxPlayer::get_localized_volume(NodePath node, boost::optional<NodePath> l
     else
         d = node.get_distance(ShowBase::get_global_ptr()->get_cam());
 
-    if (cutoff && d > cutoff.value())
+    if (!cutoff)
+        cutoff = impl_->cutoff_distance_;
+
+    if (d > cutoff.value())
         return 0;
 
     if (use_inverse_suqare_)
@@ -134,10 +137,7 @@ void SfxPlayer::play_sfx(AudioSound* sfx, bool looping, bool interrupt, boost::o
     if (!sfx)
         return;
 
-    if (!cutoff)
-        cutoff = impl_->cutoff_distance_;
-
-    set_final_volume(sfx, node, volume, listener_node, cutoff.value());
+    set_final_volume(sfx, node, volume, listener_node, cutoff);
 
     if (interrupt || (sfx->status() != AudioSound::PLAYING))
     {
