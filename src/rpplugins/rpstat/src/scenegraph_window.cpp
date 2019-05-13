@@ -391,9 +391,12 @@ void ScenegraphWindow::draw_gizmo()
     proj_mat = rpcore::Globals::base->get_cam_lens(0)->get_projection_mat();
     obj_mat = selected_np_.get_mat(rpcore::Globals::render);
 
+    const bool guizmo_using = ImGuizmo::IsUsing();
+
     ImGuizmo::Manipulate(&view_mat(0, 0), &proj_mat(0, 0), ImGuizmo::OPERATION(gizmo_op_), ImGuizmo::LOCAL, &obj_mat(0, 0), NULL, NULL, NULL, NULL);
 
-    selected_np_.set_mat(rpcore::Globals::render, obj_mat);
+    if (guizmo_using)
+        selected_np_.set_mat(rpcore::Globals::render, obj_mat);
 }
 
 void ScenegraphWindow::draw_import_model()
