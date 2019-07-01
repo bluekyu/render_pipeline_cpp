@@ -1,5 +1,3 @@
-# Author: Younguk Kim (bluekyu)
-
 cmake_minimum_required(VERSION 3.12)
 project(render_pipeline
     VERSION 0.7.0
@@ -9,8 +7,15 @@ project(render_pipeline
 )
 
 # === configure ====================================================================================
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
+
+# options
 option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+set(${PROJECT_NAME}_BUILD_STATIC OFF)
 option(${PROJECT_NAME}_BUILD_RPASSIMP "Build rpassimp plugin for Panda3D" ON)
+if(MSVC)
+    set(${PROJECT_NAME}_USE_STATIC_CRT OFF)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
@@ -64,13 +69,19 @@ endfunction()
 
 # === target =======================================================================================
 include("${PROJECT_SOURCE_DIR}/files.cmake")
-add_library(${PROJECT_NAME} SHARED ${render_pipeline_sources} ${render_pipeline_headers})
+set(${PROJECT_NAME}_LIB_TYPE SHARED)
+if(${PROJECT_NAME}_BUILD_STATIC)
+    set(${PROJECT_NAME}_LIB_TYPE STATIC)
+endif()
+add_library(${PROJECT_NAME} ${${PROJECT_NAME}_LIB_TYPE} ${${PROJECT_NAME}_sources} ${${PROJECT_NAME}_headers})
 render_pipeline_generate_version_hpp()
 
 if(MSVC)
     target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /wd4275 /utf-8 /permissive-
         $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
+
+        $<$<BOOL:${${PROJECT_NAME}_USE_STATIC_CRT}>:$<IF:$<CONFIG:Debug>,/MTd,/MT>>
 
         # note: windows.cmake in vcpkg
         $<$<CONFIG:Release>:/Oi /Gy /Z7>
@@ -114,8 +125,8 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER "render_pipeline"
-    DEFINE_SYMBOL "RENDER_PIPELINE_BUILD"
+    FOLDER "${PROJECT_NAME}"
+    DEFINE_SYMBOL "${PROJECT_NAME_UPPER}_BUILD"
     DEBUG_POSTFIX ${${PROJECT_NAME}_DEBUG_POSTFIX}
     RELWITHDEBINFO_POSTFIX ${${PROJECT_NAME}_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
@@ -142,16 +153,25 @@ configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/${PACKAGE_NAME}-confi
 )
 
 add_library(${${PROJECT_NAME}_TARGET_NAMESPACE}${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+# override for multi-architecture
+if(CMAKE_SYSTEM_NAME STREQUAL Android)
+    set(${PROJECT_NAME}_TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets-${ANDROID_ABI}")
+endif()
 # ==================================================================================================
 
 # === install ======================================================================================
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME ${PACKAGE_NAME})
+set(${PROJECT_NAME}_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+if(CMAKE_SYSTEM_NAME STREQUAL Android)
+    set(${PROJECT_NAME}_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/${ANDROID_ABI}")
+endif()
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${${PROJECT_NAME}_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${${PROJECT_NAME}_INSTALL_LIBDIR}"
 )
 export(EXPORT ${${PROJECT_NAME}_TARGET_EXPORT_NAME}
     NAMESPACE ${${PROJECT_NAME}_TARGET_NAMESPACE}
@@ -177,7 +197,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md" "${CMAKE_CURRENT_SOURCE_D
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/"
 )
 
-if(MSVC)
+if(MSVC AND NOT ${PROJECT_NAME}_BUILD_STATIC)
     install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
 # ==================================================================================================
