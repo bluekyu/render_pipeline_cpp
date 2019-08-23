@@ -16,15 +16,15 @@ source_group("rpstat" FILES ${${PROJECT_NAME}_header_root})
 
 # list source
 set(${PROJECT_NAME}_source_imgui
-    "${PROJECT_SOURCE_DIR}/src/imgui/imgui_stl.cpp"
-    "${PROJECT_SOURCE_DIR}/src/imgui/imgui_stl.h"
+    "${PROJECT_SOURCE_DIR}/src/imgui/imgui_stdlib.cpp"
+    "${PROJECT_SOURCE_DIR}/src/imgui/imgui_stdlib.h"
 )
 
 set(${PROJECT_NAME}_source_ImGuizmo
     "${PROJECT_SOURCE_DIR}/src/ImGuizmo/imgui_internal.h"
     "${PROJECT_SOURCE_DIR}/src/ImGuizmo/ImGuizmo.cpp"
     "${PROJECT_SOURCE_DIR}/src/ImGuizmo/ImGuizmo.h"
-    "${PROJECT_SOURCE_DIR}/src/ImGuizmo/stb_textedit.h"
+    "${PROJECT_SOURCE_DIR}/src/ImGuizmo/imstb_textedit.h"
 )
 
 set(${PROJECT_NAME}_source_root

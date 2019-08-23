@@ -35,7 +35,7 @@
 
 #include "rpplugins/rpstat/plugin.hpp"
 
-#include "imgui/imgui_stl.h"
+#include "imgui/imgui_stdlib.h"
 #include "scenegraph_window.hpp"
 
 namespace rpplugins {

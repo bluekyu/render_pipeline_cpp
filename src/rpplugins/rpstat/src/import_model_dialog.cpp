@@ -26,7 +26,7 @@
 
 #include <imgui.h>
 
-#include "imgui/imgui_stl.h"
+#include "imgui/imgui_stdlib.h"
 #include "rpplugins/rpstat/plugin.hpp"
 
 namespace rpplugins {

@@ -39,7 +39,7 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 
 #include "ImGuizmo/ImGuizmo.h"
-#include "imgui/imgui_stl.h"
+#include "imgui/imgui_stdlib.h"
 
 #include "rpplugins/rpstat/plugin.hpp"
 #include "material_window.hpp"
